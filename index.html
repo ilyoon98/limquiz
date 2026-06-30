@@ -16,7 +16,7 @@
     .wrap { max-width:1180px; margin:0 auto; }
     header { margin-bottom:18px; position:relative; padding-right:220px; }
     .top-actions { position:absolute; right:0; top:0; display:flex; align-items:center; gap:10px; }
-    .version-badge { display:inline-flex; align-items:center; justify-content:center; min-height:34px; padding:0 10px; border-radius:999px; border:1px solid var(--border); background:rgba(0,0,0,.22); color:var(--muted); font-size:13px; font-weight:800; white-space:nowrap; }
+    .version-badge { display:inline-flex; align-items:center; justify-content:center; min-height:34px; padding:0 10px; border-radius:999px; border:1px solid var(--border); background:rgba(0,0,0,.22); color:var(--muted); font-size:14px; font-weight:800; white-space:nowrap; }
     .contact-btn { display:inline-flex; align-items:center; justify-content:center; min-height:38px; padding:0 14px; border-radius:999px; border:1px solid color-mix(in srgb, var(--button) 70%, transparent); background: color-mix(in srgb, var(--button) 92%, #fff 8%); color:var(--buttonText); font-weight:800; text-decoration:none; box-shadow:0 10px 24px rgba(0,0,0,.22); }
     .contact-btn:hover { filter:brightness(1.06); transform:translateY(-1px); }
     .contact-btn:active { transform:translateY(0); }
@@ -26,7 +26,7 @@
     .filter-row { display:grid; grid-template-columns: 86px repeat(5, minmax(110px, 1fr)) auto; gap:10px; align-items:end; }
     .filter-title { height:44px; display:flex; align-items:center; justify-content:center; border:1px solid var(--border); border-radius:12px; background:var(--panel2); color:#ffd98a; font-weight:900; }
     .filter-title.exclude { color:#ffb0aa; }
-    .field label { display:block; color:var(--muted); font-size:13px; margin:0 0 6px; }
+    .field label { display:block; color:var(--muted); font-size:14px; margin:0 0 6px; }
     input, button { height:44px; border-radius:12px; border:1px solid var(--border); font:inherit; }
     input { width:100%; background:#131313; color:var(--text); padding:0 12px; }
     input::placeholder { color:#7e766c; }
@@ -43,12 +43,12 @@
     .option { display:flex; justify-content:space-between; gap:12px; padding:10px 12px; cursor:pointer; border-bottom:1px solid rgba(255,255,255,.05); }
     .option:hover, .option.active { background:var(--panel2); }
     .option-name { font-weight:750; }
-    .option-meta { color:var(--muted); font-size:12px; white-space:nowrap; }
+    .option-meta { color:var(--muted); font-size:13px; white-space:nowrap; }
     .option.eliminated .option-name { text-decoration: line-through; opacity:.48; }
     .option.eliminated .option-meta { opacity:.45; }
     .status { display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap; margin-top:14px; color:var(--muted); }
     .message { margin-top:12px; min-height:28px; line-height:1.55; }
-    .legend { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; color:var(--muted); font-size:13px; }
+    .legend { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; color:var(--muted); font-size:14px; }
     .pill { border-radius:999px; padding:4px 10px; border:1px solid var(--border); background:var(--panel2); }
     .pill.hit { background: color-mix(in srgb, var(--green) 70%, #111); color:white; }
     .pill.miss { background: color-mix(in srgb, var(--red) 65%, #111); color:white; }
@@ -57,24 +57,25 @@
 
     .record-head { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:10px; }
     .record-head h2 { margin:0; font-size:20px; }
-    .record-note { color:var(--muted); font-size:13px; margin:4px 0 0; }
+    .record-note { color:var(--muted); font-size:14px; margin:4px 0 0; }
     .record-success { color:#bdf0c8; font-weight:900; }
     .record-fail { color:#ffb8b2; font-weight:900; }
-    .small-btn { height:34px; padding:0 12px; font-size:13px; }
+    .small-btn { height:34px; padding:0 12px; font-size:14px; }
     table { width:100%; border-collapse:separate; border-spacing:0 8px; min-width:820px; }
-    th { text-align:left; color:var(--muted); font-size:13px; font-weight:700; padding:0 10px 4px; }
+    th { text-align:left; color:var(--muted); font-size:14px; font-weight:700; padding:0 10px 4px; }
     td { padding:10px; background:var(--panel2); border-top:1px solid var(--border); border-bottom:1px solid var(--border); vertical-align:top; }
     td:first-child { border-left:1px solid var(--border); border-radius:12px 0 0 12px; color:var(--muted); width:42px; }
     td:last-child { border-right:1px solid var(--border); border-radius:0 12px 12px 0; }
     .cell { display:flex; flex-direction:column; gap:4px; }
     .value { font-weight:800; }
-    .judge { font-size:12px; opacity:.95; }
+    .judge { font-size:14px; opacity:.95; }
     .hit { background: color-mix(in srgb, var(--green) 70%, #111); }
     .miss { background: color-mix(in srgb, var(--red) 65%, #111); }
     .empty { opacity:.65; }
 
     /* keyword chips */
-    .kw-chip { display:inline-block; border-radius:5px; padding:2px 8px; font-size:11px; font-weight:700; line-height:1.5; border:1px solid rgba(255,255,255,.12); }
+    .kw-chip { display:inline-block; border-radius:5px; padding:2px 10px; font-size:13px; font-weight:700; line-height:1.5; border:1px solid rgba(255,255,255,.12); }
+    .sinner-dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:5px; vertical-align:middle; flex-shrink:0; }
 
     /* grade styles */
     .grade-1 { color:#888; }
@@ -113,7 +114,7 @@
   <div class="wrap">
     <header>
       <div class="top-actions">
-        <span class="version-badge">v0.1.3</span>
+        <span class="version-badge">v0.1.4</span>
         <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
       </div>
       <h1>림버스 인격 두들</h1>
@@ -194,6 +195,20 @@
 
   <script>
     let DATA = [], SORTED_DATA = [];
+    const SINNER_COLOR = {
+      '이상':    '#d4e1e8',
+      '파우스트': '#ffb1b4',
+      '돈키호테': '#ffef23',
+      '료슈':    '#cf0000',
+      '뫼르소':  '#293b95',
+      '홍루':    '#5bffde',
+      '히스클리프':'#4e3076',
+      '이스마엘': '#ff9500',
+      '로쟈':    '#820000',
+      '싱클레어': '#8b9c15',
+      '오티스':  '#325339',
+      '그레고르': '#69350b',
+    };
     const KEYWORD_COLOR = {
       '화상': { bg:'#3a0c0c', text:'#ff9090' },
       '출혈': { bg:'#3a1a08', text:'#ff9955' },
@@ -297,7 +312,7 @@
       dropdown.innerHTML = rows.length ? rows.map((row, i) => `
         <div class="option ${eliminatedNames.has(row['인격명']) ? 'eliminated' : ''} ${i === highlightedOption ? 'active' : ''}" data-idx="${row.__idx}" role="option">
           <span class="option-name">${escapeHtml(row['인격명'])}</span>
-          <span class="option-meta">${escapeHtml(row['수감자'])} · ${gradeSpan(row['성급'])} · ${keywordsOf(row).map(k => kwChip(k)).join(' ') || '키워드 없음'}</span>
+          <span class="option-meta">${sinnerDot(row['수감자'])} · ${gradeSpan(row['성급'])} · ${keywordsOf(row).map(k => kwChip(k)).join(' ') || '키워드 없음'}</span>
         </div>
       `).join('') : '<div class="option"><span class="option-name">검색 결과가 없습니다</span></div>';
       dropdown.classList.toggle('open', open && !finished);
@@ -326,6 +341,11 @@
       return { cls: hit ? 'hit' : 'miss', label: hit ? '일치' : '불일치' };
     }
 
+    function sinnerDot(sinner) {
+      const color = SINNER_COLOR[sinner];
+      if (!color) return escapeHtml(sinner);
+      return `<span style="display:inline-flex;align-items:center;gap:0"><span class="sinner-dot" style="background:${color}"></span>${escapeHtml(sinner)}</span>`;
+    }
     function kwChip(kw) {
       if (!kw) return '<span class="empty">-</span>';
       const c = KEYWORD_COLOR[kw];
@@ -341,6 +361,7 @@
       let display;
       if (field.startsWith('키워드')) display = kwChip(raw);
       else if (field === '성급') display = gradeSpan(raw || '-');
+      else if (field === '수감자') display = raw ? sinnerDot(raw) : '<span class="empty">-</span>';
       else display = raw ? escapeHtml(raw) : '<span class="empty">-</span>';
       return `<td class="${j.cls}"><span class="cell"><span class="value">${display}</span><span class="judge">${j.label}</span></span></td>`;
     }
