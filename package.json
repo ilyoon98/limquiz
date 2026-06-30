@@ -1,0 +1,11 @@
+{
+  "name": "limquiz",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/build-data.js"
+  },
+  "devDependencies": {
+    "xlsx": "^0.18.5"
+  }
+}
