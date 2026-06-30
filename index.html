@@ -63,7 +63,7 @@
     .record-fail { color:#ffb8b2; font-weight:900; }
     .small-btn { height:34px; padding:0 12px; font-size:14px; }
     table { width:100%; border-collapse:separate; border-spacing:0 8px; min-width:820px; }
-    th { text-align:left; color:var(--muted); font-size:14px; font-weight:700; padding:0 10px 4px; }
+    th { text-align:left; color:var(--muted); font-size:14px; font-weight:700; padding:0 10px 4px; white-space:nowrap; }
     td { padding:10px; background:var(--panel2); border-top:1px solid var(--border); border-bottom:1px solid var(--border); vertical-align:top; }
     td:first-child { border-left:1px solid var(--border); border-radius:12px 0 0 12px; color:var(--muted); width:42px; white-space:nowrap; }
     td:last-child { border-right:1px solid var(--border); border-radius:0 12px 12px 0; }
@@ -115,7 +115,7 @@
   <div class="wrap">
     <header>
       <div class="top-actions">
-        <span class="version-badge">v0.1.5</span>
+        <span class="version-badge">v0.1.6</span>
         <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
       </div>
       <h1>림버스 인격 두들</h1>
@@ -522,8 +522,8 @@
     guessInput.addEventListener('click', openDropdownFromSelectedValue);
     guessInput.addEventListener('keydown', e => {
       const rows = filteredRows(ignoreSearchForDropdown);
-      if (e.key === 'ArrowDown') { e.preventDefault(); highlightedOption = Math.min(rows.length - 1, highlightedOption + 1); renderDropdown(true); }
-      else if (e.key === 'ArrowUp') { e.preventDefault(); highlightedOption = Math.max(0, highlightedOption - 1); renderDropdown(true); }
+      if (e.key === 'ArrowDown') { e.preventDefault(); highlightedOption = Math.min(rows.length - 1, highlightedOption + 1); renderDropdown(true); dropdown.querySelector('.option.active')?.scrollIntoView({ block:'nearest' }); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); highlightedOption = Math.max(0, highlightedOption - 1); renderDropdown(true); dropdown.querySelector('.option.active')?.scrollIntoView({ block:'nearest' }); }
       else if (e.key === 'Enter') {
         e.preventDefault();
         if (dropdown.classList.contains('open') && highlightedOption >= 0 && rows[highlightedOption]) selectRow(rows[highlightedOption].__idx);
@@ -531,7 +531,74 @@
       }
       else if (e.key === 'Escape') { ignoreSearchForDropdown = false; dropdown.classList.remove('open'); }
     });
-    document.addEventListener('click', e => { if (!e.target.closest('.combo')) { ignoreSearchForDropdown = false; dropdown.classList.remove('open'); } });
+    document.addEventListener('click', e => {
+      if (!e.target.closest('.combo')) { ignoreSearchForDropdown = false; dropdown.classList.remove('open'); }
+      if (!e.target.closest('.field')) closeFilterDropdown();
+    });
+
+    // 필터 인풋 드롭다운
+    const filterDropdown = document.createElement('div');
+    filterDropdown.className = 'dropdown';
+    filterDropdown.style.cssText = 'position:fixed;z-index:200;max-height:240px;';
+    document.body.appendChild(filterDropdown);
+    let activeFilterInput = null, filterHighlight = -1;
+
+    function getFilterValues(input) {
+      if (!DATA.length) return [];
+      const q = input.value.toLowerCase().trim();
+      let vals = [];
+      if (input.id === 'includeSinner') {
+        vals = [...new Set(DATA.map(r => r['수감자']))].sort((a, b) => a.localeCompare(b, 'ko-KR'));
+      } else if (input.id === 'includeGrade') {
+        vals = ['★', '★★', '★★★'];
+      } else if (['includeK1','includeK2','includeK3'].includes(input.id)) {
+        vals = [...new Set(DATA.flatMap(r => [r['키워드1'],r['키워드2'],r['키워드3']]).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'ko-KR'));
+      }
+      return q ? vals.filter(v => v.toLowerCase().includes(q)) : vals;
+    }
+    function positionFilterDropdown() {
+      if (!activeFilterInput) return;
+      const r = activeFilterInput.getBoundingClientRect();
+      filterDropdown.style.top = (r.bottom + 4) + 'px';
+      filterDropdown.style.left = r.left + 'px';
+      filterDropdown.style.width = r.width + 'px';
+    }
+    function renderFilterDropdown() {
+      if (!activeFilterInput) { filterDropdown.classList.remove('open'); return; }
+      const vals = getFilterValues(activeFilterInput);
+      filterHighlight = Math.min(filterHighlight, vals.length - 1);
+      filterDropdown.innerHTML = vals.length
+        ? vals.map((v, i) => `<div class="option ${i === filterHighlight ? 'active' : ''}" data-val="${escapeHtml(v)}">${escapeHtml(v)}</div>`).join('')
+        : '<div class="option"><span class="option-name">결과 없음</span></div>';
+      positionFilterDropdown();
+      filterDropdown.classList.add('open');
+    }
+    function closeFilterDropdown() { filterDropdown.classList.remove('open'); activeFilterInput = null; filterHighlight = -1; }
+
+    filterDropdown.addEventListener('mousedown', e => {
+      e.preventDefault();
+      const opt = e.target.closest('.option[data-val]');
+      if (!opt || !activeFilterInput) return;
+      activeFilterInput.value = opt.dataset.val;
+      activeFilterInput.dispatchEvent(new Event('input', { bubbles: true }));
+      closeFilterDropdown();
+    });
+
+    includeInputs.forEach(input => {
+      input.addEventListener('focus', () => { activeFilterInput = input; filterHighlight = -1; renderFilterDropdown(); });
+      input.addEventListener('click', () => { activeFilterInput = input; filterHighlight = -1; renderFilterDropdown(); });
+      input.addEventListener('input', () => { filterHighlight = -1; if (activeFilterInput === input) renderFilterDropdown(); });
+      input.addEventListener('keydown', e => {
+        const vals = getFilterValues(input);
+        if (e.key === 'ArrowDown') { e.preventDefault(); filterHighlight = Math.min(vals.length - 1, filterHighlight + 1); renderFilterDropdown(); filterDropdown.querySelector('.option.active')?.scrollIntoView({ block:'nearest' }); }
+        else if (e.key === 'ArrowUp') { e.preventDefault(); filterHighlight = Math.max(0, filterHighlight - 1); renderFilterDropdown(); filterDropdown.querySelector('.option.active')?.scrollIntoView({ block:'nearest' }); }
+        else if (e.key === 'Enter' && filterHighlight >= 0 && vals[filterHighlight]) { e.preventDefault(); input.value = vals[filterHighlight]; input.dispatchEvent(new Event('input', { bubbles: true })); closeFilterDropdown(); }
+        else if (e.key === 'Escape') closeFilterDropdown();
+      });
+      input.addEventListener('blur', () => setTimeout(closeFilterDropdown, 150));
+    });
+    window.addEventListener('scroll', positionFilterDropdown, { passive: true });
+    window.addEventListener('resize', positionFilterDropdown, { passive: true });
     allFilterInputs.forEach(i => i.addEventListener('input', () => renderDropdown(document.activeElement === guessInput)));
     document.querySelectorAll('input[name="includeMode"]').forEach(r => r.addEventListener('change', () => renderDropdown(document.activeElement === guessInput)));
     // 제외 필터 재활성화 시 아래 이벤트도 되살리세요.
