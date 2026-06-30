@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>림버스 인격 두들</title>
+  <style>
+    :root {
+      --bg: #141414; --panel: #1f1f1f; --panel2: #292929; --text: #f4f1ea;
+      --muted: #b8b0a3; --border: #403a33; --green: #3f8f57; --red: #8b3a36;
+      --yellow: #b48a30; --button: #c9a86a; --buttonText: #1b1712;
+    }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: radial-gradient(circle at top, #2a241e 0%, var(--bg) 42%, #0f0f0f 100%); color: var(--text); min-height:100vh; padding:24px; }
+    .wrap { max-width:1180px; margin:0 auto; }
+    header { margin-bottom:18px; position:relative; padding-right:220px; }
+    .top-actions { position:absolute; right:0; top:0; display:flex; align-items:center; gap:10px; }
+    .version-badge { display:inline-flex; align-items:center; justify-content:center; min-height:34px; padding:0 10px; border-radius:999px; border:1px solid var(--border); background:rgba(0,0,0,.22); color:var(--muted); font-size:13px; font-weight:800; white-space:nowrap; }
+    .contact-btn { display:inline-flex; align-items:center; justify-content:center; min-height:38px; padding:0 14px; border-radius:999px; border:1px solid color-mix(in srgb, var(--button) 70%, transparent); background: color-mix(in srgb, var(--button) 92%, #fff 8%); color:var(--buttonText); font-weight:800; text-decoration:none; box-shadow:0 10px 24px rgba(0,0,0,.22); }
+    .contact-btn:hover { filter:brightness(1.06); transform:translateY(-1px); }
+    .contact-btn:active { transform:translateY(0); }
+    h1 { margin:0 0 8px; font-size:clamp(28px,4vw,44px); letter-spacing:-.04em; }
+    .sub { color:var(--muted); line-height:1.55; }
+    .panel { background: color-mix(in srgb, var(--panel) 88%, transparent); border:1px solid var(--border); border-radius:18px; padding:18px; margin-bottom:16px; box-shadow:0 14px 36px rgba(0,0,0,.28); }
+    .filter-block { display:flex; flex-direction:column; gap:12px; margin-bottom:14px; }
+    .filter-row { display:grid; grid-template-columns: 86px repeat(5, minmax(110px, 1fr)) auto; gap:10px; align-items:end; }
+    .filter-title { height:44px; display:flex; align-items:center; justify-content:center; border:1px solid var(--border); border-radius:12px; background:var(--panel2); color:#ffd98a; font-weight:900; }
+    .filter-title.exclude { color:#ffb0aa; }
+    .field label { display:block; color:var(--muted); font-size:13px; margin:0 0 6px; }
+    input, button { height:44px; border-radius:12px; border:1px solid var(--border); font:inherit; }
+    input { width:100%; background:#131313; color:var(--text); padding:0 12px; }
+    input::placeholder { color:#7e766c; }
+    button { border:0; padding:0 18px; background:var(--button); color:var(--buttonText); font-weight:800; cursor:pointer; white-space:nowrap; }
+    button.secondary { background:var(--panel2); color:var(--text); border:1px solid var(--border); }
+    button:disabled { opacity:.55; cursor:not-allowed; }
+    .mode-box { display:flex; gap:8px; flex-wrap:wrap; align-items:center; min-width:150px; }
+    .mode-box label { display:flex; gap:6px; align-items:center; height:36px; padding:0 10px; border:1px solid var(--border); border-radius:999px; background:var(--panel2); cursor:pointer; color:var(--muted); }
+    .mode-box input { width:auto; height:auto; }
+    .guess-row { display:grid; grid-template-columns: 1fr auto auto; gap:10px; align-items:start; }
+    .combo { position:relative; }
+    .dropdown { position:absolute; z-index:20; left:0; right:0; top:50px; max-height:300px; overflow:auto; background:#151515; border:1px solid var(--border); border-radius:14px; box-shadow:0 18px 30px rgba(0,0,0,.45); display:none; }
+    .dropdown.open { display:block; }
+    .option { display:flex; justify-content:space-between; gap:12px; padding:10px 12px; cursor:pointer; border-bottom:1px solid rgba(255,255,255,.05); }
+    .option:hover, .option.active { background:var(--panel2); }
+    .option-name { font-weight:750; }
+    .option-meta { color:var(--muted); font-size:12px; white-space:nowrap; }
+    .option.eliminated .option-name { text-decoration: line-through; opacity:.48; }
+    .option.eliminated .option-meta { opacity:.45; }
+    .status { display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap; margin-top:14px; color:var(--muted); }
+    .message { margin-top:12px; min-height:28px; line-height:1.55; }
+    .legend { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; color:var(--muted); font-size:13px; }
+    .pill { border-radius:999px; padding:4px 10px; border:1px solid var(--border); background:var(--panel2); }
+    .pill.hit { background: color-mix(in srgb, var(--green) 70%, #111); color:white; }
+    .pill.miss { background: color-mix(in srgb, var(--red) 65%, #111); color:white; }
+    .answer { font-weight:900; color:#ffd98a; }
+    .table-wrap { overflow:auto; }
+
+    .record-head { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:10px; }
+    .record-head h2 { margin:0; font-size:20px; }
+    .record-note { color:var(--muted); font-size:13px; margin:4px 0 0; }
+    .record-success { color:#bdf0c8; font-weight:900; }
+    .record-fail { color:#ffb8b2; font-weight:900; }
+    .small-btn { height:34px; padding:0 12px; font-size:13px; }
+    table { width:100%; border-collapse:separate; border-spacing:0 8px; min-width:820px; }
+    th { text-align:left; color:var(--muted); font-size:13px; font-weight:700; padding:0 10px 4px; }
+    td { padding:10px; background:var(--panel2); border-top:1px solid var(--border); border-bottom:1px solid var(--border); vertical-align:top; }
+    td:first-child { border-left:1px solid var(--border); border-radius:12px 0 0 12px; color:var(--muted); width:42px; }
+    td:last-child { border-right:1px solid var(--border); border-radius:0 12px 12px 0; }
+    .cell { display:flex; flex-direction:column; gap:4px; }
+    .value { font-weight:800; }
+    .judge { font-size:12px; opacity:.95; }
+    .hit { background: color-mix(in srgb, var(--green) 70%, #111); }
+    .miss { background: color-mix(in srgb, var(--red) 65%, #111); }
+    .empty { opacity:.65; }
+    @media (max-width:800px) { body { padding:14px; } .filter-row, .guess-row { grid-template-columns:1fr; } .filter-title { justify-content:flex-start; padding:0 12px; } button { width:100%; } .dropdown { position:static; margin-top:8px; } }
+
+    @media (max-width: 640px) {
+      header { padding-right:0; }
+      .top-actions { position:static; margin-top:12px; width:100%; justify-content:space-between; }
+      .contact-btn { flex:1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="top-actions">
+        <span class="version-badge">v0.1.2</span>
+        <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
+      </div>
+      <h1>림버스 인격 두들</h1>
+      <div class="sub">인격명만 검색해서 선택합니다. 정답은 수감자, 인격명, 성급, 키워드 3개를 비교하며, 키워드는 순서와 상관없이 판정합니다.</div>
+    </header>
+
+    <section class="panel">
+      <div class="filter-block">
+        <div class="filter-row">
+          <div class="filter-title">필터</div>
+          <div class="field"><label for="includeSinner">수감자</label><input id="includeSinner" placeholder="예: 료슈" /></div>
+          <div class="field"><label for="includeGrade">성급</label><input id="includeGrade" placeholder="예: ★★★ 또는 3" /></div>
+          <div class="field"><label for="includeK1">키워드 A</label><input id="includeK1" placeholder="예: 출혈 (순서 무관)" /></div>
+          <div class="field"><label for="includeK2">키워드 B</label><input id="includeK2" placeholder="예: 호흡 (순서 무관)" /></div>
+          <div class="field"><label for="includeK3">키워드 C</label><input id="includeK3" placeholder="예: 파열 (순서 무관)" /></div>
+          <div class="mode-box" aria-label="포함 필터 방식">
+            <label><input type="radio" name="includeMode" value="and" checked />AND</label>
+            <label><input type="radio" name="includeMode" value="or" />OR</label>
+          </div>
+        </div>
+        <!-- 제외 필터 UI 임시 비활성화: 필요하면 이 주석을 해제해서 다시 사용하세요.
+        <div class="filter-row">
+          <div class="filter-title exclude">제외</div>
+          <div class="field"><label for="excludeSinner">수감자</label><input id="excludeSinner" placeholder="예: 히스클리프" /></div>
+          <div class="field"><label for="excludeGrade">성급</label><input id="excludeGrade" placeholder="예: ★ 또는 1" /></div>
+          <div class="field"><label for="excludeK1">키워드 A</label><input id="excludeK1" placeholder="예: 침잠 (순서 무관)" /></div>
+          <div class="field"><label for="excludeK2">키워드 B</label><input id="excludeK2" placeholder="예: 진동 (순서 무관)" /></div>
+          <div class="field"><label for="excludeK3">키워드 C</label><input id="excludeK3" placeholder="예: 충전 (순서 무관)" /></div>
+          <div class="mode-box" aria-label="제외 필터 방식">
+            <label><input type="radio" name="excludeMode" value="and" checked />AND</label>
+            <label><input type="radio" name="excludeMode" value="or" />OR</label>
+          </div>
+        </div>
+        -->
+      </div>
+
+      <div class="guess-row">
+        <div class="combo">
+          <input id="guessInput" autocomplete="off" placeholder="인격명을 입력하거나 클릭해서 선택" aria-label="인격명 검색" />
+          <div id="dropdown" class="dropdown" role="listbox"></div>
+        </div>
+        <button id="guessBtn">확인</button>
+        <button id="restartBtn" class="secondary" style="display:none;">재시작</button>
+      </div>
+      <div class="status">
+        <div>남은 기회: <strong id="tries">5</strong></div>
+        <div>표시 후보: <strong id="filteredCount">0</strong> / 전체 <strong id="count">0</strong></div>
+      </div>
+      <div id="message" class="message">정답 인격을 추리해보세요.</div>
+      <div class="legend">
+        <span class="pill hit">일치</span>
+        <span class="pill miss">불일치</span>
+        <span class="pill">취소선 테스트: 수감자와 키워드가 모두 빗나간 제출 인격</span>
+      </div>
+    </section>
+
+    <section class="panel table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>수감자</th><th>인격명</th><th>성급</th><th>키워드1</th><th>키워드2</th><th>키워드3</th></tr></thead>
+        <tbody id="history"></tbody>
+      </table>
+    </section>
+
+    <section class="panel table-wrap">
+      <div class="record-head">
+        <div>
+          <h2>플레이 기록</h2>
+          <p class="record-note">성공/실패 결과는 이 브라우저의 localStorage에 저장됩니다. 같은 브라우저로 다음날 다시 와도 확인할 수 있습니다.</p>
+        </div>
+        <button id="clearRecordsBtn" class="secondary small-btn">기록 초기화</button>
+      </div>
+      <table>
+        <thead><tr><th>횟수</th><th>날짜</th><th>결과</th><th>시도</th><th>맞춘 항목</th><th>정답</th></tr></thead>
+        <tbody id="resultRecords"></tbody>
+      </table>
+    </section>
+  </div>
+
+  <script>
+    const DATA = [{"수감자": "히스클리프", "인격명": "거미집 엄지 제자 히스클리프", "성급": "★★★", "키워드1": "화상", "키워드2": "진동", "키워드3": ""}, {"수감자": "로쟈", "인격명": "거미집 엄지 아비 로쟈", "성급": "★★★", "키워드1": "화상", "키워드2": "진동", "키워드3": ""}, {"수감자": "홍루", "인격명": "S사 추노꾼 홍루", "성급": "★★★", "키워드1": "출혈", "키워드2": "호흡", "키워드3": ""}, {"수감자": "이스마엘", "인격명": "LCD 현장추리팀 이스마엘", "성급": "★★★", "키워드1": "출혈", "키워드2": "호흡", "키워드3": ""}, {"수감자": "오티스", "인격명": "거미집 중지 아비 오티스", "성급": "★★★", "키워드1": "화상", "키워드2": "출혈", "키워드3": ""}, {"수감자": "료슈", "인격명": "거미집의 검 료슈", "성급": "★★★", "키워드1": "화상", "키워드2": "출혈", "키워드3": "호흡"}, {"수감자": "히스클리프", "인격명": "중지 작은 형님 히스클리프", "성급": "★★★", "키워드1": "출혈", "키워드2": "화상", "키워드3": ""}, {"수감자": "뫼르소", "인격명": "약지 야수파 스튜던트 뫼르소", "성급": "★★★", "키워드1": "출혈", "키워드2": "침잠", "키워드3": ""}, {"수감자": "로쟈", "인격명": "약지 야수파 도슨트 로쟈", "성급": "★★★", "키워드1": "출혈", "키워드2": "침잠", "키워드3": ""}, {"수감자": "파우스트", "인격명": "거미집 약지 제자 파우스트", "성급": "★★★", "키워드1": "출혈", "키워드2": "충전", "키워드3": ""}, {"수감자": "홍루", "인격명": "거미집 약지 아비 홍루", "성급": "★★★", "키워드1": "출혈", "키워드2": "충전", "키워드3": ""}, {"수감자": "그레고르", "인격명": "LCE E.G.O::AEDD 그레고르", "성급": "★★★", "키워드1": "충전", "키워드2": "파열", "키워드3": ""}, {"수감자": "료슈", "인격명": "로보토미 E.G.O::잔향 · 외로움 료슈", "성급": "★★★", "키워드1": "침잠", "키워드2": "진동", "키워드3": ""}, {"수감자": "뫼르소", "인격명": "로보토미 E.G.O::호넷〖변조〗뫼르소", "성급": "★★★", "키워드1": "출혈", "키워드2": "화상", "키워드3": ""}, {"수감자": "이상", "인격명": "거미집 검지 아비 이상", "성급": "★★★", "키워드1": "호흡", "키워드2": "침잠", "키워드3": ""}, {"수감자": "싱클레어", "인격명": "거미집 소지 제자 싱클레어", "성급": "★★★", "키워드1": "출혈", "키워드2": "호흡", "키워드3": ""}, {"수감자": "그레고르", "인격명": "로보토미 E.G.O::램프 그레고르", "성급": "★★★", "키워드1": "화상", "키워드2": "침잠", "키워드3": ""}, {"수감자": "이스마엘", "인격명": "거미집 중지 제자 이스마엘", "성급": "★★★", "키워드1": "화상", "키워드2": "출혈", "키워드3": ""}, {"수감자": "돈키호테", "인격명": "검지 대행자 - 개화 E.G.O::대행 돈키호테", "성급": "★★★", "키워드1": "호흡", "키워드2": "침잠", "키워드3": ""}, {"수감자": "파우스트", "인격명": "검지 수행자:〖쪽지〗파우스트", "성급": "★★★", "키워드1": "호흡", "키워드2": "침잠", "키워드3": ""}, {"수감자": "오티스", "인격명": "LCA 우제트 선봉 3팀 팀장 오티스", "성급": "★★★", "키워드1": "침잠", "키워드2": "진동", "키워드3": ""}, {"수감자": "로쟈", "인격명": "R사 제 4무리 순록팀 로쟈", "성급": "★★★", "키워드1": "충전", "키워드2": "침잠", "키워드3": ""}, {"수감자": "료슈", "인격명": "홍원 방랑무사 료슈", "성급": "★★★", "키워드1": "호흡", "키워드2": "파열", "키워드3": ""}, {"수감자": "돈키호테", "인격명": "흑수 - 미 돈키호테", "성급": "★★★", "키워드1": "파열", "키워드2": "침잠", "키워드3": ""}, {"수감자": "히스클리프", "인격명": "흑수 - 유 필두 히스클리프", "성급": "★★★", "키워드1": "화상", "키워드2": "파열", "키워드3": ""}, {"수감자": "이스마엘", "인격명": "정사무소 대표 이스마엘", "성급": "★★★", "키워드1": "침잠", "키워드2": "진동", "키워드3": ""}, {"수감자": "그레고르", "인격명": "밤의 송곳 카피타노 그레고르", "성급": "★★★", "키워드1": "출혈", "키워드2": "진동", "키워드3": ""}, {"수감자": "뫼르소", "인격명": "라만차랜드 왕자 뫼르소", "성급": "★★★", "키워드1": "출혈", "키워드2": "파열", "키워드3": ""}, {"수감자": "히스클리프", "인격명": "W사 4등급 정리 요원 - CCA 히스클리프", "성급": "★★★", "키워드1": "충전", "키워드2": "파열", "키워드3": ""}, {"수감자": "파우스트", "인격명": "동부 시 협회 3과 파우스트", "성급": "★★★", "키워드1": "출혈", "키워드2": "호흡", "키워드3": ""}, {"수감자": "료슈", "인격명": "N사 E.G.O::경멸, 경외 료슈", "성급": "★★★", "키워드1": "출혈", "키워드2": "진동", "키워드3": ""}, {"수감자": "이상", "인격명": "흑수 - 오 필두 이상", "성급": "★★★", "키워드1": "파열", "키워드2": "진동", "키워드3": ""}, {"수감자": "싱클레어", "인격명": "흑수 - 유 싱클레어", "성급": "★★★", "키워드1": "화상", "키워드2": "파열", "키워드3": ""}, {"수감자": "홍루", "인격명": "홍원 군주 홍루", "성급": "★★★", "키워드1": "호흡", "키워드2": "파열", "키워드3": ""}, {"수감자": "오티스", "인격명": "T사 3등급 강력징수직 직원 오티스", "성급": "★★★", "키워드1": "진동", "키워드2": "", "키워드3": ""}, {"수감자": "돈키호테", "인격명": "로보토미 E.G.O::사랑과 증오의 이름으로 돈키호테", "성급": "★★★", "키워드1": "파열", "키워드2": "충전", "키워드3": ""}, {"수감자": "로쟈", "인격명": "로보토미 E.G.O::눈물로 벼려낸 검 로쟈", "성급": "★★★", "키워드1": "침잠", "키워드2": "충전", "키워드3": ""}, {"수감자": "이상", "인격명": "N사 E.G.O::흉탄 이상", "성급": "★★★", "키워드1": "출혈", "키워드2": "호흡", "키워드3": ""}, {"수감자": "뫼르소", "인격명": "동부 엄지 카포 IIII 뫼르소", "성급": "★★★", "키워드1": "화상", "키워드2": "진동", "키워드3": ""}, {"수감자": "싱클레어", "인격명": "동부 엄지 솔다토 II 싱클레어", "성급": "★★★", "키워드1": "화상", "키워드2": "진동", "키워드3": ""}, {"수감자": "이스마엘", "인격명": "가주 후보 이스마엘", "성급": "★★★", "키워드1": "호흡", "키워드2": "파열", "키워드3": ""}, {"수감자": "파우스트", "인격명": "흑수 - 묘 필두 파우스트", "성급": "★★★", "키워드1": "파열", "키워드2": "", "키워드3": ""}, {"수감자": "로쟈", "인격명": "흑수 - 사 로쟈", "성급": "★★★", "키워드1": "호흡", "키워드2": "파열", "키워드3": ""}, {"수감자": "그레고르", "인격명": "흑수 - 사 그레고르", "성급": "★★★", "키워드1": "호흡", "키워드2": "파열", "키워드3": ""}, {"수감자": "홍루", "인격명": "R사 제 4무리 순록팀 홍루", "성급": "★★★", "키워드1": "충전", "키워드2": "침잠", "키워드3": ""}, {"수감자": "싱클레어", "인격명": "중지 작은 아우 싱클레어", "성급": "★★★", "키워드1": "출혈", "키워드2": "", "키워드3": ""}, {"수감자": "료슈", "인격명": "흑수 - 묘 료슈", "성급": "★★★", "키워드1": "파열", "키워드2": "", "키워드3": ""}, {"수감자": "오티스", "인격명": "흑수 - 묘 오티스", "성급": "★★★", "키워드1": "파열", "키워드2": "", "키워드3": ""}, {"수감자": "돈키호테", "인격명": "동부 섕크 협회 3과 돈키호테", "성급": "★★★", "키워드1": "화상", "키워드2": "호흡", "키워드3": ""}, {"수감자": "그레고르", "인격명": "불주먹 사무소 생존자 그레고르", "성급": "★★★", "키워드1": "화상", "키워드2": "", "키워드3": ""}, {"수감자": "이상", "인격명": "남부 리우 협회 3과 이상", "성급": "★★★", "키워드1": "화상", "키워드2": "", "키워드3": ""}, {"수감자": "히스클리프", "인격명": "흑운회 와카슈 히스클리프", "성급": "★★★", "키워드1": "출혈", "키워드2": "", "키워드3": ""}, {"수감자": "이스마엘", "인격명": "흑운회 부조장 이스마엘", "성급": "★★★", "키워드1": "출혈", "키워드2": "", "키워드3": ""}, {"수감자": "이상", "인격명": "LCE E.G.O::초롱 이상", "성급": "★★", "키워드1": "파열", "키워드2": "", "키워드3": ""}, {"수감자": "파우스트", "인격명": "LCE E.G.O::홍염살 파우스트", "성급": "★★★", "키워드1": "화상", "키워드2": "", "키워드3": ""}, {"수감자": "홍루", "인격명": "마침표 사무소 대표 홍루", "성급": "★★★", "키워드1": "호흡", "키워드2": "", "키워드3": ""}, {"수감자": "히스클리프", "인격명": "마침표 사무소 해결사 히스클리프", "성급": "★★★", "키워드1": "호흡", "키워드2": "", "키워드3": ""}, {"수감자": "돈키호테", "인격명": "라만차랜드 실장 돈키호테", "성급": "★★★", "키워드1": "출혈", "키워드2": "", "키워드3": ""}, {"수감자": "싱클레어", "인격명": "북부 제뱌찌 협회 3과 싱클레어", "성급": "★★★", "키워드1": "파열", "키워드2": "", "키워드3": ""}, {"수감자": "로쟈", "인격명": "라만차랜드 공주 로쟈", "성급": "★★★", "키워드1": "출혈", "키워드2": "파열", "키워드3": ""}, {"수감자": "그레고르", "인격명": "라만차랜드 신부 그레고르", "성급": "★★★", "키워드1": "출혈", "키워드2": "파열", "키워드3": ""}, {"수감자": "홍루", "인격명": "송곳니 사냥 사무소 해결사 홍루", "성급": "★★", "키워드1": "파열", "키워드2": "", "키워드3": ""}, {"수감자": "오티스", "인격명": "라만차랜드 이발사 오티스", "성급": "★★★", "키워드1": "출혈", "키워드2": "", "키워드3": ""}, {"수감자": "뫼르소", "인격명": "서부 섕크 협회 3과 뫼르소", "성급": "★★★", "키워드1": "호흡", "키워드2": "파열", "키워드3": ""}, {"수감자": "싱클레어", "인격명": "서부 츠바이 협회 3과 싱클레어", "성급": "★★", "키워드1": "진동", "키워드2": "", "키워드3": ""}, {"수감자": "이스마엘", "인격명": "서부 츠바이 협회 3과 이스마엘", "성급": "★★★", "키워드1": "진동", "키워드2": "", "키워드3": ""}, {"수감자": "로쟈", "인격명": "북부 제뱌찌 협회 3과 로쟈", "성급": "★★★", "키워드1": "파열", "키워드2": "", "키워드3": ""}, {"수감자": "이상", "인격명": "로보토미 E.G.O::엄숙한 애도 이상", "성급": "★★★", "키워드1": "침잠", "키워드2": "", "키워드3": ""}, {"수감자": "료슈", "인격명": "로보토미 E.G.O::적안 · 참회 료슈", "성급": "★★★", "키워드1": "출혈", "키워드2": "충전", "키워드3": ""}, {"수감자": "히스클리프", "인격명": "와일드헌트 히스클리프", "성급": "★★★", "키워드1": "침잠", "키워드2": "", "키워드3": ""}, {"수감자": "파우스트", "인격명": "멀티크랙 사무소 대표 파우스트", "성급": "★★★", "키워드1": "충전", "키워드2": "", "키워드3": ""}, {"수감자": "히스클리프", "인격명": "멀티크랙 사무소 해결사 히스클리프", "성급": "★★", "키워드1": "충전", "키워드2": "", "키워드3": ""}, {"수감자": "오티스", "인격명": "W사 3등급 정리 요원 팀장 오티스", "성급": "★★★", "키워드1": "충전", "키워드2": "파열", "키워드3": ""}, {"수감자": "뫼르소", "인격명": "남부 디에치 협회 4과 부장 뫼르소", "성급": "★★★", "키워드1": "침잠", "키워드2": "", "키워드3": ""}, {"수감자": "돈키호테", "인격명": "T사 3등급 징수직 직원 돈키호테", "성급": "★★★", "키워드1": "진동", "키워드2": "", "키워드3": ""}, {"수감자": "로쟈", "인격명": "T사 2등급 징수직 직원 로쟈", "성급": "★★", "키워드1": "진동", "키워드2": "", "키워드3": ""}, {"수감자": "료슈", "인격명": "20구 유로지비 료슈", "성급": "★★", "키워드1": "진동", "키워드2": "", "키워드3": ""}, {"수감자": "홍루", "인격명": "20구 유로지비 홍루", "성급": "★★★", "키워드1": "진동", "키워드2": "", "키워드3": ""}, {"수감자": "이상", "인격명": "약지 점묘파 스튜던트 이상", "성급": "★★★", "키워드1": "출혈", "키워드2": "", "키워드3": ""}, {"수감자": "오티스", "인격명": "약지 점묘파 스튜던트 오티스", "성급": "★★", "키워드1": "출혈", "키워드2": "", "키워드3": ""}, {"수감자": "싱클레어", "인격명": "새벽 사무소 해결사 싱클레어", "성급": "★★★", "키워드1": "화상", "키워드2": "", "키워드3": ""}, {"수감자": "료슈", "인격명": "에드가 가문 치프 버틀러 료슈", "성급": "★★★", "키워드1": "호흡", "키워드2": "", "키워드3": ""}, {"수감자": "이스마엘", "인격명": "에드가 가문 버틀러 이스마엘", "성급": "★★", "키워드1": "호흡", "키워드2": "침잠", "키워드3": ""}, {"수감자": "파우스트", "인격명": "워더링하이츠 버틀러 파우스트", "성급": "★★", "키워드1": "침잠", "키워드2": "", "키워드3": ""}, {"수감자": "그레고르", "인격명": "에드가 가문 승계자 그레고르", "성급": "★★★", "키워드1": "침잠", "키워드2": "", "키워드3": ""}, {"수감자": "뫼르소", "인격명": "데드레빗츠 보스 뫼르소", "성급": "★★", "키워드1": "파열", "키워드2": "", "키워드3": ""}, {"수감자": "오티스", "인격명": "워더링하이츠 치프 버틀러 오티스", "성급": "★★★", "키워드1": "침잠", "키워드2": "", "키워드3": ""}, {"수감자": "히스클리프", "인격명": "남부 외우피 협회 3과 히스클리프", "성급": "★★★", "키워드1": "진동", "키워드2": "", "키워드3": ""}, {"수감자": "료슈", "인격명": "남부 리우 협회 4과 료슈", "성급": "★★", "키워드1": "화상", "키워드2": "", "키워드3": ""}, {"수감자": "로쟈", "인격명": "남부 리우 협회 4과 부장 로쟈", "성급": "★★★", "키워드1": "화상", "키워드2": "", "키워드3": ""}, {"수감자": "파우스트", "인격명": "검계 살수 파우스트", "성급": "★★★", "키워드1": "호흡", "키워드2": "", "키워드3": ""}, {"수감자": "돈키호테", "인격명": "검계 살수 돈키호테", "성급": "★★", "키워드1": "호흡", "키워드2": "", "키워드3": ""}, {"수감자": "뫼르소", "인격명": "검계 우두머리 뫼르소", "성급": "★★★", "키워드1": "호흡", "키워드2": "", "키워드3": ""}, {"수감자": "그레고르", "인격명": "흑운회 부조장 그레고르", "성급": "★★", "키워드1": "출혈", "키워드2": "", "키워드3": ""}, {"수감자": "이스마엘", "인격명": "피쿼드호 선장 이스마엘", "성급": "★★★", "키워드1": "출혈", "키워드2": "화상", "키워드3": "호흡"}, {"수감자": "이상", "인격명": "남부 디에치 협회 4과 이상", "성급": "★★", "키워드1": "침잠", "키워드2": "", "키워드3": ""}, {"수감자": "홍루", "인격명": "남부 디에치 협회 4과 홍루", "성급": "★★★", "키워드1": "침잠", "키워드2": "", "키워드3": ""}, {"수감자": "돈키호테", "인격명": "로보토미 E.G.O::초롱 돈키호테", "성급": "★★", "키워드1": "파열", "키워드2": "", "키워드3": ""}, {"수감자": "오티스", "인격명": "로보토미 E.G.O::마탄 오티스", "성급": "★★★", "키워드1": "화상", "키워드2": "", "키워드3": ""}, {"수감자": "싱클레어", "인격명": "남부 섕크 협회 4과 부장 싱클레어", "성급": "★★★", "키워드1": "호흡", "키워드2": "", "키워드3": ""}, {"수감자": "오티스", "인격명": "남부 섕크 협회 4과 오티스", "성급": "★★", "키워드1": "호흡", "키워드2": "", "키워드3": ""}, {"수감자": "이상", "인격명": "피쿼드호 일등 항해사 이상", "성급": "★★", "키워드1": "출혈", "키워드2": "호흡", "키워드3": ""}, {"수감자": "히스클리프", "인격명": "피쿼드호 작살잡이 히스클리프", "성급": "★★★", "키워드1": "출혈", "키워드2": "호흡", "키워드3": ""}, {"수감자": "돈키호테", "인격명": "중지 작은 아우 돈키호테", "성급": "★★★", "키워드1": "출혈", "키워드2": "", "키워드3": ""}, {"수감자": "뫼르소", "인격명": "중지 작은 아우 뫼르소", "성급": "★★", "키워드1": "출혈", "키워드2": "", "키워드3": ""}, {"수감자": "료슈", "인격명": "LCCB 대리 료슈", "성급": "★★", "키워드1": "호흡", "키워드2": "파열", "키워드3": "진동"}, {"수감자": "그레고르", "인격명": "쌍갈고리 해적단 부선장 그레고르", "성급": "★★★", "키워드1": "출혈", "키워드2": "호흡", "키워드3": ""}, {"수감자": "이상", "인격명": "W사 3등급 정리 요원 이상", "성급": "★★★", "키워드1": "충전", "키워드2": "파열", "키워드3": ""}, {"수감자": "파우스트", "인격명": "로보토미 E.G.O::후회 파우스트", "성급": "★★★", "키워드1": "진동", "키워드2": "", "키워드3": ""}, {"수감자": "홍루", "인격명": "갈고리 사무소 해결사 홍루", "성급": "★★", "키워드1": "출혈", "키워드2": "", "키워드3": ""}, {"수감자": "로쟈", "인격명": "남부 디에치 협회 4과 로쟈", "성급": "★★★", "키워드1": "침잠", "키워드2": "", "키워드3": ""}, {"수감자": "이상", "인격명": "어금니 사무소 해결사 이상", "성급": "★★", "키워드1": "진동", "키워드2": "", "키워드3": ""}, {"수감자": "오티스", "인격명": "어금니 사무소 해결사 오티스", "성급": "★★★", "키워드1": "진동", "키워드2": "", "키워드3": ""}, {"수감자": "파우스트", "인격명": "남부 세븐 협회 4과 파우스트", "성급": "★★★", "키워드1": "파열", "키워드2": "", "키워드3": ""}, {"수감자": "히스클리프", "인격명": "남부 세븐 협회 4과 히스클리프", "성급": "★★", "키워드1": "파열", "키워드2": "", "키워드3": ""}, {"수감자": "료슈", "인격명": "W사 3등급 정리 요원 료슈", "성급": "★★★", "키워드1": "충전", "키워드2": "", "키워드3": ""}, {"수감자": "홍루", "인격명": "W사 2등급 정리 요원 홍루", "성급": "★★", "키워드1": "충전", "키워드2": "파열", "키워드3": ""}, {"수감자": "파우스트", "인격명": "남부 츠바이 협회 4과 파우스트", "성급": "★★", "키워드1": "", "키워드2": "", "키워드3": ""}, {"수감자": "그레고르", "인격명": "남부 츠바이 협회 4과 그레고르", "성급": "★★★", "키워드1": "", "키워드2": "", "키워드3": ""}, {"수감자": "이스마엘", "인격명": "어금니 보트 센터 해결사 이스마엘", "성급": "★★★", "키워드1": "침잠", "키워드2": "진동", "키워드3": ""}, {"수감자": "싱클레어", "인격명": "어금니 보트 센터 해결사 싱클레어", "성급": "★★", "키워드1": "진동", "키워드2": "", "키워드3": ""}, {"수감자": "돈키호테", "인격명": "남부 섕크 협회 5과 부장 돈키호테", "성급": "★★★", "키워드1": "", "키워드2": "", "키워드3": ""}, {"수감자": "뫼르소", "인격명": "R사 제 4무리 코뿔소팀 뫼르소", "성급": "★★★", "키워드1": "출혈", "키워드2": "충전", "키워드3": ""}, {"수감자": "로쟈", "인격명": "남부 츠바이 협회 5과 로쟈", "성급": "★★", "키워드1": "호흡", "키워드2": "", "키워드3": ""}, {"수감자": "이스마엘", "인격명": "남부 리우 협회 4과 이스마엘", "성급": "★★★", "키워드1": "화상", "키워드2": "", "키워드3": ""}, {"수감자": "홍루", "인격명": "K사 3등급 적출직 직원 홍루", "성급": "★★★", "키워드1": "파열", "키워드2": "", "키워드3": ""}, {"수감자": "싱클레어", "인격명": "로보토미 E.G.O::홍적 싱클레어", "성급": "★★", "키워드1": "파열", "키워드2": "", "키워드3": ""}, {"수감자": "이상", "인격명": "개화 E.G.O::동백 이상", "성급": "★★★", "키워드1": "침잠", "키워드2": "", "키워드3": ""}, {"수감자": "이스마엘", "인격명": "로보토미 E.G.O::출렁임 이스마엘", "성급": "★★", "키워드1": "파열", "키워드2": "진동", "키워드3": ""}, {"수감자": "히스클리프", "인격명": "로보토미 E.G.O::여우비 히스클리프", "성급": "★★★", "키워드1": "파열", "키워드2": "침잠", "키워드3": "진동"}, {"수감자": "그레고르", "인격명": "장미스패너 공방 해결사 그레고르", "성급": "★★", "키워드1": "충전", "키워드2": "파열", "키워드3": "진동"}, {"수감자": "뫼르소", "인격명": "장미스패너 공방 해결사 뫼르소", "성급": "★★", "키워드1": "충전", "키워드2": "진동", "키워드3": ""}, {"수감자": "로쟈", "인격명": "장미스패너 공방 대표 로쟈", "성급": "★★★", "키워드1": "충전", "키워드2": "진동", "키워드3": ""}, {"수감자": "돈키호테", "인격명": "N사 중간 망치 돈키호테", "성급": "★★", "키워드1": "진동", "키워드2": "", "키워드3": ""}, {"수감자": "싱클레어", "인격명": "쥐어들 자 싱클레어", "성급": "★★★", "키워드1": "출혈", "키워드2": "화상", "키워드3": ""}, {"수감자": "료슈", "인격명": "료.고.파. 주방장 료슈", "성급": "★★★", "키워드1": "출혈", "키워드2": "", "키워드3": ""}, {"수감자": "그레고르", "인격명": "료.고.파. 조수 그레고르", "성급": "★★", "키워드1": "출혈", "키워드2": "", "키워드3": ""}, {"수감자": "홍루", "인격명": "남부 리우 협회 5과 홍루", "성급": "★★", "키워드1": "화상", "키워드2": "", "키워드3": ""}, {"수감자": "오티스", "인격명": "남부 세븐 협회 6과 부장 오티스", "성급": "★★★", "키워드1": "파열", "키워드2": "", "키워드3": ""}, {"수감자": "파우스트", "인격명": "쥐는 자 파우스트", "성급": "★★★", "키워드1": "출혈", "키워드2": "", "키워드3": ""}, {"수감자": "히스클리프", "인격명": "N사 작은 망치 히스클리프", "성급": "★★", "키워드1": "출혈", "키워드2": "", "키워드3": ""}, {"수감자": "뫼르소", "인격명": "N사 큰 망치 뫼르소", "성급": "★★★", "키워드1": "", "키워드2": "", "키워드3": ""}, {"수감자": "로쟈", "인격명": "N사 중간 망치 로쟈", "성급": "★★", "키워드1": "출혈", "키워드2": "", "키워드3": ""}, {"수감자": "이상", "인격명": "검계 살수 이상", "성급": "★★★", "키워드1": "호흡", "키워드2": "", "키워드3": ""}, {"수감자": "이상", "인격명": "남부 세븐 협회 6과 이상", "성급": "★★", "키워드1": "파열", "키워드2": "", "키워드3": ""}, {"수감자": "이상", "인격명": "LCB 수감자 이상", "성급": "★", "키워드1": "침잠", "키워드2": "", "키워드3": ""}, {"수감자": "파우스트", "인격명": "W사 2등급 정리 요원 파우스트", "성급": "★★", "키워드1": "충전", "키워드2": "", "키워드3": ""}, {"수감자": "파우스트", "인격명": "살아남은 로보토미 직원 파우스트", "성급": "★★", "키워드1": "호흡", "키워드2": "파열", "키워드3": ""}, {"수감자": "파우스트", "인격명": "LCB 수감자 파우스트", "성급": "★", "키워드1": "", "키워드2": "", "키워드3": ""}, {"수감자": "돈키호테", "인격명": "W사 3등급 정리 요원 돈키호테", "성급": "★★★", "키워드1": "충전", "키워드2": "파열", "키워드3": ""}, {"수감자": "돈키호테", "인격명": "남부 시 협회 5과 부장 돈키호테", "성급": "★★", "키워드1": "호흡", "키워드2": "", "키워드3": ""}, {"수감자": "돈키호테", "인격명": "LCB 수감자 돈키호테", "성급": "★", "키워드1": "출혈", "키워드2": "", "키워드3": ""}, {"수감자": "료슈", "인격명": "흑운회 와카슈 료슈", "성급": "★★★", "키워드1": "출혈", "키워드2": "", "키워드3": ""}, {"수감자": "료슈", "인격명": "남부 세븐 협회 6과 료슈", "성급": "★★", "키워드1": "파열", "키워드2": "", "키워드3": ""}, {"수감자": "료슈", "인격명": "LCB 수감자 료슈", "성급": "★", "키워드1": "호흡", "키워드2": "", "키워드3": ""}, {"수감자": "뫼르소", "인격명": "W사 2등급 정리 요원 뫼르소", "성급": "★★★", "키워드1": "충전", "키워드2": "파열", "키워드3": ""}, {"수감자": "뫼르소", "인격명": "남부 리우 협회 6과 뫼르소", "성급": "★★", "키워드1": "화상", "키워드2": "", "키워드3": ""}, {"수감자": "뫼르소", "인격명": "LCB 수감자 뫼르소", "성급": "★", "키워드1": "진동", "키워드2": "", "키워드3": ""}, {"수감자": "홍루", "인격명": "콩콩이파 두목 홍루", "성급": "★★★", "키워드1": "출혈", "키워드2": "", "키워드3": ""}, {"수감자": "홍루", "인격명": "흑운회 와카슈 홍루", "성급": "★★", "키워드1": "출혈", "키워드2": "", "키워드3": ""}, {"수감자": "홍루", "인격명": "LCB 수감자 홍루", "성급": "★", "키워드1": "파열", "키워드2": "침잠", "키워드3": ""}, {"수감자": "히스클리프", "인격명": "R사 제 4무리 토끼팀 히스클리프", "성급": "★★★", "키워드1": "출혈", "키워드2": "충전", "키워드3": "파열"}, {"수감자": "히스클리프", "인격명": "남부 시 협회 5과 히스클리프", "성급": "★★", "키워드1": "호흡", "키워드2": "", "키워드3": ""}, {"수감자": "히스클리프", "인격명": "LCB 수감자 히스클리프", "성급": "★", "키워드1": "진동", "키워드2": "", "키워드3": ""}, {"수감자": "이스마엘", "인격명": "R사 제 4무리 순록팀 이스마엘", "성급": "★★★", "키워드1": "충전", "키워드2": "침잠", "키워드3": ""}, {"수감자": "이스마엘", "인격명": "남부 시 협회 5과 이스마엘", "성급": "★★", "키워드1": "호흡", "키워드2": "", "키워드3": ""}, {"수감자": "이스마엘", "인격명": "LCCB 대리 이스마엘", "성급": "★★", "키워드1": "파열", "키워드2": "진동", "키워드3": ""}, {"수감자": "이스마엘", "인격명": "LCB 수감자 이스마엘", "성급": "★", "키워드1": "진동", "키워드2": "", "키워드3": ""}, {"수감자": "로쟈", "인격명": "흑운회 와카슈 로쟈", "성급": "★★★", "키워드1": "출혈", "키워드2": "호흡", "키워드3": ""}, {"수감자": "로쟈", "인격명": "LCCB 대리 로쟈", "성급": "★★", "키워드1": "", "키워드2": "", "키워드3": ""}, {"수감자": "로쟈", "인격명": "LCB 수감자 로쟈", "성급": "★", "키워드1": "출혈", "키워드2": "", "키워드3": ""}, {"수감자": "싱클레어", "인격명": "검계 살수 싱클레어", "성급": "★★★", "키워드1": "출혈", "키워드2": "호흡", "키워드3": ""}, {"수감자": "싱클레어", "인격명": "남부 츠바이 협회 6과 싱클레어", "성급": "★★", "키워드1": "진동", "키워드2": "", "키워드3": ""}, {"수감자": "싱클레어", "인격명": "마리아치 보스 싱클레어", "성급": "★★", "키워드1": "호흡", "키워드2": "침잠", "키워드3": ""}, {"수감자": "싱클레어", "인격명": "LCB 수감자 싱클레어", "성급": "★", "키워드1": "파열", "키워드2": "", "키워드3": ""}, {"수감자": "오티스", "인격명": "검계 살수 오티스", "성급": "★★", "키워드1": "호흡", "키워드2": "", "키워드3": ""}, {"수감자": "오티스", "인격명": "G사 부장 오티스", "성급": "★★", "키워드1": "침잠", "키워드2": "", "키워드3": ""}, {"수감자": "오티스", "인격명": "LCB 수감자 오티스", "성급": "★", "키워드1": "파열", "키워드2": "", "키워드3": ""}, {"수감자": "그레고르", "인격명": "G사 일등대리 그레고르", "성급": "★★★", "키워드1": "파열", "키워드2": "", "키워드3": ""}, {"수감자": "그레고르", "인격명": "남부 리우 협회 6과 그레고르", "성급": "★★", "키워드1": "화상", "키워드2": "", "키워드3": ""}, {"수감자": "그레고르", "인격명": "LCB 수감자 그레고르", "성급": "★", "키워드1": "파열", "키워드2": "", "키워드3": ""}];
+    const MAX_TRIES = 5;
+    const RESULT_STORAGE_KEY = 'limbus_identity_doodle_results_v1';
+    const SORTED_DATA = DATA.map((row, idx) => ({...row, __idx: idx})).sort((a, b) => a['인격명'].localeCompare(b['인격명'], 'ko-KR'));
+
+    let answer = null, triesLeft = MAX_TRIES, finished = false, resultSaved = false, guesses = [];
+    let selectedIndex = null, highlightedOption = -1;
+    let ignoreSearchForDropdown = false;
+    const eliminatedNames = new Set();
+
+    const guessInput = document.getElementById('guessInput');
+    const dropdown = document.getElementById('dropdown');
+    const guessBtn = document.getElementById('guessBtn');
+    const restartBtn = document.getElementById('restartBtn');
+    const triesEl = document.getElementById('tries');
+    const countEl = document.getElementById('count');
+    const filteredCountEl = document.getElementById('filteredCount');
+    const messageEl = document.getElementById('message');
+    const historyEl = document.getElementById('history');
+    const resultRecordsEl = document.getElementById('resultRecords');
+    const clearRecordsBtn = document.getElementById('clearRecordsBtn');
+    const includeInputs = [document.getElementById('includeSinner'), document.getElementById('includeGrade'), document.getElementById('includeK1'), document.getElementById('includeK2'), document.getElementById('includeK3')];
+    // 제외 필터 JS 임시 비활성화: UI 주석을 해제할 때 아래 배열도 기존 코드로 되돌리세요.
+    // const excludeInputs = [document.getElementById('excludeSinner'), document.getElementById('excludeGrade'), document.getElementById('excludeK1'), document.getElementById('excludeK2'), document.getElementById('excludeK3')];
+    const excludeInputs = [];
+    const allFilterInputs = [...includeInputs, ...excludeInputs];
+
+    function normalize(v) { return (v ?? '').toString().trim(); }
+    function lower(v) { return normalize(v).toLowerCase(); }
+    function normalizeSinnerInput(value) {
+      const v = normalize(value);
+      const aliases = { '로슈': '료슈' };
+      return aliases[v] || v;
+    }
+    function keywordsOf(row) { return [row['키워드1'], row['키워드2'], row['키워드3']].map(normalize).filter(Boolean); }
+    function pickAnswer() { return DATA[Math.floor(Math.random() * DATA.length)]; }
+    function escapeHtml(str) { return String(str).replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch])); }
+    function filterMode(name) { return document.querySelector(`input[name="${name}"]:checked`).value; }
+
+    function normalizeGradeInput(value) {
+      const v = normalize(value).replace(/\s/g, '');
+      if (!v) return '';
+      if (['1', '1성', '★'].includes(v)) return '★';
+      if (['2', '2성', '★★'].includes(v)) return '★★';
+      if (['3', '3성', '★★★'].includes(v)) return '★★★';
+      return v;
+    }
+
+    function rowMatchesFilterSet(row, inputs, modeName) {
+      const sinner = lower(normalizeSinnerInput(inputs[0].value));
+      const grade = normalizeGradeInput(inputs[1].value);
+      const filterKeywords = inputs.slice(2).map(i => lower(i.value)).filter(Boolean);
+      const checks = [];
+      if (sinner) checks.push(lower(row['수감자']).includes(sinner));
+      // 성급은 포함 검색이 아니라 정확히 일치해야 합니다.
+      // 예전 includes 방식은 ★★★가 ★★를 포함해서 2성 필터에 3성이 섞이는 문제가 있었습니다.
+      if (grade) checks.push(row['성급'] === grade);
+      if (filterKeywords.length) {
+        // 키워드 필터 A/B/C는 입력 위치와 관계없이 인격의 키워드 전체에서 검색합니다.
+        const rowKeywords = keywordsOf(row).map(k => k.toLowerCase());
+        filterKeywords.forEach(k => checks.push(rowKeywords.some(rk => rk.includes(k))));
+      }
+      if (!checks.length) return true;
+      return filterMode(modeName) === 'and' ? checks.every(Boolean) : checks.some(Boolean);
+    }
+
+    function hasActiveFilter(inputs) {
+      return inputs.some(input => normalize(input.value));
+    }
+
+    function rowMatchesFilters(row) {
+      const includeOk = rowMatchesFilterSet(row, includeInputs, 'includeMode');
+      // 제외 필터 임시 비활성화: 필요하면 아래 두 줄을 되살리고 return을 includeOk && !excludeHit으로 변경하세요.
+      // const excludeHit = hasActiveFilter(excludeInputs) && rowMatchesFilterSet(row, excludeInputs, 'excludeMode');
+      // return includeOk && !excludeHit;
+      return includeOk;
+    }
+
+    function isExactSelectedName() {
+      const v = guessInput.value.trim();
+      return !!v && DATA.some(row => row['인격명'] === v);
+    }
+
+    function filteredRows(ignoreSearch = ignoreSearchForDropdown) {
+      const q = ignoreSearch ? '' : lower(guessInput.value);
+      return SORTED_DATA.filter(row => rowMatchesFilters(row) && (!q || lower(row['인격명']).includes(q)));
+    }
+
+    function renderDropdown(open = true, ignoreSearch = ignoreSearchForDropdown) {
+      const rows = filteredRows(ignoreSearch);
+      filteredCountEl.textContent = rows.length;
+      highlightedOption = Math.min(highlightedOption, rows.length - 1);
+      dropdown.innerHTML = rows.length ? rows.map((row, i) => `
+        <div class="option ${eliminatedNames.has(row['인격명']) ? 'eliminated' : ''} ${i === highlightedOption ? 'active' : ''}" data-idx="${row.__idx}" role="option">
+          <span class="option-name">${escapeHtml(row['인격명'])}</span>
+          <span class="option-meta">${escapeHtml(row['수감자'])} · ${escapeHtml(row['성급'])} · ${escapeHtml(keywordsOf(row).join(', ') || '키워드 없음')}</span>
+        </div>
+      `).join('') : '<div class="option"><span class="option-name">검색 결과가 없습니다</span></div>';
+      dropdown.classList.toggle('open', open && !finished);
+    }
+
+    function selectRow(idx) {
+      const row = DATA[Number(idx)];
+      if (!row) return;
+      selectedIndex = Number(idx);
+      guessInput.value = row['인격명'];
+      ignoreSearchForDropdown = false;
+      dropdown.classList.remove('open');
+    }
+
+    function keywordHitAtPosition(field, guess, ans) {
+      const gv = normalize(guess[field]);
+      const ansKeywords = keywordsOf(ans);
+      if (!gv && !ansKeywords[Number(field.replace('키워드','')) - 1]) return true;
+      return !!gv && ansKeywords.includes(gv);
+    }
+
+    function judgeCell(field, guess, ans) {
+      let hit;
+      if (field.startsWith('키워드')) hit = keywordHitAtPosition(field, guess, ans);
+      else hit = normalize(guess[field]) === normalize(ans[field]);
+      return { cls: hit ? 'hit' : 'miss', label: hit ? '일치' : '불일치' };
+    }
+
+    function renderCell(field, guess, ans) {
+      const j = judgeCell(field, guess, ans);
+      const value = normalize(guess[field]) || '-';
+      return `<td class="${j.cls}"><span class="cell"><span class="value ${value === '-' ? 'empty' : ''}">${escapeHtml(value)}</span><span class="judge">${j.label}</span></span></td>`;
+    }
+
+    function renderHistory() {
+      historyEl.innerHTML = guesses.map((g, i) => `
+        <tr><td>${i + 1}</td>${renderCell('수감자', g, answer)}${renderCell('인격명', g, answer)}${renderCell('성급', g, answer)}${renderCell('키워드1', g, answer)}${renderCell('키워드2', g, answer)}${renderCell('키워드3', g, answer)}</tr>
+      `).join('');
+    }
+
+    function shouldStrikeCandidate(guess, ans) {
+      const sinnerMiss = normalize(guess['수감자']) !== normalize(ans['수감자']);
+      const guessKeywords = keywordsOf(guess);
+      const ansKeywords = keywordsOf(ans);
+      const noKeywordOverlap = guessKeywords.length === 0 || !guessKeywords.some(k => ansKeywords.includes(k));
+      return sinnerMiss && noKeywordOverlap;
+    }
+
+    function todayKey() {
+      const d = new Date();
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    function loadResultRecords() {
+      try {
+        const raw = localStorage.getItem(RESULT_STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (e) {
+        console.warn('기록을 불러오지 못했습니다.', e);
+        return [];
+      }
+    }
+
+    function saveResultRecords(records) {
+      localStorage.setItem(RESULT_STORAGE_KEY, JSON.stringify(records));
+    }
+
+    function matchedCount(guess, ans) {
+      return ['수감자', '인격명', '성급', '키워드1', '키워드2', '키워드3']
+        .filter(field => judgeCell(field, guess, ans).cls === 'hit').length;
+    }
+
+    function bestMatchedCount() {
+      return guesses.length ? Math.max(...guesses.map(g => matchedCount(g, answer))) : 0;
+    }
+
+    function renderResultRecords() {
+      const records = loadResultRecords();
+      resultRecordsEl.innerHTML = records.length ? records.map((r, i) => `
+        <tr>
+          <td>${i + 1}회</td>
+          <td>${escapeHtml(r.date || '-')}</td>
+          <td class="${r.won ? 'record-success' : 'record-fail'}">${r.won ? '성공' : '실패'}</td>
+          <td>${escapeHtml(r.attempts ?? '-')}회</td>
+          <td>${r.won ? '정답' : `${escapeHtml(r.matched ?? 0)}개 맞춤`}</td>
+          <td>${escapeHtml(r.answerName || '-')}</td>
+        </tr>
+      `).join('') : '<tr><td colspan="6" class="empty">아직 저장된 플레이 기록이 없습니다.</td></tr>';
+    }
+
+    function saveGameResult(won) {
+      if (resultSaved) return;
+      resultSaved = true;
+      const records = loadResultRecords();
+      records.push({
+        date: todayKey(),
+        won,
+        attempts: guesses.length,
+        matched: won ? 6 : bestMatchedCount(),
+        answerName: answer['인격명'],
+        savedAt: new Date().toISOString()
+      });
+      saveResultRecords(records);
+      renderResultRecords();
+    }
+
+    function showEnd(won) {
+      finished = true;
+      guessInput.disabled = true;
+      guessBtn.disabled = true;
+      dropdown.classList.remove('open');
+      restartBtn.style.display = 'inline-block';
+      saveGameResult(won);
+      const answerText = `${answer['인격명']} / ${answer['수감자']} / ${answer['성급']} / ${keywordsOf(answer).join(', ') || '키워드 없음'}`;
+      messageEl.innerHTML = won ? `정답입니다! <span class="answer">${escapeHtml(answerText)}</span>` : `기회를 모두 사용했습니다. 정답은 <span class="answer">${escapeHtml(answerText)}</span> 입니다.`;
+    }
+
+    function resolveSelectedGuess() {
+      if (selectedIndex !== null && DATA[selectedIndex] && DATA[selectedIndex]['인격명'] === guessInput.value.trim()) return DATA[selectedIndex];
+      const exact = DATA.find(row => row['인격명'] === guessInput.value.trim());
+      if (exact) { selectedIndex = DATA.indexOf(exact); return exact; }
+      return null;
+    }
+
+    function makeGuess() {
+      if (finished) return;
+      const guess = resolveSelectedGuess();
+      if (!guess) { messageEl.textContent = '드롭박스에서 인격명을 선택하세요.'; return; }
+      if (guesses.some(g => g['인격명'] === guess['인격명'])) { messageEl.textContent = '이미 선택한 인격입니다.'; return; }
+      guesses.push(guess);
+      triesLeft -= 1;
+      triesEl.textContent = triesLeft;
+      if (shouldStrikeCandidate(guess, answer)) eliminatedNames.add(guess['인격명']);
+      renderHistory();
+      const won = guess['인격명'] === answer['인격명'];
+      if (won) return showEnd(true);
+      if (triesLeft <= 0) return showEnd(false);
+      messageEl.textContent = `오답입니다. 남은 기회는 ${triesLeft}번입니다.`;
+      guessInput.value = '';
+      selectedIndex = null;
+      ignoreSearchForDropdown = false;
+      renderDropdown(false);
+    }
+
+    function resetFilters() {
+      allFilterInputs.forEach(input => { input.value = ''; });
+      const includeAnd = document.querySelector('input[name="includeMode"][value="and"]');
+      if (includeAnd) includeAnd.checked = true;
+      // 제외 필터 재활성화 시 아래도 함께 사용하세요.
+      // const excludeAnd = document.querySelector('input[name="excludeMode"][value="and"]');
+      // if (excludeAnd) excludeAnd.checked = true;
+    }
+
+    function restart() {
+      answer = pickAnswer();
+      triesLeft = MAX_TRIES; finished = false; resultSaved = false; guesses = []; selectedIndex = null; highlightedOption = -1; ignoreSearchForDropdown = false;
+      eliminatedNames.clear();
+      resetFilters();
+      guessInput.disabled = false; guessBtn.disabled = false; restartBtn.style.display = 'none';
+      triesEl.textContent = triesLeft; messageEl.textContent = '정답 인격을 추리해보세요.'; historyEl.innerHTML = ''; guessInput.value = '';
+      renderDropdown(false);
+      // 테스트용 정답 확인: 개발자도구 콘솔에서 확인 가능
+      console.log('정답:', answer);
+    }
+
+    dropdown.addEventListener('mousedown', e => {
+      const opt = e.target.closest('.option[data-idx]');
+      if (opt) selectRow(opt.dataset.idx);
+    });
+    guessInput.addEventListener('input', () => {
+      selectedIndex = null;
+      highlightedOption = -1;
+      ignoreSearchForDropdown = false;
+      renderDropdown(true);
+    });
+    function openDropdownFromSelectedValue() {
+      ignoreSearchForDropdown = isExactSelectedName();
+      highlightedOption = -1;
+      renderDropdown(true, ignoreSearchForDropdown);
+    }
+    guessInput.addEventListener('focus', openDropdownFromSelectedValue);
+    guessInput.addEventListener('click', openDropdownFromSelectedValue);
+    guessInput.addEventListener('keydown', e => {
+      const rows = filteredRows(ignoreSearchForDropdown);
+      if (e.key === 'ArrowDown') { e.preventDefault(); highlightedOption = Math.min(rows.length - 1, highlightedOption + 1); renderDropdown(true); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); highlightedOption = Math.max(0, highlightedOption - 1); renderDropdown(true); }
+      else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (dropdown.classList.contains('open') && highlightedOption >= 0 && rows[highlightedOption]) selectRow(rows[highlightedOption].__idx);
+        else makeGuess();
+      }
+      else if (e.key === 'Escape') { ignoreSearchForDropdown = false; dropdown.classList.remove('open'); }
+    });
+    document.addEventListener('click', e => { if (!e.target.closest('.combo')) { ignoreSearchForDropdown = false; dropdown.classList.remove('open'); } });
+    allFilterInputs.forEach(i => i.addEventListener('input', () => renderDropdown(document.activeElement === guessInput)));
+    document.querySelectorAll('input[name="includeMode"]').forEach(r => r.addEventListener('change', () => renderDropdown(document.activeElement === guessInput)));
+    // 제외 필터 재활성화 시 아래 이벤트도 되살리세요.
+    // document.querySelectorAll('input[name="includeMode"], input[name="excludeMode"]').forEach(r => r.addEventListener('change', () => renderDropdown(document.activeElement === guessInput)));
+    guessBtn.addEventListener('click', makeGuess);
+    restartBtn.addEventListener('click', restart);
+    clearRecordsBtn.addEventListener('click', () => {
+      if (!confirm('저장된 플레이 기록을 모두 삭제할까요?')) return;
+      localStorage.removeItem(RESULT_STORAGE_KEY);
+      renderResultRecords();
+    });
+
+    countEl.textContent = DATA.length;
+    renderResultRecords();
+    restart();
+  </script>
+</body>
+</html>
