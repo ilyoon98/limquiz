@@ -54,6 +54,8 @@
     .pill.hit { background: color-mix(in srgb, var(--green) 70%, #111); color:white; }
     .pill.miss { background: color-mix(in srgb, var(--red) 65%, #111); color:white; }
     .answer { font-weight:900; color:#ffd98a; }
+    .answer-img-wrap { margin-top:14px; text-align:center; }
+    .answer-img-wrap img { max-height:260px; border-radius:10px; box-shadow:0 4px 24px #0008; }
     .table-wrap { overflow:auto; }
 
     .record-head { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:10px; }
@@ -115,7 +117,7 @@
   <div class="wrap">
     <header>
       <div class="top-actions">
-        <span class="version-badge">v0.1.7</span>
+        <span class="version-badge">v0.1.8</span>
         <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
       </div>
       <h1>림버스 인격 두들</h1>
@@ -452,7 +454,8 @@
       restartBtn.style.display = 'inline-block';
       saveGameResult(won);
       const answerText = `${answer['인격명']} / ${answer['수감자']} / ${answer['성급']} / ${keywordsOf(answer).join(', ') || '키워드 없음'}`;
-      messageEl.innerHTML = won ? `정답입니다! <span class="answer">${escapeHtml(answerText)}</span>` : `기회를 모두 사용했습니다. 정답은 <span class="answer">${escapeHtml(answerText)}</span> 입니다.`;
+      const imgHtml = answer['slug'] ? `<div class="answer-img-wrap"><img src="https://assets.limbusdeck.com/identities/full/${escapeHtml(answer['slug'])}.webp" alt="${escapeHtml(answer['인격명'])}"></div>` : '';
+      messageEl.innerHTML = (won ? `정답입니다! <span class="answer">${escapeHtml(answerText)}</span>` : `기회를 모두 사용했습니다. 정답은 <span class="answer">${escapeHtml(answerText)}</span> 입니다.`) + imgHtml;
     }
 
     function resolveSelectedGuess() {
