@@ -74,14 +74,7 @@
     .empty { opacity:.65; }
 
     /* keyword chips */
-    .kw-chip { display:inline-block; border-radius:5px; padding:1px 7px; font-size:11px; font-weight:700; line-height:1.5; }
-    .kw-화상 { background:color-mix(in srgb,var(--kw-화상) 28%,transparent); color:color-mix(in srgb,var(--kw-화상) 100%,#ffaaaa 35%); border:1px solid color-mix(in srgb,var(--kw-화상) 55%,transparent); }
-    .kw-출혈 { background:color-mix(in srgb,var(--kw-출혈) 28%,transparent); color:color-mix(in srgb,var(--kw-출혈) 100%,#ffcc99 35%); border:1px solid color-mix(in srgb,var(--kw-출혈) 55%,transparent); }
-    .kw-진동 { background:color-mix(in srgb,var(--kw-진동) 28%,transparent); color:color-mix(in srgb,var(--kw-진동) 100%,#ffe988 35%); border:1px solid color-mix(in srgb,var(--kw-진동) 55%,transparent); }
-    .kw-파열 { background:color-mix(in srgb,var(--kw-파열) 28%,transparent); color:color-mix(in srgb,var(--kw-파열) 100%,#aaffcc 35%); border:1px solid color-mix(in srgb,var(--kw-파열) 55%,transparent); }
-    .kw-침잠 { background:color-mix(in srgb,var(--kw-침잠) 28%,transparent); color:color-mix(in srgb,var(--kw-침잠) 100%,#aaddff 35%); border:1px solid color-mix(in srgb,var(--kw-침잠) 55%,transparent); }
-    .kw-호흡 { background:color-mix(in srgb,var(--kw-호흡) 28%,transparent); color:color-mix(in srgb,var(--kw-호흡) 100%,#aabbff 35%); border:1px solid color-mix(in srgb,var(--kw-호흡) 55%,transparent); }
-    .kw-충전 { background:color-mix(in srgb,var(--kw-충전) 28%,transparent); color:color-mix(in srgb,var(--kw-충전) 100%,#ddaaff 35%); border:1px solid color-mix(in srgb,var(--kw-충전) 55%,transparent); }
+    .kw-chip { display:inline-block; border-radius:5px; padding:2px 8px; font-size:11px; font-weight:700; line-height:1.5; border:1px solid rgba(255,255,255,.12); }
 
     /* grade styles */
     .grade-1 { color:#888; }
@@ -201,7 +194,15 @@
 
   <script>
     let DATA = [], SORTED_DATA = [];
-    const KEYWORD_COLOR = {'화상':'kw-화상','출혈':'kw-출혈','진동':'kw-진동','파열':'kw-파열','침잠':'kw-침잠','호흡':'kw-호흡','충전':'kw-충전'};
+    const KEYWORD_COLOR = {
+      '화상': { bg:'#3a0c0c', text:'#ff9090' },
+      '출혈': { bg:'#3a1a08', text:'#ff9955' },
+      '진동': { bg:'#2e2200', text:'#ffe066' },
+      '파열': { bg:'#0d2e18', text:'#6ddb8a' },
+      '침잠': { bg:'#0a2030', text:'#70c8f0' },
+      '호흡': { bg:'#0c1840', text:'#7090ff' },
+      '충전': { bg:'#1e0a30', text:'#c080f0' },
+    };
     const GRADE_CLASS = {'★':'grade-1','★★':'grade-2','★★★':'grade-3'};
     const MAX_TRIES = 5;
     const RESULT_STORAGE_KEY = 'limbus_identity_doodle_results_v1';
@@ -327,8 +328,8 @@
 
     function kwChip(kw) {
       if (!kw) return '<span class="empty">-</span>';
-      const cls = KEYWORD_COLOR[kw];
-      return cls ? `<span class="kw-chip ${cls}">${escapeHtml(kw)}</span>` : escapeHtml(kw);
+      const c = KEYWORD_COLOR[kw];
+      return c ? `<span class="kw-chip" style="background:${c.bg};color:${c.text}">${escapeHtml(kw)}</span>` : escapeHtml(kw);
     }
     function gradeSpan(grade) {
       const cls = GRADE_CLASS[grade] || '';
