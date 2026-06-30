@@ -102,6 +102,8 @@
     .reveal-row td:nth-child(5) { animation-delay:320ms; }
     .reveal-row td:nth-child(6) { animation-delay:400ms; }
     .reveal-row td:nth-child(7) { animation-delay:480ms; }
+    .reveal-row td:nth-child(8) { animation-delay:560ms; }
+    .reveal-row td:nth-child(9) { animation-delay:640ms; }
     @media (prefers-reduced-motion:reduce) { .reveal-row td { animation:none; } }
 
     @media (max-width:800px) { body { padding:14px; } .filter-row, .guess-row { grid-template-columns:1fr; } .filter-title { justify-content:flex-start; padding:0 12px; } button { width:100%; } .dropdown { position:static; margin-top:8px; } }
@@ -117,7 +119,7 @@
   <div class="wrap">
     <header>
       <div class="top-actions">
-        <span class="version-badge">v0.1.8</span>
+        <span class="version-badge">v0.1.9</span>
         <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
       </div>
       <h1>림버스 인격 두들</h1>
@@ -130,6 +132,8 @@
           <div class="filter-title">필터</div>
           <div class="field"><label for="includeSinner">수감자</label><input id="includeSinner" placeholder="예: 료슈" /></div>
           <div class="field"><label for="includeGrade">성급</label><input id="includeGrade" placeholder="예: ★★★ 또는 3" /></div>
+          <div class="field"><label for="includeAffil1">소속 1</label><input id="includeAffil1" placeholder="예: 거미집" /></div>
+          <div class="field"><label for="includeAffil2">소속 2</label><input id="includeAffil2" placeholder="예: 엄지" /></div>
           <div class="field"><label for="includeK1">키워드 A</label><input id="includeK1" placeholder="예: 출혈 (순서 무관)" /></div>
           <div class="field"><label for="includeK2">키워드 B</label><input id="includeK2" placeholder="예: 호흡 (순서 무관)" /></div>
           <div class="field"><label for="includeK3">키워드 C</label><input id="includeK3" placeholder="예: 파열 (순서 무관)" /></div>
@@ -176,7 +180,7 @@
 
     <section class="panel table-wrap">
       <table>
-        <thead><tr><th>#</th><th>수감자</th><th>인격명</th><th>성급</th><th>키워드1</th><th>키워드2</th><th>키워드3</th></tr></thead>
+        <thead><tr><th>#</th><th>수감자</th><th>인격명</th><th>성급</th><th>소속1</th><th>소속2</th><th>키워드1</th><th>키워드2</th><th>키워드3</th></tr></thead>
         <tbody id="history"></tbody>
       </table>
     </section>
@@ -241,7 +245,7 @@
     const historyEl = document.getElementById('history');
     const resultRecordsEl = document.getElementById('resultRecords');
     const clearRecordsBtn = document.getElementById('clearRecordsBtn');
-    const includeInputs = [document.getElementById('includeSinner'), document.getElementById('includeGrade'), document.getElementById('includeK1'), document.getElementById('includeK2'), document.getElementById('includeK3')];
+    const includeInputs = [document.getElementById('includeSinner'), document.getElementById('includeGrade'), document.getElementById('includeAffil1'), document.getElementById('includeAffil2'), document.getElementById('includeK1'), document.getElementById('includeK2'), document.getElementById('includeK3')];
     // 제외 필터 JS 임시 비활성화: UI 주석을 해제할 때 아래 배열도 기존 코드로 되돌리세요.
     // const excludeInputs = [document.getElementById('excludeSinner'), document.getElementById('excludeGrade'), document.getElementById('excludeK1'), document.getElementById('excludeK2'), document.getElementById('excludeK3')];
     const excludeInputs = [];
@@ -271,14 +275,15 @@
     function rowMatchesFilterSet(row, inputs, modeName) {
       const sinner = lower(normalizeSinnerInput(inputs[0].value));
       const grade = normalizeGradeInput(inputs[1].value);
-      const filterKeywords = inputs.slice(2).map(i => lower(i.value)).filter(Boolean);
+      const affil1 = lower(inputs[2]?.value || '');
+      const affil2 = lower(inputs[3]?.value || '');
+      const filterKeywords = inputs.slice(4).map(i => lower(i.value)).filter(Boolean);
       const checks = [];
       if (sinner) checks.push(lower(row['수감자']).includes(sinner));
-      // 성급은 포함 검색이 아니라 정확히 일치해야 합니다.
-      // 예전 includes 방식은 ★★★가 ★★를 포함해서 2성 필터에 3성이 섞이는 문제가 있었습니다.
       if (grade) checks.push(row['성급'] === grade);
+      if (affil1) checks.push(lower(row['소속1'] || '').includes(affil1));
+      if (affil2) checks.push(lower(row['소속2'] || '').includes(affil2));
       if (filterKeywords.length) {
-        // 키워드 필터 A/B/C는 입력 위치와 관계없이 인격의 키워드 전체에서 검색합니다.
         const rowKeywords = keywordsOf(row).map(k => k.toLowerCase());
         filterKeywords.forEach(k => checks.push(rowKeywords.some(rk => rk.includes(k))));
       }
@@ -371,7 +376,7 @@
 
     function renderHistory() {
       historyEl.innerHTML = guesses.map((g, i) => `
-        <tr class="${i === guesses.length - 1 ? 'reveal-row' : ''}"><td>${i + 1}</td>${renderCell('수감자', g, answer)}${renderCell('인격명', g, answer)}${renderCell('성급', g, answer)}${renderCell('키워드1', g, answer)}${renderCell('키워드2', g, answer)}${renderCell('키워드3', g, answer)}</tr>
+        <tr class="${i === guesses.length - 1 ? 'reveal-row' : ''}"><td>${i + 1}</td>${renderCell('수감자', g, answer)}${renderCell('인격명', g, answer)}${renderCell('성급', g, answer)}${renderCell('소속1', g, answer)}${renderCell('소속2', g, answer)}${renderCell('키워드1', g, answer)}${renderCell('키워드2', g, answer)}${renderCell('키워드3', g, answer)}</tr>
       `).join('');
     }
 
@@ -407,7 +412,7 @@
     }
 
     function matchedCount(guess, ans) {
-      return ['수감자', '인격명', '성급', '키워드1', '키워드2', '키워드3']
+      return ['수감자', '인격명', '성급', '소속1', '소속2', '키워드1', '키워드2', '키워드3']
         .filter(field => judgeCell(field, guess, ans).cls === 'hit').length;
     }
 
@@ -453,7 +458,8 @@
       dropdown.classList.remove('open');
       restartBtn.style.display = 'inline-block';
       saveGameResult(won);
-      const answerText = `${answer['인격명']} / ${answer['수감자']} / ${answer['성급']} / ${keywordsOf(answer).join(', ') || '키워드 없음'}`;
+      const affilParts = [answer['소속1'], answer['소속2']].filter(Boolean).join(' · ');
+      const answerText = `${answer['인격명']} / ${answer['수감자']} / ${answer['성급']}${affilParts ? ' / ' + affilParts : ''} / ${keywordsOf(answer).join(', ') || '키워드 없음'}`;
       const imgHtml = answer['slug'] ? `<div class="answer-img-wrap"><img src="https://assets.limbusdeck.com/identities/full/${escapeHtml(answer['slug'])}.webp" alt="${escapeHtml(answer['인격명'])}"></div>` : '';
       messageEl.innerHTML = (won ? `정답입니다! <span class="answer">${escapeHtml(answerText)}</span>` : `기회를 모두 사용했습니다. 정답은 <span class="answer">${escapeHtml(answerText)}</span> 입니다.`) + imgHtml;
     }
