@@ -6,7 +6,7 @@ const XLSX_PATH = path.join(__dirname, '..', 'CharacterTable.xlsx');
 const OUT_PATH = path.join(__dirname, '..', 'data.json');
 const SLUG_MAP_PATH = path.join(__dirname, 'slug-map.json');
 const SHEET_NAME = 'CharacterData';
-const FIELDS = ['수감자', '인격명', '성급', '소속1', '소속2', '키워드1', '키워드2', '키워드3'];
+const FIELDS = ['수감자', '인격명', '성급', '소속1', '소속2', '키워드1', '키워드2', '키워드3', '이미지(일반)', '이미지(각성)', '프로필(각성)'];
 
 const slugMap = JSON.parse(fs.readFileSync(SLUG_MAP_PATH, 'utf8'));
 

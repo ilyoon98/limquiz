@@ -61,8 +61,13 @@
     .pill.hit { background: color-mix(in srgb, var(--green) 70%, #111); color:white; }
     .pill.miss { background: color-mix(in srgb, var(--red) 65%, #111); color:white; }
     .answer { font-weight:900; color:#ffd98a; }
-    .answer-img-wrap { margin-top:14px; text-align:center; }
-    .answer-img-wrap img { max-height:260px; border-radius:10px; box-shadow:0 4px 24px #0008; }
+    .answer-reveal { display:flex; gap:20px; align-items:flex-start; flex-wrap:wrap; margin-top:4px; }
+    .answer-text-part { flex:1; min-width:200px; }
+    .answer-img-area { position:relative; flex-shrink:0; }
+    .answer-img-area img { max-width:200px; max-height:280px; object-fit:contain; display:block; border-radius:8px; }
+    .img-toggle-btn { position:absolute; top:6px; right:6px; height:28px; padding:0 10px; font-size:12px; font-weight:800; border-radius:8px; border:1px solid var(--border); background:rgba(20,20,20,.72); color:var(--text); cursor:pointer; backdrop-filter:blur(4px); }
+    .img-toggle-btn:hover { background:var(--panel2); border-color:var(--button); color:#ffd98a; }
+    @media (max-width:640px) { .answer-reveal { flex-direction:column; } .answer-img-area img { max-width:100%; } }
     .table-wrap { overflow:auto; }
     .record-head { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:10px; }
     .record-head h2 { margin:0; font-size:20px; }
@@ -297,6 +302,7 @@
 
     let mode = 'daily';
     let answer = null, triesLeft = MAX_TRIES, finished = false, resultSaved = false, guesses = [];
+    let isGacksung = false;
     let selectedIndex = null, highlightedOption = -1, ignoreSearchForDropdown = false;
     const eliminatedNames = new Set();
     let countdownInterval = null;
@@ -623,7 +629,7 @@
       const sinnerColor = SINNER_COLOR[ans['수감자']] || '#555';
       const sinnerColorDark = sinnerColor + '33';
       const slug = ans['slug'];
-      const cdnUrl = slug ? `https://assets.limbusdeck.com/identities/full/${escapeHtml(slug)}.webp` : '';
+      const cdnUrl = ans['이미지(일반)'] || (slug ? `https://assets.limbusdeck.com/identities/full/${escapeHtml(slug)}.webp` : '');
       const affilParts = [ans['소속1'], ans['소속2']].filter(Boolean);
       const kws = [ans['키워드1'], ans['키워드2'], ans['키워드3']].filter(Boolean);
       const modeLabel = record.mode === 'daily' ? `오늘의 인격 #${record.challengeNo ?? '?'}` : '랜덤 플레이';
@@ -696,11 +702,36 @@
     }
 
     // ── 게임 종료 ─────────────────────────────────────────────
+    function toggleAnswerImage() {
+      isGacksung = !isGacksung;
+      const imgEl = document.getElementById('answer-image');
+      const btnEl = document.getElementById('image-toggle-btn');
+      if (!imgEl || !btnEl) return;
+      if (isGacksung && answer['이미지(각성)']) {
+        imgEl.src = answer['이미지(각성)'];
+        btnEl.textContent = '일반';
+      } else {
+        imgEl.src = answer['이미지(일반)'];
+        btnEl.textContent = '각성';
+        isGacksung = false;
+      }
+    }
+
     function buildEndMessage(won) {
+      isGacksung = false;
       const affilParts = [answer['소속1'], answer['소속2']].filter(Boolean).join(' · ');
       const answerText = `${answer['인격명']} / ${answer['수감자']} / ${answer['성급']}${affilParts ? ' / ' + affilParts : ''} / ${keywordsOf(answer).join(', ') || '키워드 없음'}`;
-      const imgHtml = answer['slug'] ? `<div class="answer-img-wrap"><img src="https://assets.limbusdeck.com/identities/full/${escapeHtml(answer['slug'])}.webp" alt="${escapeHtml(answer['인격명'])}"></div>` : '';
-      return (won ? `정답입니다! <span class="answer">${escapeHtml(answerText)}</span>` : `기회를 모두 사용했습니다. 정답은 <span class="answer">${escapeHtml(answerText)}</span> 입니다.`) + imgHtml;
+      const resultLine = won
+        ? `정답입니다! <span class="answer">${escapeHtml(answerText)}</span>`
+        : `기회를 모두 사용했습니다. 정답은 <span class="answer">${escapeHtml(answerText)}</span> 입니다.`;
+      const normalImg = answer['이미지(일반)'];
+      const gacksungImg = answer['이미지(각성)'];
+      const imgHtml = normalImg ? `
+        <div class="answer-img-area">
+          <img id="answer-image" src="${escapeHtml(normalImg)}" alt="${escapeHtml(answer['인격명'])}" onerror="this.parentElement.style.display='none'" />
+          ${gacksungImg ? `<button id="image-toggle-btn" class="img-toggle-btn" onclick="toggleAnswerImage()">각성</button>` : ''}
+        </div>` : '';
+      return `<div class="answer-reveal"><div class="answer-text-part">${resultLine}</div>${imgHtml}</div>`;
     }
 
     function showEnd(won) {
