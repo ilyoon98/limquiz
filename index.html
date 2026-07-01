@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
@@ -10,7 +10,6 @@
       --bg: #141414; --panel: #1f1f1f; --panel2: #292929; --text: #f4f1ea;
       --muted: #b8b0a3; --border: #403a33; --green: #3f8f57; --red: #8b3a36;
       --yellow: #b48a30; --button: #c9a86a; --buttonText: #1b1712;
-      --kw-화상: #b83228; --kw-출혈: #b86030; --kw-진동: #a88820; --kw-파열: #357a49; --kw-침잠: #3080a0; --kw-호흡: #304ea8; --kw-충전: #6b3f90;
     }
     * { box-sizing: border-box; }
     body { margin:0; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: radial-gradient(circle at top, #2a241e 0%, var(--bg) 42%, #0f0f0f 100%); color: var(--text); min-height:100vh; padding:24px; }
@@ -22,11 +21,17 @@
     .contact-btn:hover { filter:brightness(1.06); transform:translateY(-1px); }
     .contact-btn:active { transform:translateY(0); }
     .sub { color:var(--muted); line-height:1.55; }
+    .challenge-info { margin-top:6px; font-size:14px; color:var(--muted); display:none; }
+    .challenge-no { font-weight:800; color:#ffd98a; }
+    .countdown { font-size:13px; color:var(--muted); margin-left:10px; }
+    .tab-bar { display:flex; gap:8px; margin-bottom:16px; }
+    .tab { height:42px; padding:0 20px; border-radius:12px; border:1px solid var(--border); background:var(--panel2); color:var(--muted); font:inherit; font-size:15px; font-weight:700; cursor:pointer; transition:background .15s,color .15s,border-color .15s; }
+    .tab.active { background:var(--button); color:var(--buttonText); border-color:var(--button); }
     .panel { background: color-mix(in srgb, var(--panel) 88%, transparent); border:1px solid var(--border); border-radius:18px; padding:18px; margin-bottom:16px; box-shadow:0 14px 36px rgba(0,0,0,.28); }
+    .already-played { display:none; padding:12px 16px; border-radius:12px; background:color-mix(in srgb, var(--yellow) 15%, var(--panel2)); border:1px solid color-mix(in srgb, var(--yellow) 40%, transparent); color:#ffd98a; font-weight:700; margin-bottom:14px; }
     .filter-block { display:flex; flex-direction:column; gap:12px; margin-bottom:14px; }
     .filter-row { display:grid; grid-template-columns: 86px repeat(5, minmax(110px, 1fr)) auto; gap:10px; align-items:end; }
     .filter-title { height:44px; display:flex; align-items:center; justify-content:center; border:1px solid var(--border); border-radius:12px; background:var(--panel2); color:#ffd98a; font-weight:900; }
-    .filter-title.exclude { color:#ffb0aa; }
     .field label { display:block; color:var(--muted); font-size:14px; margin:0 0 6px; }
     input, button { height:44px; border-radius:12px; border:1px solid var(--border); font:inherit; }
     input { width:100%; background:#131313; color:var(--text); padding:0 12px; }
@@ -38,7 +43,7 @@
     .mode-box label { display:flex; gap:6px; align-items:center; height:36px; padding:0 14px; border:1px solid var(--border); border-radius:999px; background:var(--panel2); cursor:pointer; color:var(--muted); transition:background .15s, color .15s, border-color .15s; }
     .mode-box label:has(input:checked) { background:var(--button); color:var(--buttonText); border-color:var(--button); font-weight:800; }
     .mode-box input { position:absolute; opacity:0; width:0; height:0; pointer-events:none; }
-    .guess-row { display:grid; grid-template-columns: 1fr auto auto; gap:10px; align-items:start; }
+    .guess-row { display:grid; grid-template-columns: 1fr auto auto auto; gap:10px; align-items:start; }
     .combo { position:relative; }
     .dropdown { position:absolute; z-index:20; left:0; right:0; top:50px; max-height:300px; overflow:auto; background:#151515; border:1px solid var(--border); border-radius:14px; box-shadow:0 18px 30px rgba(0,0,0,.45); display:none; }
     .dropdown.open { display:block; }
@@ -58,7 +63,6 @@
     .answer-img-wrap { margin-top:14px; text-align:center; }
     .answer-img-wrap img { max-height:260px; border-radius:10px; box-shadow:0 4px 24px #0008; }
     .table-wrap { overflow:auto; }
-
     .record-head { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:10px; }
     .record-head h2 { margin:0; font-size:20px; }
     .record-note { color:var(--muted); font-size:14px; margin:4px 0 0; }
@@ -76,58 +80,42 @@
     .hit { background: color-mix(in srgb, var(--green) 70%, #111); }
     .miss { background: color-mix(in srgb, var(--red) 65%, #111); }
     .empty { opacity:.65; }
-
-    /* keyword chips */
     .kw-chip { display:inline-block; border-radius:5px; padding:2px 10px; font-size:13px; font-weight:700; line-height:1.5; border:1px solid rgba(255,255,255,.12); }
     .sinner-dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:5px; vertical-align:middle; flex-shrink:0; }
-
-    /* grade styles */
     .grade-1 { color:#888; }
     .grade-2 { color:#c8aa60; }
     .grade-3 { color:#ffd060; text-shadow:0 0 10px rgba(255,200,60,.45); }
-
-    /* h1 gradient */
     h1 { margin:0 0 8px; font-size:clamp(28px,4vw,44px); letter-spacing:-.04em; background:linear-gradient(90deg,#e8c97a 0%,#c07858 30%,#9060c0 65%,#4090c8 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-
-    /* cell reveal animation */
-    @keyframes cell-reveal {
-      0%   { opacity:0; transform:scaleY(.4); }
-      60%  { transform:scaleY(1.06); }
-      100% { opacity:1; transform:scaleY(1); }
-    }
+    @keyframes cell-reveal { 0%{opacity:0;transform:scaleY(.4)} 60%{transform:scaleY(1.06)} 100%{opacity:1;transform:scaleY(1)} }
     .reveal-row td { animation:cell-reveal .28s ease both; transform-origin:center; }
-    .reveal-row td:nth-child(1) { animation-delay:0ms; }
-    .reveal-row td:nth-child(2) { animation-delay:80ms; }
-    .reveal-row td:nth-child(3) { animation-delay:160ms; }
-    .reveal-row td:nth-child(4) { animation-delay:240ms; }
-    .reveal-row td:nth-child(5) { animation-delay:320ms; }
-    .reveal-row td:nth-child(6) { animation-delay:400ms; }
-    .reveal-row td:nth-child(7) { animation-delay:480ms; }
-    .reveal-row td:nth-child(8) { animation-delay:560ms; }
-    .reveal-row td:nth-child(9) { animation-delay:640ms; }
+    .reveal-row td:nth-child(1){animation-delay:0ms} .reveal-row td:nth-child(2){animation-delay:80ms} .reveal-row td:nth-child(3){animation-delay:160ms} .reveal-row td:nth-child(4){animation-delay:240ms} .reveal-row td:nth-child(5){animation-delay:320ms} .reveal-row td:nth-child(6){animation-delay:400ms} .reveal-row td:nth-child(7){animation-delay:480ms} .reveal-row td:nth-child(8){animation-delay:560ms} .reveal-row td:nth-child(9){animation-delay:640ms}
     @media (prefers-reduced-motion:reduce) { .reveal-row td { animation:none; } }
-
-    @media (max-width:800px) { body { padding:14px; } .filter-row, .guess-row { grid-template-columns:1fr; } .filter-title { justify-content:flex-start; padding:0 12px; } button { width:100%; } .dropdown { position:static; margin-top:8px; } }
-
-    @media (max-width: 640px) {
-      header { padding-right:0; }
-      .top-actions { position:static; margin-top:12px; width:100%; justify-content:space-between; }
-      .contact-btn { flex:1; }
-    }
+    @media (max-width:800px) { body{padding:14px} .filter-row,.guess-row{grid-template-columns:1fr} .filter-title{justify-content:flex-start;padding:0 12px} button{width:100%} .dropdown{position:static;margin-top:8px} }
+    @media (max-width:640px) { header{padding-right:0} .top-actions{position:static;margin-top:12px;width:100%;justify-content:space-between} .contact-btn{flex:1} }
   </style>
 </head>
 <body>
   <div class="wrap">
     <header>
       <div class="top-actions">
-        <span class="version-badge">v0.1.9</span>
+        <span class="version-badge">v0.2.0</span>
         <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
       </div>
       <h1>림버스 인격 두들</h1>
       <div class="sub">인격명만 검색해서 선택합니다. 정답은 수감자, 인격명, 성급, 키워드 3개를 비교하며, 키워드는 순서와 상관없이 판정합니다.</div>
+      <div class="challenge-info" id="challengeInfo">
+        <span class="challenge-no" id="challengeNo"></span>
+        <span class="countdown" id="countdown"></span>
+      </div>
     </header>
 
+    <div class="tab-bar">
+      <button class="tab active" id="tabDaily">오늘의 인격</button>
+      <button class="tab" id="tabRandom">랜덤 플레이</button>
+    </div>
+
     <section class="panel">
+      <div class="already-played" id="alreadyPlayed">오늘은 이미 참여하셨습니다. 내일 다시 오세요! ⏰</div>
       <div class="filter-block">
         <div class="filter-row">
           <div class="filter-title">필터</div>
@@ -143,20 +131,6 @@
             <label><input type="radio" name="includeMode" value="or" />OR</label>
           </div>
         </div>
-        <!-- 제외 필터 UI 임시 비활성화: 필요하면 이 주석을 해제해서 다시 사용하세요.
-        <div class="filter-row">
-          <div class="filter-title exclude">제외</div>
-          <div class="field"><label for="excludeSinner">수감자</label><input id="excludeSinner" placeholder="예: 히스클리프" /></div>
-          <div class="field"><label for="excludeGrade">성급</label><input id="excludeGrade" placeholder="예: ★ 또는 1" /></div>
-          <div class="field"><label for="excludeK1">키워드 A</label><input id="excludeK1" placeholder="예: 침잠 (순서 무관)" /></div>
-          <div class="field"><label for="excludeK2">키워드 B</label><input id="excludeK2" placeholder="예: 진동 (순서 무관)" /></div>
-          <div class="field"><label for="excludeK3">키워드 C</label><input id="excludeK3" placeholder="예: 충전 (순서 무관)" /></div>
-          <div class="mode-box" aria-label="제외 필터 방식">
-            <label><input type="radio" name="excludeMode" value="and" checked />AND</label>
-            <label><input type="radio" name="excludeMode" value="or" />OR</label>
-          </div>
-        </div>
-        -->
       </div>
 
       <div class="guess-row">
@@ -165,10 +139,11 @@
           <div id="dropdown" class="dropdown" role="listbox"></div>
         </div>
         <button id="guessBtn">확인</button>
+        <button id="shareBtn" class="secondary" style="display:none;">결과 복사</button>
         <button id="restartBtn" class="secondary" style="display:none;">재시작</button>
       </div>
       <div class="status">
-        <div>남은 기회: <strong id="tries">5</strong></div>
+        <div>남은 기회: <strong id="tries">7</strong></div>
         <div>표시 후보: <strong id="filteredCount">0</strong> / 전체 <strong id="count">0</strong></div>
       </div>
       <div id="message" class="message">정답 인격을 추리해보세요.</div>
@@ -190,7 +165,7 @@
       <div class="record-head">
         <div>
           <h2>플레이 기록</h2>
-          <p class="record-note">성공/실패 결과는 이 브라우저의 localStorage에 저장됩니다. 같은 브라우저로 다음날 다시 와도 확인할 수 있습니다.</p>
+          <p class="record-note">성공/실패 결과는 이 브라우저의 localStorage에 저장됩니다.</p>
         </div>
         <button id="clearRecordsBtn" class="secondary small-btn">기록 초기화</button>
       </div>
@@ -204,41 +179,34 @@
   <script>
     let DATA = [], SORTED_DATA = [];
     const SINNER_COLOR = {
-      '이상':    '#d4e1e8',
-      '파우스트': '#ffb1b4',
-      '돈키호테': '#ffef23',
-      '료슈':    '#cf0000',
-      '뫼르소':  '#293b95',
-      '홍루':    '#5bffde',
-      '히스클리프':'#4e3076',
-      '이스마엘': '#ff9500',
-      '로쟈':    '#820000',
-      '싱클레어': '#8b9c15',
-      '오티스':  '#325339',
-      '그레고르': '#69350b',
+      '이상':'#d4e1e8','파우스트':'#ffb1b4','돈키호테':'#ffef23','료슈':'#cf0000',
+      '뫼르소':'#293b95','홍루':'#5bffde','히스클리프':'#4e3076','이스마엘':'#ff9500',
+      '로쟈':'#820000','싱클레어':'#8b9c15','오티스':'#325339','그레고르':'#69350b',
     };
     const KEYWORD_COLOR = {
-      '화상': { bg:'#3a0c0c', text:'#ff9090' },
-      '출혈': { bg:'#3a1a08', text:'#ff9955' },
-      '진동': { bg:'#2e2200', text:'#ffe066' },
-      '파열': { bg:'#0d2e18', text:'#6ddb8a' },
-      '침잠': { bg:'#0a2030', text:'#70c8f0' },
-      '호흡': { bg:'#0c1840', text:'#7090ff' },
-      '충전': { bg:'#1e0a30', text:'#c080f0' },
+      '화상':{bg:'#3a0c0c',text:'#ff9090'},'출혈':{bg:'#3a1a08',text:'#ff9955'},
+      '진동':{bg:'#2e2200',text:'#ffe066'},'파열':{bg:'#0d2e18',text:'#6ddb8a'},
+      '침잠':{bg:'#0a2030',text:'#70c8f0'},'호흡':{bg:'#0c1840',text:'#7090ff'},
+      '충전':{bg:'#1e0a30',text:'#c080f0'},
     };
     const GRADE_CLASS = {'★':'grade-1','★★':'grade-2','★★★':'grade-3'};
     const MAX_TRIES = 7;
     const RESULT_STORAGE_KEY = 'limbus_identity_doodle_results_v1';
+    const DAILY_PLAYED_KEY = 'daily_played_date';
+    const DAILY_RESULT_KEY = 'daily_result';
+    const START_DATE = new Date(2025, 0, 15);
 
+    let mode = 'daily';
     let answer = null, triesLeft = MAX_TRIES, finished = false, resultSaved = false, guesses = [];
-    let selectedIndex = null, highlightedOption = -1;
-    let ignoreSearchForDropdown = false;
+    let selectedIndex = null, highlightedOption = -1, ignoreSearchForDropdown = false;
     const eliminatedNames = new Set();
+    let countdownInterval = null;
 
     const guessInput = document.getElementById('guessInput');
     const dropdown = document.getElementById('dropdown');
     const guessBtn = document.getElementById('guessBtn');
     const restartBtn = document.getElementById('restartBtn');
+    const shareBtn = document.getElementById('shareBtn');
     const triesEl = document.getElementById('tries');
     const countEl = document.getElementById('count');
     const filteredCountEl = document.getElementById('filteredCount');
@@ -246,18 +214,98 @@
     const historyEl = document.getElementById('history');
     const resultRecordsEl = document.getElementById('resultRecords');
     const clearRecordsBtn = document.getElementById('clearRecordsBtn');
-    const includeInputs = [document.getElementById('includeSinner'), document.getElementById('includeGrade'), document.getElementById('includeAffil1'), document.getElementById('includeAffil2'), document.getElementById('includeK1'), document.getElementById('includeK2'), document.getElementById('includeK3')];
-    // 제외 필터 JS 임시 비활성화: UI 주석을 해제할 때 아래 배열도 기존 코드로 되돌리세요.
-    // const excludeInputs = [document.getElementById('excludeSinner'), document.getElementById('excludeGrade'), document.getElementById('excludeK1'), document.getElementById('excludeK2'), document.getElementById('excludeK3')];
+    const alreadyPlayedEl = document.getElementById('alreadyPlayed');
+    const challengeInfoEl = document.getElementById('challengeInfo');
+    const challengeNoEl = document.getElementById('challengeNo');
+    const countdownEl = document.getElementById('countdown');
+    const tabDaily = document.getElementById('tabDaily');
+    const tabRandom = document.getElementById('tabRandom');
+    const includeInputs = [
+      document.getElementById('includeSinner'), document.getElementById('includeGrade'),
+      document.getElementById('includeAffil1'), document.getElementById('includeAffil2'),
+      document.getElementById('includeK1'), document.getElementById('includeK2'), document.getElementById('includeK3')
+    ];
     const excludeInputs = [];
-    const allFilterInputs = [...includeInputs, ...excludeInputs];
+    const allFilterInputs = [...includeInputs];
 
+    // ── 날짜 / 시드 ──────────────────────────────────────────
+    function getDailyDateKey() {
+      const d = new Date();
+      return String(d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate());
+    }
+    function getDailyChallengeNo() {
+      const today = new Date(); today.setHours(0,0,0,0);
+      const start = new Date(START_DATE); start.setHours(0,0,0,0);
+      return Math.max(1, Math.floor((today - start) / 86400000) + 1);
+    }
+    function getDailyAnswer(data) {
+      const d = new Date();
+      const seed = d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+      const hash = (seed * 2654435761) >>> 0;
+      return data[hash % data.length];
+    }
+
+    // ── 일일 챌린지 저장/복원 ─────────────────────────────────
+    function saveDailyResult(won) {
+      const fields = ['수감자','인격명','성급','소속1','소속2','키워드1','키워드2','키워드3'];
+      localStorage.setItem(DAILY_PLAYED_KEY, getDailyDateKey());
+      localStorage.setItem(DAILY_RESULT_KEY, JSON.stringify({
+        won, attempts: guesses.length, challengeNo: getDailyChallengeNo(),
+        answerName: answer['인격명'],
+        guesses: guesses.map(g => ({ row: g, hits: fields.map(f => judgeCell(f, g, answer).cls === 'hit') }))
+      }));
+    }
+    function loadDailyResult() {
+      try {
+        if (localStorage.getItem(DAILY_PLAYED_KEY) !== getDailyDateKey()) return null;
+        const raw = localStorage.getItem(DAILY_RESULT_KEY);
+        return raw ? JSON.parse(raw) : null;
+      } catch(e) { return null; }
+    }
+
+    // ── 카운트다운 ────────────────────────────────────────────
+    function startCountdown() {
+      if (countdownInterval) clearInterval(countdownInterval);
+      function tick() {
+        const now = new Date();
+        const midnight = new Date(now); midnight.setHours(24,0,0,0);
+        const diff = midnight - now;
+        if (diff <= 0) { clearInterval(countdownInterval); location.reload(); return; }
+        const h = String(Math.floor(diff / 3600000)).padStart(2,'0');
+        const m = String(Math.floor((diff % 3600000) / 60000)).padStart(2,'0');
+        const s = String(Math.floor((diff % 60000) / 1000)).padStart(2,'0');
+        countdownEl.textContent = `· 다음 인격까지 ${h}:${m}:${s}`;
+      }
+      tick();
+      countdownInterval = setInterval(tick, 1000);
+    }
+
+    // ── 결과 공유 ─────────────────────────────────────────────
+    function buildShareText() {
+      const fields = ['수감자','인격명','성급','소속1','소속2','키워드1','키워드2','키워드3'];
+      const won = finished && guesses.length > 0 && guesses[guesses.length-1]['인격명'] === answer['인격명'];
+      const lines = [`림버스 인격 두들 #${getDailyChallengeNo()}`, `${won ? guesses.length : 'X'}/${MAX_TRIES}`, ''];
+      fields.forEach(field => {
+        const row = guesses.map(g => judgeCell(field, g, answer).cls === 'hit' ? '✅' : '❌').join('');
+        lines.push(`${field} ${row}`);
+      });
+      return lines.join('\n');
+    }
+    function copyShareText() {
+      const text = buildShareText();
+      const orig = shareBtn.textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        shareBtn.textContent = '복사됨! ✓';
+        setTimeout(() => { shareBtn.textContent = orig; }, 1500);
+      }).catch(() => { prompt('아래 텍스트를 복사하세요:', text); });
+    }
+
+    // ── 유틸 / 필터 ─────────────────────────────────────────
     function normalize(v) { return (v ?? '').toString().trim(); }
     function lower(v) { return normalize(v).toLowerCase(); }
     function normalizeSinnerInput(value) {
       const v = normalize(value);
-      const aliases = { '로슈': '료슈' };
-      return aliases[v] || v;
+      return ({ '로슈': '료슈' })[v] || v;
     }
     function keywordsOf(row) { return [row['키워드1'], row['키워드2'], row['키워드3']].map(normalize).filter(Boolean); }
     function pickAnswer() { return DATA[Math.floor(Math.random() * DATA.length)]; }
@@ -267,9 +315,9 @@
     function normalizeGradeInput(value) {
       const v = normalize(value).replace(/\s/g, '');
       if (!v) return '';
-      if (['1', '1성', '★'].includes(v)) return '★';
-      if (['2', '2성', '★★'].includes(v)) return '★★';
-      if (['3', '3성', '★★★'].includes(v)) return '★★★';
+      if (['1','1성','★'].includes(v)) return '★';
+      if (['2','2성','★★'].includes(v)) return '★★';
+      if (['3','3성','★★★'].includes(v)) return '★★★';
       return v;
     }
 
@@ -292,28 +340,16 @@
       return filterMode(modeName) === 'and' ? checks.every(Boolean) : checks.some(Boolean);
     }
 
-    function hasActiveFilter(inputs) {
-      return inputs.some(input => normalize(input.value));
-    }
-
-    function rowMatchesFilters(row) {
-      const includeOk = rowMatchesFilterSet(row, includeInputs, 'includeMode');
-      // 제외 필터 임시 비활성화: 필요하면 아래 두 줄을 되살리고 return을 includeOk && !excludeHit으로 변경하세요.
-      // const excludeHit = hasActiveFilter(excludeInputs) && rowMatchesFilterSet(row, excludeInputs, 'excludeMode');
-      // return includeOk && !excludeHit;
-      return includeOk;
-    }
+    function rowMatchesFilters(row) { return rowMatchesFilterSet(row, includeInputs, 'includeMode'); }
 
     function isExactSelectedName() {
       const v = guessInput.value.trim();
       return !!v && DATA.some(row => row['인격명'] === v);
     }
-
     function filteredRows(ignoreSearch = ignoreSearchForDropdown) {
       const q = ignoreSearch ? '' : lower(guessInput.value);
       return SORTED_DATA.filter(row => rowMatchesFilters(row) && (!q || lower(row['인격명']).includes(q)));
     }
-
     function renderDropdown(open = true, ignoreSearch = ignoreSearchForDropdown) {
       const rows = filteredRows(ignoreSearch);
       filteredCountEl.textContent = rows.length;
@@ -326,7 +362,6 @@
       `).join('') : '<div class="option"><span class="option-name">검색 결과가 없습니다</span></div>';
       dropdown.classList.toggle('open', open && !finished);
     }
-
     function selectRow(idx) {
       const row = DATA[Number(idx)];
       if (!row) return;
@@ -342,11 +377,8 @@
       if (!gv && !ansKeywords[Number(field.replace('키워드','')) - 1]) return true;
       return !!gv && ansKeywords.includes(gv);
     }
-
     function judgeCell(field, guess, ans) {
-      let hit;
-      if (field.startsWith('키워드')) hit = keywordHitAtPosition(field, guess, ans);
-      else hit = normalize(guess[field]) === normalize(ans[field]);
+      const hit = field.startsWith('키워드') ? keywordHitAtPosition(field, guess, ans) : normalize(guess[field]) === normalize(ans[field]);
       return { cls: hit ? 'hit' : 'miss', label: hit ? '일치' : '불일치' };
     }
 
@@ -361,8 +393,7 @@
       return c ? `<span class="kw-chip" style="background:${c.bg};color:${c.text}">${escapeHtml(kw)}</span>` : escapeHtml(kw);
     }
     function gradeSpan(grade) {
-      const cls = GRADE_CLASS[grade] || '';
-      return `<span class="${cls}">${escapeHtml(grade)}</span>`;
+      return `<span class="${GRADE_CLASS[grade] || ''}">${escapeHtml(grade)}</span>`;
     }
     function renderCell(field, guess, ans) {
       const j = judgeCell(field, guess, ans);
@@ -374,52 +405,33 @@
       else display = raw ? escapeHtml(raw) : '<span class="empty">-</span>';
       return `<td class="${j.cls}"><span class="cell"><span class="value">${display}</span><span class="judge">${j.label}</span></span></td>`;
     }
-
-    function renderHistory() {
+    function renderHistory(animate = true) {
       historyEl.innerHTML = guesses.map((g, i) => `
-        <tr class="${i === guesses.length - 1 ? 'reveal-row' : ''}"><td>${i + 1}</td>${renderCell('수감자', g, answer)}${renderCell('인격명', g, answer)}${renderCell('성급', g, answer)}${renderCell('소속1', g, answer)}${renderCell('소속2', g, answer)}${renderCell('키워드1', g, answer)}${renderCell('키워드2', g, answer)}${renderCell('키워드3', g, answer)}</tr>
+        <tr class="${animate && i === guesses.length - 1 ? 'reveal-row' : ''}"><td>${i + 1}</td>${renderCell('수감자', g, answer)}${renderCell('인격명', g, answer)}${renderCell('성급', g, answer)}${renderCell('소속1', g, answer)}${renderCell('소속2', g, answer)}${renderCell('키워드1', g, answer)}${renderCell('키워드2', g, answer)}${renderCell('키워드3', g, answer)}</tr>
       `).join('');
     }
-
     function shouldStrikeCandidate(guess, ans) {
       const sinnerMiss = normalize(guess['수감자']) !== normalize(ans['수감자']);
       const guessKeywords = keywordsOf(guess);
       const ansKeywords = keywordsOf(ans);
-      const noKeywordOverlap = guessKeywords.length === 0 || !guessKeywords.some(k => ansKeywords.includes(k));
-      return sinnerMiss && noKeywordOverlap;
+      return sinnerMiss && (guessKeywords.length === 0 || !guessKeywords.some(k => ansKeywords.includes(k)));
     }
 
     function todayKey() {
       const d = new Date();
-      const yyyy = d.getFullYear();
-      const mm = String(d.getMonth() + 1).padStart(2, '0');
-      const dd = String(d.getDate()).padStart(2, '0');
-      return `${yyyy}-${mm}-${dd}`;
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
     }
-
     function loadResultRecords() {
-      try {
-        const raw = localStorage.getItem(RESULT_STORAGE_KEY);
-        const parsed = raw ? JSON.parse(raw) : [];
-        return Array.isArray(parsed) ? parsed : [];
-      } catch (e) {
-        console.warn('기록을 불러오지 못했습니다.', e);
-        return [];
-      }
+      try { const r = localStorage.getItem(RESULT_STORAGE_KEY); const p = r ? JSON.parse(r) : []; return Array.isArray(p) ? p : []; }
+      catch(e) { return []; }
     }
-
-    function saveResultRecords(records) {
-      localStorage.setItem(RESULT_STORAGE_KEY, JSON.stringify(records));
-    }
+    function saveResultRecords(records) { localStorage.setItem(RESULT_STORAGE_KEY, JSON.stringify(records)); }
 
     function matchedCount(guess, ans) {
-      return ['수감자', '인격명', '성급', '소속1', '소속2', '키워드1', '키워드2', '키워드3']
-        .filter(field => judgeCell(field, guess, ans).cls === 'hit').length;
+      return ['수감자','인격명','성급','소속1','소속2','키워드1','키워드2','키워드3']
+        .filter(f => judgeCell(f, guess, ans).cls === 'hit').length;
     }
-
-    function bestMatchedCount() {
-      return guesses.length ? Math.max(...guesses.map(g => matchedCount(g, answer))) : 0;
-    }
+    function bestMatchedCount() { return guesses.length ? Math.max(...guesses.map(g => matchedCount(g, answer))) : 0; }
 
     function renderResultRecords() {
       const records = loadResultRecords();
@@ -435,21 +447,20 @@
         </tr>
       `).join('') : '<tr><td colspan="6" class="empty">아직 저장된 플레이 기록이 없습니다.</td></tr>';
     }
-
     function saveGameResult(won) {
       if (resultSaved) return;
       resultSaved = true;
       const records = loadResultRecords();
-      records.push({
-        date: todayKey(),
-        won,
-        attempts: guesses.length,
-        matched: won ? 6 : bestMatchedCount(),
-        answerName: answer['인격명'],
-        savedAt: new Date().toISOString()
-      });
+      records.push({ date: todayKey(), won, attempts: guesses.length, matched: won ? 6 : bestMatchedCount(), answerName: answer['인격명'], savedAt: new Date().toISOString() });
       saveResultRecords(records);
       renderResultRecords();
+    }
+
+    function buildEndMessage(won) {
+      const affilParts = [answer['소속1'], answer['소속2']].filter(Boolean).join(' · ');
+      const answerText = `${answer['인격명']} / ${answer['수감자']} / ${answer['성급']}${affilParts ? ' / ' + affilParts : ''} / ${keywordsOf(answer).join(', ') || '키워드 없음'}`;
+      const imgHtml = answer['slug'] ? `<div class="answer-img-wrap"><img src="https://assets.limbusdeck.com/identities/full/${escapeHtml(answer['slug'])}.webp" alt="${escapeHtml(answer['인격명'])}"></div>` : '';
+      return (won ? `정답입니다! <span class="answer">${escapeHtml(answerText)}</span>` : `기회를 모두 사용했습니다. 정답은 <span class="answer">${escapeHtml(answerText)}</span> 입니다.`) + imgHtml;
     }
 
     function showEnd(won) {
@@ -457,12 +468,14 @@
       guessInput.disabled = true;
       guessBtn.disabled = true;
       dropdown.classList.remove('open');
-      restartBtn.style.display = 'inline-block';
       saveGameResult(won);
-      const affilParts = [answer['소속1'], answer['소속2']].filter(Boolean).join(' · ');
-      const answerText = `${answer['인격명']} / ${answer['수감자']} / ${answer['성급']}${affilParts ? ' / ' + affilParts : ''} / ${keywordsOf(answer).join(', ') || '키워드 없음'}`;
-      const imgHtml = answer['slug'] ? `<div class="answer-img-wrap"><img src="https://assets.limbusdeck.com/identities/full/${escapeHtml(answer['slug'])}.webp" alt="${escapeHtml(answer['인격명'])}"></div>` : '';
-      messageEl.innerHTML = (won ? `정답입니다! <span class="answer">${escapeHtml(answerText)}</span>` : `기회를 모두 사용했습니다. 정답은 <span class="answer">${escapeHtml(answerText)}</span> 입니다.`) + imgHtml;
+      messageEl.innerHTML = buildEndMessage(won);
+      if (mode === 'daily') {
+        saveDailyResult(won);
+        shareBtn.style.display = 'inline-block';
+      } else {
+        restartBtn.style.display = 'inline-block';
+      }
     }
 
     function resolveSelectedGuess() {
@@ -471,7 +484,6 @@
       if (exact) { selectedIndex = DATA.indexOf(exact); return exact; }
       return null;
     }
-
     function makeGuess() {
       if (finished) return;
       const guess = resolveSelectedGuess();
@@ -492,35 +504,91 @@
       renderDropdown(false);
     }
 
+    function resetGameState() {
+      triesLeft = MAX_TRIES; finished = false; resultSaved = false; guesses = [];
+      selectedIndex = null; highlightedOption = -1; ignoreSearchForDropdown = false;
+      eliminatedNames.clear();
+      guessInput.disabled = false; guessBtn.disabled = false;
+      restartBtn.style.display = 'none'; shareBtn.style.display = 'none';
+      alreadyPlayedEl.style.display = 'none';
+      triesEl.textContent = MAX_TRIES;
+      messageEl.textContent = '정답 인격을 추리해보세요.';
+      historyEl.innerHTML = ''; guessInput.value = '';
+    }
     function resetFilters() {
-      allFilterInputs.forEach(input => { input.value = ''; });
-      const includeAnd = document.querySelector('input[name="includeMode"][value="and"]');
-      if (includeAnd) includeAnd.checked = true;
-      // 제외 필터 재활성화 시 아래도 함께 사용하세요.
-      // const excludeAnd = document.querySelector('input[name="excludeMode"][value="and"]');
-      // if (excludeAnd) excludeAnd.checked = true;
+      allFilterInputs.forEach(i => { i.value = ''; });
+      const and = document.querySelector('input[name="includeMode"][value="and"]');
+      if (and) and.checked = true;
     }
 
-    function restart() {
-      answer = pickAnswer();
-      triesLeft = MAX_TRIES; finished = false; resultSaved = false; guesses = []; selectedIndex = null; highlightedOption = -1; ignoreSearchForDropdown = false;
-      eliminatedNames.clear();
+    // ── 모드 초기화 ──────────────────────────────────────────
+    function initRandomMode() {
+      if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
+      challengeInfoEl.style.display = 'none';
+      resetGameState();
       resetFilters();
-      guessInput.disabled = false; guessBtn.disabled = false; restartBtn.style.display = 'none';
-      triesEl.textContent = triesLeft; messageEl.textContent = '정답 인격을 추리해보세요.'; historyEl.innerHTML = ''; guessInput.value = '';
+      answer = pickAnswer();
       renderDropdown(false);
-      // 테스트용 정답 확인: 개발자도구 콘솔에서 확인 가능
       console.log('정답:', answer);
     }
+
+    function initDailyMode() {
+      challengeInfoEl.style.display = '';
+      challengeNoEl.textContent = `오늘의 인격 #${getDailyChallengeNo()}`;
+      answer = getDailyAnswer(DATA);
+      console.log('정답:', answer);
+
+      const saved = loadDailyResult();
+      if (saved) {
+        resetGameState();
+        resetFilters();
+        finished = true; resultSaved = true;
+        guessInput.disabled = true; guessBtn.disabled = true;
+        alreadyPlayedEl.style.display = '';
+        guesses = (saved.guesses || []).map(g => g.row).filter(Boolean);
+        if (guesses.length) {
+          renderHistory(false);
+          triesLeft = Math.max(0, MAX_TRIES - guesses.length);
+          triesEl.textContent = triesLeft;
+          messageEl.innerHTML = buildEndMessage(saved.won);
+          shareBtn.style.display = 'inline-block';
+        }
+        startCountdown();
+      } else {
+        resetGameState();
+        resetFilters();
+        renderDropdown(false);
+        startCountdown();
+      }
+    }
+
+    function switchMode(newMode) {
+      if (newMode === mode && DATA.length) return;
+      mode = newMode;
+      tabDaily.classList.toggle('active', mode === 'daily');
+      tabRandom.classList.toggle('active', mode === 'random');
+      if (mode === 'daily') initDailyMode();
+      else initRandomMode();
+    }
+
+    // ── 탭 / 버튼 이벤트 ─────────────────────────────────────
+    tabDaily.addEventListener('click', () => switchMode('daily'));
+    tabRandom.addEventListener('click', () => switchMode('random'));
+    shareBtn.addEventListener('click', copyShareText);
+    restartBtn.addEventListener('click', initRandomMode);
+    guessBtn.addEventListener('click', makeGuess);
+    clearRecordsBtn.addEventListener('click', () => {
+      if (!confirm('저장된 플레이 기록을 모두 삭제할까요?')) return;
+      localStorage.removeItem(RESULT_STORAGE_KEY);
+      renderResultRecords();
+    });
 
     dropdown.addEventListener('mousedown', e => {
       const opt = e.target.closest('.option[data-idx]');
       if (opt) selectRow(opt.dataset.idx);
     });
     guessInput.addEventListener('input', () => {
-      selectedIndex = null;
-      highlightedOption = -1;
-      ignoreSearchForDropdown = false;
+      selectedIndex = null; highlightedOption = -1; ignoreSearchForDropdown = false;
       renderDropdown(true);
     });
     function openDropdownFromSelectedValue() {
@@ -532,8 +600,8 @@
     guessInput.addEventListener('click', openDropdownFromSelectedValue);
     guessInput.addEventListener('keydown', e => {
       const rows = filteredRows(ignoreSearchForDropdown);
-      if (e.key === 'ArrowDown') { e.preventDefault(); highlightedOption = Math.min(rows.length - 1, highlightedOption + 1); renderDropdown(true); dropdown.querySelector('.option.active')?.scrollIntoView({ block:'nearest' }); }
-      else if (e.key === 'ArrowUp') { e.preventDefault(); highlightedOption = Math.max(0, highlightedOption - 1); renderDropdown(true); dropdown.querySelector('.option.active')?.scrollIntoView({ block:'nearest' }); }
+      if (e.key === 'ArrowDown') { e.preventDefault(); highlightedOption = Math.min(rows.length-1, highlightedOption+1); renderDropdown(true); dropdown.querySelector('.option.active')?.scrollIntoView({block:'nearest'}); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); highlightedOption = Math.max(0, highlightedOption-1); renderDropdown(true); dropdown.querySelector('.option.active')?.scrollIntoView({block:'nearest'}); }
       else if (e.key === 'Enter') {
         e.preventDefault();
         if (dropdown.classList.contains('open') && highlightedOption >= 0 && rows[highlightedOption]) selectRow(rows[highlightedOption].__idx);
@@ -545,8 +613,10 @@
       if (!e.target.closest('.combo')) { ignoreSearchForDropdown = false; dropdown.classList.remove('open'); }
       if (!e.target.closest('.field')) closeFilterDropdown();
     });
+    allFilterInputs.forEach(i => i.addEventListener('input', () => renderDropdown(document.activeElement === guessInput)));
+    document.querySelectorAll('input[name="includeMode"]').forEach(r => r.addEventListener('change', () => renderDropdown(document.activeElement === guessInput)));
 
-    // 필터 인풋 드롭다운
+    // ── 필터 드롭다운 ─────────────────────────────────────────
     const filterDropdown = document.createElement('div');
     filterDropdown.className = 'dropdown';
     filterDropdown.style.cssText = 'position:fixed;z-index:200;max-height:240px;';
@@ -557,28 +627,26 @@
       if (!DATA.length) return [];
       const q = input.value.toLowerCase().trim();
       let vals = [];
-      if (input.id === 'includeSinner') {
-        vals = [...new Set(DATA.map(r => r['수감자']))].sort((a, b) => a.localeCompare(b, 'ko-KR'));
-      } else if (input.id === 'includeGrade') {
-        vals = ['★', '★★', '★★★'];
-      } else if (['includeK1','includeK2','includeK3'].includes(input.id)) {
-        vals = [...new Set(DATA.flatMap(r => [r['키워드1'],r['키워드2'],r['키워드3']]).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'ko-KR'));
-      }
+      if (input.id === 'includeSinner') vals = [...new Set(DATA.map(r => r['수감자']))].sort((a,b) => a.localeCompare(b,'ko-KR'));
+      else if (input.id === 'includeGrade') vals = ['★','★★','★★★'];
+      else if (input.id === 'includeAffil1') vals = [...new Set(DATA.map(r => r['소속1']).filter(Boolean))].sort((a,b) => a.localeCompare(b,'ko-KR'));
+      else if (input.id === 'includeAffil2') vals = [...new Set(DATA.map(r => r['소속2']).filter(Boolean))].sort((a,b) => a.localeCompare(b,'ko-KR'));
+      else if (['includeK1','includeK2','includeK3'].includes(input.id)) vals = [...new Set(DATA.flatMap(r => [r['키워드1'],r['키워드2'],r['키워드3']]).filter(Boolean))].sort((a,b) => a.localeCompare(b,'ko-KR'));
       return q ? vals.filter(v => v.toLowerCase().includes(q)) : vals;
     }
     function positionFilterDropdown() {
       if (!activeFilterInput) return;
       const r = activeFilterInput.getBoundingClientRect();
-      filterDropdown.style.top = (r.bottom + 4) + 'px';
-      filterDropdown.style.left = r.left + 'px';
-      filterDropdown.style.width = r.width + 'px';
+      filterDropdown.style.top = (r.bottom+4)+'px';
+      filterDropdown.style.left = r.left+'px';
+      filterDropdown.style.width = r.width+'px';
     }
     function renderFilterDropdown() {
       if (!activeFilterInput) { filterDropdown.classList.remove('open'); return; }
       const vals = getFilterValues(activeFilterInput);
-      filterHighlight = Math.min(filterHighlight, vals.length - 1);
+      filterHighlight = Math.min(filterHighlight, vals.length-1);
       filterDropdown.innerHTML = vals.length
-        ? vals.map((v, i) => `<div class="option ${i === filterHighlight ? 'active' : ''}" data-val="${escapeHtml(v)}">${escapeHtml(v)}</div>`).join('')
+        ? vals.map((v,i) => `<div class="option ${i===filterHighlight?'active':''}" data-val="${escapeHtml(v)}">${escapeHtml(v)}</div>`).join('')
         : '<div class="option"><span class="option-name">결과 없음</span></div>';
       positionFilterDropdown();
       filterDropdown.classList.add('open');
@@ -593,34 +661,23 @@
       activeFilterInput.dispatchEvent(new Event('input', { bubbles: true }));
       closeFilterDropdown();
     });
-
     includeInputs.forEach(input => {
       input.addEventListener('focus', () => { activeFilterInput = input; filterHighlight = -1; renderFilterDropdown(); });
       input.addEventListener('click', () => { activeFilterInput = input; filterHighlight = -1; renderFilterDropdown(); });
       input.addEventListener('input', () => { filterHighlight = -1; if (activeFilterInput === input) renderFilterDropdown(); });
       input.addEventListener('keydown', e => {
         const vals = getFilterValues(input);
-        if (e.key === 'ArrowDown') { e.preventDefault(); filterHighlight = Math.min(vals.length - 1, filterHighlight + 1); renderFilterDropdown(); filterDropdown.querySelector('.option.active')?.scrollIntoView({ block:'nearest' }); }
-        else if (e.key === 'ArrowUp') { e.preventDefault(); filterHighlight = Math.max(0, filterHighlight - 1); renderFilterDropdown(); filterDropdown.querySelector('.option.active')?.scrollIntoView({ block:'nearest' }); }
-        else if (e.key === 'Enter' && filterHighlight >= 0 && vals[filterHighlight]) { e.preventDefault(); input.value = vals[filterHighlight]; input.dispatchEvent(new Event('input', { bubbles: true })); closeFilterDropdown(); }
+        if (e.key === 'ArrowDown') { e.preventDefault(); filterHighlight = Math.min(vals.length-1, filterHighlight+1); renderFilterDropdown(); filterDropdown.querySelector('.option.active')?.scrollIntoView({block:'nearest'}); }
+        else if (e.key === 'ArrowUp') { e.preventDefault(); filterHighlight = Math.max(0, filterHighlight-1); renderFilterDropdown(); filterDropdown.querySelector('.option.active')?.scrollIntoView({block:'nearest'}); }
+        else if (e.key === 'Enter' && filterHighlight >= 0 && vals[filterHighlight]) { e.preventDefault(); input.value = vals[filterHighlight]; input.dispatchEvent(new Event('input',{bubbles:true})); closeFilterDropdown(); }
         else if (e.key === 'Escape') closeFilterDropdown();
       });
       input.addEventListener('blur', () => setTimeout(closeFilterDropdown, 150));
     });
     window.addEventListener('scroll', positionFilterDropdown, { passive: true });
     window.addEventListener('resize', positionFilterDropdown, { passive: true });
-    allFilterInputs.forEach(i => i.addEventListener('input', () => renderDropdown(document.activeElement === guessInput)));
-    document.querySelectorAll('input[name="includeMode"]').forEach(r => r.addEventListener('change', () => renderDropdown(document.activeElement === guessInput)));
-    // 제외 필터 재활성화 시 아래 이벤트도 되살리세요.
-    // document.querySelectorAll('input[name="includeMode"], input[name="excludeMode"]').forEach(r => r.addEventListener('change', () => renderDropdown(document.activeElement === guessInput)));
-    guessBtn.addEventListener('click', makeGuess);
-    restartBtn.addEventListener('click', restart);
-    clearRecordsBtn.addEventListener('click', () => {
-      if (!confirm('저장된 플레이 기록을 모두 삭제할까요?')) return;
-      localStorage.removeItem(RESULT_STORAGE_KEY);
-      renderResultRecords();
-    });
 
+    // ── 데이터 로드 ──────────────────────────────────────────
     renderResultRecords();
     messageEl.textContent = '데이터를 불러오는 중입니다...';
     guessBtn.disabled = true;
@@ -631,9 +688,7 @@
         DATA = json;
         SORTED_DATA = DATA.map((row, idx) => ({...row, __idx: idx})).sort((a, b) => a['인격명'].localeCompare(b['인격명'], 'ko-KR'));
         countEl.textContent = DATA.length;
-        guessBtn.disabled = false;
-        guessInput.disabled = false;
-        restart();
+        initDailyMode();
       })
       .catch(err => {
         console.error('데이터 로드 실패:', err);
