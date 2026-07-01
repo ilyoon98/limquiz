@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>림버스 스킬 퀴즈</title>
+  <link rel="icon" type="image/png" href="./Thumbnail.png" />
+  <style>
+    :root {
+      --bg: #141414; --panel: #1f1f1f; --panel2: #292929; --text: #f4f1ea;
+      --muted: #b8b0a3; --border: #403a33; --green: #3f8f57; --red: #8b3a36;
+      --yellow: #b48a30; --button: #c9a86a; --buttonText: #1b1712;
+    }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #2a241e 0%, var(--bg) 42%, #0f0f0f 100%);
+      color: var(--text); min-height:100vh; padding:24px; }
+    .wrap { max-width:900px; margin:0 auto; }
+
+    h1 { margin:0 0 4px; font-size:clamp(22px,3vw,32px); letter-spacing:-.03em;
+      background:linear-gradient(90deg,#e8c97a 0%,#c07858 40%,#9060c0 100%);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .sub { color:var(--muted); font-size:14px; margin:0 0 20px; }
+    .panel { background:color-mix(in srgb, var(--panel) 88%, transparent);
+      border:1px solid var(--border); border-radius:18px; padding:18px;
+      margin-bottom:14px; box-shadow:0 14px 36px rgba(0,0,0,.28); }
+
+    a.back-btn, button.back-btn {
+      display:inline-flex; align-items:center; height:36px; padding:0 14px;
+      border-radius:999px; border:1px solid var(--border); background:var(--panel2);
+      color:var(--text); font:inherit; font-size:14px; cursor:pointer;
+      text-decoration:none; transition:border-color .15s; margin-bottom:14px; }
+    a.back-btn:hover, button.back-btn:hover { border-color:var(--button); color:#ffd98a; }
+
+    button { font:inherit; cursor:pointer; }
+    .btn-primary { height:44px; padding:0 24px; border-radius:12px; border:0;
+      background:var(--button); color:var(--buttonText); font-weight:800; font-size:15px; }
+    .btn-primary:disabled { opacity:.4; cursor:not-allowed; }
+    .btn-secondary { height:44px; padding:0 20px; border-radius:12px;
+      border:1px solid var(--border); background:var(--panel2); color:var(--text); font-weight:700; }
+    .btn-secondary:hover:not(:disabled) { border-color:var(--button); }
+    .btn-sm { height:34px; padding:0 14px; border-radius:8px;
+      border:1px solid var(--border); background:var(--panel2); color:var(--text);
+      font-size:13px; font-weight:700; }
+    .btn-sm:hover:not(:disabled) { border-color:var(--button); color:#ffd98a; }
+    .btn-sm:disabled { opacity:.4; cursor:not-allowed; }
+    .grade-1 { color:#888; } .grade-2 { color:#c8aa60; }
+    .grade-3 { color:#ffd060; text-shadow:0 0 10px rgba(255,200,60,.45); }
+
+    /* ── 인격 카드 ─────────────────────────────── */
+    .id-card { display:flex; gap:18px; align-items:flex-start; }
+    .id-img-wrap { position:relative; flex-shrink:0; }
+    .id-img-wrap img { width:130px; height:170px; object-fit:cover; object-position:top center;
+      border-radius:12px; box-shadow:0 4px 20px #0008; display:block; }
+    .id-img-toggle { position:absolute; bottom:7px; right:7px; height:26px; padding:0 8px;
+      font-size:11px; font-weight:800; border-radius:6px;
+      border:1px solid rgba(255,255,255,.2); background:rgba(0,0,0,.72);
+      color:white; cursor:pointer; backdrop-filter:blur(4px); }
+    .id-info-name { font-size:20px; font-weight:900; margin-bottom:4px; }
+    .id-info-sub { color:var(--muted); font-size:14px; margin-bottom:8px; }
+    .affil-wrap { display:flex; gap:6px; flex-wrap:wrap; }
+    .affil-tag { padding:3px 10px; border-radius:999px; border:1px solid var(--border);
+      background:var(--panel2); font-size:13px; color:var(--muted); }
+
+    /* ── Stage 1 스킬 선택 ─────────────────────── */
+    .skill-block { border:1px solid var(--border); border-radius:14px;
+      padding:14px 16px; margin-bottom:10px; background:var(--panel2); }
+    .skill-block-label { font-size:13px; font-weight:800; color:#ffd98a; margin-bottom:12px; }
+    .row-label { font-size:12px; color:var(--muted); font-weight:700; margin-bottom:7px; }
+    .sin-btns { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
+    .sin-btn { height:34px; padding:0 13px; border-radius:999px;
+      font-size:13px; font-weight:800; border:2px solid transparent; cursor:pointer;
+      transition:opacity .12s, transform .1s; }
+    .sin-btn.dim { opacity:.35; }
+    .sin-btn.sel { opacity:1; transform:scale(1.06); }
+    .type-btns { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:4px; }
+    .type-btn { width:50px; height:50px; border-radius:10px; border:2px solid var(--border);
+      background:var(--panel); cursor:pointer; padding:6px;
+      display:flex; align-items:center; justify-content:center;
+      transition:opacity .12s, border-color .12s; }
+    .type-btn img { width:100%; height:100%; object-fit:contain; pointer-events:none; }
+    .type-btn .type-fb { font-size:12px; font-weight:800; color:var(--muted); }
+    .type-btn.dim { opacity:.3; }
+    .type-btn.sel { border-color:var(--button); background:color-mix(in srgb, var(--button) 18%, var(--panel)); opacity:1; }
+
+    /* ── Stage 1 결과 ──────────────────────────── */
+    .result-chips { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+    .chip { display:inline-flex; align-items:center; gap:4px; padding:4px 11px;
+      border-radius:999px; font-size:13px; font-weight:700; }
+    .chip-hit { background:color-mix(in srgb, var(--green) 28%, var(--panel2));
+      color:#bdf0c8; border:1px solid color-mix(in srgb, var(--green) 55%, transparent); }
+    .chip-miss { background:color-mix(in srgb, var(--red) 28%, var(--panel2));
+      color:#ffb8b2; border:1px solid color-mix(in srgb, var(--red) 55%, transparent); }
+
+    /* ── Stage 2 스킬명 입력 ───────────────────── */
+    .s2-row { display:flex; gap:14px; align-items:flex-start; margin-bottom:16px; }
+    .skill-icon-box { width:80px; height:80px; flex-shrink:0; border-radius:12px;
+      display:flex; align-items:center; justify-content:center; overflow:hidden; }
+    .skill-icon-box img { width:100%; height:100%; object-fit:contain; }
+    .skill-icon-fb { font-size:28px; font-weight:900; color:rgba(255,255,255,.55); }
+    .s2-input-area { flex:1; min-width:0; }
+    .s2-input-row { display:flex; gap:8px; }
+    .s2-input { flex:1; height:42px; border-radius:10px; border:2px solid var(--border);
+      background:#131313; color:var(--text); padding:0 12px; font:inherit; font-size:15px;
+      transition:border-color .2s; }
+    .s2-input:disabled { opacity:.65; }
+    .s2-input.correct { border-color:var(--green); background:color-mix(in srgb, var(--green) 12%, #131313); }
+    .s2-input.wrong { border-color:var(--red); animation:shake .3s ease; }
+    @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+    .s2-feedback { margin-top:6px; font-size:13px; min-height:20px; }
+    .s2-correct-txt { color:#bdf0c8; font-weight:700; }
+    .s2-hint-txt { color:var(--muted); }
+
+    /* ── 결과 화면 ─────────────────────────────── */
+    .result-hero { display:flex; gap:18px; align-items:flex-start; margin-bottom:20px; }
+    .result-hero-img { width:120px; height:160px; object-fit:cover; object-position:top center;
+      border-radius:10px; box-shadow:0 4px 20px #0008; flex-shrink:0; }
+    .result-skill-rows { display:flex; flex-direction:column; gap:8px; }
+    .rs-row { display:flex; align-items:center; gap:12px; padding:10px 14px;
+      border-radius:12px; background:var(--panel2); border:1px solid var(--border); }
+    .rs-icon { width:48px; height:48px; border-radius:8px; overflow:hidden; flex-shrink:0;
+      display:flex; align-items:center; justify-content:center; }
+    .rs-icon img { width:100%; height:100%; object-fit:contain; }
+    .rs-icon-fb { font-size:20px; font-weight:900; color:rgba(255,255,255,.5); }
+    .rs-name { font-weight:800; flex:1; }
+    .rs-meta { display:flex; gap:6px; align-items:center; }
+    .sin-badge { padding:3px 10px; border-radius:999px; font-size:12px; font-weight:800; border:1px solid transparent; }
+    .type-badge { width:32px; height:32px; border-radius:6px; overflow:hidden;
+      display:flex; align-items:center; justify-content:center; }
+    .type-badge img { width:100%; height:100%; object-fit:contain; }
+
+    .action-row { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:20px; }
+
+    @media (max-width:640px) {
+      body { padding:14px; }
+      .id-card { flex-direction:column; }
+      .id-img-wrap img { width:100%; height:220px; }
+      .s2-row { flex-direction:column; }
+      .skill-icon-box { width:64px; height:64px; align-self:center; }
+      .result-hero { flex-direction:column; }
+      .result-hero-img { width:100%; height:220px; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ══ Stage 1 ═══════════════════════════════ -->
+  <div id="screen-s1">
+    <a class="back-btn" href="./index.html">← 홈</a>
+    <h1>림버스 스킬 퀴즈</h1>
+    <p class="sub">스테이지 1 · 각 스킬의 죄악속성과 공격유형을 맞혀보세요</p>
+
+    <div class="panel" id="s1-id-panel"></div>
+    <div id="s1-skill-blocks"></div>
+
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:4px">
+      <button class="btn-primary" id="s1-submit" disabled>제출</button>
+      <button class="btn-secondary" id="s1-next" style="display:none">다음 문제</button>
+      <button class="btn-secondary" id="s1-to-s2" style="display:none">스테이지 2로 진행 →</button>
+      <span id="s1-msg" style="color:var(--muted);font-size:14px"></span>
+    </div>
+  </div>
+
+  <!-- ══ Stage 2 ═══════════════════════════════ -->
+  <div id="screen-s2" style="display:none">
+    <a class="back-btn" href="./index.html">← 홈</a>
+    <h1>림버스 스킬 퀴즈</h1>
+    <p class="sub">스테이지 2 · 스킬 아이콘을 보고 이름을 맞혀보세요 (하드)</p>
+
+    <div class="panel" id="s2-panel"></div>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn-secondary" id="s2-giveup">포기하기</button>
+    </div>
+  </div>
+
+  <!-- ══ 결과 화면 ══════════════════════════════ -->
+  <div id="screen-result" style="display:none">
+    <a class="back-btn" href="./index.html">← 홈</a>
+    <div class="panel">
+      <div style="text-align:center;margin-bottom:20px">
+        <div style="font-size:48px;margin-bottom:6px" id="r-emoji"></div>
+        <div style="font-size:26px;font-weight:900" id="r-title"></div>
+      </div>
+      <div class="result-hero" id="r-hero"></div>
+      <div class="result-skill-rows" id="r-skills"></div>
+      <div class="action-row">
+        <button class="btn-primary" id="r-next">다음 문제</button>
+        <a class="btn-secondary back-btn" href="./index.html" style="margin:0">홈으로</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ── 상수 ──────────────────────────────────────────────
+  const SINS = ['분노','색욕','나태','탐식','우울','오만','질투'];
+  const SIN_COLOR = {
+    '분노': {bg:'#4a1818', text:'#ff7878', border:'#c0392b'},
+    '색욕': {bg:'#3a2010', text:'#ff9060', border:'#d2691e'},
+    '나태': {bg:'#36300a', text:'#f0d050', border:'#c9a227'},
+    '탐식': {bg:'#0e2e18', text:'#60d880', border:'#3f8f57'},
+    '우울': {bg:'#0e2030', text:'#60b8f0', border:'#3a8fb7'},
+    '오만': {bg:'#121840', text:'#6878f8', border:'#3a5fcd'},
+    '질투': {bg:'#200e36', text:'#b070f0', border:'#7b4fa3'},
+  };
+  const TYPES = ['참격','관통','타격','방어','회피','반격'];
+  const TYPE_SLUG = {'참격':'slash','관통':'pierce','타격':'blunt','방어':'Guard','회피':'Evade','반격':'Counter'};
+  const TYPE_BASE = 'https://baslimbus.info/assets/attackType/';
+  const GRADE_CLASS = {'★':'grade-1','★★':'grade-2','★★★':'grade-3'};
+
+  // ── 상태 ──────────────────────────────────────────────
+  let DATA = [];
+  let Q = null;          // 현재 문제 인격
+  let isGacksung = false;
+  // Stage 1
+  let s1Sel = [];        // [{sin, type}, ...]  (스킬 수만큼)
+  let s1Locked = false;  // 정답 맞힌 후 lock
+  // Stage 2
+  let s2Done = [];
+  let gaveUp = false;
+
+  // ── 유틸 ──────────────────────────────────────────────
+  const $ = id => document.getElementById(id);
+  function esc(s) {
+    return String(s ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+  }
+  function gradeSpan(g) { return `<span class="${GRADE_CLASS[g]||''}">${esc(g)}</span>`; }
+  function normName(s) { return (s||'').replace(/[\s\[\]\-·:〖〗【】]/g,'').toLowerCase(); }
+  function sinStyle(sin) {
+    const c = SIN_COLOR[sin] || {bg:'#333',text:'#aaa',border:'#555'};
+    return `background:${c.bg};color:${c.text};border-color:${c.border}`;
+  }
+  function sinBadge(sin) {
+    const c = SIN_COLOR[sin] || {bg:'#333',text:'#aaa',border:'#555'};
+    return `<span class="sin-badge" style="background:${c.bg};color:${c.text};border-color:${c.border}">${esc(sin)}</span>`;
+  }
+  function typeIconHtml(type, size=32) {
+    const slug = TYPE_SLUG[type];
+    if (!slug) return '';
+    return `<img src="${TYPE_BASE}${slug}.webp" alt="${esc(type)}" width="${size}" height="${size}" onerror="this.style.display='none'">`;
+  }
+
+  function skills() {
+    return [1,2,3].map(n => ({
+      idx: n-1, n,
+      name:  Q[`스킬${n}명`],
+      sin:   Q[`스킬${n}속성`],
+      type:  Q[`스킬${n}유형`],
+      icon:  Q[`스킬${n}아이콘`],
+    })).filter(s => s.name);
+  }
+
+  function pickQ() {
+    const valid = DATA.filter(d =>
+      d['스킬1명'] &&
+      (d['스킬1아이콘'] || d['스킬2아이콘'] || d['스킬3아이콘'])
+    );
+    return valid.length ? valid[Math.floor(Math.random()*valid.length)] : null;
+  }
+
+  function showScreen(id) {
+    ['screen-s1','screen-s2','screen-result'].forEach(s => $(s).style.display = 'none');
+    $(id).style.display = '';
+  }
+
+  // ── 인격 카드 ─────────────────────────────────────────
+  function renderIdCard(container) {
+    const d = Q;
+    const normalUrl = d['이미지(일반)'];
+    const gUrl = d['이미지(각성)'];
+    const affils = [d['소속1'],d['소속2']].filter(Boolean);
+    container.innerHTML = `
+      <div class="id-card">
+        ${normalUrl ? `
+          <div class="id-img-wrap">
+            <img id="id-img" src="${esc(normalUrl)}" alt="${esc(d['인격명'])}" onerror="this.parentElement.style.display='none'">
+            ${gUrl ? `<button class="id-img-toggle" id="id-toggle">각성</button>` : ''}
+          </div>` : ''}
+        <div class="id-info">
+          <div class="id-info-name">${esc(d['인격명'])}</div>
+          <div class="id-info-sub">${esc(d['수감자'])} · ${gradeSpan(d['성급'])}</div>
+          ${affils.length ? `<div class="affil-wrap">${affils.map(a=>`<span class="affil-tag">${esc(a)}</span>`).join('')}</div>` : ''}
+        </div>
+      </div>`;
+    if (gUrl) {
+      const img = $('id-img'), btn = $('id-toggle');
+      if (img && btn) btn.onclick = () => {
+        isGacksung = !isGacksung;
+        img.src = isGacksung ? Q['이미지(각성)'] : Q['이미지(일반)'];
+        btn.textContent = isGacksung ? '일반' : '각성';
+      };
+    }
+  }
+
+  // ── Stage 1 렌더 ──────────────────────────────────────
+  function renderS1() {
+    const sk = skills();
+    s1Sel = sk.map(() => ({sin:null, type:null}));
+    s1Locked = false;
+
+    $('s1-skill-blocks').innerHTML = sk.map((s, si) => `
+      <div class="panel skill-block" id="sb-${si}">
+        <div class="skill-block-label">스킬 ${s.n}</div>
+        <div class="row-label">죄악속성</div>
+        <div class="sin-btns" id="sins-${si}">
+          ${SINS.map(sin => `
+            <button class="sin-btn" data-si="${si}" data-sin="${sin}"
+              style="${sinStyle(sin)}">${esc(sin)}</button>`).join('')}
+        </div>
+        <div class="row-label">공격유형</div>
+        <div class="type-btns" id="types-${si}">
+          ${TYPES.map(type => {
+            const slug = TYPE_SLUG[type];
+            return `<button class="type-btn" data-si="${si}" data-type="${type}" title="${type}">
+              <img src="${TYPE_BASE}${slug}.webp" alt="${type}"
+                onerror="this.style.display='none';this.nextElementSibling.style.display=''">
+              <span class="type-fb" style="display:none">${esc(type[0])}</span>
+            </button>`;
+          }).join('')}
+        </div>
+        <div class="result-chips" id="chips-${si}" style="display:none"></div>
+      </div>`).join('');
+
+    document.querySelectorAll('.sin-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (s1Locked) return;
+        const si = +btn.dataset.si, sin = btn.dataset.sin;
+        s1Sel[si].sin = s1Sel[si].sin === sin ? null : sin;
+        refreshSinBtns(si);
+        updateSubmitBtn();
+      });
+    });
+    document.querySelectorAll('.type-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (s1Locked) return;
+        const si = +btn.dataset.si, type = btn.dataset.type;
+        s1Sel[si].type = s1Sel[si].type === type ? null : type;
+        refreshTypeBtns(si);
+        updateSubmitBtn();
+      });
+    });
+
+    updateSubmitBtn();
+  }
+
+  function refreshSinBtns(si) {
+    const sel = s1Sel[si].sin;
+    document.querySelectorAll(`#sins-${si} .sin-btn`).forEach(b => {
+      const mine = b.dataset.sin === sel;
+      b.classList.toggle('sel', mine);
+      b.classList.toggle('dim', sel !== null && !mine);
+    });
+  }
+  function refreshTypeBtns(si) {
+    const sel = s1Sel[si].type;
+    document.querySelectorAll(`#types-${si} .type-btn`).forEach(b => {
+      const mine = b.dataset.type === sel;
+      b.classList.toggle('sel', mine);
+      b.classList.toggle('dim', sel !== null && !mine);
+    });
+  }
+  function updateSubmitBtn() {
+    const sk = skills();
+    const allPicked = s1Sel.slice(0, sk.length).every(s => s.sin && s.type);
+    $('s1-submit').disabled = !allPicked || s1Locked;
+  }
+
+  function submitS1() {
+    const sk = skills();
+    let allCorrect = true;
+    sk.forEach((s, si) => {
+      const sinHit  = s1Sel[si].sin  === s.sin;
+      const typeHit = s1Sel[si].type === s.type;
+      if (!sinHit || !typeHit) allCorrect = false;
+      const chips = $(`chips-${si}`);
+      chips.style.display = '';
+      chips.innerHTML = `
+        <span class="chip ${sinHit?'chip-hit':'chip-miss'}">${sinHit?'✅':'❌'} 속성: ${esc(s.sin)}</span>
+        <span class="chip ${typeHit?'chip-hit':'chip-miss'}">${typeHit?'✅':'❌'} 유형: ${esc(s.type)}</span>`;
+    });
+
+    if (allCorrect) {
+      s1Locked = true;
+      $('s1-submit').disabled = true;
+      $('s1-next').style.display = 'none';
+      $('s1-to-s2').style.display = 'inline-block';
+      $('s1-msg').textContent = '완벽합니다! 🎉';
+    } else {
+      $('s1-next').style.display = 'inline-block';
+      $('s1-msg').textContent = '틀린 항목이 있습니다. 다시 시도하거나 다음 문제로 넘어가세요.';
+    }
+  }
+
+  // ── Stage 2 렌더 ──────────────────────────────────────
+  function renderS2() {
+    const sk = skills();
+    s2Done = sk.map(() => false);
+    gaveUp = false;
+
+    $('s2-panel').innerHTML = sk.map((s, si) => {
+      const sinC = SIN_COLOR[s.sin] || {bg:'#333'};
+      const iconHtml = s.icon
+        ? `<img src="${esc(s.icon)}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display=''"><span class="skill-icon-fb" style="display:none">?</span>`
+        : `<span class="skill-icon-fb">?</span>`;
+      return `
+        <div class="s2-row">
+          <div class="skill-icon-box" style="background:${sinC.bg}">${iconHtml}</div>
+          <div class="s2-input-area">
+            <div style="font-size:13px;color:var(--muted);font-weight:700;margin-bottom:7px">스킬 ${s.n}</div>
+            <div class="s2-input-row">
+              <input class="s2-input" id="s2in-${si}" placeholder="스킬 이름을 입력하세요" autocomplete="off">
+              <button class="btn-sm" id="s2ok-${si}" style="height:42px;padding:0 16px">확인</button>
+              <button class="btn-sm" id="s2hint-${si}" style="height:42px;padding:0 12px">힌트</button>
+            </div>
+            <div class="s2-feedback" id="s2fb-${si}"></div>
+          </div>
+        </div>`;
+    }).join('');
+
+    sk.forEach((s, si) => {
+      const inp  = $(`s2in-${si}`);
+      const okBtn   = $(`s2ok-${si}`);
+      const hintBtn = $(`s2hint-${si}`);
+      const fb      = $(`s2fb-${si}`);
+      let hintUsed  = false;
+
+      function check() {
+        if (s2Done[si]) return;
+        if (normName(inp.value) === normName(s.name)) {
+          s2Done[si] = true;
+          inp.classList.add('correct'); inp.classList.remove('wrong');
+          inp.disabled = true; okBtn.disabled = true; hintBtn.disabled = true;
+          fb.innerHTML = `<span class="s2-correct-txt">✅ ${esc(s.name)}</span>`;
+          if (s2Done.every(Boolean)) setTimeout(showResult, 700);
+        } else {
+          inp.classList.add('wrong');
+          setTimeout(() => inp.classList.remove('wrong'), 400);
+          fb.innerHTML = `<span style="color:#ffb8b2">❌ 틀렸습니다</span>`;
+        }
+      }
+
+      okBtn.addEventListener('click', check);
+      inp.addEventListener('keydown', e => { if (e.key === 'Enter') check(); });
+      hintBtn.addEventListener('click', () => {
+        if (hintUsed || s2Done[si]) return;
+        hintUsed = true;
+        hintBtn.disabled = true;
+        fb.innerHTML = `<span class="s2-hint-txt">힌트: "${esc(s.name[0])}..."</span>`;
+      });
+    });
+  }
+
+  // ── 결과 화면 ─────────────────────────────────────────
+  function showResult() {
+    const d = Q;
+    $('r-emoji').textContent  = gaveUp ? '😢' : '🎉';
+    $('r-title').textContent  = gaveUp ? '포기' : '클리어!';
+
+    const imgUrl = d['이미지(각성)'] || d['이미지(일반)'];
+    const affils = [d['소속1'],d['소속2']].filter(Boolean);
+    $('r-hero').innerHTML = `
+      ${imgUrl ? `<img class="result-hero-img" src="${esc(imgUrl)}" alt="${esc(d['인격명'])}" onerror="this.style.display='none'">` : ''}
+      <div>
+        <div style="font-size:20px;font-weight:900;margin-bottom:4px">${esc(d['인격명'])}</div>
+        <div style="color:var(--muted);font-size:14px;margin-bottom:8px">${esc(d['수감자'])} · ${gradeSpan(d['성급'])}</div>
+        ${affils.length ? `<div class="affil-wrap">${affils.map(a=>`<span class="affil-tag">${esc(a)}</span>`).join('')}</div>` : ''}
+      </div>`;
+
+    $('r-skills').innerHTML = skills().map(s => {
+      const sinC = SIN_COLOR[s.sin] || {bg:'#333'};
+      const icon = s.icon
+        ? `<img src="${esc(s.icon)}" alt="" style="width:100%;height:100%;object-fit:contain" onerror="this.style.display='none';this.nextElementSibling.style.display=''"><span class="rs-icon-fb" style="display:none">?</span>`
+        : `<span class="rs-icon-fb">?</span>`;
+      const typeSlug = TYPE_SLUG[s.type];
+      return `
+        <div class="rs-row">
+          <div class="rs-icon" style="background:${sinC.bg}">${icon}</div>
+          <div class="rs-name">${esc(s.name)}</div>
+          <div class="rs-meta">
+            ${sinBadge(s.sin)}
+            ${typeSlug ? `<div class="type-badge" style="background:rgba(255,255,255,.06)">
+              <img src="${TYPE_BASE}${typeSlug}.webp" alt="${esc(s.type)}" onerror="this.style.display='none'">
+            </div>` : ''}
+          </div>
+        </div>`;
+    }).join('');
+
+    showScreen('screen-result');
+  }
+
+  // ── 게임 시작 ─────────────────────────────────────────
+  function startGame() {
+    Q = pickQ();
+    if (!Q) { alert('플레이 가능한 인격 데이터가 없습니다.'); return; }
+    isGacksung = false;
+    $('s1-next').style.display = 'none';
+    $('s1-to-s2').style.display = 'none';
+    $('s1-msg').textContent = '';
+    renderIdCard($('s1-id-panel'));
+    renderS1();
+    showScreen('screen-s1');
+  }
+
+  // ── 이벤트 ────────────────────────────────────────────
+  $('s1-submit').addEventListener('click', submitS1);
+  $('s1-next').addEventListener('click', startGame);
+  $('s1-to-s2').addEventListener('click', () => { renderS2(); showScreen('screen-s2'); });
+  $('s2-giveup').addEventListener('click', () => {
+    gaveUp = true;
+    skills().forEach((s, si) => {
+      if (s2Done[si]) return;
+      const inp = $(`s2in-${si}`); if (inp) { inp.disabled = true; }
+      $(`s2ok-${si}`)?.setAttribute('disabled','');
+      $(`s2hint-${si}`)?.setAttribute('disabled','');
+      const fb = $(`s2fb-${si}`);
+      if (fb) fb.innerHTML = `<span style="color:var(--muted)">정답: ${esc(s.name)}</span>`;
+    });
+    setTimeout(showResult, 800);
+  });
+  $('r-next').addEventListener('click', startGame);
+
+  // ── 데이터 로드 ───────────────────────────────────────
+  fetch('./data.json')
+    .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(json => { DATA = json; startGame(); })
+    .catch(() => {
+      document.querySelector('.wrap').innerHTML =
+        '<p style="color:var(--muted);padding:40px;text-align:center">데이터를 불러오지 못했습니다. 새로고침해 주세요.</p>';
+    });
+</script>
+</body>
+</html>
