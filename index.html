@@ -6,6 +6,7 @@
   <title>림버스 인격 두들</title>
   <link rel="icon" type="image/png" href="./Thumbnail.png" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
   <style>
     :root {
       --bg: #141414; --panel: #1f1f1f; --panel2: #292929; --text: #f4f1ea;
@@ -219,7 +220,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.4.3</span>
+          <span class="version-badge">v0.4.4</span>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
         <h1>림버스 인격 두들</h1>
@@ -280,7 +281,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.4.3</span>
+          <span class="version-badge">v0.4.4</span>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
         <button class="back-btn" id="backToHomeBtn">← 홈으로</button>
@@ -854,6 +855,18 @@
       return `<div class="answer-reveal"><div class="answer-text-part">${resultLine}</div>${imgHtml}</div>`;
     }
 
+    function fireFanfare() {
+      if (typeof confetti !== 'function') return;
+      const duration = 1500;
+      const end = Date.now() + duration;
+      (function frame() {
+        confetti({ particleCount: 4, angle: 60, spread: 55, origin: { x: 0, y: 0.7 }, colors: ['#ffd98a', '#c9a86a', '#ff9500', '#8b9c15'] });
+        confetti({ particleCount: 4, angle: 120, spread: 55, origin: { x: 1, y: 0.7 }, colors: ['#ffd98a', '#c9a86a', '#ff9500', '#8b9c15'] });
+        if (Date.now() < end) requestAnimationFrame(frame);
+      })();
+      confetti({ particleCount: 80, spread: 100, origin: { y: 0.6 }, colors: ['#ffd98a', '#c9a86a', '#ff9500', '#8b9c15'] });
+    }
+
     function showEnd(won) {
       finished = true;
       guessInput.disabled = true;
@@ -861,6 +874,7 @@
       dropdown.classList.remove('open');
       saveGameResultV2(won);
       messageEl.innerHTML = buildEndMessage(won);
+      if (won) fireFanfare();
       if (mode === 'daily') {
         saveDailyResult(won);
       } else {
@@ -1310,6 +1324,7 @@
       document.getElementById('sq-stage2').style.display = 'none';
       const resultEl = document.getElementById('sq-result');
       resultEl.style.display = '';
+      if (!gaveUp) fireFanfare();
       const id = sqIdentity;
       const imgUrl = id['이미지(각성)'] || id['이미지(일반)'];
       const affilParts = [id['소속1'], id['소속2']].filter(Boolean);
