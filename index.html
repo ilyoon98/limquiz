@@ -222,7 +222,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.4.5</span>
+          <span class="version-badge">v0.4.6</span>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
         <h1>림버스 인격 두들</h1>
@@ -283,7 +283,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.4.5</span>
+          <span class="version-badge">v0.4.6</span>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
         <button class="back-btn" id="backToHomeBtn">← 홈으로</button>
@@ -857,6 +857,15 @@
       return `<div class="answer-reveal ${won ? 'success' : 'fail'}" id="answerReveal"><div class="answer-text-part">${resultLine}</div>${imgHtml}</div>`;
     }
 
+    function scrollAnswerRevealIntoCenter() {
+      const el = document.getElementById('answerReveal');
+      if (!el) return;
+      const doScroll = () => el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      doScroll();
+      const img = document.getElementById('answer-image');
+      if (img && !img.complete) img.addEventListener('load', doScroll, { once: true });
+    }
+
     function fireFanfare() {
       if (typeof confetti !== 'function') return;
       const duration = 1500;
@@ -876,7 +885,7 @@
       dropdown.classList.remove('open');
       saveGameResultV2(won);
       messageEl.innerHTML = buildEndMessage(won);
-      document.getElementById('answerReveal')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      scrollAnswerRevealIntoCenter();
       if (won) fireFanfare();
       if (mode === 'daily') {
         saveDailyResult(won);
