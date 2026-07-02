@@ -33,8 +33,10 @@
     .already-played { display:none; padding:12px 16px; border-radius:12px; background:color-mix(in srgb, var(--yellow) 15%, var(--panel2)); border:1px solid color-mix(in srgb, var(--yellow) 40%, transparent); color:#ffd98a; font-weight:700; margin-bottom:14px; }
     .filter-block { display:flex; flex-direction:column; gap:12px; margin-bottom:14px; }
     .filter-title { display:flex; align-items:center; gap:8px; color:#ffd98a; font-weight:900; font-size:15px; }
-    .filter-row { display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:10px; align-items:end; }
-    .filter-row .mode-box { grid-column:1 / -1; justify-content:flex-start; margin-top:2px; }
+    .filter-row { display:flex; flex-wrap:wrap; align-items:end; gap:0 20px; row-gap:16px; }
+    .filter-group { display:flex; flex-wrap:wrap; gap:10px; align-items:end; padding-left:20px; border-left:1px solid var(--border); }
+    .filter-group:first-child { padding-left:0; border-left:0; }
+    .filter-group .field { flex:1 1 120px; min-width:120px; }
     .field label { display:block; color:var(--muted); font-size:14px; margin:0 0 6px; }
     input, button { height:44px; border-radius:12px; border:1px solid var(--border); font:inherit; }
     input { width:100%; background:#131313; color:var(--text); padding:0 12px; }
@@ -211,7 +213,7 @@
     .modal-actions { display:flex; gap:10px; margin-top:12px; }
     .modal-actions button { flex:1; height:46px; border-radius:12px; font-size:15px; font-weight:800; }
 
-    @media (max-width:800px) { body{padding:14px} .filter-row,.guess-row{grid-template-columns:1fr} .filter-row .mode-box{grid-column:auto} button{width:100%} .dropdown{position:static;margin-top:8px} }
+    @media (max-width:800px) { body{padding:14px} .guess-row{grid-template-columns:1fr} .filter-group{border-left:0;padding-left:0;flex-basis:100%;padding-top:12px;border-top:1px solid var(--border)} .filter-group:first-child{padding-top:0;border-top:0} button{width:100%} .dropdown{position:static;margin-top:8px} }
     @media (max-width:640px) { header{padding-right:0} .top-actions{position:static;margin-top:12px;width:100%;justify-content:space-between} .contact-btn{flex:1} .home-modes{flex-direction:column} }
   </style>
 </head>
@@ -222,7 +224,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.4.6</span>
+          <span class="version-badge">v0.4.7</span>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
         <h1>림버스 인격 두들</h1>
@@ -283,7 +285,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.4.6</span>
+          <span class="version-badge">v0.4.7</span>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
         <button class="back-btn" id="backToHomeBtn">← 홈으로</button>
@@ -305,17 +307,23 @@
         <div class="filter-block">
           <div class="filter-title">🔍 필터</div>
           <div class="filter-row">
-            <div class="field"><label for="includeSinner">수감자</label><input id="includeSinner" placeholder="예: 료슈" /></div>
-            <div class="field"><label for="includeGrade">성급</label><input id="includeGrade" placeholder="예: ★★★ 또는 3" /></div>
-            <div class="field"><label for="includeK1">키워드 A</label><input id="includeK1" placeholder="예: 출혈 (순서 무관)" /></div>
-            <div class="field"><label for="includeK2">키워드 B</label><input id="includeK2" placeholder="예: 호흡 (순서 무관)" /></div>
-            <div class="field"><label for="includeK3">키워드 C</label><input id="includeK3" placeholder="예: 파열 (순서 무관)" /></div>
-            <div class="field"><label for="includeAffil1">소속 1</label><input id="includeAffil1" placeholder="예: 거미집" /></div>
-            <div class="field"><label for="includeAffil2">소속 2</label><input id="includeAffil2" placeholder="예: 엄지" /></div>
-            <div class="mode-box" aria-label="포함 필터 방식">
-              <label><input type="radio" name="includeMode" value="and" checked />AND</label>
-              <label><input type="radio" name="includeMode" value="or" />OR</label>
+            <div class="filter-group">
+              <div class="field"><label for="includeSinner">수감자</label><input id="includeSinner" placeholder="예: 료슈" /></div>
+              <div class="field"><label for="includeGrade">성급</label><input id="includeGrade" placeholder="예: ★★★ 또는 3" /></div>
             </div>
+            <div class="filter-group">
+              <div class="field"><label for="includeK1">키워드 A</label><input id="includeK1" placeholder="예: 출혈 (순서 무관)" /></div>
+              <div class="field"><label for="includeK2">키워드 B</label><input id="includeK2" placeholder="예: 호흡 (순서 무관)" /></div>
+              <div class="field"><label for="includeK3">키워드 C</label><input id="includeK3" placeholder="예: 파열 (순서 무관)" /></div>
+            </div>
+            <div class="filter-group">
+              <div class="field"><label for="includeAffil1">소속 1</label><input id="includeAffil1" placeholder="예: 거미집" /></div>
+              <div class="field"><label for="includeAffil2">소속 2</label><input id="includeAffil2" placeholder="예: 엄지" /></div>
+            </div>
+          </div>
+          <div class="mode-box" aria-label="포함 필터 방식">
+            <label><input type="radio" name="includeMode" value="and" checked />AND</label>
+            <label><input type="radio" name="includeMode" value="or" />OR</label>
           </div>
         </div>
 
