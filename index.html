@@ -65,8 +65,10 @@
     .pill.hit { background: color-mix(in srgb, var(--green) 70%, #111); color:white; }
     .pill.miss { background: color-mix(in srgb, var(--red) 65%, #111); color:white; }
     .answer { font-weight:900; color:#ffd98a; }
-    .answer-reveal { display:flex; flex-direction:column; gap:14px; margin-top:4px; }
-    .answer-text-part { }
+    .answer-reveal { display:flex; flex-direction:column; gap:14px; margin-top:4px; padding:20px 22px; border-radius:18px; border:2px solid var(--border); background:var(--panel2); transition:box-shadow .2s; }
+    .answer-reveal.success { border-color:var(--green); background:color-mix(in srgb, var(--green) 14%, var(--panel2)); box-shadow:0 0 0 1px color-mix(in srgb, var(--green) 45%, transparent), 0 10px 30px rgba(0,0,0,.35); }
+    .answer-reveal.fail { border-color:var(--red); background:color-mix(in srgb, var(--red) 12%, var(--panel2)); box-shadow:0 0 0 1px color-mix(in srgb, var(--red) 40%, transparent), 0 10px 30px rgba(0,0,0,.35); }
+    .answer-text-part { font-size:16px; font-weight:700; }
     .answer-img-area { position:relative; text-align:center; }
     .answer-img-area img { max-width:100%; max-height:520px; object-fit:contain; display:inline-block; border-radius:10px; box-shadow:0 4px 24px #0008; }
     .img-toggle-btn { position:absolute; top:8px; right:8px; height:30px; padding:0 12px; font-size:13px; font-weight:800; border-radius:8px; border:1px solid var(--border); background:rgba(20,20,20,.78); color:var(--text); cursor:pointer; backdrop-filter:blur(4px); }
@@ -220,7 +222,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.4.4</span>
+          <span class="version-badge">v0.4.5</span>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
         <h1>림버스 인격 두들</h1>
@@ -281,7 +283,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.4.4</span>
+          <span class="version-badge">v0.4.5</span>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
         <button class="back-btn" id="backToHomeBtn">← 홈으로</button>
@@ -852,7 +854,7 @@
           <img id="answer-image" src="${escapeHtml(normalImg)}" alt="${escapeHtml(answer['인격명'])}" onerror="this.parentElement.style.display='none'" />
           ${gacksungImg ? `<button id="image-toggle-btn" class="img-toggle-btn" onclick="toggleAnswerImage()">각성</button>` : ''}
         </div>` : '';
-      return `<div class="answer-reveal"><div class="answer-text-part">${resultLine}</div>${imgHtml}</div>`;
+      return `<div class="answer-reveal ${won ? 'success' : 'fail'}" id="answerReveal"><div class="answer-text-part">${resultLine}</div>${imgHtml}</div>`;
     }
 
     function fireFanfare() {
@@ -874,6 +876,7 @@
       dropdown.classList.remove('open');
       saveGameResultV2(won);
       messageEl.innerHTML = buildEndMessage(won);
+      document.getElementById('answerReveal')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       if (won) fireFanfare();
       if (mode === 'daily') {
         saveDailyResult(won);
