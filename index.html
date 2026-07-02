@@ -171,8 +171,12 @@
     .sq-s1-actions { display:flex; gap:8px; margin-top:10px; }
     .sq-s1-action-btn { height:32px; padding:0 14px; border-radius:999px; font-size:12px; font-weight:800; background:var(--panel2); color:var(--text); border:1px solid var(--border); }
     .sq-s1-action-btn:hover { border-color:var(--button); color:#ffd98a; }
-    .sq-submit-wrap { text-align:center; padding:4px 0 8px; }
+    .sq-submit-wrap { display:flex; align-items:center; justify-content:center; gap:10px; padding:4px 0 8px; }
     .sq-submit-btn { height:48px; padding:0 40px; font-size:16px; font-weight:900; border-radius:14px; }
+    .sq-s1-giveup-btn { height:48px; padding:0 24px; font-size:14px; }
+    .sq-gaveup-badge { font-size:11px; font-weight:800; color:#ffb86b; margin-left:6px; }
+    .sq-correct-badge { font-size:11px; font-weight:800; color:#6ddb8a; margin-left:6px; }
+    .sq-result-stat { text-align:center; color:var(--muted); font-size:13px; margin:-8px 0 16px; }
     .sq-s2-row { display:grid; grid-template-columns:120px 1fr auto auto; gap:12px; align-items:center; background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:14px; }
     .sq-s2-icon { width:120px; height:120px; border-radius:12px; object-fit:contain; background:var(--panel2); display:block; }
     .sq-s2-icon-fb { width:120px; height:120px; border-radius:12px; align-items:center; justify-content:center; font-size:40px; font-weight:900; display:none; }
@@ -240,7 +244,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.5.6</span>
+          <span class="version-badge">v0.6.0</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -302,7 +306,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.5.6</span>
+          <span class="version-badge">v0.6.0</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -392,6 +396,7 @@
       <div id="sq-stage1">
         <div id="sq-skills-s1" class="panel" style="display:flex;flex-direction:column;gap:14px;padding:18px"></div>
         <div class="sq-submit-wrap" style="margin-top:16px">
+          <button class="secondary sq-s1-giveup-btn" onclick="sqGiveUpS1()">포기하기</button>
           <button id="sqSubmitBtn" class="sq-submit-btn" disabled>제출</button>
         </div>
       </div>
@@ -1168,6 +1173,7 @@
 
     let sqIdentity = null, sqIsGacksung = false, sqSkillCount = 0;
     let sqS1Sel = [], sqS2Done = [], sqS1Feedback = [];
+    let sqS1SinGaveUp = [], sqS1TypeGaveUp = [], sqS2GaveUp = [];
 
     function sqGoToSkillQuiz() {
       homeScreen.style.display = 'none';
@@ -1196,6 +1202,9 @@
       sqS1Sel = Array.from({length: sqSkillCount}, () => ({sin:'', type:''}));
       sqS1Feedback = Array(sqSkillCount).fill('');
       sqS2Done = Array(sqSkillCount).fill(false);
+      sqS1SinGaveUp = Array(sqSkillCount).fill(false);
+      sqS1TypeGaveUp = Array(sqSkillCount).fill(false);
+      sqS2GaveUp = Array(sqSkillCount).fill(false);
     }
 
     function sqIdentityCardHTML() {
@@ -1318,6 +1327,24 @@
       if (allCorrect) setTimeout(sqRenderStage2, 600);
     }
 
+    function sqGiveUpS1() {
+      const id = sqIdentity;
+      sqS1Sel.forEach((sel, si) => {
+        const n = si + 1;
+        const correctSin = id[`스킬${n}속성`];
+        const correctType = id[`스킬${n}유형`];
+        const sinWasWrong = sel.sin !== correctSin;
+        const typeWasWrong = sel.type !== correctType;
+        if (sinWasWrong) { sel.sin = correctSin; sqS1SinGaveUp[si] = true; }
+        if (typeWasWrong) { sel.type = correctType; sqS1TypeGaveUp[si] = true; }
+        sqS1Feedback[si] = (sinWasWrong || typeWasWrong)
+          ? `<span style="color:var(--muted)">👀 포기: ${[sinWasWrong ? `죄악속성(${escapeHtml(correctSin)})` : '', typeWasWrong ? `공격유형(${escapeHtml(correctType)})` : ''].filter(Boolean).join(' · ')} 공개</span>`
+          : '<span style="color:#6ddb8a;font-weight:800">✅ 이미 정답이었습니다</span>';
+      });
+      sqRenderSkillBlocks();
+      setTimeout(sqRenderStage2, 500);
+    }
+
     function sqRenderStage2() {
       document.getElementById('sq-stage1').style.display = 'none';
       document.getElementById('sq-stage2').style.display = '';
@@ -1363,7 +1390,7 @@
         inp.disabled = true;
         if (hint) { hint.style.color = '#6ddb8a'; hint.textContent = '✅ 정답!'; }
         document.getElementById(`sq-s2-row-${si}`)?.querySelectorAll('button').forEach(b => b.disabled = true);
-        if (sqS2Done.every(Boolean)) setTimeout(() => sqRenderResult(false), 600);
+        if (sqS2Done.every(Boolean)) setTimeout(sqRenderResult, 600);
       } else {
         inp.style.borderColor = 'var(--red)';
         if (hint) { hint.style.color = '#ff8888'; hint.textContent = '❌ 오답입니다.'; }
@@ -1381,6 +1408,7 @@
     function sqGiveUp() {
       sqS1Sel.forEach((_, si) => {
         if (!sqS2Done[si]) {
+          sqS2GaveUp[si] = true;
           const inp = document.getElementById(`sq-s2-inp-${si}`);
           if (inp) { inp.value = sqIdentity[`스킬${si+1}명`]; inp.disabled = true; }
           const hint = document.getElementById(`sq-s2-hint-${si}`);
@@ -1389,18 +1417,21 @@
         }
       });
       sqS2Done = sqS2Done.map(() => true);
-      setTimeout(() => sqRenderResult(true), 400);
+      setTimeout(sqRenderResult, 400);
     }
 
-    function sqRenderResult(gaveUp) {
+    function sqRenderResult() {
       document.getElementById('sq-identity-card').style.display = 'none';
       document.getElementById('sq-stage2').style.display = 'none';
       const resultEl = document.getElementById('sq-result');
       resultEl.style.display = '';
-      if (!gaveUp) fireFanfare();
+      const anyGaveUp = sqS1SinGaveUp.some(Boolean) || sqS1TypeGaveUp.some(Boolean) || sqS2GaveUp.some(Boolean);
+      if (!anyGaveUp) fireFanfare();
       const id = sqIdentity;
       const imgUrl = id['이미지(각성)'] || id['이미지(일반)'];
       const affilParts = [id['소속1'], id['소속2']].filter(Boolean);
+      const totalItems = sqSkillCount * 3;
+      const gaveUpItems = sqS1SinGaveUp.filter(Boolean).length + sqS1TypeGaveUp.filter(Boolean).length + sqS2GaveUp.filter(Boolean).length;
       const skillRows = Array.from({length: sqSkillCount}, (_, i) => {
         const n = i + 1;
         const sin = id[`스킬${n}속성`]; const type = id[`스킬${n}유형`];
@@ -1409,17 +1440,21 @@
         const typeHtml = slug
           ? `<img src="${SQ_TYPE_BASE}${slug}.webp" style="width:22px;height:22px;object-fit:contain" alt="${escapeHtml(type)}" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"><span style="display:none;font-size:13px;color:var(--muted)">${escapeHtml(type)}</span>`
           : `<span style="font-size:13px;color:var(--muted)">${escapeHtml(type)}</span>`;
+        const nameBadge = sqS2GaveUp[i] ? '<span class="sq-gaveup-badge">👀 포기</span>' : '<span class="sq-correct-badge">✅ 정답</span>';
+        const sinBadge = sqS1SinGaveUp[i] ? ' 👀' : '';
+        const typeBadge = sqS1TypeGaveUp[i] ? ' 👀' : '';
         return `<div class="sq-result-skill-row">
-          <div class="sq-result-skill-name">${escapeHtml(id[`스킬${n}명`])}</div>
-          <span class="sq-sin-chip" style="background:${sc.bg};color:${sc.text};border-color:${sc.border}">${escapeHtml(sin)}</span>
-          ${typeHtml}
+          <div class="sq-result-skill-name">${escapeHtml(id[`스킬${n}명`])}${nameBadge}</div>
+          <span class="sq-sin-chip" style="background:${sc.bg};color:${sc.text};border-color:${sc.border}">${escapeHtml(sin)}${sinBadge}</span>
+          ${typeHtml}${typeBadge}
         </div>`;
       }).join('');
       resultEl.innerHTML = `<div class="panel">
-        <div class="sq-result-banner">${gaveUp ? '😢 포기' : '🎉 클리어!'}</div>
+        <div class="sq-result-banner">${anyGaveUp ? '🙌 완료 (일부 포기)' : '🎉 완벽 클리어!'}</div>
         ${imgUrl ? `<div class="sq-result-img"><img src="${escapeHtml(imgUrl)}" alt="${escapeHtml(id['인격명'])}" onerror="this.parentElement.style.display='none'"></div>` : ''}
         <div class="sq-result-name">${escapeHtml(id['인격명'])}</div>
         <div class="sq-result-meta">${sinnerDot(id['수감자'])} · ${gradeSpan(id['성급'])}${affilParts.length ? ' · ' + escapeHtml(affilParts.join(' · ')) : ''}</div>
+        <div class="sq-result-stat">직접 맞힌 항목 ${totalItems - gaveUpItems}/${totalItems}${gaveUpItems ? ` · 포기 ${gaveUpItems}개 (👀 표시)` : ''}</div>
         <div class="sq-result-skills">${skillRows}</div>
         <div class="sq-result-actions">
           <button onclick="sqInit()">다음 문제</button>
