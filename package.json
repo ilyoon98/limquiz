@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "node scripts/build-data.js"
+    "build": "node scripts/build-data.js && node scripts/build-changelog.js"
   },
   "devDependencies": {
     "xlsx": "^0.18.5"
