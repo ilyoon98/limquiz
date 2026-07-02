@@ -110,6 +110,64 @@
     .home-records-table { min-width:640px; }
     .copy-btn { height:30px; padding:0 10px; font-size:13px; background:var(--panel2); color:var(--text); border:1px solid var(--border); border-radius:8px; cursor:pointer; }
     .copy-btn:hover { border-color:var(--button); color:#ffd98a; }
+    .rec-tab-wrap { display:flex; gap:6px; margin-bottom:12px; }
+    .rec-tab { height:34px; padding:0 16px; border-radius:999px; border:1px solid var(--border); background:var(--panel2); color:var(--muted); font:inherit; font-size:14px; font-weight:700; cursor:pointer; transition:background .15s,color .15s,border-color .15s; }
+    .rec-tab.active { background:var(--button); color:var(--buttonText); border-color:var(--button); }
+
+    /* ── 홈 인격두들 그룹 ────────────────────────── */
+    .home-doodle-group { flex:1.5; min-width:300px; display:flex; flex-direction:column; gap:10px; }
+    .home-group-label { font-size:11px; font-weight:800; color:var(--muted); letter-spacing:.1em; text-transform:uppercase; padding:0 4px; }
+    .home-doodle-cards { display:flex; gap:10px; flex-wrap:wrap; }
+    .home-doodle-cards .mode-card { flex:1; min-width:180px; }
+    .home-skill-card { flex:1; min-width:240px; display:flex; flex-direction:column; }
+    .home-skill-card .mode-card-desc { flex:1; }
+
+    /* ── 스킬 퀴즈 화면 ─────────────────────────── */
+    .sq-wrap { max-width:860px; margin:0 auto; }
+    .sq-header { display:flex; align-items:center; gap:14px; margin-bottom:20px; }
+    .sq-title { font-size:22px; font-weight:900; }
+    .sq-identity-card { display:grid; grid-template-columns:220px 1fr; background:var(--panel); border:1px solid var(--border); border-radius:18px; overflow:hidden; margin-bottom:20px; }
+    .sq-img-wrap { position:relative; min-height:260px; background:var(--panel2); }
+    .sq-img-wrap img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top center; display:block; }
+    .sq-img-toggle { position:absolute; top:8px; right:8px; height:28px; padding:0 10px; font-size:12px; font-weight:800; border-radius:8px; border:1px solid var(--border); background:rgba(20,20,20,.78); color:var(--text); cursor:pointer; }
+    .sq-img-toggle:hover { background:var(--panel2); border-color:var(--button); color:#ffd98a; }
+    .sq-identity-info { padding:20px 22px; }
+    .sq-identity-name { font-size:19px; font-weight:900; margin-bottom:8px; }
+    .sq-identity-meta { color:var(--muted); font-size:14px; line-height:1.7; }
+    .sq-skill-block { background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:16px 18px; }
+    .sq-skill-label { font-size:14px; font-weight:800; color:#ffd98a; margin-bottom:10px; }
+    .sq-row-label { font-size:12px; color:var(--muted); font-weight:700; margin:8px 0 6px; }
+    .sq-btn-group { display:flex; gap:6px; flex-wrap:wrap; }
+    .sq-sin-btn { height:34px; padding:0 12px; border-radius:999px; border:1px solid var(--border); background:var(--panel2); color:var(--muted); font:inherit; font-size:13px; font-weight:700; cursor:pointer; transition:all .12s; }
+    .sq-sin-btn.sel { font-weight:900; }
+    .sq-sin-btn.dim { opacity:.28; }
+    .sq-type-btn { height:34px; padding:0 10px; border-radius:999px; border:1px solid var(--border); background:var(--panel2); color:var(--muted); font:inherit; font-size:13px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:5px; transition:all .12s; }
+    .sq-type-btn img { width:18px; height:18px; object-fit:contain; }
+    .sq-type-btn.sel { border-color:var(--button); background:color-mix(in srgb,var(--button) 18%,var(--panel2)); color:var(--text); }
+    .sq-type-btn.dim { opacity:.28; }
+    .sq-s1-feedback { font-size:13px; min-height:18px; margin-top:8px; }
+    .sq-submit-wrap { text-align:center; padding:4px 0 8px; }
+    .sq-submit-btn { height:48px; padding:0 40px; font-size:16px; font-weight:900; border-radius:14px; }
+    .sq-s2-row { display:grid; grid-template-columns:120px 1fr auto auto; gap:12px; align-items:center; background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:14px; }
+    .sq-s2-icon { width:120px; height:120px; border-radius:12px; object-fit:contain; background:var(--panel2); display:block; }
+    .sq-s2-icon-fb { width:120px; height:120px; border-radius:12px; align-items:center; justify-content:center; font-size:40px; font-weight:900; display:none; }
+    .sq-s2-inp { height:44px; border-radius:10px; border:1px solid var(--border); background:#131313; color:var(--text); padding:0 12px; font:inherit; width:100%; }
+    .sq-s2-inp.ok { border-color:var(--green); background:color-mix(in srgb,var(--green) 10%,#131313); }
+    .sq-s2-hint { font-size:13px; color:#ffd98a; min-height:16px; margin-top:4px; }
+    .sq-s2-btn { height:44px; padding:0 14px; border-radius:10px; font-size:14px; font-weight:800; white-space:nowrap; }
+    .sq-give-up { text-align:center; margin-top:8px; }
+    .sq-result-banner { text-align:center; font-size:26px; font-weight:900; margin-bottom:18px; }
+    .sq-result-img { text-align:center; margin-bottom:16px; }
+    .sq-result-img img { max-width:100%; max-height:360px; object-fit:contain; border-radius:12px; box-shadow:0 4px 24px #0008; }
+    .sq-result-name { text-align:center; font-size:21px; font-weight:900; margin-bottom:4px; }
+    .sq-result-meta { text-align:center; color:var(--muted); font-size:14px; margin-bottom:18px; }
+    .sq-result-skills { display:flex; flex-direction:column; gap:8px; margin-bottom:22px; }
+    .sq-result-skill-row { display:flex; align-items:center; gap:10px; background:var(--panel2); border-radius:10px; padding:10px 14px; flex-wrap:wrap; }
+    .sq-result-skill-name { font-weight:800; flex:1; min-width:120px; }
+    .sq-sin-chip { border-radius:999px; padding:3px 10px; font-size:12px; font-weight:800; border:1px solid rgba(255,255,255,.15); }
+    .sq-result-actions { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+    .sq-result-actions button { height:46px; padding:0 28px; font-size:15px; font-weight:800; border-radius:12px; }
+    @media (max-width:640px) { .sq-identity-card{grid-template-columns:1fr} .sq-img-wrap{min-height:180px} .sq-s2-row{grid-template-columns:80px 1fr 1fr} .sq-s2-icon,.sq-s2-icon-fb{width:80px;height:80px} }
 
     /* ── 게임 화면 홈 버튼 ───────────────────────── */
     .back-btn { display:inline-flex; align-items:center; height:36px; padding:0 14px; border-radius:999px; border:1px solid var(--border); background:var(--panel2); color:var(--text); font:inherit; font-size:14px; cursor:pointer; margin-bottom:14px; transition:border-color .15s; }
@@ -157,7 +215,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.3.0</span>
+          <span class="version-badge">v0.4.0</span>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
         <h1>림버스 인격 두들</h1>
@@ -165,15 +223,24 @@
       </header>
 
       <div class="home-modes">
-        <div class="mode-card" id="homeDailyCard">
-          <div class="mode-card-no" id="homeDailyNo"></div>
-          <div class="mode-card-title">오늘의 인격</div>
-          <span class="mode-card-badge badge-none" id="homeDailyBadge">미참여</span>
-          <div class="mode-card-desc">하루에 한 번, 모두가 같은 인격을 맞춥니다</div>
+        <div class="home-doodle-group">
+          <div class="home-group-label">인격 두들</div>
+          <div class="home-doodle-cards">
+            <div class="mode-card" id="homeDailyCard">
+              <div class="mode-card-no" id="homeDailyNo"></div>
+              <div class="mode-card-title">오늘의 인격</div>
+              <span class="mode-card-badge badge-none" id="homeDailyBadge">미참여</span>
+              <div class="mode-card-desc">하루에 한 번, 모두가 같은 인격을 맞춥니다</div>
+            </div>
+            <div class="mode-card" id="homeRandomCard">
+              <div class="mode-card-title">랜덤 플레이</div>
+              <div class="mode-card-desc">무작위 인격으로 횟수 제한 없이 플레이합니다</div>
+            </div>
+          </div>
         </div>
-        <div class="mode-card" id="homeRandomCard">
-          <div class="mode-card-title">랜덤 플레이</div>
-          <div class="mode-card-desc">무작위 인격으로 횟수 제한 없이 플레이합니다</div>
+        <div class="mode-card home-skill-card" id="homeSkillQuizCard">
+          <div class="mode-card-title">스킬 퀴즈</div>
+          <div class="mode-card-desc">3개 스킬의 죄악속성·공격유형·스킬명을 모두 맞혀라</div>
         </div>
       </div>
 
@@ -184,6 +251,11 @@
             <p class="record-note">결과는 이 브라우저의 localStorage에 저장됩니다.</p>
           </div>
           <button id="clearRecordsBtn" class="secondary small-btn">기록 초기화</button>
+        </div>
+        <div class="rec-tab-wrap">
+          <button class="rec-tab active" id="recTabAll">전체</button>
+          <button class="rec-tab" id="recTabDaily">오늘의 인격</button>
+          <button class="rec-tab" id="recTabRandom">랜덤</button>
         </div>
         <table class="home-records-table">
           <thead><tr><th>모드</th><th>날짜</th><th>결과</th><th>시도</th><th>정답</th><th>카드</th></tr></thead>
@@ -198,7 +270,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.3.0</span>
+          <span class="version-badge">v0.4.0</span>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
         <button class="back-btn" id="backToHomeBtn">← 홈으로</button>
@@ -264,6 +336,37 @@
     </div>
   </div>
 
+  <!-- ══ 스킬 퀴즈 화면 ══════════════════════════════════════════ -->
+  <div id="skillQuizScreen" style="display:none">
+    <div class="sq-wrap">
+      <div class="sq-header">
+        <button class="back-btn" id="sqBackBtn">← 홈으로</button>
+        <span class="sq-title">스킬 퀴즈</span>
+      </div>
+
+      <div id="sq-identity-card" class="sq-identity-card"></div>
+
+      <!-- 스테이지 1: 속성/유형 -->
+      <div id="sq-stage1">
+        <div id="sq-skills-s1" class="panel" style="display:flex;flex-direction:column;gap:14px;padding:18px"></div>
+        <div class="sq-submit-wrap" style="margin-top:16px">
+          <button id="sqSubmitBtn" class="sq-submit-btn" disabled>제출</button>
+        </div>
+      </div>
+
+      <!-- 스테이지 2: 스킬명 -->
+      <div id="sq-stage2" style="display:none">
+        <div id="sq-skills-s2" style="display:flex;flex-direction:column;gap:12px"></div>
+        <div class="sq-give-up">
+          <button id="sqGiveUpBtn" class="secondary" style="height:40px;padding:0 24px;font-size:14px">포기하기</button>
+        </div>
+      </div>
+
+      <!-- 결과 -->
+      <div id="sq-result" style="display:none"></div>
+    </div>
+  </div>
+
   <!-- ══ 결과 카드 모달 ═══════════════════════════════════════ -->
   <div id="cardModal" style="display:none">
     <div class="modal-overlay">
@@ -309,6 +412,7 @@
 
     const homeScreen = document.getElementById('homeScreen');
     const gameScreen = document.getElementById('gameScreen');
+    const skillQuizScreen = document.getElementById('skillQuizScreen');
     const cardModal = document.getElementById('cardModal');
     const resultCardEl = document.getElementById('resultCard');
     const modalActionsEl = document.getElementById('modalActions');
@@ -575,14 +679,17 @@
       }
     }
 
+    let recordFilter = 'all';
+
     function renderRecordsHome() {
       const records = loadResultRecordsV2();
-      if (!records.length) {
+      const filtered = recordFilter === 'all' ? records : records.filter(r => r.mode === recordFilter);
+      if (!filtered.length) {
         homeResultRecordsEl.innerHTML = '<tr><td colspan="6" class="empty" style="text-align:center;padding:20px">아직 저장된 플레이 기록이 없습니다.</td></tr>';
         return;
       }
-      homeResultRecordsEl.innerHTML = [...records].reverse().map((r, i) => {
-        const idx = records.length - 1 - i;
+      homeResultRecordsEl.innerHTML = [...filtered].reverse().map((r, i) => {
+        const idx = records.indexOf(filtered[filtered.length - 1 - i]);
         const modeLabel = r.mode === 'daily' ? (r.challengeNo ? `#${r.challengeNo}` : '일일') : '랜덤';
         return `<tr>
           <td>${modeLabel}</td>
@@ -635,14 +742,15 @@
       const guessRows = (record.guesses || []).map(g => {
         return `<div class="card-grid-row">${FIELDS.map(f => `<span>${g[f] ? '✅' : '❌'}</span>`).join('')}</div>`;
       }).join('');
-      const fieldLabels = FIELDS.map(f => `<div style="font-size:11px;color:var(--muted);text-align:center;width:22px">${f.replace('키워드','K')}</div>`).join('');
+      const SHORT_LABELS = ['수감','인격','성급','소1','소2','K1','K2','K3'];
+      const fieldLabels = FIELDS.map((f, i) => `<div style="font-size:11px;color:var(--muted);text-align:center;width:28px;overflow:hidden">${SHORT_LABELS[i]}</div>`).join('');
       return `
         <div class="card-header">
           <div class="card-title-text">림버스 인격 두들</div>
           <div class="card-subtitle-text">${escapeHtml(modeLabel)} · ${escapeHtml(record.date || '')}</div>
         </div>
         <div class="card-identity" style="background:${sinnerColorDark};min-height:200px">
-          ${cdnUrl ? `<img src="${cdnUrl}" alt="${escapeHtml(ans['인격명'] || '')}" onerror="this.style.display='none'" />` : ''}
+          ${cdnUrl ? `<img src="${cdnUrl}" crossorigin="anonymous" alt="${escapeHtml(ans['인격명'] || '')}" onerror="this.style.display='none'" />` : ''}
           <div class="card-identity-overlay">
             <div class="card-identity-name">${escapeHtml(ans['인격명'] || '알 수 없음')}</div>
             <div class="card-identity-sinner">${escapeHtml(ans['수감자'] || '')} ${gradeSpan(ans['성급'] || '')}</div>
@@ -683,7 +791,7 @@
       btn.textContent = '저장 중...';
       modalActionsEl.style.display = 'none';
       try {
-        const canvas = await html2canvas(resultCardEl, { backgroundColor: '#1a1714', scale: 2, useCORS: true, allowTaint: false, logging: false });
+        const canvas = await html2canvas(resultCardEl, { backgroundColor: '#1a1714', scale: 2, useCORS: true, allowTaint: true, logging: false });
         const link = document.createElement('a');
         const no = currentCardRecord.challengeNo ? `#${currentCardRecord.challengeNo}` : 'R';
         const date = (currentCardRecord.date || todayKey()).replace(/-/g, '');
@@ -742,7 +850,6 @@
       messageEl.innerHTML = buildEndMessage(won);
       if (mode === 'daily') {
         saveDailyResult(won);
-        shareBtn.style.display = 'inline-block';
       } else {
         restartBtn.style.display = 'inline-block';
       }
@@ -821,7 +928,6 @@
           triesLeft = Math.max(0, MAX_TRIES - guesses.length);
           triesEl.textContent = triesLeft;
           messageEl.innerHTML = buildEndMessage(saved.won);
-          shareBtn.style.display = 'inline-block';
         }
         startCountdown();
       } else {
@@ -850,6 +956,18 @@
     backToHomeBtn.addEventListener('click', goToHome);
     homeDailyCard.addEventListener('click', () => goToGame('daily'));
     homeRandomCard.addEventListener('click', () => goToGame('random'));
+    document.getElementById('homeSkillQuizCard').addEventListener('click', sqGoToSkillQuiz);
+    document.getElementById('sqBackBtn').addEventListener('click', sqGoHome);
+    document.getElementById('sqSubmitBtn').addEventListener('click', sqSubmitS1);
+    document.getElementById('sqGiveUpBtn').addEventListener('click', sqGiveUp);
+    ['recTabAll','recTabDaily','recTabRandom'].forEach(id => {
+      document.getElementById(id).addEventListener('click', e => {
+        recordFilter = id === 'recTabAll' ? 'all' : id === 'recTabDaily' ? 'daily' : 'random';
+        document.querySelectorAll('.rec-tab').forEach(t => t.classList.remove('active'));
+        e.currentTarget.classList.add('active');
+        renderRecordsHome();
+      });
+    });
     clearRecordsBtn.addEventListener('click', () => {
       if (!confirm('저장된 플레이 기록을 모두 삭제할까요?')) return;
       localStorage.removeItem(RESULT_STORAGE_KEY_V2);
@@ -953,6 +1071,262 @@
     window.addEventListener('scroll', positionFilterDropdown, { passive: true });
     window.addEventListener('resize', positionFilterDropdown, { passive: true });
 
+    // ── 스킬 퀴즈 ────────────────────────────────────────────
+    const SQ_SINS = ['분노','색욕','나태','탐식','우울','오만','질투'];
+    const SQ_SIN_COLOR = {
+      '분노':{bg:'#3a0e0e',text:'#ff7070',border:'#c44'},
+      '색욕':{bg:'#3a102c',text:'#ff88d8',border:'#b46'},
+      '나태':{bg:'#252525',text:'#b0b0b0',border:'#666'},
+      '탐식':{bg:'#0f2a0f',text:'#70dd70',border:'#484'},
+      '우울':{bg:'#0e1a3a',text:'#7aa8ff',border:'#46a'},
+      '오만':{bg:'#220e3a',text:'#cc88ff',border:'#84c'},
+      '질투':{bg:'#0e2e28',text:'#44ddcc',border:'#4aa'},
+    };
+    const SQ_TYPES = ['참격','관통','타격','방어','회피','반격'];
+    const SQ_TYPE_SLUG = {'참격':'slash','관통':'pierce','타격':'blunt','방어':'Guard','회피':'Evade','반격':'Counter'};
+    const SQ_TYPE_BASE = 'https://baslimbus.info/assets/attackType/';
+
+    let sqIdentity = null, sqIsGacksung = false, sqSkillCount = 0;
+    let sqS1Sel = [], sqS2Done = [];
+
+    function sqGoToSkillQuiz() {
+      homeScreen.style.display = 'none';
+      skillQuizScreen.style.display = '';
+      if (DATA.length) sqInit();
+      else document.getElementById('sq-identity-card').innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted)">데이터를 불러오는 중...</div>';
+    }
+
+    function sqGoHome() {
+      skillQuizScreen.style.display = 'none';
+      homeScreen.style.display = '';
+      updateHomeDailyStatus();
+      renderRecordsHome();
+    }
+
+    function sqInit() {
+      sqIsGacksung = false;
+      sqPickIdentity();
+      sqRenderStage1();
+    }
+
+    function sqPickIdentity() {
+      const eligible = DATA.filter(d => d['스킬1명'] && d['스킬1명'].trim());
+      sqIdentity = eligible[Math.floor(Math.random() * eligible.length)];
+      sqSkillCount = [1,2,3].filter(n => sqIdentity[`스킬${n}명`] && sqIdentity[`스킬${n}명`].trim()).length;
+      sqS1Sel = Array.from({length: sqSkillCount}, () => ({sin:'', type:''}));
+      sqS2Done = Array(sqSkillCount).fill(false);
+    }
+
+    function sqIdentityCardHTML() {
+      const id = sqIdentity;
+      const normalImg = id['이미지(일반)'];
+      const gacksungImg = id['이미지(각성)'];
+      const currentImg = sqIsGacksung && gacksungImg ? gacksungImg : normalImg;
+      const affilParts = [id['소속1'], id['소속2']].filter(Boolean);
+      const kws = [id['키워드1'], id['키워드2'], id['키워드3']].filter(Boolean);
+      return `
+        <div class="sq-img-wrap">
+          ${currentImg ? `<img src="${escapeHtml(currentImg)}" alt="${escapeHtml(id['인격명'])}" onerror="this.style.display='none'">` : ''}
+          ${gacksungImg ? `<button class="sq-img-toggle" onclick="sqToggleImg()">${sqIsGacksung ? '일반' : '각성'}</button>` : ''}
+        </div>
+        <div class="sq-identity-info">
+          <div class="sq-identity-name">${escapeHtml(id['인격명'])}</div>
+          <div class="sq-identity-meta">
+            ${sinnerDot(id['수감자'])} · ${gradeSpan(id['성급'])}
+            ${affilParts.length ? '<br>' + escapeHtml(affilParts.join(' · ')) : ''}
+            ${kws.length ? '<br>' + kws.map(k => kwChip(k)).join(' ') : ''}
+          </div>
+        </div>`;
+    }
+
+    function sqToggleImg() {
+      sqIsGacksung = !sqIsGacksung;
+      document.getElementById('sq-identity-card').innerHTML = sqIdentityCardHTML();
+    }
+
+    function sqSinBtnHTML(si, sin) {
+      const c = SQ_SIN_COLOR[sin] || {};
+      const sel = sqS1Sel[si].sin === sin;
+      const dim = sqS1Sel[si].sin && !sel;
+      return `<button class="sq-sin-btn${sel?' sel':''}${dim?' dim':''}"
+        style="${sel ? `background:${c.bg};color:${c.text};border-color:${c.border}` : ''}"
+        onclick="sqSelectSin(${si},'${sin}')">${escapeHtml(sin)}</button>`;
+    }
+
+    function sqTypeBtnHTML(si, type) {
+      const slug = SQ_TYPE_SLUG[type];
+      const sel = sqS1Sel[si].type === type;
+      const dim = sqS1Sel[si].type && !sel;
+      return `<button class="sq-type-btn${sel?' sel':''}${dim?' dim':''}" onclick="sqSelectType(${si},'${type}')">
+        <img src="${SQ_TYPE_BASE}${slug}.webp" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"><span style="display:none"></span>${escapeHtml(type)}
+      </button>`;
+    }
+
+    function sqRenderSkillBlocks() {
+      document.getElementById('sq-skills-s1').innerHTML = sqS1Sel.map((_, si) => `
+        <div class="sq-skill-block">
+          <div class="sq-skill-label">스킬 ${si+1}</div>
+          <div class="sq-row-label">죄악속성</div>
+          <div class="sq-btn-group">${SQ_SINS.map(s => sqSinBtnHTML(si, s)).join('')}</div>
+          <div class="sq-row-label">공격유형</div>
+          <div class="sq-btn-group">${SQ_TYPES.map(t => sqTypeBtnHTML(si, t)).join('')}</div>
+          <div class="sq-s1-feedback" id="sq-s1-fb-${si}"></div>
+        </div>`).join('');
+      sqUpdateSubmit();
+    }
+
+    function sqSelectSin(si, sin) {
+      sqS1Sel[si].sin = sqS1Sel[si].sin === sin ? '' : sin;
+      sqRenderSkillBlocks();
+    }
+
+    function sqSelectType(si, type) {
+      sqS1Sel[si].type = sqS1Sel[si].type === type ? '' : type;
+      sqRenderSkillBlocks();
+    }
+
+    function sqUpdateSubmit() {
+      document.getElementById('sqSubmitBtn').disabled = !sqS1Sel.every(s => s.sin && s.type);
+    }
+
+    function sqRenderStage1() {
+      document.getElementById('sq-identity-card').innerHTML = sqIdentityCardHTML();
+      document.getElementById('sq-identity-card').style.display = '';
+      document.getElementById('sq-stage1').style.display = '';
+      document.getElementById('sq-stage2').style.display = 'none';
+      document.getElementById('sq-result').style.display = 'none';
+      sqRenderSkillBlocks();
+    }
+
+    function sqSubmitS1() {
+      const id = sqIdentity;
+      let allCorrect = true;
+      sqS1Sel.forEach((sel, si) => {
+        const n = si + 1;
+        const sinOk = sel.sin === id[`스킬${n}속성`];
+        const typeOk = sel.type === id[`스킬${n}유형`];
+        const fb = document.getElementById(`sq-s1-fb-${si}`);
+        if (fb) {
+          if (sinOk && typeOk) {
+            fb.innerHTML = '<span style="color:#6ddb8a;font-weight:800">✅ 정답!</span>';
+          } else {
+            fb.innerHTML = `<span style="color:#ff8888">${sinOk ? '죄악속성 ✅' : '죄악속성 ❌'} · ${typeOk ? '공격유형 ✅' : '공격유형 ❌'}</span>`;
+          }
+        }
+        if (!sinOk || !typeOk) allCorrect = false;
+      });
+      if (allCorrect) setTimeout(sqRenderStage2, 600);
+    }
+
+    function sqRenderStage2() {
+      document.getElementById('sq-stage1').style.display = 'none';
+      document.getElementById('sq-stage2').style.display = '';
+      const id = sqIdentity;
+      document.getElementById('sq-skills-s2').innerHTML = sqS1Sel.map((sel, si) => {
+        const n = si + 1;
+        const iconUrl = id[`스킬${n}아이콘`];
+        const sc = SQ_SIN_COLOR[id[`스킬${n}속성`]] || {bg:'#1e1e1e',text:'#888'};
+        const iconHtml = iconUrl
+          ? `<img src="${escapeHtml(iconUrl)}" class="sq-s2-icon" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="sq-s2-icon-fb" style="background:${sc.bg};color:${sc.text}">?</div>`
+          : `<div class="sq-s2-icon-fb" style="background:${sc.bg};color:${sc.text};display:flex">?</div>`;
+        return `<div class="sq-s2-row" id="sq-s2-row-${si}">
+          ${iconHtml}
+          <div>
+            <input class="sq-s2-inp" id="sq-s2-inp-${si}" placeholder="스킬 ${n} 이름" autocomplete="off">
+            <div class="sq-s2-hint" id="sq-s2-hint-${si}"></div>
+          </div>
+          <button class="sq-s2-btn" onclick="sqCheckS2(${si})">확인</button>
+          <button class="sq-s2-btn secondary" onclick="sqHint(${si})">힌트</button>
+        </div>`;
+      }).join('');
+      sqS1Sel.forEach((_, si) => {
+        const inp = document.getElementById(`sq-s2-inp-${si}`);
+        if (inp) inp.addEventListener('keydown', e => { if (e.key === 'Enter') sqCheckS2(si); });
+      });
+    }
+
+    function sqNormName(s) {
+      return s.replace(/[\s\[\]\-·:〖〗【】]/g, '').toLowerCase();
+    }
+
+    function sqCheckS2(si) {
+      if (sqS2Done[si]) return;
+      const n = si + 1;
+      const inp = document.getElementById(`sq-s2-inp-${si}`);
+      const hint = document.getElementById(`sq-s2-hint-${si}`);
+      if (!inp) return;
+      const correct = sqNormName(inp.value) === sqNormName(sqIdentity[`스킬${n}명`]);
+      if (correct) {
+        sqS2Done[si] = true;
+        inp.value = sqIdentity[`스킬${n}명`];
+        inp.classList.add('ok');
+        inp.disabled = true;
+        if (hint) { hint.style.color = '#6ddb8a'; hint.textContent = '✅ 정답!'; }
+        document.getElementById(`sq-s2-row-${si}`)?.querySelectorAll('button').forEach(b => b.disabled = true);
+        if (sqS2Done.every(Boolean)) setTimeout(() => sqRenderResult(false), 600);
+      } else {
+        inp.style.borderColor = 'var(--red)';
+        if (hint) { hint.style.color = '#ff8888'; hint.textContent = '❌ 오답입니다.'; }
+        setTimeout(() => { inp.style.borderColor = ''; }, 700);
+      }
+    }
+
+    function sqHint(si) {
+      if (sqS2Done[si]) return;
+      const name = sqIdentity[`스킬${si+1}명`];
+      const hint = document.getElementById(`sq-s2-hint-${si}`);
+      if (hint) { hint.style.color = '#ffd98a'; hint.textContent = `힌트: "${name[0]}..."` ; }
+    }
+
+    function sqGiveUp() {
+      sqS1Sel.forEach((_, si) => {
+        if (!sqS2Done[si]) {
+          const inp = document.getElementById(`sq-s2-inp-${si}`);
+          if (inp) { inp.value = sqIdentity[`스킬${si+1}명`]; inp.disabled = true; }
+          const hint = document.getElementById(`sq-s2-hint-${si}`);
+          if (hint) { hint.style.color = 'var(--muted)'; hint.textContent = '정답 공개'; }
+          document.getElementById(`sq-s2-row-${si}`)?.querySelectorAll('button').forEach(b => b.disabled = true);
+        }
+      });
+      sqS2Done = sqS2Done.map(() => true);
+      setTimeout(() => sqRenderResult(true), 400);
+    }
+
+    function sqRenderResult(gaveUp) {
+      document.getElementById('sq-identity-card').style.display = 'none';
+      document.getElementById('sq-stage2').style.display = 'none';
+      const resultEl = document.getElementById('sq-result');
+      resultEl.style.display = '';
+      const id = sqIdentity;
+      const imgUrl = id['이미지(각성)'] || id['이미지(일반)'];
+      const affilParts = [id['소속1'], id['소속2']].filter(Boolean);
+      const skillRows = Array.from({length: sqSkillCount}, (_, i) => {
+        const n = i + 1;
+        const sin = id[`스킬${n}속성`]; const type = id[`스킬${n}유형`];
+        const sc = SQ_SIN_COLOR[sin] || {bg:'#1e1e1e',text:'#888',border:'#555'};
+        const slug = SQ_TYPE_SLUG[type];
+        const typeHtml = slug
+          ? `<img src="${SQ_TYPE_BASE}${slug}.webp" style="width:22px;height:22px;object-fit:contain" alt="${escapeHtml(type)}" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"><span style="display:none;font-size:13px;color:var(--muted)">${escapeHtml(type)}</span>`
+          : `<span style="font-size:13px;color:var(--muted)">${escapeHtml(type)}</span>`;
+        return `<div class="sq-result-skill-row">
+          <div class="sq-result-skill-name">${escapeHtml(id[`스킬${n}명`])}</div>
+          <span class="sq-sin-chip" style="background:${sc.bg};color:${sc.text};border-color:${sc.border}">${escapeHtml(sin)}</span>
+          ${typeHtml}
+        </div>`;
+      }).join('');
+      resultEl.innerHTML = `<div class="panel">
+        <div class="sq-result-banner">${gaveUp ? '😢 포기' : '🎉 클리어!'}</div>
+        ${imgUrl ? `<div class="sq-result-img"><img src="${escapeHtml(imgUrl)}" alt="${escapeHtml(id['인격명'])}" onerror="this.parentElement.style.display='none'"></div>` : ''}
+        <div class="sq-result-name">${escapeHtml(id['인격명'])}</div>
+        <div class="sq-result-meta">${sinnerDot(id['수감자'])} · ${gradeSpan(id['성급'])}${affilParts.length ? ' · ' + escapeHtml(affilParts.join(' · ')) : ''}</div>
+        <div class="sq-result-skills">${skillRows}</div>
+        <div class="sq-result-actions">
+          <button onclick="sqInit()">다음 문제</button>
+          <button class="secondary" onclick="sqGoHome()">홈으로</button>
+        </div>
+      </div>`;
+    }
+
     // ── 데이터 로드 ──────────────────────────────────────────
     updateHomeDailyStatus();
     renderRecordsHome();
@@ -964,6 +1338,7 @@
         countEl.textContent = DATA.length;
         updateHomeDailyStatus();
         if (gameScreen.style.display !== 'none') { switchMode(mode, true); }
+        if (skillQuizScreen.style.display !== 'none' && !sqIdentity) { sqInit(); }
       })
       .catch(err => {
         console.error('데이터 로드 실패:', err);
