@@ -168,6 +168,9 @@
     .sq-type-btn.sel { border-color:var(--button); background:color-mix(in srgb,var(--button) 18%,var(--panel2)); color:var(--text); }
     .sq-type-btn.dim { opacity:.28; }
     .sq-s1-feedback { font-size:13px; min-height:18px; margin-top:8px; }
+    .sq-s1-actions { display:flex; gap:8px; margin-top:10px; }
+    .sq-s1-action-btn { height:32px; padding:0 14px; border-radius:999px; font-size:12px; font-weight:800; background:var(--panel2); color:var(--text); border:1px solid var(--border); }
+    .sq-s1-action-btn:hover { border-color:var(--button); color:#ffd98a; }
     .sq-submit-wrap { text-align:center; padding:4px 0 8px; }
     .sq-submit-btn { height:48px; padding:0 40px; font-size:16px; font-weight:900; border-radius:14px; }
     .sq-s2-row { display:grid; grid-template-columns:120px 1fr auto auto; gap:12px; align-items:center; background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:14px; }
@@ -237,7 +240,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.5.3</span>
+          <span class="version-badge">v0.5.4</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -299,7 +302,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.5.3</span>
+          <span class="version-badge">v0.5.4</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -1164,7 +1167,7 @@
     const SQ_TYPE_BASE = 'https://baslimbus.info/assets/attackType/';
 
     let sqIdentity = null, sqIsGacksung = false, sqSkillCount = 0;
-    let sqS1Sel = [], sqS2Done = [];
+    let sqS1Sel = [], sqS2Done = [], sqS1Feedback = [];
 
     function sqGoToSkillQuiz() {
       homeScreen.style.display = 'none';
@@ -1191,6 +1194,7 @@
       sqIdentity = eligible[Math.floor(Math.random() * eligible.length)];
       sqSkillCount = [1,2,3].filter(n => sqIdentity[`스킬${n}명`] && sqIdentity[`스킬${n}명`].trim()).length;
       sqS1Sel = Array.from({length: sqSkillCount}, () => ({sin:'', type:''}));
+      sqS1Feedback = Array(sqSkillCount).fill('');
       sqS2Done = Array(sqSkillCount).fill(false);
     }
 
@@ -1247,9 +1251,28 @@
           <div class="sq-btn-group">${SQ_SINS.map(s => sqSinBtnHTML(si, s)).join('')}</div>
           <div class="sq-row-label">공격유형</div>
           <div class="sq-btn-group">${SQ_TYPES.map(t => sqTypeBtnHTML(si, t)).join('')}</div>
-          <div class="sq-s1-feedback" id="sq-s1-fb-${si}"></div>
+          <div class="sq-s1-feedback" id="sq-s1-fb-${si}">${sqS1Feedback[si] || ''}</div>
+          <div class="sq-s1-actions">
+            <button class="sq-s1-action-btn" onclick="sqStage1Hint(${si})">💡 힌트 보기</button>
+            <button class="sq-s1-action-btn" onclick="sqStage1Reveal(${si})">👀 정답 보기</button>
+          </div>
         </div>`).join('');
       sqUpdateSubmit();
+    }
+
+    function sqStage1Hint(si) {
+      const n = si + 1;
+      const id = sqIdentity;
+      sqS1Feedback[si] = `<span style="color:#ffd98a">💡 힌트: 죄악속성은 <strong>${escapeHtml(id[`스킬${n}속성`])}</strong> 입니다</span>`;
+      sqRenderSkillBlocks();
+    }
+
+    function sqStage1Reveal(si) {
+      const n = si + 1;
+      const id = sqIdentity;
+      sqS1Sel[si] = { sin: id[`스킬${n}속성`], type: id[`스킬${n}유형`] };
+      sqS1Feedback[si] = `<span style="color:#ffb86b">👀 정답: ${escapeHtml(id[`스킬${n}속성`])} · ${escapeHtml(id[`스킬${n}유형`])}</span>`;
+      sqRenderSkillBlocks();
     }
 
     function sqSelectSin(si, sin) {
