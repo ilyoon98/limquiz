@@ -84,6 +84,13 @@
     .answer-reveal.success { border-color:var(--green); background:color-mix(in srgb, var(--green) 14%, var(--panel2)); box-shadow:0 0 0 1px color-mix(in srgb, var(--green) 45%, transparent), 0 10px 30px rgba(0,0,0,.35); }
     .answer-reveal.fail { border-color:var(--red); background:color-mix(in srgb, var(--red) 12%, var(--panel2)); box-shadow:0 0 0 1px color-mix(in srgb, var(--red) 40%, transparent), 0 10px 30px rgba(0,0,0,.35); }
     .answer-text-part { font-size:16px; font-weight:700; }
+    .answer-info-grid { display:flex; flex-wrap:wrap; gap:10px; }
+    .answer-info-card { background:var(--panel2); border:1px solid var(--border); border-radius:12px; padding:10px 16px; min-width:110px; flex:0 0 auto; }
+    .answer-info-card.name-card { flex:1 1 100%; border-left:4px solid var(--sinner-c, var(--button)); background:color-mix(in srgb, var(--sinner-c, var(--button)) 12%, var(--panel2)); }
+    .answer-info-label { font-size:11px; color:var(--muted); font-weight:800; margin-bottom:4px; text-transform:uppercase; letter-spacing:.06em; }
+    .answer-info-value { font-size:15px; font-weight:900; }
+    .answer-info-card.name-card .answer-info-value { font-size:20px; color:var(--sinner-c, #ffd98a); }
+    .answer-info-card.kw-card .answer-info-value { display:flex; flex-wrap:wrap; gap:6px; }
     .answer-img-area { position:relative; text-align:center; }
     .answer-img-area img { max-width:100%; max-height:520px; object-fit:contain; display:inline-block; border-radius:10px; box-shadow:0 4px 24px #0008; }
     .img-toggle-btn { position:absolute; top:8px; right:8px; height:30px; padding:0 12px; font-size:13px; font-weight:800; border-radius:8px; border:1px solid var(--border); background:rgba(20,20,20,.78); color:var(--text); cursor:pointer; backdrop-filter:blur(4px); }
@@ -244,7 +251,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.6.0</span>
+          <span class="version-badge">v0.6.1</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -306,7 +313,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.6.0</span>
+          <span class="version-badge">v0.6.1</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -886,11 +893,33 @@
     }
 
     function buildEndMessage(won) {
-      const affilParts = [answer['소속1'], answer['소속2']].filter(Boolean).join(' · ');
-      const answerText = `${answer['인격명']} / ${answer['수감자']} / ${answer['성급']}${affilParts ? ' / ' + affilParts : ''} / ${keywordsOf(answer).join(', ') || '키워드 없음'}`;
-      const resultLine = won
-        ? `정답입니다! <span class="answer">${escapeHtml(answerText)}</span>`
-        : `기회를 모두 사용했습니다. 정답은 <span class="answer">${escapeHtml(answerText)}</span> 입니다.`;
+      const resultLine = won ? '정답입니다! 🎉' : '기회를 모두 사용했습니다. 정답은 아래와 같습니다.';
+      const sinnerColor = SINNER_COLOR[answer['수감자']] || '#c9a86a';
+      const affilParts = [answer['소속1'], answer['소속2']].filter(Boolean);
+      const kws = keywordsOf(answer);
+      const infoCards = `
+        <div class="answer-info-grid" style="--sinner-c:${sinnerColor}">
+          <div class="answer-info-card name-card">
+            <div class="answer-info-label">인격명</div>
+            <div class="answer-info-value">${escapeHtml(answer['인격명'])}</div>
+          </div>
+          <div class="answer-info-card">
+            <div class="answer-info-label">수감자</div>
+            <div class="answer-info-value">${sinnerDot(answer['수감자'])}</div>
+          </div>
+          <div class="answer-info-card">
+            <div class="answer-info-label">성급</div>
+            <div class="answer-info-value">${gradeSpan(answer['성급'])}</div>
+          </div>
+          ${affilParts.length ? `<div class="answer-info-card">
+            <div class="answer-info-label">소속</div>
+            <div class="answer-info-value">${escapeHtml(affilParts.join(' · '))}</div>
+          </div>` : ''}
+          <div class="answer-info-card kw-card">
+            <div class="answer-info-label">키워드</div>
+            <div class="answer-info-value">${kws.length ? kws.map(k => kwChip(k)).join('') : '<span class="empty">없음</span>'}</div>
+          </div>
+        </div>`;
       const normalImg = answer['이미지(일반)'];
       const gacksungImg = answer['이미지(각성)'];
       isGacksung = !!gacksungImg;
@@ -900,7 +929,7 @@
           <img id="answer-image" src="${escapeHtml(currentImg)}" alt="${escapeHtml(answer['인격명'])}" onerror="this.parentElement.style.display='none'" />
           ${(gacksungImg && normalImg) ? `<button id="image-toggle-btn" class="img-toggle-btn" onclick="toggleAnswerImage()">${isGacksung ? '일반' : '각성'}</button>` : ''}
         </div>` : '';
-      return `<div class="answer-reveal ${won ? 'success' : 'fail'}" id="answerReveal"><div class="answer-text-part">${resultLine}</div>${imgHtml}</div>`;
+      return `<div class="answer-reveal ${won ? 'success' : 'fail'}" id="answerReveal"><div class="answer-text-part">${resultLine}</div>${infoCards}${imgHtml}</div>`;
     }
 
     function scrollAnswerRevealIntoCenter() {
