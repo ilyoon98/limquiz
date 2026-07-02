@@ -740,7 +740,7 @@
       const kws = [ans['키워드1'], ans['키워드2'], ans['키워드3']].filter(Boolean);
       const modeLabel = record.mode === 'daily' ? `오늘의 인격 #${record.challengeNo ?? '?'}` : '랜덤 플레이';
       const guessRows = (record.guesses || []).map(g => {
-        return `<div class="card-grid-row">${FIELDS.map(f => `<span>${g[f] ? '✅' : '❌'}</span>`).join('')}</div>`;
+        return `<div class="card-grid-row">${FIELDS.map(f => `<span style="width:28px;text-align:center;flex-shrink:0">${g[f] ? '✅' : '❌'}</span>`).join('')}</div>`;
       }).join('');
       const SHORT_LABELS = ['수감','인격','성급','소1','소2','K1','K2','K3'];
       const fieldLabels = FIELDS.map((f, i) => `<div style="font-size:11px;color:var(--muted);text-align:center;width:28px;overflow:hidden">${SHORT_LABELS[i]}</div>`).join('');
@@ -750,7 +750,7 @@
           <div class="card-subtitle-text">${escapeHtml(modeLabel)} · ${escapeHtml(record.date || '')}</div>
         </div>
         <div class="card-identity" style="background:${sinnerColorDark};min-height:200px">
-          ${cdnUrl ? `<img src="${cdnUrl}" crossorigin="anonymous" alt="${escapeHtml(ans['인격명'] || '')}" onerror="this.style.display='none'" />` : ''}
+          ${cdnUrl ? `<img src="${cdnUrl}" alt="${escapeHtml(ans['인격명'] || '')}" onerror="this.style.display='none'" />` : ''}
           <div class="card-identity-overlay">
             <div class="card-identity-name">${escapeHtml(ans['인격명'] || '알 수 없음')}</div>
             <div class="card-identity-sinner">${escapeHtml(ans['수감자'] || '')} ${gradeSpan(ans['성급'] || '')}</div>
