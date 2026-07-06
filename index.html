@@ -250,6 +250,7 @@
     .db-sinner-filter-btn.active { background:var(--button); color:var(--buttonText); border-color:var(--button); font-weight:800; }
     .db-sinner-filter-btn.placed:not(.active) { border-color:var(--slot-green); color:var(--slot-green); }
     .db-candidates { display:grid; grid-template-columns:repeat(4, 1fr); gap:14px; max-height:560px; overflow-y:auto; padding:4px; }
+    .db-candidates-empty { grid-column:1/-1; text-align:center; color:var(--muted); padding:40px 20px; font-size:14px; }
     .db-candidate { border-radius:12px; border:1px solid var(--border); background:var(--panel2); cursor:grab; position:relative; overflow:hidden; display:flex; flex-direction:column; transition:opacity .15s, outline-color .15s; }
     .db-candidate.placed { opacity:.4; cursor:default; }
     .db-candidate.placed::after { content:'✓ 배치됨'; position:absolute; top:6px; left:6px; background:color-mix(in srgb, var(--slot-green) 70%, #000); color:#fff; font-size:10px; font-weight:800; padding:2px 7px; border-radius:999px; }
@@ -331,7 +332,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.0</span>
+          <span class="version-badge">v0.13.1</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -402,7 +403,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.0</span>
+          <span class="version-badge">v0.13.1</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -2073,7 +2074,9 @@
       if (q) filtered = filtered.filter(c => lower(c['인격명']).includes(q) || (c['인격명'] === '없음' && lower(c['수감자']).includes(q)));
       const noneIdx = filtered.findIndex(c => c['인격명'] === '없음');
       if (noneIdx > 0) filtered.unshift(filtered.splice(noneIdx, 1)[0]);
-      document.getElementById('dbCandidates').innerHTML = filtered.map(dbCandidateHTML).join('');
+      document.getElementById('dbCandidates').innerHTML = filtered.length
+        ? filtered.map(dbCandidateHTML).join('')
+        : `<div class="db-candidates-empty">해당 인격 없음</div>`;
     }
 
     document.getElementById('homeDeckBuilderCard').addEventListener('click', dbGoToDeckBuilder);
