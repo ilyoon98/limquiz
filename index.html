@@ -243,6 +243,7 @@
     .db-sinner-filter { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; }
     .db-sinner-filter-btn { height:32px; padding:0 14px; border-radius:999px; font-size:13px; font-weight:700; background:var(--panel2); color:var(--muted); border:1px solid var(--border); }
     .db-sinner-filter-btn.active { background:var(--button); color:var(--buttonText); border-color:var(--button); font-weight:800; }
+    .db-sinner-filter-btn.placed:not(.active) { border-color:var(--slot-green); color:var(--slot-green); }
     .db-candidates { display:grid; grid-template-columns:repeat(4, 1fr); gap:14px; max-height:560px; overflow-y:auto; padding:4px; }
     .db-candidate { border-radius:12px; border:1px solid var(--border); background:var(--panel2); cursor:grab; position:relative; overflow:hidden; display:flex; flex-direction:column; transition:opacity .15s, outline-color .15s; }
     .db-candidate.placed { opacity:.4; cursor:default; }
@@ -322,7 +323,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.11.0</span>
+          <span class="version-badge">v0.11.2</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -393,7 +394,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.11.0</span>
+          <span class="version-badge">v0.11.2</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -1758,11 +1759,18 @@
       `;
     }
 
+    function dbSinnerHasPlacement(sinner) {
+      return dbSlots.some(s => s && s['수감자'] === sinner);
+    }
+
     function dbRenderSinnerFilter() {
       const el = document.getElementById('dbSinnerFilter');
       el.innerHTML = SINNER_ORDER.map(s => {
         const active = dbSinnerFilter === s ? ' active' : '';
-        return `<button class="db-sinner-filter-btn${active}" data-sinner="${escapeHtml(s)}" type="button">${escapeHtml(s)}</button>`;
+        const isPlaced = dbSinnerHasPlacement(s);
+        const placed = isPlaced ? ' placed' : '';
+        const label = (isPlaced ? '✓ ' : '') + s;
+        return `<button class="db-sinner-filter-btn${active}${placed}" data-sinner="${escapeHtml(s)}" type="button">${escapeHtml(label)}</button>`;
       }).join('');
     }
 
@@ -1806,6 +1814,7 @@
     function dbRenderSlots() {
       document.getElementById('dbBoardSlots').innerHTML = dbSlots.map((_, i) => dbSlotHTML(i)).join('');
       dbUpdateSubmitState();
+      dbRenderSinnerFilter();
     }
 
     function dbUpdateSubmitState() {
@@ -2028,6 +2037,8 @@
       const q = lower(document.getElementById('dbSearchInput').value);
       let filtered = dbCandidates.filter(c => c['수감자'] === dbSinnerFilter);
       if (q) filtered = filtered.filter(c => lower(c['인격명']).includes(q) || (c['인격명'] === '없음' && lower(c['수감자']).includes(q)));
+      const noneIdx = filtered.findIndex(c => c['인격명'] === '없음');
+      if (noneIdx > 0) filtered.unshift(filtered.splice(noneIdx, 1)[0]);
       document.getElementById('dbCandidates').innerHTML = filtered.map(dbCandidateHTML).join('');
     }
 
