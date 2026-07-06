@@ -231,10 +231,13 @@
     .db-slot.judged-green { border-color:var(--slot-green); background:color-mix(in srgb, var(--slot-green) 45%, var(--panel2)); }
     .db-slot.judged-yellow { border-color:var(--slot-yellow); background:color-mix(in srgb, var(--slot-yellow) 45%, var(--panel2)); }
     .db-slot.judged-red { border-color:var(--slot-red); background:color-mix(in srgb, var(--slot-red) 45%, var(--panel2)); }
+    .db-slot.locked { cursor:default; }
     .db-slot-empty-label { font-size:11px; color:var(--muted); text-align:center; padding:6px; line-height:1.4; }
     .db-slot img { width:100%; height:100%; object-fit:cover; object-position:top center; display:block; pointer-events:none; }
     .db-slot-name { position:absolute; left:0; right:0; bottom:0; font-size:10px; font-weight:800; text-align:center; padding:3px 2px; background:rgba(0,0,0,.72); color:#fff; pointer-events:none; }
     .db-slot-remove { position:absolute; top:2px; right:2px; width:20px; height:20px; border-radius:999px; background:rgba(0,0,0,.72); color:#fff; border:0; font-size:12px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; }
+    .db-slot-lock { position:absolute; top:2px; right:2px; width:20px; height:20px; border-radius:999px; background:rgba(0,0,0,.72); font-size:11px; line-height:1; display:flex; align-items:center; justify-content:center; pointer-events:none; }
+    .db-slot-x { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:42px; font-weight:900; color:#ff4d4d; text-shadow:0 2px 8px rgba(0,0,0,.85); pointer-events:none; }
     .db-candidates-section { padding:16px; margin-bottom:18px; }
     .db-search { margin-bottom:12px; }
     .db-sinner-filter { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; }
@@ -242,8 +245,12 @@
     .db-sinner-filter-btn.active { background:var(--button); color:var(--buttonText); border-color:var(--button); font-weight:800; }
     .db-candidates { display:grid; grid-template-columns:repeat(4, 1fr); gap:14px; max-height:560px; overflow-y:auto; padding:4px; }
     .db-candidate { border-radius:12px; border:1px solid var(--border); background:var(--panel2); cursor:grab; position:relative; overflow:hidden; display:flex; flex-direction:column; transition:opacity .15s, outline-color .15s; }
-    .db-candidate.placed-board::after { content:'보드'; position:absolute; top:6px; left:6px; background:color-mix(in srgb, var(--slot-green) 70%, #000); color:#fff; font-size:10px; font-weight:800; padding:2px 7px; border-radius:999px; }
-    .db-candidate.placed-order::after { content:'순서'; position:absolute; top:6px; right:6px; background:color-mix(in srgb, var(--button) 70%, #000); color:#fff; font-size:10px; font-weight:800; padding:2px 7px; border-radius:999px; }
+    .db-candidate.placed { opacity:.4; cursor:default; }
+    .db-candidate.placed::after { content:'✓ 배치됨'; position:absolute; top:6px; left:6px; background:color-mix(in srgb, var(--slot-green) 70%, #000); color:#fff; font-size:10px; font-weight:800; padding:2px 7px; border-radius:999px; }
+    .db-candidate.mark-yellow { outline:2px solid var(--slot-yellow); }
+    .db-candidate.mark-red { outline:2px solid var(--slot-red); }
+    .db-candidate-badge { position:absolute; top:6px; right:6px; background:color-mix(in srgb, var(--slot-yellow) 70%, #000); color:#fff; font-size:10px; font-weight:800; padding:2px 7px; border-radius:999px; }
+    .db-candidate-x { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:34px; font-weight:900; color:#ff4d4d; text-shadow:0 2px 8px rgba(0,0,0,.85); pointer-events:none; }
     .db-candidate.selected-tap { outline:3px solid var(--button); }
     .db-candidate img { width:100%; aspect-ratio:1/1; object-fit:cover; object-position:top center; display:block; background:#111; pointer-events:none; }
     .db-candidate-noimg { width:100%; aspect-ratio:1/1; display:flex; align-items:center; justify-content:center; font-size:38px; color:var(--muted); background:#111; }
@@ -315,7 +322,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.10.1</span>
+          <span class="version-badge">v0.11.0</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -386,7 +393,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.10.1</span>
+          <span class="version-badge">v0.11.0</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -500,6 +507,7 @@
       <div class="db-header">
         <button class="back-btn" id="dbBackBtn">← 홈으로</button>
         <span class="db-title">덱 빌더</span>
+        <button class="secondary db-header-giveup-btn" id="dbClearAllBtn">모두 비우기</button>
         <button class="secondary db-header-giveup-btn" id="dbGiveUpBtn">정답 보기</button>
       </div>
 
@@ -1684,9 +1692,10 @@
     const DB_SLOT_COUNT = 12;
     const dbIsTouchDevice = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
     let dbDeck = null;
-    let dbSlots = [], dbJudge = [];
+    let dbSlots = [], dbSlotJudge = [], dbLocked = [];
+    let dbKnownJudge = {};
     let dbCandidates = [];
-    let dbSinnerFilter = 'all';
+    let dbSinnerFilter = SINNER_ORDER[0];
     let dbMessageTimeout = null;
 
     function dbCandidateKey(c) {
@@ -1731,8 +1740,10 @@
         return;
       }
       dbSlots = Array(DB_SLOT_COUNT).fill(null);
-      dbJudge = Array(DB_SLOT_COUNT).fill(null);
-      dbSinnerFilter = 'all';
+      dbSlotJudge = Array(DB_SLOT_COUNT).fill(null);
+      dbLocked = Array(DB_SLOT_COUNT).fill(false);
+      dbKnownJudge = {};
+      dbSinnerFilter = SINNER_ORDER[0];
       dbCandidates = [...DATA, ...DB_NONE_CARDS].sort(() => Math.random() - 0.5);
       document.getElementById('dbSearchInput').value = '';
       dbRenderHint();
@@ -1749,10 +1760,9 @@
 
     function dbRenderSinnerFilter() {
       const el = document.getElementById('dbSinnerFilter');
-      el.innerHTML = ['all', ...SINNER_ORDER].map(s => {
-        const label = s === 'all' ? '전체' : s;
+      el.innerHTML = SINNER_ORDER.map(s => {
         const active = dbSinnerFilter === s ? ' active' : '';
-        return `<button class="db-sinner-filter-btn${active}" data-sinner="${escapeHtml(s)}" type="button">${escapeHtml(label)}</button>`;
+        return `<button class="db-sinner-filter-btn${active}" data-sinner="${escapeHtml(s)}" type="button">${escapeHtml(s)}</button>`;
       }).join('');
     }
 
@@ -1768,24 +1778,28 @@
     // ── 슬롯 (12칸 통합) ──────────────────────────────────────
     function dbSlotHTML(idx) {
       const m = dbSlots[idx];
-      const j = dbJudge[idx];
+      const j = dbSlotJudge[idx];
+      const locked = dbLocked[idx];
       const judgeClass = (j === 'green' || j === 'yellow' || j === 'red') ? ` judged-${j}` : '';
       const filledClass = m ? ' filled' : '';
-      const cls = `db-slot board${filledClass}${judgeClass}`;
+      const lockedClass = locked ? ' locked' : '';
+      const cls = `db-slot board${filledClass}${judgeClass}${lockedClass}`;
+      const removeOrLock = locked ? `<span class="db-slot-lock">🔒</span>` : `<button class="db-slot-remove" type="button">✕</button>`;
       let inner;
       if (!m) {
         inner = `<span class="db-slot-empty-label">빈 슬롯</span>`;
       } else if (m['인격명'] === '없음') {
-        inner = `<span class="db-slot-empty-label">🚫 ${escapeHtml(m['수감자'])}<br>없음</span><button class="db-slot-remove" type="button">✕</button>`;
+        inner = `<span class="db-slot-empty-label">🚫 ${escapeHtml(m['수감자'])}<br>없음</span>${removeOrLock}`;
       } else {
         const img = m['이미지(일반)'] || m['이미지(각성)'];
         inner = `${img ? `<img src="${escapeHtml(img)}" alt="" loading="lazy" onerror="this.style.display='none'">` : `<span class="db-slot-empty-label">${escapeHtml(m['인격명'])}</span>`}
+          ${j === 'red' ? `<div class="db-slot-x">✕</div>` : ''}
           <div class="db-slot-name">${escapeHtml(m['인격명'])}</div>
-          <button class="db-slot-remove" type="button">✕</button>`;
+          ${removeOrLock}`;
       }
       return `<div class="db-board-item">
         <div class="db-board-item-label">${idx + 1}</div>
-        <div class="${cls}" data-idx="${idx}" draggable="${m ? 'true' : 'false'}">${inner}</div>
+        <div class="${cls}" data-idx="${idx}" draggable="${m && !locked ? 'true' : 'false'}">${inner}</div>
       </div>`;
     }
 
@@ -1813,10 +1827,6 @@
       return dbCandidates.find(c => dbCandidateKey(c) === key);
     }
 
-    function dbClearJudge() {
-      dbJudge = Array(DB_SLOT_COUNT).fill(null);
-    }
-
     function dbFlashCandidateReject(key) {
       const card = [...document.querySelectorAll('.db-candidate')].find(c => c.dataset.key === key);
       if (!card) return;
@@ -1825,6 +1835,10 @@
     }
 
     function dbPlaceInSlot(idx, key) {
+      if (dbLocked[idx]) {
+        dbShowMessage('이미 정답으로 고정된 자리입니다.');
+        return false;
+      }
       const m = dbFindCandidateByKey(key);
       if (!m) return false;
       if (dbSinnerConflict(m['수감자'], [idx])) {
@@ -1833,27 +1847,38 @@
         return false;
       }
       dbSlots[idx] = m;
-      dbClearJudge();
+      dbSlotJudge[idx] = null;
       dbRenderSlots();
       dbRenderCandidates();
       return true;
     }
 
     function dbRemoveFromSlot(idx) {
-      dbSlots[idx] = null;
-      dbClearJudge();
+      if (dbLocked[idx]) return;
+      const freeIdxs = [];
+      for (let i = 0; i < DB_SLOT_COUNT; i++) if (!dbLocked[i]) freeIdxs.push(i);
+      const vals = freeIdxs.map(i => dbSlots[i]);
+      const pos = freeIdxs.indexOf(idx);
+      vals.splice(pos, 1);
+      vals.push(null);
+      freeIdxs.forEach((slotIdx, k) => {
+        dbSlots[slotIdx] = vals[k];
+        if (k >= pos) dbSlotJudge[slotIdx] = null;
+      });
       dbRenderSlots();
       dbRenderCandidates();
     }
 
     function dbMoveSlotToSlot(fromIdx, toIdx) {
       if (fromIdx === toIdx) return;
+      if (dbLocked[fromIdx] || dbLocked[toIdx]) return;
       const moving = dbSlots[fromIdx];
       if (!moving) return;
       const displaced = dbSlots[toIdx];
       dbSlots[toIdx] = moving;
       dbSlots[fromIdx] = displaced || null;
-      dbClearJudge();
+      dbSlotJudge[fromIdx] = null;
+      dbSlotJudge[toIdx] = null;
       dbRenderSlots();
     }
 
@@ -1862,6 +1887,21 @@
     }
 
     function dbPlaceByDoubleClick(key) {
+      const m = dbFindCandidateByKey(key);
+      if (!m) return;
+      const conflictIdx = dbSlots.findIndex(s => s && s['수감자'] === m['수감자']);
+      if (conflictIdx !== -1) {
+        if (dbLocked[conflictIdx]) {
+          dbShowMessage(`이미 정답으로 고정된 ${m['수감자']} 자리입니다.`);
+          dbFlashCandidateReject(key);
+          return;
+        }
+        dbSlots[conflictIdx] = m;
+        dbSlotJudge[conflictIdx] = null;
+        dbRenderSlots();
+        dbRenderCandidates();
+        return;
+      }
       const idx = dbFirstEmptySlotIndex();
       if (idx === -1) { dbShowMessage('12칸이 모두 찼습니다.'); return; }
       dbPlaceInSlot(idx, key);
@@ -1869,6 +1909,16 @@
 
     function dbSlotClick(idx) {
       if (dbSlots[idx]) dbRemoveFromSlot(idx);
+    }
+
+    function dbClearAll() {
+      for (let i = 0; i < DB_SLOT_COUNT; i++) {
+        if (dbLocked[i]) continue;
+        dbSlots[i] = null;
+        dbSlotJudge[i] = null;
+      }
+      dbRenderSlots();
+      dbRenderCandidates();
     }
 
     function dbHandleSlotDrop(idx, payload) {
@@ -1902,9 +1952,18 @@
 
     function dbSubmit() {
       if (dbSlots.some(s => !s)) return;
-      dbJudge = dbJudgeDeck();
+      const result = dbJudgeDeck();
+      result.forEach((j, idx) => {
+        dbSlotJudge[idx] = j;
+        if (j === 'green') {
+          dbLocked[idx] = true;
+        } else if (j === 'yellow' || j === 'red') {
+          dbKnownJudge[dbCandidateKey(dbSlots[idx])] = j;
+        }
+      });
       dbRenderSlots();
-      if (dbJudge.every(j => j === 'green')) {
+      dbRenderCandidates();
+      if (dbSlotJudge.every(j => j === 'green')) {
         fireFanfare();
         dbRenderResult(false);
       }
@@ -1925,7 +1984,8 @@
         fillIdx++;
       });
       dbSlots = full;
-      dbJudge = Array(DB_SLOT_COUNT).fill('green');
+      dbSlotJudge = Array(DB_SLOT_COUNT).fill('green');
+      dbLocked = Array(DB_SLOT_COUNT).fill(true);
       dbRenderSlots();
       dbRenderCandidates();
       dbRenderResult(true);
@@ -1934,7 +1994,7 @@
     function dbRenderResult(gaveUp) {
       const resultEl = document.getElementById('dbResult');
       resultEl.style.display = '';
-      const greenCount = dbJudge.filter(j => j === 'green').length;
+      const greenCount = dbSlotJudge.filter(j => j === 'green').length;
       resultEl.innerHTML = `<div class="panel">
         <div class="db-result-banner">${gaveUp ? '😢 포기' : '🎉 클리어!'}</div>
         <div class="db-hint-title" style="text-align:center;margin-bottom:10px">덱: ${escapeHtml(dbDeck.deckName)}</div>
@@ -1954,22 +2014,26 @@
       const placed = dbIsPlaced(key);
       const img = !isNone ? (m['이미지(일반)'] || m['이미지(각성)']) : '';
       const label = isNone ? `${m['수감자']} 없음` : m['인격명'];
-      return `<div class="db-candidate${placed ? ' placed' : ''}" data-key="${escapeHtml(key)}" draggable="${placed ? 'false' : 'true'}">
+      const mark = !placed ? dbKnownJudge[key] : null;
+      const markClass = mark ? ` mark-${mark}` : '';
+      return `<div class="db-candidate${placed ? ' placed' : ''}${markClass}" data-key="${escapeHtml(key)}" draggable="${placed ? 'false' : 'true'}">
         ${isNone ? `<div class="db-candidate-noimg">🚫</div>` : (img ? `<img src="${escapeHtml(img)}" alt="" loading="lazy" onerror="this.style.display='none'">` : `<div class="db-candidate-noimg">👤</div>`)}
+        ${mark === 'red' ? `<div class="db-candidate-x">✕</div>` : ''}
+        ${mark === 'yellow' ? `<div class="db-candidate-badge">🟡 순서 다름</div>` : ''}
         <div class="db-candidate-name">${escapeHtml(label)}</div>
       </div>`;
     }
 
     function dbRenderCandidates() {
       const q = lower(document.getElementById('dbSearchInput').value);
-      let filtered = dbCandidates;
-      if (dbSinnerFilter !== 'all') filtered = filtered.filter(c => c['수감자'] === dbSinnerFilter);
+      let filtered = dbCandidates.filter(c => c['수감자'] === dbSinnerFilter);
       if (q) filtered = filtered.filter(c => lower(c['인격명']).includes(q) || (c['인격명'] === '없음' && lower(c['수감자']).includes(q)));
       document.getElementById('dbCandidates').innerHTML = filtered.map(dbCandidateHTML).join('');
     }
 
     document.getElementById('homeDeckBuilderCard').addEventListener('click', dbGoToDeckBuilder);
     document.getElementById('dbBackBtn').addEventListener('click', dbGoHome);
+    document.getElementById('dbClearAllBtn').addEventListener('click', dbClearAll);
     document.getElementById('dbGiveUpBtn').addEventListener('click', dbGiveUp);
     document.getElementById('dbSubmitBtn').addEventListener('click', dbSubmit);
     document.getElementById('dbSearchInput').addEventListener('input', () => dbRenderCandidates());
@@ -2001,7 +2065,7 @@
     });
     dbBoardSlotsEl.addEventListener('dragstart', e => {
       const slot = e.target.closest('.db-slot.filled');
-      if (!slot) return;
+      if (!slot || slot.classList.contains('locked')) return;
       e.dataTransfer.setData('text/plain', `slot|${slot.dataset.idx}`);
     });
     dbBoardSlotsEl.addEventListener('click', e => {
