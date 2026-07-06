@@ -208,17 +208,20 @@
 
     /* ── 덱 빌더 화면 ───────────────────────────── */
     .db-wrap { max-width:1000px; margin:0 auto; }
-    .db-header { display:flex; align-items:center; gap:14px; margin-bottom:20px; }
+    .db-sticky-top { position:sticky; top:0; z-index:50; background:var(--bg); padding:16px 0 14px; margin-bottom:16px; border-bottom:1px solid var(--border); }
+    .db-header { display:flex; align-items:center; gap:14px; margin-bottom:16px; }
     .db-title { font-size:22px; font-weight:900; }
+    .db-help-btn { height:36px; padding:0 14px; font-size:13px; }
     .db-header-giveup-btn { margin-left:auto; height:36px; padding:0 16px; font-size:13px; }
     .db-board-item { display:flex; flex-direction:column; align-items:center; gap:6px; }
     .db-board-item-label { font-size:12px; font-weight:800; color:var(--muted); }
-    .db-hint { margin-bottom:20px; }
+    .db-hint { margin-bottom:16px; }
     .db-hint-title { font-size:13px; color:var(--muted); font-weight:800; margin-bottom:8px; text-transform:uppercase; letter-spacing:.05em; }
     .db-hint-kws { display:flex; gap:6px; flex-wrap:wrap; }
     .db-hint-desc { margin-top:12px; font-size:14px; color:var(--muted); }
-    .db-slots-section { margin-bottom:20px; }
-    .db-slots-label { font-size:13px; font-weight:800; color:var(--muted); margin-bottom:10px; text-transform:uppercase; letter-spacing:.05em; }
+    .db-slots-section { margin-bottom:0; }
+    .db-slots-label { display:flex; align-items:center; justify-content:space-between; font-size:13px; font-weight:800; color:var(--muted); margin-bottom:10px; text-transform:uppercase; letter-spacing:.05em; }
+    .db-slots-progress { font-size:12px; font-weight:800; color:var(--muted); text-transform:none; letter-spacing:0; }
     .db-slots-row { display:flex; gap:10px; flex-wrap:wrap; }
     .db-board-grid { display:grid; grid-template-columns:repeat(6, 1fr); gap:10px; }
     .db-slot { width:100%; aspect-ratio:96/132; border-radius:12px; border:2px dashed var(--border); display:flex; align-items:center; justify-content:center; position:relative; background:var(--panel2); cursor:pointer; transition:border-color .15s, background .15s; overflow:hidden; }
@@ -228,6 +231,8 @@
     .db-slot.filled { border-style:solid; cursor:grab; }
     @keyframes db-reject-shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
     .db-slot.reject-flash { animation:db-reject-shake .25s; border-color:var(--slot-red) !important; }
+    @keyframes db-slot-pop { 0%{transform:scale(1)} 40%{transform:scale(1.1)} 100%{transform:scale(1)} }
+    .db-slot.just-placed { animation:db-slot-pop .32s ease; }
     .db-slot.judged-green { border-color:var(--slot-green); background:color-mix(in srgb, var(--slot-green) 45%, var(--panel2)); }
     .db-slot.judged-yellow { border-color:var(--slot-yellow); background:color-mix(in srgb, var(--slot-yellow) 45%, var(--panel2)); }
     .db-slot.judged-red { border-color:var(--slot-red); background:color-mix(in srgb, var(--slot-red) 45%, var(--panel2)); }
@@ -260,13 +265,16 @@
     .db-actions button { height:48px; padding:0 26px; font-size:15px; font-weight:800; border-radius:14px; }
     .db-actions button:disabled { opacity:.4; cursor:not-allowed; }
     .db-progress { text-align:center; color:var(--muted); font-size:13px; margin-bottom:16px; }
-    .db-message { text-align:center; font-weight:800; color:#ffb86b; background:color-mix(in srgb, var(--slot-yellow) 20%, var(--panel2)); border:1px solid color-mix(in srgb, var(--slot-yellow) 45%, var(--border)); border-radius:12px; padding:10px 16px; margin-bottom:16px; }
+    .db-message { position:fixed; left:50%; bottom:24px; transform:translateX(-50%); z-index:200; max-width:90vw; text-align:center; font-weight:800; color:#ffb86b; background:color-mix(in srgb, var(--slot-yellow) 20%, var(--panel2)); border:1px solid color-mix(in srgb, var(--slot-yellow) 45%, var(--border)); border-radius:12px; padding:10px 16px; box-shadow:0 12px 30px rgba(0,0,0,.5); }
     @media (max-width:800px) { .db-board-grid { grid-template-columns:repeat(3, 1fr); } .db-candidates { grid-template-columns:repeat(2, 1fr); } }
     .db-result-banner { text-align:center; font-size:24px; font-weight:900; margin-bottom:14px; }
     .db-result-stat { text-align:center; color:var(--muted); font-size:14px; margin-bottom:8px; }
     .db-result-actions { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:16px; }
     .db-result-actions button { height:46px; padding:0 28px; font-size:15px; font-weight:800; border-radius:12px; }
-    @media (max-width:640px) { .db-slot{width:80px;height:110px} .db-candidate{width:70px;height:98px} .db-candidate img{height:66px} }
+    @media (max-width:640px) {
+      .db-board-grid { grid-template-columns:none; grid-auto-flow:column; grid-auto-columns:80px; overflow-x:auto; padding-bottom:6px; }
+      .db-slot{width:80px;height:110px} .db-candidate{width:70px;height:98px} .db-candidate img{height:66px}
+    }
 
     /* ── 게임 화면 홈 버튼 ───────────────────────── */
     .back-btn { display:inline-flex; align-items:center; height:36px; padding:0 14px; border-radius:999px; border:1px solid var(--border); background:var(--panel2); color:var(--text); font:inherit; font-size:14px; cursor:pointer; margin-bottom:14px; transition:border-color .15s; }
@@ -323,7 +331,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.11.2</span>
+          <span class="version-badge">v0.12.0</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -394,7 +402,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.11.2</span>
+          <span class="version-badge">v0.12.0</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -505,19 +513,24 @@
   <!-- ══ 덱 빌더 화면 ════════════════════════════════════════════ -->
   <div id="deckBuilderScreen" style="display:none">
     <div class="db-wrap">
-      <div class="db-header">
-        <button class="back-btn" id="dbBackBtn">← 홈으로</button>
-        <span class="db-title">덱 빌더</span>
-        <button class="secondary db-header-giveup-btn" id="dbClearAllBtn">모두 비우기</button>
-        <button class="secondary db-header-giveup-btn" id="dbGiveUpBtn">정답 보기</button>
-      </div>
+      <div class="db-sticky-top">
+        <div class="db-header">
+          <button class="back-btn" id="dbBackBtn">← 홈으로</button>
+          <span class="db-title">덱 빌더</span>
+          <button class="secondary db-help-btn" id="dbHelpBtn" type="button">❓ 도움말</button>
+          <button class="secondary db-header-giveup-btn" id="dbClearAllBtn">모두 비우기</button>
+          <button class="secondary db-header-giveup-btn" id="dbGiveUpBtn">정답 보기</button>
+        </div>
 
-      <div class="db-hint panel" id="dbHint"></div>
-      <div class="db-message" id="dbMessage" style="display:none"></div>
+        <div class="db-hint panel" id="dbHint" style="display:none"></div>
 
-      <div class="db-slots-section">
-        <div class="db-slots-label">인격 배치 순서 (12칸)</div>
-        <div class="db-board-grid" id="dbBoardSlots"></div>
+        <div class="db-slots-section">
+          <div class="db-slots-label">
+            <span>인격 배치 순서 (12칸)</span>
+            <span class="db-slots-progress" id="dbSlotsProgress"></span>
+          </div>
+          <div class="db-board-grid" id="dbBoardSlots"></div>
+        </div>
       </div>
 
       <div class="db-candidates-section panel">
@@ -533,6 +546,7 @@
 
       <div id="dbResult" style="display:none"></div>
     </div>
+    <div class="db-message" id="dbMessage" style="display:none"></div>
   </div>
 
   <!-- ══ 업데이트 기록 모달 ═══════════════════════════════════ -->
@@ -1736,7 +1750,9 @@
       document.getElementById('dbResult').style.display = 'none';
       document.getElementById('dbMessage').style.display = 'none';
       if (!dbDeck) {
-        document.getElementById('dbHint').innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted)">플레이 가능한 덱이 없습니다.</div>';
+        const hintEl = document.getElementById('dbHint');
+        hintEl.innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted)">플레이 가능한 덱이 없습니다.</div>';
+        hintEl.style.display = '';
         document.getElementById('dbBoardSlots').innerHTML = '';
         return;
       }
@@ -1747,6 +1763,7 @@
       dbSinnerFilter = SINNER_ORDER[0];
       dbCandidates = [...DATA, ...DB_NONE_CARDS].sort(() => Math.random() - 0.5);
       document.getElementById('dbSearchInput').value = '';
+      document.getElementById('dbHint').style.display = 'none';
       dbRenderHint();
       dbRenderSinnerFilter();
       dbRenderSlots();
@@ -1781,6 +1798,20 @@
       el.style.display = '';
       clearTimeout(dbMessageTimeout);
       dbMessageTimeout = setTimeout(() => { el.style.display = 'none'; }, 2200);
+    }
+
+    function dbAfterPlace(idx) {
+      const el = document.querySelector(`.db-slot[data-idx="${idx}"]`);
+      if (el) {
+        el.classList.add('just-placed');
+        setTimeout(() => el.classList.remove('just-placed'), 320);
+      }
+      dbShowMessage(`${idx + 1}번째 순서에 배치됨`);
+    }
+
+    function dbToggleHint() {
+      const el = document.getElementById('dbHint');
+      el.style.display = el.style.display === 'none' ? '' : 'none';
     }
 
     // ── 슬롯 (12칸 통합) ──────────────────────────────────────
@@ -1822,6 +1853,7 @@
       const allFilled = filledCount === DB_SLOT_COUNT;
       document.getElementById('dbSubmitBtn').disabled = !allFilled;
       document.getElementById('dbProgress').textContent = allFilled ? '' : `12칸을 모두 채워주세요 (현재 ${filledCount}/12)`;
+      document.getElementById('dbSlotsProgress').textContent = `${filledCount}/12 배치됨`;
     }
 
     function dbIsPlaced(key) {
@@ -1859,6 +1891,7 @@
       dbSlotJudge[idx] = null;
       dbRenderSlots();
       dbRenderCandidates();
+      dbAfterPlace(idx);
       return true;
     }
 
@@ -1909,6 +1942,7 @@
         dbSlotJudge[conflictIdx] = null;
         dbRenderSlots();
         dbRenderCandidates();
+        dbAfterPlace(conflictIdx);
         return;
       }
       const idx = dbFirstEmptySlotIndex();
@@ -2044,6 +2078,7 @@
 
     document.getElementById('homeDeckBuilderCard').addEventListener('click', dbGoToDeckBuilder);
     document.getElementById('dbBackBtn').addEventListener('click', dbGoHome);
+    document.getElementById('dbHelpBtn').addEventListener('click', dbToggleHint);
     document.getElementById('dbClearAllBtn').addEventListener('click', dbClearAll);
     document.getElementById('dbGiveUpBtn').addEventListener('click', dbGiveUp);
     document.getElementById('dbSubmitBtn').addEventListener('click', dbSubmit);
