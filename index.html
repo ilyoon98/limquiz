@@ -210,6 +210,9 @@
     .db-wrap { max-width:1000px; margin:0 auto; }
     .db-header { display:flex; align-items:center; gap:14px; margin-bottom:20px; }
     .db-title { font-size:22px; font-weight:900; }
+    .db-header-giveup-btn { margin-left:auto; height:36px; padding:0 16px; font-size:13px; }
+    .db-board-item { display:flex; flex-direction:column; align-items:center; gap:6px; }
+    .db-board-item-label { font-size:12px; font-weight:800; color:var(--muted); }
     .db-hint { margin-bottom:20px; }
     .db-hint-title { font-size:13px; color:var(--muted); font-weight:800; margin-bottom:8px; text-transform:uppercase; letter-spacing:.05em; }
     .db-hint-kws { display:flex; gap:6px; flex-wrap:wrap; }
@@ -218,7 +221,7 @@
     .db-slots-label { font-size:13px; font-weight:800; color:var(--muted); margin-bottom:10px; text-transform:uppercase; letter-spacing:.05em; }
     .db-slots-row { display:flex; gap:10px; flex-wrap:wrap; }
     .db-slot { width:96px; height:132px; border-radius:12px; border:2px dashed var(--border); display:flex; align-items:center; justify-content:center; position:relative; background:var(--panel2); cursor:pointer; transition:border-color .15s, background .15s; overflow:hidden; }
-    .db-slot.core { border-color:color-mix(in srgb, var(--button) 55%, var(--border)); }
+    .db-slot.board, .db-slot.order { border-color:color-mix(in srgb, var(--button) 55%, var(--border)); }
     .db-slot.drag-over { border-color:var(--button); background:color-mix(in srgb, var(--button) 20%, var(--panel2)); }
     .db-slot.filled { border-style:solid; cursor:grab; }
     .db-slot.judged-green { border-color:var(--slot-green); background:color-mix(in srgb, var(--slot-green) 45%, var(--panel2)); }
@@ -300,7 +303,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.7.2</span>
+          <span class="version-badge">v0.8.0</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -371,7 +374,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.7.2</span>
+          <span class="version-badge">v0.8.0</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -484,29 +487,39 @@
     <div class="db-wrap">
       <div class="db-header">
         <button class="back-btn" id="dbBackBtn">← 홈으로</button>
-        <span class="db-title">덱 빌더</span>
+        <span class="db-title" id="dbStageTitle">덱 빌더 - 1단계</span>
+        <button class="secondary db-header-giveup-btn" id="dbGiveUpBtn">정답 보기</button>
       </div>
 
       <div class="db-hint panel" id="dbHint"></div>
 
-      <div class="db-slots-section">
-        <div class="db-slots-label">핵심 슬롯</div>
-        <div class="db-slots-row" id="dbCoreSlots"></div>
-      </div>
-      <div class="db-slots-section">
-        <div class="db-slots-label">일반 슬롯 (보너스)</div>
-        <div class="db-slots-row" id="dbGeneralSlots"></div>
+      <!-- 1단계: 수감자 12칸 -->
+      <div id="dbStage1">
+        <div class="db-slots-section">
+          <div class="db-slots-label">수감자 배치</div>
+          <div class="db-slots-row" id="dbBoardSlots"></div>
+        </div>
+        <div class="db-candidates-section panel">
+          <input id="dbSearchInput" class="db-search" placeholder="인격명 검색" autocomplete="off" />
+          <div class="db-candidates" id="dbCandidates"></div>
+        </div>
+        <div class="db-actions">
+          <button id="dbSubmitStage1Btn">1단계 제출</button>
+        </div>
       </div>
 
-      <div class="db-candidates-section panel">
-        <input id="dbSearchInput" class="db-search" placeholder="인격명 검색" autocomplete="off" />
-        <div class="db-candidates" id="dbCandidates"></div>
-      </div>
-
-      <div class="db-actions">
-        <button class="secondary" id="dbResetBtn">초기화</button>
-        <button class="secondary" id="dbGiveUpBtn">정답 보기</button>
-        <button id="dbSubmitBtn">제출</button>
+      <!-- 2단계: Main 전투 순서 -->
+      <div id="dbStage2" style="display:none">
+        <div class="db-slots-section">
+          <div class="db-slots-label">전투 순서</div>
+          <div class="db-slots-row" id="dbOrderSlots"></div>
+        </div>
+        <div class="db-candidates-section panel">
+          <div class="db-candidates" id="dbOrderCandidates"></div>
+        </div>
+        <div class="db-actions">
+          <button id="dbSubmitStage2Btn">2단계 제출 (최종 제출)</button>
+        </div>
       </div>
 
       <div id="dbResult" style="display:none"></div>
@@ -1666,10 +1679,13 @@
     }
 
     // ── 덱 빌더 ──────────────────────────────────────────────
+    const SINNER_ORDER = Object.keys(SINNER_COLOR);
+    const DB_NONE_CARD = { '인격명': '없음' };
     let dbDeck = null;
-    let dbCoreSlots = [], dbGeneralSlots = [];
-    let dbCoreJudge = [], dbGeneralJudge = [];
+    let dbStage = 1;
+    let dbBoardPlaced = [], dbBoardJudge = [];
     let dbCandidates = [];
+    let dbOrderPlaced = [], dbOrderJudge = [], dbOrderCandidates = [];
     let dbTapSelected = null;
 
     function dbGoToDeckBuilder() {
@@ -1691,233 +1707,346 @@
     }
 
     function dbPickDeck() {
-      const eligible = DECKS.filter(d => d.core.length >= 3);
+      const eligible = DECKS.filter(d => d.slots.filter(s => s.type === 'Main').length >= 3);
       if (!eligible.length) return null;
       return eligible[Math.floor(Math.random() * eligible.length)];
     }
 
-    function dbBuildCandidates() {
-      const correctNames = new Set([...dbDeck.core, ...dbDeck.general].map(m => m['인격명']));
-      const correctRows = [...correctNames].map(n => DATA.find(d => d['인격명'] === n)).filter(Boolean);
-      const slotsTotal = dbDeck.core.length + dbDeck.general.length;
-      const pool = DATA.filter(d => !correctNames.has(d['인격명']));
-      const shuffledPool = [...pool].sort(() => Math.random() - 0.5);
-      const distractorCount = Math.min(pool.length, Math.round(slotsTotal * (2 + Math.random())));
-      const distractors = shuffledPool.slice(0, distractorCount);
-      return [...correctRows, ...distractors].sort(() => Math.random() - 0.5);
-    }
-
     function dbInit() {
       dbDeck = dbPickDeck();
+      dbStage = 1;
+      document.getElementById('dbResult').style.display = 'none';
+      document.getElementById('dbStageTitle').textContent = '덱 빌더 - 1단계';
+      document.getElementById('dbStage1').style.display = '';
+      document.getElementById('dbStage2').style.display = 'none';
       if (!dbDeck) {
         document.getElementById('dbHint').innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted)">플레이 가능한 덱이 없습니다.</div>';
         return;
       }
-      dbCoreSlots = Array(dbDeck.core.length).fill(null);
-      dbGeneralSlots = Array(dbDeck.general.length).fill(null);
-      dbCoreJudge = Array(dbDeck.core.length).fill(null);
-      dbGeneralJudge = Array(dbDeck.general.length).fill(null);
+      dbBoardPlaced = Array(SINNER_ORDER.length).fill(null);
+      dbBoardJudge = Array(SINNER_ORDER.length).fill(null);
       dbTapSelected = null;
-      dbCandidates = dbBuildCandidates();
-      document.getElementById('dbResult').style.display = 'none';
+      dbCandidates = [...DATA].sort(() => Math.random() - 0.5);
       document.getElementById('dbSearchInput').value = '';
       dbRenderHint();
-      dbRenderSlots();
+      dbRenderBoardSlots();
       dbRenderCandidates();
     }
 
     function dbRenderHint() {
       const el = document.getElementById('dbHint');
       el.innerHTML = `
-        <div class="db-hint-title">이 덱의 컨셉 키워드</div>
-        <div class="db-hint-kws">${dbDeck.keywords.map(k => kwChip(k)).join('')}</div>
-        <div class="db-hint-desc">핵심 멤버 슬롯을 채워보세요! (일반 멤버는 보너스입니다)</div>
+        <div class="db-hint-title">덱: ${escapeHtml(dbDeck.deckName)}</div>
+        <div class="db-hint-desc">각 수감자 자리에 이 덱이 쓰는 인격을 배치하세요. 안 쓰는 수감자는 "없음"으로!</div>
       `;
     }
 
-    function dbSlotHTML(type, idx) {
-      const slots = type === 'core' ? dbCoreSlots : dbGeneralSlots;
-      const judge = type === 'core' ? dbCoreJudge : dbGeneralJudge;
-      const m = slots[idx];
-      const j = judge[idx];
-      const judgeClass = (j === 'green' || j === 'yellow' || j === 'red') ? ` judged-${j}` : '';
+    // ── 1단계: 수감자 12칸 ────────────────────────────────────
+    function dbBoardSlotHTML(idx) {
+      const sinner = SINNER_ORDER[idx];
+      const m = dbBoardPlaced[idx];
+      const j = dbBoardJudge[idx];
+      const judgeClass = (j === 'green' || j === 'red') ? ` judged-${j}` : '';
       const filledClass = m ? ' filled' : '';
-      const cls = `db-slot ${type}${filledClass}${judgeClass}`;
+      const cls = `db-slot board${filledClass}${judgeClass}`;
+      let inner;
       if (!m) {
-        return `<div class="${cls}" data-type="${type}" data-idx="${idx}">
-          <span class="db-slot-empty-label">${type === 'core' ? '핵심' : '일반'}<br>${idx + 1}</span>
-        </div>`;
+        inner = `<span class="db-slot-empty-label">빈 슬롯</span>`;
+      } else if (m === DB_NONE_CARD) {
+        inner = `<span class="db-slot-empty-label">🚫 없음</span><button class="db-slot-remove" type="button">✕</button>`;
+      } else {
+        const img = m['이미지(일반)'] || m['이미지(각성)'];
+        inner = `${img ? `<img src="${escapeHtml(img)}" alt="" loading="lazy" onerror="this.style.display='none'">` : `<span class="db-slot-empty-label">${escapeHtml(m['인격명'])}</span>`}
+          <div class="db-slot-name">${escapeHtml(m['인격명'])}</div>
+          <button class="db-slot-remove" type="button">✕</button>`;
       }
-      const img = m['이미지(일반)'] || m['이미지(각성)'];
-      return `<div class="${cls}" data-type="${type}" data-idx="${idx}" draggable="true">
-        ${img ? `<img src="${escapeHtml(img)}" alt="" loading="lazy" onerror="this.style.display='none'">` : `<span class="db-slot-empty-label">${escapeHtml(m['인격명'])}</span>`}
-        <div class="db-slot-name">${escapeHtml(m['인격명'])}</div>
-        <button class="db-slot-remove" type="button">✕</button>
+      return `<div class="db-board-item">
+        <div class="db-board-item-label">${escapeHtml(sinner)}</div>
+        <div class="${cls}" data-idx="${idx}" draggable="${m ? 'true' : 'false'}">${inner}</div>
       </div>`;
     }
 
-    function dbRenderSlots() {
-      document.getElementById('dbCoreSlots').innerHTML = dbCoreSlots.map((_, i) => dbSlotHTML('core', i)).join('');
-      document.getElementById('dbGeneralSlots').innerHTML = dbGeneralSlots.map((_, i) => dbSlotHTML('general', i)).join('');
+    function dbRenderBoardSlots() {
+      document.getElementById('dbBoardSlots').innerHTML = SINNER_ORDER.map((_, i) => dbBoardSlotHTML(i)).join('');
     }
 
-    function dbIsPlaced(name) {
-      return dbCoreSlots.some(s => s && s['인격명'] === name) || dbGeneralSlots.some(s => s && s['인격명'] === name);
+    function dbIsPlacedInBoard(name) {
+      if (name === '없음') return false;
+      return dbBoardPlaced.some(s => s && s['인격명'] === name);
     }
 
     function dbFindCandidate(name) {
+      if (name === '없음') return DB_NONE_CARD;
       return dbCandidates.find(c => c['인격명'] === name);
     }
 
-    function dbCandidateHTML(m) {
-      const placed = dbIsPlaced(m['인격명']);
-      const img = m['이미지(일반)'] || m['이미지(각성)'];
-      const selCls = dbTapSelected === m['인격명'] ? ' selected-tap' : '';
-      return `<div class="db-candidate${placed ? ' placed' : ''}${selCls}" data-name="${escapeHtml(m['인격명'])}" draggable="${placed ? 'false' : 'true'}">
-        ${img ? `<img src="${escapeHtml(img)}" alt="" loading="lazy" onerror="this.style.display='none'">` : `<div class="db-candidate-noimg">👤</div>`}
-        <div class="db-candidate-name">${escapeHtml(m['인격명'])}</div>
+    function dbCandidateHTML(m, isPlacedFn) {
+      const name = m['인격명'];
+      const isNone = m === DB_NONE_CARD;
+      const placed = isPlacedFn(name);
+      const img = !isNone ? (m['이미지(일반)'] || m['이미지(각성)']) : '';
+      const selCls = dbTapSelected === name ? ' selected-tap' : '';
+      return `<div class="db-candidate${placed ? ' placed' : ''}${selCls}" data-name="${escapeHtml(name)}" draggable="${placed ? 'false' : 'true'}">
+        ${isNone ? `<div class="db-candidate-noimg">🚫</div>` : (img ? `<img src="${escapeHtml(img)}" alt="" loading="lazy" onerror="this.style.display='none'">` : `<div class="db-candidate-noimg">👤</div>`)}
+        <div class="db-candidate-name">${escapeHtml(name)}</div>
       </div>`;
     }
 
     function dbRenderCandidates() {
       const q = lower(document.getElementById('dbSearchInput').value);
-      const list = q ? dbCandidates.filter(c => lower(c['인격명']).includes(q)) : dbCandidates;
-      document.getElementById('dbCandidates').innerHTML = list.length
-        ? list.map(dbCandidateHTML).join('')
-        : '<div style="padding:20px;color:var(--muted)">검색 결과가 없습니다.</div>';
+      const filtered = q ? dbCandidates.filter(c => lower(c['인격명']).includes(q)) : dbCandidates;
+      const list = [DB_NONE_CARD, ...filtered];
+      document.getElementById('dbCandidates').innerHTML = list.map(m => dbCandidateHTML(m, dbIsPlacedInBoard)).join('');
     }
 
-    function dbClearJudge() {
-      dbCoreJudge = Array(dbCoreSlots.length).fill(null);
-      dbGeneralJudge = Array(dbGeneralSlots.length).fill(null);
+    function dbClearBoardJudge() {
+      dbBoardJudge = Array(SINNER_ORDER.length).fill(null);
     }
 
-    function dbRemoveIdentityFromAllSlots(name) {
-      dbCoreSlots = dbCoreSlots.map(s => (s && s['인격명'] === name) ? null : s);
-      dbGeneralSlots = dbGeneralSlots.map(s => (s && s['인격명'] === name) ? null : s);
+    function dbRemoveNameFromBoard(name) {
+      dbBoardPlaced = dbBoardPlaced.map(s => (s && s['인격명'] === name) ? null : s);
     }
 
-    function dbPlaceInSlot(type, idx, name) {
+    function dbPlaceInBoard(idx, name) {
       const m = dbFindCandidate(name);
       if (!m) return;
-      dbRemoveIdentityFromAllSlots(name);
-      const slots = type === 'core' ? dbCoreSlots : dbGeneralSlots;
-      slots[idx] = m;
-      dbClearJudge();
-      dbRenderSlots();
+      if (name !== '없음') dbRemoveNameFromBoard(name);
+      dbBoardPlaced[idx] = m;
+      dbClearBoardJudge();
+      dbRenderBoardSlots();
       dbRenderCandidates();
     }
 
-    function dbRemoveFromSlot(type, idx) {
-      const slots = type === 'core' ? dbCoreSlots : dbGeneralSlots;
-      slots[idx] = null;
-      dbClearJudge();
-      dbRenderSlots();
+    function dbRemoveFromBoard(idx) {
+      dbBoardPlaced[idx] = null;
+      dbClearBoardJudge();
+      dbRenderBoardSlots();
       dbRenderCandidates();
     }
 
-    function dbMoveSlotToSlot(fromType, fromIdx, toType, toIdx) {
-      if (fromType === toType && fromIdx === toIdx) return;
-      const fromSlots = fromType === 'core' ? dbCoreSlots : dbGeneralSlots;
-      const toSlots = toType === 'core' ? dbCoreSlots : dbGeneralSlots;
-      const moving = fromSlots[fromIdx];
+    function dbMoveBoardToBoard(fromIdx, toIdx) {
+      if (fromIdx === toIdx) return;
+      const moving = dbBoardPlaced[fromIdx];
       if (!moving) return;
-      const displaced = toSlots[toIdx];
-      toSlots[toIdx] = moving;
-      fromSlots[fromIdx] = displaced || null;
-      dbClearJudge();
-      dbRenderSlots();
+      const displaced = dbBoardPlaced[toIdx];
+      dbBoardPlaced[toIdx] = moving;
+      dbBoardPlaced[fromIdx] = displaced || null;
+      dbClearBoardJudge();
+      dbRenderBoardSlots();
     }
 
     function dbCandidateClick(name) {
-      if (dbIsPlaced(name)) return;
+      if (dbIsPlacedInBoard(name)) return;
       dbTapSelected = dbTapSelected === name ? null : name;
       dbRenderCandidates();
     }
 
-    function dbSlotClick(type, idx) {
-      const slots = type === 'core' ? dbCoreSlots : dbGeneralSlots;
-      if (slots[idx]) {
-        dbRemoveFromSlot(type, idx);
-        return;
-      }
+    function dbBoardSlotClick(idx) {
+      if (dbBoardPlaced[idx]) { dbRemoveFromBoard(idx); return; }
       if (dbTapSelected) {
-        dbPlaceInSlot(type, idx, dbTapSelected);
+        dbPlaceInBoard(idx, dbTapSelected);
         dbTapSelected = null;
         dbRenderCandidates();
       }
     }
 
-    function dbHandleDrop(type, idx, payload) {
+    function dbHandleBoardDrop(idx, payload) {
       if (!payload) return;
-      const parts = payload.split('');
-      if (parts[0] === 'candidate') {
-        dbPlaceInSlot(type, idx, parts[1]);
-      } else if (parts[0] === 'slot') {
-        dbMoveSlotToSlot(parts[1], Number(parts[2]), type, idx);
+      const parts = payload.split('|');
+      if (parts[0] === 'candidate') dbPlaceInBoard(idx, parts[1]);
+      else if (parts[0] === 'board') dbMoveBoardToBoard(Number(parts[1]), idx);
+    }
+
+    function dbHandleDropToCandidatesFromBoard(payload) {
+      if (!payload) return;
+      const parts = payload.split('|');
+      if (parts[0] === 'board') dbRemoveFromBoard(Number(parts[1]));
+    }
+
+    function dbJudgeBoard() {
+      return SINNER_ORDER.map((sinner, i) => {
+        const slot = dbDeck.slots.find(s => s.수감자 === sinner);
+        const placedName = dbBoardPlaced[i] ? dbBoardPlaced[i]['인격명'] : '없음';
+        const answerName = slot.type === 'Null' ? '없음' : slot.인격명;
+        return placedName === answerName ? 'green' : 'red';
+      });
+    }
+
+    function dbSubmitStage1() {
+      dbBoardJudge = dbJudgeBoard();
+      dbRenderBoardSlots();
+      if (dbBoardJudge.every(j => j === 'green')) dbGoStage2();
+    }
+
+    // ── 2단계: Main 전투 순서 ─────────────────────────────────
+    function dbMainSlotsSorted() {
+      return dbDeck.slots.filter(s => s.type === 'Main').sort((a, b) => a.order - b.order);
+    }
+
+    function dbGoStage2() {
+      dbStage = 2;
+      dbTapSelected = null;
+      const mainSlots = dbMainSlotsSorted();
+      dbOrderCandidates = mainSlots
+        .map(s => dbBoardPlaced[SINNER_ORDER.indexOf(s.수감자)])
+        .filter(Boolean)
+        .sort(() => Math.random() - 0.5);
+      dbOrderPlaced = Array(mainSlots.length).fill(null);
+      dbOrderJudge = Array(mainSlots.length).fill(null);
+      document.getElementById('dbStageTitle').textContent = '덱 빌더 - 2단계';
+      document.getElementById('dbStage1').style.display = 'none';
+      document.getElementById('dbStage2').style.display = '';
+      dbRenderOrderSlots();
+      dbRenderOrderCandidates();
+    }
+
+    function dbOrderSlotHTML(idx) {
+      const m = dbOrderPlaced[idx];
+      const j = dbOrderJudge[idx];
+      const judgeClass = (j === 'green' || j === 'yellow' || j === 'red') ? ` judged-${j}` : '';
+      const filledClass = m ? ' filled' : '';
+      const cls = `db-slot order${filledClass}${judgeClass}`;
+      let inner;
+      if (!m) {
+        inner = `<span class="db-slot-empty-label">빈 슬롯</span>`;
+      } else {
+        const img = m['이미지(일반)'] || m['이미지(각성)'];
+        inner = `${img ? `<img src="${escapeHtml(img)}" alt="" loading="lazy" onerror="this.style.display='none'">` : `<span class="db-slot-empty-label">${escapeHtml(m['인격명'])}</span>`}
+          <div class="db-slot-name">${escapeHtml(m['인격명'])}</div>
+          <button class="db-slot-remove" type="button">✕</button>`;
+      }
+      return `<div class="db-board-item">
+        <div class="db-board-item-label">순서 ${idx + 1}</div>
+        <div class="${cls}" data-idx="${idx}" draggable="${m ? 'true' : 'false'}">${inner}</div>
+      </div>`;
+    }
+
+    function dbRenderOrderSlots() {
+      document.getElementById('dbOrderSlots').innerHTML = dbOrderPlaced.map((_, i) => dbOrderSlotHTML(i)).join('');
+    }
+
+    function dbIsPlacedInOrder(name) {
+      return dbOrderPlaced.some(s => s && s['인격명'] === name);
+    }
+
+    function dbRenderOrderCandidates() {
+      document.getElementById('dbOrderCandidates').innerHTML = dbOrderCandidates.map(m => dbCandidateHTML(m, dbIsPlacedInOrder)).join('');
+    }
+
+    function dbClearOrderJudge() {
+      dbOrderJudge = Array(dbOrderPlaced.length).fill(null);
+    }
+
+    function dbPlaceInOrder(idx, name) {
+      const m = dbOrderCandidates.find(c => c['인격명'] === name);
+      if (!m) return;
+      dbOrderPlaced = dbOrderPlaced.map(s => (s && s['인격명'] === name) ? null : s);
+      dbOrderPlaced[idx] = m;
+      dbClearOrderJudge();
+      dbRenderOrderSlots();
+      dbRenderOrderCandidates();
+    }
+
+    function dbRemoveFromOrder(idx) {
+      dbOrderPlaced[idx] = null;
+      dbClearOrderJudge();
+      dbRenderOrderSlots();
+      dbRenderOrderCandidates();
+    }
+
+    function dbMoveOrderToOrder(fromIdx, toIdx) {
+      if (fromIdx === toIdx) return;
+      const moving = dbOrderPlaced[fromIdx];
+      if (!moving) return;
+      const displaced = dbOrderPlaced[toIdx];
+      dbOrderPlaced[toIdx] = moving;
+      dbOrderPlaced[fromIdx] = displaced || null;
+      dbClearOrderJudge();
+      dbRenderOrderSlots();
+    }
+
+    function dbOrderCandidateClick(name) {
+      if (dbIsPlacedInOrder(name)) return;
+      dbTapSelected = dbTapSelected === name ? null : name;
+      dbRenderOrderCandidates();
+    }
+
+    function dbOrderSlotClick(idx) {
+      if (dbOrderPlaced[idx]) { dbRemoveFromOrder(idx); return; }
+      if (dbTapSelected) {
+        dbPlaceInOrder(idx, dbTapSelected);
+        dbTapSelected = null;
+        dbRenderOrderCandidates();
       }
     }
 
-    function dbHandleDropToCandidates(payload) {
+    function dbHandleOrderDrop(idx, payload) {
       if (!payload) return;
-      const parts = payload.split('');
-      if (parts[0] === 'slot') dbRemoveFromSlot(parts[1], Number(parts[2]));
+      const parts = payload.split('|');
+      if (parts[0] === 'ordercandidate') dbPlaceInOrder(idx, parts[1]);
+      else if (parts[0] === 'order') dbMoveOrderToOrder(Number(parts[1]), idx);
     }
 
-    function dbJudgeSlots(placed, answerNames) {
-      return placed.map((p, idx) => {
+    function dbHandleDropToOrderCandidates(payload) {
+      if (!payload) return;
+      const parts = payload.split('|');
+      if (parts[0] === 'order') dbRemoveFromOrder(Number(parts[1]));
+    }
+
+    function dbJudgeOrder() {
+      const answerNames = dbMainSlotsSorted().map(s => s.인격명);
+      return dbOrderPlaced.map((p, idx) => {
         if (!p) return null;
-        if (p === answerNames[idx]) return 'green';
-        if (answerNames.includes(p)) return 'yellow';
+        const name = p['인격명'];
+        if (name === answerNames[idx]) return 'green';
+        if (answerNames.includes(name)) return 'yellow';
         return 'red';
       });
     }
 
-    function dbSubmit() {
-      const coreAnswerNames = dbDeck.core.map(m => m['인격명']);
-      const generalAnswerNames = dbDeck.general.map(m => m['인격명']);
-      const corePlacedNames = dbCoreSlots.map(s => s ? s['인격명'] : null);
-      const generalPlacedNames = dbGeneralSlots.map(s => s ? s['인격명'] : null);
-      dbCoreJudge = dbJudgeSlots(corePlacedNames, coreAnswerNames);
-      dbGeneralJudge = dbJudgeSlots(generalPlacedNames, generalAnswerNames);
-      dbRenderSlots();
-      const coreGreen = dbCoreJudge.filter(j => j === 'green').length;
-      const generalGreen = dbGeneralJudge.filter(j => j === 'green').length;
-      if (coreGreen === dbDeck.core.length) {
+    function dbSubmitStage2() {
+      dbOrderJudge = dbJudgeOrder();
+      dbRenderOrderSlots();
+      if (dbOrderJudge.every(j => j === 'green')) {
         fireFanfare();
-        dbRenderResult(false, coreGreen, generalGreen);
+        dbRenderResult(false);
       }
     }
 
+    // ── 정답 보기 / 결과 ──────────────────────────────────────
     function dbGiveUp() {
-      dbCoreSlots = dbDeck.core.map(m => dbFindCandidate(m['인격명']) || m);
-      dbGeneralSlots = dbDeck.general.map(m => dbFindCandidate(m['인격명']) || m);
-      dbCoreJudge = Array(dbDeck.core.length).fill('green');
-      dbGeneralJudge = Array(dbDeck.general.length).fill('green');
+      dbBoardPlaced = SINNER_ORDER.map(sinner => {
+        const slot = dbDeck.slots.find(s => s.수감자 === sinner);
+        if (slot.type === 'Null') return DB_NONE_CARD;
+        return dbFindCandidate(slot.인격명) || { '인격명': slot.인격명 };
+      });
+      dbBoardJudge = Array(SINNER_ORDER.length).fill('green');
+      const mainSlots = dbMainSlotsSorted();
+      dbOrderCandidates = mainSlots.map(s => dbBoardPlaced[SINNER_ORDER.indexOf(s.수감자)]);
+      dbOrderPlaced = [...dbOrderCandidates];
+      dbOrderJudge = Array(mainSlots.length).fill('green');
       dbTapSelected = null;
-      dbRenderSlots();
+      dbStage = 2;
+      document.getElementById('dbStageTitle').textContent = '덱 빌더 - 2단계';
+      document.getElementById('dbStage1').style.display = 'none';
+      document.getElementById('dbStage2').style.display = '';
+      dbRenderBoardSlots();
       dbRenderCandidates();
-      dbRenderResult(true, dbDeck.core.length, dbDeck.general.length);
+      dbRenderOrderSlots();
+      dbRenderOrderCandidates();
+      dbRenderResult(true);
     }
 
-    function dbReset() {
-      dbCoreSlots = Array(dbDeck.core.length).fill(null);
-      dbGeneralSlots = Array(dbDeck.general.length).fill(null);
-      dbClearJudge();
-      dbTapSelected = null;
-      dbRenderSlots();
-      dbRenderCandidates();
-      document.getElementById('dbResult').style.display = 'none';
-    }
-
-    function dbRenderResult(gaveUp, coreGreen, generalGreen) {
+    function dbRenderResult(gaveUp) {
       const resultEl = document.getElementById('dbResult');
       resultEl.style.display = '';
+      const mainCount = dbDeck.slots.filter(s => s.type === 'Main').length;
+      const orderGreen = dbOrderJudge.filter(j => j === 'green').length;
       resultEl.innerHTML = `<div class="panel">
         <div class="db-result-banner">${gaveUp ? '😢 포기' : '🎉 클리어!'}</div>
-        <div class="db-result-stat">핵심 ${coreGreen}/${dbDeck.core.length} (초록) · 보너스 일반 ${generalGreen}/${dbDeck.general.length} (초록 기준)</div>
+        <div class="db-result-stat">1단계 12/12 · 2단계 순서 ${orderGreen}/${mainCount}</div>
         <div class="db-result-actions">
-          <button onclick="dbInit()">다음 문제</button>
+          <button onclick="dbInit()">다음 덱</button>
           <button class="secondary" onclick="dbGoHome()">홈으로</button>
         </div>
       </div>`;
@@ -1926,56 +2055,54 @@
 
     document.getElementById('homeDeckBuilderCard').addEventListener('click', dbGoToDeckBuilder);
     document.getElementById('dbBackBtn').addEventListener('click', dbGoHome);
-    document.getElementById('dbResetBtn').addEventListener('click', dbReset);
     document.getElementById('dbGiveUpBtn').addEventListener('click', dbGiveUp);
-    document.getElementById('dbSubmitBtn').addEventListener('click', dbSubmit);
+    document.getElementById('dbSubmitStage1Btn').addEventListener('click', dbSubmitStage1);
+    document.getElementById('dbSubmitStage2Btn').addEventListener('click', dbSubmitStage2);
     document.getElementById('dbSearchInput').addEventListener('input', () => dbRenderCandidates());
 
-    ['core', 'general'].forEach(type => {
-      const el = document.getElementById(type === 'core' ? 'dbCoreSlots' : 'dbGeneralSlots');
-      el.addEventListener('dragover', e => {
-        const slot = e.target.closest('.db-slot');
-        if (!slot) return;
-        e.preventDefault();
-        slot.classList.add('drag-over');
-      });
-      el.addEventListener('dragleave', e => {
-        const slot = e.target.closest('.db-slot');
-        if (slot) slot.classList.remove('drag-over');
-      });
-      el.addEventListener('drop', e => {
-        const slot = e.target.closest('.db-slot');
-        if (!slot) return;
-        e.preventDefault();
-        slot.classList.remove('drag-over');
-        dbHandleDrop(type, Number(slot.dataset.idx), e.dataTransfer.getData('text/plain'));
-      });
-      el.addEventListener('dragstart', e => {
-        const slot = e.target.closest('.db-slot.filled');
-        if (!slot) return;
-        e.dataTransfer.setData('text/plain', `slot${type}${slot.dataset.idx}`);
-      });
-      el.addEventListener('click', e => {
-        const slot = e.target.closest('.db-slot');
-        if (!slot) return;
-        if (e.target.closest('.db-slot-remove')) {
-          dbRemoveFromSlot(type, Number(slot.dataset.idx));
-          return;
-        }
-        dbSlotClick(type, Number(slot.dataset.idx));
-      });
+    const dbBoardSlotsEl = document.getElementById('dbBoardSlots');
+    dbBoardSlotsEl.addEventListener('dragover', e => {
+      const slot = e.target.closest('.db-slot');
+      if (!slot) return;
+      e.preventDefault();
+      slot.classList.add('drag-over');
+    });
+    dbBoardSlotsEl.addEventListener('dragleave', e => {
+      const slot = e.target.closest('.db-slot');
+      if (slot) slot.classList.remove('drag-over');
+    });
+    dbBoardSlotsEl.addEventListener('drop', e => {
+      const slot = e.target.closest('.db-slot');
+      if (!slot) return;
+      e.preventDefault();
+      slot.classList.remove('drag-over');
+      dbHandleBoardDrop(Number(slot.dataset.idx), e.dataTransfer.getData('text/plain'));
+    });
+    dbBoardSlotsEl.addEventListener('dragstart', e => {
+      const slot = e.target.closest('.db-slot.filled');
+      if (!slot) return;
+      e.dataTransfer.setData('text/plain', `board|${slot.dataset.idx}`);
+    });
+    dbBoardSlotsEl.addEventListener('click', e => {
+      const slot = e.target.closest('.db-slot');
+      if (!slot) return;
+      if (e.target.closest('.db-slot-remove')) {
+        dbRemoveFromBoard(Number(slot.dataset.idx));
+        return;
+      }
+      dbBoardSlotClick(Number(slot.dataset.idx));
     });
 
     const dbCandidatesEl = document.getElementById('dbCandidates');
     dbCandidatesEl.addEventListener('dragstart', e => {
       const card = e.target.closest('.db-candidate');
       if (!card || card.classList.contains('placed')) return;
-      e.dataTransfer.setData('text/plain', `candidate${card.dataset.name}`);
+      e.dataTransfer.setData('text/plain', `candidate|${card.dataset.name}`);
     });
     dbCandidatesEl.addEventListener('dragover', e => e.preventDefault());
     dbCandidatesEl.addEventListener('drop', e => {
       e.preventDefault();
-      dbHandleDropToCandidates(e.dataTransfer.getData('text/plain'));
+      dbHandleDropToCandidatesFromBoard(e.dataTransfer.getData('text/plain'));
     });
     dbCandidatesEl.addEventListener('click', e => {
       const card = e.target.closest('.db-candidate');
@@ -1983,6 +2110,55 @@
       dbCandidateClick(card.dataset.name);
     });
 
+    const dbOrderSlotsEl = document.getElementById('dbOrderSlots');
+    dbOrderSlotsEl.addEventListener('dragover', e => {
+      const slot = e.target.closest('.db-slot');
+      if (!slot) return;
+      e.preventDefault();
+      slot.classList.add('drag-over');
+    });
+    dbOrderSlotsEl.addEventListener('dragleave', e => {
+      const slot = e.target.closest('.db-slot');
+      if (slot) slot.classList.remove('drag-over');
+    });
+    dbOrderSlotsEl.addEventListener('drop', e => {
+      const slot = e.target.closest('.db-slot');
+      if (!slot) return;
+      e.preventDefault();
+      slot.classList.remove('drag-over');
+      dbHandleOrderDrop(Number(slot.dataset.idx), e.dataTransfer.getData('text/plain'));
+    });
+    dbOrderSlotsEl.addEventListener('dragstart', e => {
+      const slot = e.target.closest('.db-slot.filled');
+      if (!slot) return;
+      e.dataTransfer.setData('text/plain', `order|${slot.dataset.idx}`);
+    });
+    dbOrderSlotsEl.addEventListener('click', e => {
+      const slot = e.target.closest('.db-slot');
+      if (!slot) return;
+      if (e.target.closest('.db-slot-remove')) {
+        dbRemoveFromOrder(Number(slot.dataset.idx));
+        return;
+      }
+      dbOrderSlotClick(Number(slot.dataset.idx));
+    });
+
+    const dbOrderCandidatesEl = document.getElementById('dbOrderCandidates');
+    dbOrderCandidatesEl.addEventListener('dragstart', e => {
+      const card = e.target.closest('.db-candidate');
+      if (!card || card.classList.contains('placed')) return;
+      e.dataTransfer.setData('text/plain', `ordercandidate|${card.dataset.name}`);
+    });
+    dbOrderCandidatesEl.addEventListener('dragover', e => e.preventDefault());
+    dbOrderCandidatesEl.addEventListener('drop', e => {
+      e.preventDefault();
+      dbHandleDropToOrderCandidates(e.dataTransfer.getData('text/plain'));
+    });
+    dbOrderCandidatesEl.addEventListener('click', e => {
+      const card = e.target.closest('.db-candidate');
+      if (!card) return;
+      dbOrderCandidateClick(card.dataset.name);
+    });
     // ── 업데이트 기록 ────────────────────────────────────────
     let CHANGELOG = [];
     function renderChangelog() {
