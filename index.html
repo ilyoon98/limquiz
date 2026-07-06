@@ -315,7 +315,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.10.0</span>
+          <span class="version-badge">v0.10.1</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -386,7 +386,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.10.0</span>
+          <span class="version-badge">v0.10.1</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -1680,7 +1680,7 @@
 
     // ── 덱 빌더 ──────────────────────────────────────────────
     const SINNER_ORDER = Object.keys(SINNER_COLOR);
-    const DB_NONE_CARD = { '인격명': '없음' };
+    const DB_NONE_CARDS = SINNER_ORDER.map(sinner => ({ '인격명': '없음', '수감자': sinner }));
     const DB_SLOT_COUNT = 12;
     const dbIsTouchDevice = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
     let dbDeck = null;
@@ -1688,6 +1688,10 @@
     let dbCandidates = [];
     let dbSinnerFilter = 'all';
     let dbMessageTimeout = null;
+
+    function dbCandidateKey(c) {
+      return c['인격명'] === '없음' ? `없음:${c['수감자']}` : c['인격명'];
+    }
 
     function dbGoToDeckBuilder() {
       homeScreen.style.display = 'none';
@@ -1729,7 +1733,7 @@
       dbSlots = Array(DB_SLOT_COUNT).fill(null);
       dbJudge = Array(DB_SLOT_COUNT).fill(null);
       dbSinnerFilter = 'all';
-      dbCandidates = [...DATA].sort(() => Math.random() - 0.5);
+      dbCandidates = [...DATA, ...DB_NONE_CARDS].sort(() => Math.random() - 0.5);
       document.getElementById('dbSearchInput').value = '';
       dbRenderHint();
       dbRenderSinnerFilter();
@@ -1739,7 +1743,7 @@
 
     function dbRenderHint() {
       document.getElementById('dbHint').innerHTML = `
-        <div class="db-hint-desc">인격을 더블클릭(모바일은 탭 한 번)해서 순서대로 배치하세요. 같은 수감자는 중복 배치할 수 없습니다 (단, "없음"은 여러 번 가능). 배치 후에는 드래그로 순서를 바꿀 수 있어요.</div>
+        <div class="db-hint-desc">인격을 더블클릭(모바일은 탭 한 번)해서 순서대로 배치하세요. 같은 수감자는 중복 배치할 수 없습니다 (안 쓰는 수감자는 그 수감자의 "없음" 카드로 배치). 배치 후에는 드래그로 순서를 바꿀 수 있어요.</div>
       `;
     }
 
@@ -1771,8 +1775,8 @@
       let inner;
       if (!m) {
         inner = `<span class="db-slot-empty-label">빈 슬롯</span>`;
-      } else if (m === DB_NONE_CARD) {
-        inner = `<span class="db-slot-empty-label">🚫 없음</span><button class="db-slot-remove" type="button">✕</button>`;
+      } else if (m['인격명'] === '없음') {
+        inner = `<span class="db-slot-empty-label">🚫 ${escapeHtml(m['수감자'])}<br>없음</span><button class="db-slot-remove" type="button">✕</button>`;
       } else {
         const img = m['이미지(일반)'] || m['이미지(각성)'];
         inner = `${img ? `<img src="${escapeHtml(img)}" alt="" loading="lazy" onerror="this.style.display='none'">` : `<span class="db-slot-empty-label">${escapeHtml(m['인격명'])}</span>`}
@@ -1797,37 +1801,35 @@
       document.getElementById('dbProgress').textContent = allFilled ? '' : `12칸을 모두 채워주세요 (현재 ${filledCount}/12)`;
     }
 
-    function dbIsPlaced(name) {
-      if (name === '없음') return false;
-      return dbSlots.some(s => s && s['인격명'] === name);
+    function dbIsPlaced(key) {
+      return dbSlots.some(s => s && dbCandidateKey(s) === key);
     }
 
     function dbSinnerConflict(sinner, ignoreIndices) {
-      return dbSlots.some((s, i) => !ignoreIndices.includes(i) && s && s !== DB_NONE_CARD && s['수감자'] === sinner);
+      return dbSlots.some((s, i) => !ignoreIndices.includes(i) && s && s['수감자'] === sinner);
     }
 
-    function dbFindCandidate(name) {
-      if (name === '없음') return DB_NONE_CARD;
-      return dbCandidates.find(c => c['인격명'] === name);
+    function dbFindCandidateByKey(key) {
+      return dbCandidates.find(c => dbCandidateKey(c) === key);
     }
 
     function dbClearJudge() {
       dbJudge = Array(DB_SLOT_COUNT).fill(null);
     }
 
-    function dbFlashCandidateReject(name) {
-      const card = [...document.querySelectorAll('.db-candidate')].find(c => c.dataset.name === name);
+    function dbFlashCandidateReject(key) {
+      const card = [...document.querySelectorAll('.db-candidate')].find(c => c.dataset.key === key);
       if (!card) return;
       card.classList.add('reject-flash');
       setTimeout(() => card.classList.remove('reject-flash'), 300);
     }
 
-    function dbPlaceInSlot(idx, name) {
-      const m = dbFindCandidate(name);
+    function dbPlaceInSlot(idx, key) {
+      const m = dbFindCandidateByKey(key);
       if (!m) return false;
-      if (name !== '없음' && dbSinnerConflict(m['수감자'], [idx])) {
+      if (dbSinnerConflict(m['수감자'], [idx])) {
         dbShowMessage(`이미 ${m['수감자']} 인격이 배치되어 있습니다.`);
-        dbFlashCandidateReject(name);
+        dbFlashCandidateReject(key);
         return false;
       }
       dbSlots[idx] = m;
@@ -1859,10 +1861,10 @@
       return dbSlots.findIndex(s => !s);
     }
 
-    function dbPlaceByDoubleClick(name) {
+    function dbPlaceByDoubleClick(key) {
       const idx = dbFirstEmptySlotIndex();
       if (idx === -1) { dbShowMessage('12칸이 모두 찼습니다.'); return; }
-      dbPlaceInSlot(idx, name);
+      dbPlaceInSlot(idx, key);
     }
 
     function dbSlotClick(idx) {
@@ -1912,12 +1914,14 @@
       const mainAnswers = dbMainSlotsSorted();
       const subNullAnswers = dbDeck.slots.filter(s => s.type === 'Sub' || s.type === 'Null');
       const full = Array(DB_SLOT_COUNT).fill(null);
-      mainAnswers.forEach(s => { full[s.order - 1] = dbFindCandidate(s.인격명) || { '인격명': s.인격명 }; });
+      mainAnswers.forEach(s => { full[s.order - 1] = dbFindCandidateByKey(s.인격명) || { '인격명': s.인격명, '수감자': s.수감자 }; });
       let fillIdx = 0;
       subNullAnswers.forEach(s => {
         while (fillIdx < DB_SLOT_COUNT && full[fillIdx]) fillIdx++;
         if (fillIdx >= DB_SLOT_COUNT) return;
-        full[fillIdx] = s.type === 'Null' ? DB_NONE_CARD : (dbFindCandidate(s.인격명) || { '인격명': s.인격명 });
+        full[fillIdx] = s.type === 'Null'
+          ? (dbFindCandidateByKey(`없음:${s.수감자}`) || { '인격명': '없음', '수감자': s.수감자 })
+          : (dbFindCandidateByKey(s.인격명) || { '인격명': s.인격명, '수감자': s.수감자 });
         fillIdx++;
       });
       dbSlots = full;
@@ -1945,13 +1949,14 @@
 
     // ── 후보 목록 ─────────────────────────────────────────────
     function dbCandidateHTML(m) {
-      const name = m['인격명'];
-      const isNone = m === DB_NONE_CARD;
-      const placed = !isNone && dbIsPlaced(name);
+      const key = dbCandidateKey(m);
+      const isNone = m['인격명'] === '없음';
+      const placed = dbIsPlaced(key);
       const img = !isNone ? (m['이미지(일반)'] || m['이미지(각성)']) : '';
-      return `<div class="db-candidate${placed ? ' placed' : ''}" data-name="${escapeHtml(name)}" draggable="${placed ? 'false' : 'true'}">
+      const label = isNone ? `${m['수감자']} 없음` : m['인격명'];
+      return `<div class="db-candidate${placed ? ' placed' : ''}" data-key="${escapeHtml(key)}" draggable="${placed ? 'false' : 'true'}">
         ${isNone ? `<div class="db-candidate-noimg">🚫</div>` : (img ? `<img src="${escapeHtml(img)}" alt="" loading="lazy" onerror="this.style.display='none'">` : `<div class="db-candidate-noimg">👤</div>`)}
-        <div class="db-candidate-name">${escapeHtml(name)}</div>
+        <div class="db-candidate-name">${escapeHtml(label)}</div>
       </div>`;
     }
 
@@ -1959,9 +1964,8 @@
       const q = lower(document.getElementById('dbSearchInput').value);
       let filtered = dbCandidates;
       if (dbSinnerFilter !== 'all') filtered = filtered.filter(c => c['수감자'] === dbSinnerFilter);
-      if (q) filtered = filtered.filter(c => lower(c['인격명']).includes(q));
-      const list = [DB_NONE_CARD, ...filtered];
-      document.getElementById('dbCandidates').innerHTML = list.map(dbCandidateHTML).join('');
+      if (q) filtered = filtered.filter(c => lower(c['인격명']).includes(q) || (c['인격명'] === '없음' && lower(c['수감자']).includes(q)));
+      document.getElementById('dbCandidates').innerHTML = filtered.map(dbCandidateHTML).join('');
     }
 
     document.getElementById('homeDeckBuilderCard').addEventListener('click', dbGoToDeckBuilder);
@@ -2014,7 +2018,7 @@
     dbCandidatesEl.addEventListener('dragstart', e => {
       const card = e.target.closest('.db-candidate');
       if (!card || card.classList.contains('placed')) return;
-      e.dataTransfer.setData('text/plain', `candidate|${card.dataset.name}`);
+      e.dataTransfer.setData('text/plain', `candidate|${card.dataset.key}`);
     });
     dbCandidatesEl.addEventListener('dragover', e => e.preventDefault());
     dbCandidatesEl.addEventListener('drop', e => {
@@ -2025,13 +2029,13 @@
       dbCandidatesEl.addEventListener('click', e => {
         const card = e.target.closest('.db-candidate');
         if (!card || card.classList.contains('placed')) return;
-        dbPlaceByDoubleClick(card.dataset.name);
+        dbPlaceByDoubleClick(card.dataset.key);
       });
     } else {
       dbCandidatesEl.addEventListener('dblclick', e => {
         const card = e.target.closest('.db-candidate');
         if (!card || card.classList.contains('placed')) return;
-        dbPlaceByDoubleClick(card.dataset.name);
+        dbPlaceByDoubleClick(card.dataset.key);
       });
     }
     // ── 업데이트 기록 ────────────────────────────────────────
