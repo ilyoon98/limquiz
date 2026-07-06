@@ -257,10 +257,15 @@
     .card-header { padding:22px 24px 18px; text-align:center; border-bottom:1px solid var(--border); }
     .card-title-text { font-size:22px; font-weight:900; background:linear-gradient(90deg,#e8c97a 0%,#c07858 40%,#9060c0 70%,#4090c8 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
     .card-subtitle-text { font-size:15px; color:var(--muted); margin-top:5px; }
-    .card-identity { position:relative; display:flex; align-items:flex-end; justify-content:center; min-height:340px; overflow:hidden; }
+    .card-identity-wrap { position:relative; }
+    .card-identity { position:relative; display:flex; align-items:flex-end; justify-content:center; min-height:340px; overflow:hidden; transition:filter .2s; }
+    .card-identity.spoiler { filter:blur(26px) saturate(0.7); }
     .card-identity img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top center; }
     .card-identity-overlay { position:relative; z-index:1; width:100%; padding:20px 26px 18px; background:linear-gradient(transparent, rgba(0,0,0,.72)); }
     .card-identity-name { font-size:26px; font-weight:900; text-shadow:0 2px 8px rgba(0,0,0,.9); }
+    .card-spoiler-toggle { position:absolute; top:12px; right:12px; z-index:2; height:34px; padding:0 14px; border-radius:999px; border:1px solid var(--border); background:rgba(20,20,20,.82); color:var(--text); font-size:13px; font-weight:800; cursor:pointer; backdrop-filter:blur(4px); }
+    .card-spoiler-toggle:hover { border-color:var(--button); color:#ffd98a; }
+    .card-spoiler-badge { position:absolute; inset:0; z-index:1; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:800; color:#fff; text-shadow:0 2px 6px rgba(0,0,0,.9); pointer-events:none; }
     .card-identity-sinner { font-size:16px; color:rgba(255,255,255,.75); margin-top:4px; }
     .card-info-row { display:flex; gap:16px; align-items:center; padding:14px 26px; border-bottom:1px solid var(--border); flex-wrap:wrap; }
     .card-info-item { font-size:15px; color:var(--muted); }
@@ -277,8 +282,8 @@
     .card-grid-field { font-size:13px; color:var(--muted); width:56px; flex-shrink:0; }
     .card-grid-emojis { display:flex; gap:3px; }
     .card-grid-emojis span { font-size:19px; line-height:1; }
-    .modal-actions { display:flex; gap:10px; margin-top:12px; }
-    .modal-actions button { flex:1; height:46px; border-radius:12px; font-size:15px; font-weight:800; }
+    .modal-actions { display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; }
+    .modal-actions button { flex:1; min-width:110px; height:46px; border-radius:12px; font-size:15px; font-weight:800; }
 
     @media (max-width:800px) { body{padding:14px} .guess-row{grid-template-columns:1fr} .filter-group{border-left:0;padding-left:0;flex-basis:100%;padding-top:12px;border-top:1px solid var(--border)} .filter-group:first-child{padding-top:0;border-top:0} button{width:100%} .dropdown{position:static;margin-top:8px} }
     @media (max-width:640px) { header{padding-right:0} .top-actions{position:static;margin-top:12px;width:100%;justify-content:space-between} .contact-btn{flex:1} .home-modes{flex-direction:column} }
@@ -291,7 +296,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.7.0</span>
+          <span class="version-badge">v0.7.1</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -362,7 +367,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.7.0</span>
+          <span class="version-badge">v0.7.1</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -526,6 +531,7 @@
         <div class="result-card" id="resultCard"></div>
         <div class="modal-actions" id="modalActions">
           <button id="saveCardBtn">이미지 저장</button>
+          <button id="copyCardBtn" class="secondary">클립보드 복사</button>
           <button id="closeCardBtn" class="secondary">닫기</button>
         </div>
       </div>
@@ -901,12 +907,15 @@
           <div class="card-title-text">림버스 인격 두들</div>
           <div class="card-subtitle-text">${escapeHtml(modeLabel)} · ${escapeHtml(record.date || '')}</div>
         </div>
-        <div class="card-identity" style="background:${sinnerColorDark};min-height:340px">
-          ${cdnUrl ? `<img src="${cdnUrl}" alt="${escapeHtml(ans['인격명'] || '')}" onerror="this.style.display='none'" />` : ''}
-          <div class="card-identity-overlay">
-            <div class="card-identity-name">${escapeHtml(ans['인격명'] || '알 수 없음')}</div>
-            <div class="card-identity-sinner">${escapeHtml(ans['수감자'] || '')} ${gradeSpan(ans['성급'] || '')}</div>
+        <div class="card-identity-wrap">
+          <div class="card-identity" id="cardIdentityBlur" style="background:${sinnerColorDark};min-height:340px">
+            ${cdnUrl ? `<img src="${cdnUrl}" alt="${escapeHtml(ans['인격명'] || '')}" onerror="this.style.display='none'" />` : ''}
+            <div class="card-identity-overlay">
+              <div class="card-identity-name">${escapeHtml(ans['인격명'] || '알 수 없음')}</div>
+              <div class="card-identity-sinner">${escapeHtml(ans['수감자'] || '')} ${gradeSpan(ans['성급'] || '')}</div>
+            </div>
           </div>
+          <button class="card-spoiler-toggle" id="cardSpoilerToggle" type="button">🙈 정답 가리기</button>
         </div>
         <div class="card-info-row">
           ${affilParts.length ? `<span class="card-info-item"><strong>소속</strong> ${escapeHtml(affilParts.join(' · '))}</span>` : ''}
@@ -923,9 +932,26 @@
       `;
     }
 
+    let cardSpoilerHidden = false;
+
+    function applyCardSpoilerState() {
+      const blurEl = document.getElementById('cardIdentityBlur');
+      const btn = document.getElementById('cardSpoilerToggle');
+      if (!blurEl || !btn) return;
+      blurEl.classList.toggle('spoiler', cardSpoilerHidden);
+      btn.textContent = cardSpoilerHidden ? '👁️ 정답 보기' : '🙈 정답 가리기';
+    }
+
+    function toggleCardSpoiler() {
+      cardSpoilerHidden = !cardSpoilerHidden;
+      applyCardSpoilerState();
+    }
+
     function showResultCard(record) {
       currentCardRecord = record;
+      cardSpoilerHidden = record.mode === 'daily';
       resultCardEl.innerHTML = buildCardHTML(record);
+      applyCardSpoilerState();
       cardModal.style.display = '';
       document.body.style.overflow = 'hidden';
     }
@@ -936,6 +962,33 @@
       currentCardRecord = null;
     }
 
+    function corsProxyUrl(url) {
+      if (!url) return '';
+      const noScheme = url.replace(/^https:\/\//i, 'ssl:').replace(/^http:\/\//i, '');
+      return `https://images.weserv.nl/?url=${encodeURIComponent(noScheme)}`;
+    }
+
+    async function captureCardCanvas() {
+      const imgEl = resultCardEl.querySelector('.card-identity img');
+      const originalSrc = imgEl ? imgEl.src : null;
+      if (imgEl && originalSrc) {
+        await new Promise(resolve => {
+          imgEl.onload = resolve;
+          imgEl.onerror = resolve;
+          imgEl.crossOrigin = 'anonymous';
+          imgEl.src = corsProxyUrl(originalSrc);
+        });
+      }
+      try {
+        return await html2canvas(resultCardEl, { backgroundColor: '#1a1714', scale: 2, useCORS: true, allowTaint: true, logging: false });
+      } finally {
+        if (imgEl && originalSrc) {
+          imgEl.removeAttribute('crossorigin');
+          imgEl.src = originalSrc;
+        }
+      }
+    }
+
     async function saveCardAsImage() {
       if (!currentCardRecord) return;
       const btn = document.getElementById('saveCardBtn');
@@ -943,7 +996,7 @@
       btn.textContent = '저장 중...';
       modalActionsEl.style.display = 'none';
       try {
-        const canvas = await html2canvas(resultCardEl, { backgroundColor: '#1a1714', scale: 2, useCORS: true, allowTaint: true, logging: false });
+        const canvas = await captureCardCanvas();
         const link = document.createElement('a');
         const no = currentCardRecord.challengeNo ? `#${currentCardRecord.challengeNo}` : 'R';
         const date = (currentCardRecord.date || todayKey()).replace(/-/g, '');
@@ -957,6 +1010,30 @@
         modalActionsEl.style.display = '';
         btn.disabled = false;
         btn.textContent = '이미지 저장';
+      }
+    }
+
+    async function copyCardToClipboard() {
+      if (!currentCardRecord) return;
+      const btn = document.getElementById('copyCardBtn');
+      const orig = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = '복사 중...';
+      modalActionsEl.style.display = 'none';
+      try {
+        const canvas = await captureCardCanvas();
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+        if (!blob) throw new Error('blob 생성 실패');
+        await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+        btn.textContent = '복사됨! ✓';
+        setTimeout(() => { btn.textContent = orig; }, 1500);
+      } catch(e) {
+        console.error('클립보드 복사 실패:', e);
+        alert('클립보드 복사에 실패했습니다. 이미지 저장을 이용해주세요.');
+        btn.textContent = orig;
+      } finally {
+        modalActionsEl.style.display = '';
+        btn.disabled = false;
       }
     }
 
@@ -1173,7 +1250,11 @@
     });
     document.getElementById('closeCardBtn').addEventListener('click', closeResultCard);
     document.getElementById('saveCardBtn').addEventListener('click', saveCardAsImage);
+    document.getElementById('copyCardBtn').addEventListener('click', copyCardToClipboard);
     document.getElementById('modalBackdrop').addEventListener('click', closeResultCard);
+    resultCardEl.addEventListener('click', e => {
+      if (e.target.closest('#cardSpoilerToggle')) toggleCardSpoiler();
+    });
 
     dropdown.addEventListener('mousedown', e => {
       const opt = e.target.closest('.option[data-idx]');
