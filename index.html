@@ -220,10 +220,14 @@
     .db-slots-section { margin-bottom:20px; }
     .db-slots-label { font-size:13px; font-weight:800; color:var(--muted); margin-bottom:10px; text-transform:uppercase; letter-spacing:.05em; }
     .db-slots-row { display:flex; gap:10px; flex-wrap:wrap; }
-    .db-slot { width:96px; height:132px; border-radius:12px; border:2px dashed var(--border); display:flex; align-items:center; justify-content:center; position:relative; background:var(--panel2); cursor:pointer; transition:border-color .15s, background .15s; overflow:hidden; }
+    .db-board-grid { display:grid; grid-template-columns:repeat(6, 1fr); gap:10px; }
+    .db-slot { width:100%; aspect-ratio:96/132; border-radius:12px; border:2px dashed var(--border); display:flex; align-items:center; justify-content:center; position:relative; background:var(--panel2); cursor:pointer; transition:border-color .15s, background .15s; overflow:hidden; }
+    .db-slots-row .db-slot { width:96px; }
     .db-slot.board, .db-slot.order { border-color:color-mix(in srgb, var(--button) 55%, var(--border)); }
     .db-slot.drag-over { border-color:var(--button); background:color-mix(in srgb, var(--button) 20%, var(--panel2)); }
     .db-slot.filled { border-style:solid; cursor:grab; }
+    @keyframes db-reject-shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
+    .db-slot.reject-flash { animation:db-reject-shake .25s; border-color:var(--slot-red) !important; }
     .db-slot.judged-green { border-color:var(--slot-green); background:color-mix(in srgb, var(--slot-green) 45%, var(--panel2)); }
     .db-slot.judged-yellow { border-color:var(--slot-yellow); background:color-mix(in srgb, var(--slot-yellow) 45%, var(--panel2)); }
     .db-slot.judged-red { border-color:var(--slot-red); background:color-mix(in srgb, var(--slot-red) 45%, var(--panel2)); }
@@ -233,15 +237,20 @@
     .db-slot-remove { position:absolute; top:2px; right:2px; width:20px; height:20px; border-radius:999px; background:rgba(0,0,0,.72); color:#fff; border:0; font-size:12px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; }
     .db-candidates-section { padding:16px; margin-bottom:18px; }
     .db-search { margin-bottom:12px; }
-    .db-candidates { display:flex; flex-wrap:wrap; gap:8px; max-height:380px; overflow-y:auto; padding:4px; }
-    .db-candidate { width:80px; height:112px; border-radius:10px; border:1px solid var(--border); background:var(--panel2); cursor:grab; position:relative; overflow:hidden; display:flex; flex-direction:column; transition:opacity .15s, outline-color .15s; }
-    .db-candidate.placed { opacity:.28; cursor:not-allowed; }
-    .db-candidate.selected-tap { outline:2px solid var(--button); }
-    .db-candidate img { width:100%; height:76px; object-fit:cover; object-position:top center; display:block; background:#111; pointer-events:none; }
-    .db-candidate-noimg { width:100%; height:76px; display:flex; align-items:center; justify-content:center; font-size:22px; color:var(--muted); background:#111; }
-    .db-candidate-name { font-size:9px; font-weight:700; padding:2px 4px; text-align:center; line-height:1.25; flex:1; display:flex; align-items:center; justify-content:center; }
+    .db-sinner-filter { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; }
+    .db-sinner-filter-btn { height:32px; padding:0 14px; border-radius:999px; font-size:13px; font-weight:700; background:var(--panel2); color:var(--muted); border:1px solid var(--border); }
+    .db-sinner-filter-btn.active { background:var(--button); color:var(--buttonText); border-color:var(--button); font-weight:800; }
+    .db-candidates { display:grid; grid-template-columns:repeat(4, 1fr); gap:14px; max-height:560px; overflow-y:auto; padding:4px; }
+    .db-candidate { border-radius:12px; border:1px solid var(--border); background:var(--panel2); cursor:grab; position:relative; overflow:hidden; display:flex; flex-direction:column; transition:opacity .15s, outline-color .15s; }
+    .db-candidate.placed-board::after { content:'보드'; position:absolute; top:6px; left:6px; background:color-mix(in srgb, var(--slot-green) 70%, #000); color:#fff; font-size:10px; font-weight:800; padding:2px 7px; border-radius:999px; }
+    .db-candidate.placed-order::after { content:'순서'; position:absolute; top:6px; right:6px; background:color-mix(in srgb, var(--button) 70%, #000); color:#fff; font-size:10px; font-weight:800; padding:2px 7px; border-radius:999px; }
+    .db-candidate.selected-tap { outline:3px solid var(--button); }
+    .db-candidate img { width:100%; aspect-ratio:1/1; object-fit:cover; object-position:top center; display:block; background:#111; pointer-events:none; }
+    .db-candidate-noimg { width:100%; aspect-ratio:1/1; display:flex; align-items:center; justify-content:center; font-size:38px; color:var(--muted); background:#111; }
+    .db-candidate-name { font-size:13px; font-weight:700; padding:8px 6px; text-align:center; line-height:1.3; flex:1; display:flex; align-items:center; justify-content:center; }
     .db-actions { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:20px 0; }
     .db-actions button { height:48px; padding:0 26px; font-size:15px; font-weight:800; border-radius:14px; }
+    @media (max-width:800px) { .db-board-grid { grid-template-columns:repeat(3, 1fr); } .db-candidates { grid-template-columns:repeat(2, 1fr); } }
     .db-result-banner { text-align:center; font-size:24px; font-weight:900; margin-bottom:14px; }
     .db-result-stat { text-align:center; color:var(--muted); font-size:14px; margin-bottom:8px; }
     .db-result-actions { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:16px; }
@@ -303,7 +312,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.8.0</span>
+          <span class="version-badge">v0.9.0</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -374,7 +383,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.8.0</span>
+          <span class="version-badge">v0.9.0</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -487,39 +496,30 @@
     <div class="db-wrap">
       <div class="db-header">
         <button class="back-btn" id="dbBackBtn">← 홈으로</button>
-        <span class="db-title" id="dbStageTitle">덱 빌더 - 1단계</span>
+        <span class="db-title">덱 빌더</span>
         <button class="secondary db-header-giveup-btn" id="dbGiveUpBtn">정답 보기</button>
       </div>
 
       <div class="db-hint panel" id="dbHint"></div>
 
-      <!-- 1단계: 수감자 12칸 -->
-      <div id="dbStage1">
-        <div class="db-slots-section">
-          <div class="db-slots-label">수감자 배치</div>
-          <div class="db-slots-row" id="dbBoardSlots"></div>
-        </div>
-        <div class="db-candidates-section panel">
-          <input id="dbSearchInput" class="db-search" placeholder="인격명 검색" autocomplete="off" />
-          <div class="db-candidates" id="dbCandidates"></div>
-        </div>
-        <div class="db-actions">
-          <button id="dbSubmitStage1Btn">1단계 제출</button>
-        </div>
+      <div class="db-slots-section">
+        <div class="db-slots-label">수감자 배치</div>
+        <div class="db-board-grid" id="dbBoardSlots"></div>
       </div>
 
-      <!-- 2단계: Main 전투 순서 -->
-      <div id="dbStage2" style="display:none">
-        <div class="db-slots-section">
-          <div class="db-slots-label">전투 순서</div>
-          <div class="db-slots-row" id="dbOrderSlots"></div>
-        </div>
-        <div class="db-candidates-section panel">
-          <div class="db-candidates" id="dbOrderCandidates"></div>
-        </div>
-        <div class="db-actions">
-          <button id="dbSubmitStage2Btn">2단계 제출 (최종 제출)</button>
-        </div>
+      <div class="db-slots-section">
+        <div class="db-slots-label">전투 순서</div>
+        <div class="db-slots-row" id="dbOrderSlots"></div>
+      </div>
+
+      <div class="db-candidates-section panel">
+        <input id="dbSearchInput" class="db-search" placeholder="인격명 검색" autocomplete="off" />
+        <div class="db-sinner-filter" id="dbSinnerFilter"></div>
+        <div class="db-candidates" id="dbCandidates"></div>
+      </div>
+
+      <div class="db-actions">
+        <button id="dbSubmitBtn">제출</button>
       </div>
 
       <div id="dbResult" style="display:none"></div>
@@ -1682,11 +1682,11 @@
     const SINNER_ORDER = Object.keys(SINNER_COLOR);
     const DB_NONE_CARD = { '인격명': '없음' };
     let dbDeck = null;
-    let dbStage = 1;
     let dbBoardPlaced = [], dbBoardJudge = [];
+    let dbOrderPlaced = [], dbOrderJudge = [];
     let dbCandidates = [];
-    let dbOrderPlaced = [], dbOrderJudge = [], dbOrderCandidates = [];
     let dbTapSelected = null;
+    let dbSinnerFilter = 'all';
 
     function dbGoToDeckBuilder() {
       homeScreen.style.display = 'none';
@@ -1712,24 +1712,32 @@
       return eligible[Math.floor(Math.random() * eligible.length)];
     }
 
+    function dbMainSlotsSorted() {
+      return dbDeck.slots.filter(s => s.type === 'Main').sort((a, b) => a.order - b.order);
+    }
+
     function dbInit() {
       dbDeck = dbPickDeck();
-      dbStage = 1;
       document.getElementById('dbResult').style.display = 'none';
-      document.getElementById('dbStageTitle').textContent = '덱 빌더 - 1단계';
-      document.getElementById('dbStage1').style.display = '';
-      document.getElementById('dbStage2').style.display = 'none';
       if (!dbDeck) {
         document.getElementById('dbHint').innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted)">플레이 가능한 덱이 없습니다.</div>';
+        document.getElementById('dbBoardSlots').innerHTML = '';
+        document.getElementById('dbOrderSlots').innerHTML = '';
         return;
       }
       dbBoardPlaced = Array(SINNER_ORDER.length).fill(null);
       dbBoardJudge = Array(SINNER_ORDER.length).fill(null);
+      const mainCount = dbMainSlotsSorted().length;
+      dbOrderPlaced = Array(mainCount).fill(null);
+      dbOrderJudge = Array(mainCount).fill(null);
       dbTapSelected = null;
+      dbSinnerFilter = 'all';
       dbCandidates = [...DATA].sort(() => Math.random() - 0.5);
       document.getElementById('dbSearchInput').value = '';
       dbRenderHint();
+      dbRenderSinnerFilter();
       dbRenderBoardSlots();
+      dbRenderOrderSlots();
       dbRenderCandidates();
     }
 
@@ -1737,11 +1745,20 @@
       const el = document.getElementById('dbHint');
       el.innerHTML = `
         <div class="db-hint-title">덱: ${escapeHtml(dbDeck.deckName)}</div>
-        <div class="db-hint-desc">각 수감자 자리에 이 덱이 쓰는 인격을 배치하세요. 안 쓰는 수감자는 "없음"으로!</div>
+        <div class="db-hint-desc">각 수감자 자리에 이 덱이 쓰는 인격을 배치하고(안 쓰는 자리는 "없음"), 아래 전투 순서 칸에 메인 인격들의 순서도 함께 맞혀보세요!</div>
       `;
     }
 
-    // ── 1단계: 수감자 12칸 ────────────────────────────────────
+    function dbRenderSinnerFilter() {
+      const el = document.getElementById('dbSinnerFilter');
+      el.innerHTML = ['all', ...SINNER_ORDER].map(s => {
+        const label = s === 'all' ? '전체' : s;
+        const active = dbSinnerFilter === s ? ' active' : '';
+        return `<button class="db-sinner-filter-btn${active}" data-sinner="${escapeHtml(s)}" type="button">${escapeHtml(label)}</button>`;
+      }).join('');
+    }
+
+    // ── 수감자 배치 (보드) ────────────────────────────────────
     function dbBoardSlotHTML(idx) {
       const sinner = SINNER_ORDER[idx];
       const m = dbBoardPlaced[idx];
@@ -1780,23 +1797,18 @@
       return dbCandidates.find(c => c['인격명'] === name);
     }
 
-    function dbCandidateHTML(m, isPlacedFn) {
-      const name = m['인격명'];
-      const isNone = m === DB_NONE_CARD;
-      const placed = isPlacedFn(name);
-      const img = !isNone ? (m['이미지(일반)'] || m['이미지(각성)']) : '';
-      const selCls = dbTapSelected === name ? ' selected-tap' : '';
-      return `<div class="db-candidate${placed ? ' placed' : ''}${selCls}" data-name="${escapeHtml(name)}" draggable="${placed ? 'false' : 'true'}">
-        ${isNone ? `<div class="db-candidate-noimg">🚫</div>` : (img ? `<img src="${escapeHtml(img)}" alt="" loading="lazy" onerror="this.style.display='none'">` : `<div class="db-candidate-noimg">👤</div>`)}
-        <div class="db-candidate-name">${escapeHtml(name)}</div>
-      </div>`;
+    function dbCandidateSinnerMatches(name, sinner) {
+      if (name === '없음') return true;
+      const c = dbFindCandidate(name);
+      return !!c && c['수감자'] === sinner;
     }
 
-    function dbRenderCandidates() {
-      const q = lower(document.getElementById('dbSearchInput').value);
-      const filtered = q ? dbCandidates.filter(c => lower(c['인격명']).includes(q)) : dbCandidates;
-      const list = [DB_NONE_CARD, ...filtered];
-      document.getElementById('dbCandidates').innerHTML = list.map(m => dbCandidateHTML(m, dbIsPlacedInBoard)).join('');
+    function dbFlashReject(idx, zone) {
+      const containerId = zone === 'board' ? 'dbBoardSlots' : 'dbOrderSlots';
+      const el = document.querySelector(`#${containerId} .db-slot[data-idx="${idx}"]`);
+      if (!el) return;
+      el.classList.add('reject-flash');
+      setTimeout(() => el.classList.remove('reject-flash'), 300);
     }
 
     function dbClearBoardJudge() {
@@ -1808,13 +1820,16 @@
     }
 
     function dbPlaceInBoard(idx, name) {
+      const sinner = SINNER_ORDER[idx];
+      if (!dbCandidateSinnerMatches(name, sinner)) { dbFlashReject(idx, 'board'); return false; }
       const m = dbFindCandidate(name);
-      if (!m) return;
+      if (!m) return false;
       if (name !== '없음') dbRemoveNameFromBoard(name);
       dbBoardPlaced[idx] = m;
       dbClearBoardJudge();
       dbRenderBoardSlots();
       dbRenderCandidates();
+      return true;
     }
 
     function dbRemoveFromBoard(idx) {
@@ -1828,25 +1843,22 @@
       if (fromIdx === toIdx) return;
       const moving = dbBoardPlaced[fromIdx];
       if (!moving) return;
+      const targetSinner = SINNER_ORDER[toIdx];
+      if (!dbCandidateSinnerMatches(moving['인격명'], targetSinner)) { dbFlashReject(toIdx, 'board'); return; }
       const displaced = dbBoardPlaced[toIdx];
+      const fromSinner = SINNER_ORDER[fromIdx];
+      if (displaced && !dbCandidateSinnerMatches(displaced['인격명'], fromSinner)) { dbFlashReject(fromIdx, 'board'); return; }
       dbBoardPlaced[toIdx] = moving;
       dbBoardPlaced[fromIdx] = displaced || null;
       dbClearBoardJudge();
       dbRenderBoardSlots();
     }
 
-    function dbCandidateClick(name) {
-      if (dbIsPlacedInBoard(name)) return;
-      dbTapSelected = dbTapSelected === name ? null : name;
-      dbRenderCandidates();
-    }
-
     function dbBoardSlotClick(idx) {
       if (dbBoardPlaced[idx]) { dbRemoveFromBoard(idx); return; }
       if (dbTapSelected) {
-        dbPlaceInBoard(idx, dbTapSelected);
-        dbTapSelected = null;
-        dbRenderCandidates();
+        const ok = dbPlaceInBoard(idx, dbTapSelected);
+        if (ok) { dbTapSelected = null; dbRenderCandidates(); }
       }
     }
 
@@ -1855,12 +1867,6 @@
       const parts = payload.split('|');
       if (parts[0] === 'candidate') dbPlaceInBoard(idx, parts[1]);
       else if (parts[0] === 'board') dbMoveBoardToBoard(Number(parts[1]), idx);
-    }
-
-    function dbHandleDropToCandidatesFromBoard(payload) {
-      if (!payload) return;
-      const parts = payload.split('|');
-      if (parts[0] === 'board') dbRemoveFromBoard(Number(parts[1]));
     }
 
     function dbJudgeBoard() {
@@ -1872,34 +1878,7 @@
       });
     }
 
-    function dbSubmitStage1() {
-      dbBoardJudge = dbJudgeBoard();
-      dbRenderBoardSlots();
-      if (dbBoardJudge.every(j => j === 'green')) dbGoStage2();
-    }
-
-    // ── 2단계: Main 전투 순서 ─────────────────────────────────
-    function dbMainSlotsSorted() {
-      return dbDeck.slots.filter(s => s.type === 'Main').sort((a, b) => a.order - b.order);
-    }
-
-    function dbGoStage2() {
-      dbStage = 2;
-      dbTapSelected = null;
-      const mainSlots = dbMainSlotsSorted();
-      dbOrderCandidates = mainSlots
-        .map(s => dbBoardPlaced[SINNER_ORDER.indexOf(s.수감자)])
-        .filter(Boolean)
-        .sort(() => Math.random() - 0.5);
-      dbOrderPlaced = Array(mainSlots.length).fill(null);
-      dbOrderJudge = Array(mainSlots.length).fill(null);
-      document.getElementById('dbStageTitle').textContent = '덱 빌더 - 2단계';
-      document.getElementById('dbStage1').style.display = 'none';
-      document.getElementById('dbStage2').style.display = '';
-      dbRenderOrderSlots();
-      dbRenderOrderCandidates();
-    }
-
+    // ── 전투 순서 ─────────────────────────────────────────────
     function dbOrderSlotHTML(idx) {
       const m = dbOrderPlaced[idx];
       const j = dbOrderJudge[idx];
@@ -1929,29 +1908,27 @@
       return dbOrderPlaced.some(s => s && s['인격명'] === name);
     }
 
-    function dbRenderOrderCandidates() {
-      document.getElementById('dbOrderCandidates').innerHTML = dbOrderCandidates.map(m => dbCandidateHTML(m, dbIsPlacedInOrder)).join('');
-    }
-
     function dbClearOrderJudge() {
       dbOrderJudge = Array(dbOrderPlaced.length).fill(null);
     }
 
     function dbPlaceInOrder(idx, name) {
-      const m = dbOrderCandidates.find(c => c['인격명'] === name);
-      if (!m) return;
+      if (name === '없음') return false;
+      const m = dbFindCandidate(name);
+      if (!m) return false;
       dbOrderPlaced = dbOrderPlaced.map(s => (s && s['인격명'] === name) ? null : s);
       dbOrderPlaced[idx] = m;
       dbClearOrderJudge();
       dbRenderOrderSlots();
-      dbRenderOrderCandidates();
+      dbRenderCandidates();
+      return true;
     }
 
     function dbRemoveFromOrder(idx) {
       dbOrderPlaced[idx] = null;
       dbClearOrderJudge();
       dbRenderOrderSlots();
-      dbRenderOrderCandidates();
+      dbRenderCandidates();
     }
 
     function dbMoveOrderToOrder(fromIdx, toIdx) {
@@ -1965,32 +1942,19 @@
       dbRenderOrderSlots();
     }
 
-    function dbOrderCandidateClick(name) {
-      if (dbIsPlacedInOrder(name)) return;
-      dbTapSelected = dbTapSelected === name ? null : name;
-      dbRenderOrderCandidates();
-    }
-
     function dbOrderSlotClick(idx) {
       if (dbOrderPlaced[idx]) { dbRemoveFromOrder(idx); return; }
       if (dbTapSelected) {
-        dbPlaceInOrder(idx, dbTapSelected);
-        dbTapSelected = null;
-        dbRenderOrderCandidates();
+        const ok = dbPlaceInOrder(idx, dbTapSelected);
+        if (ok) { dbTapSelected = null; dbRenderCandidates(); }
       }
     }
 
     function dbHandleOrderDrop(idx, payload) {
       if (!payload) return;
       const parts = payload.split('|');
-      if (parts[0] === 'ordercandidate') dbPlaceInOrder(idx, parts[1]);
+      if (parts[0] === 'candidate') dbPlaceInOrder(idx, parts[1]);
       else if (parts[0] === 'order') dbMoveOrderToOrder(Number(parts[1]), idx);
-    }
-
-    function dbHandleDropToOrderCandidates(payload) {
-      if (!payload) return;
-      const parts = payload.split('|');
-      if (parts[0] === 'order') dbRemoveFromOrder(Number(parts[1]));
     }
 
     function dbJudgeOrder() {
@@ -2004,16 +1968,66 @@
       });
     }
 
-    function dbSubmitStage2() {
+    // ── 후보 목록 (보드 + 순서 공용) ───────────────────────────
+    function dbCandidateHTML(m) {
+      const name = m['인격명'];
+      const isNone = m === DB_NONE_CARD;
+      const inBoard = !isNone && dbIsPlacedInBoard(name);
+      const inOrder = !isNone && dbIsPlacedInOrder(name);
+      const img = !isNone ? (m['이미지(일반)'] || m['이미지(각성)']) : '';
+      const selCls = dbTapSelected === name ? ' selected-tap' : '';
+      const badgeCls = `${inBoard ? ' placed-board' : ''}${inOrder ? ' placed-order' : ''}`;
+      return `<div class="db-candidate${badgeCls}${selCls}" data-name="${escapeHtml(name)}" draggable="true">
+        ${isNone ? `<div class="db-candidate-noimg">🚫</div>` : (img ? `<img src="${escapeHtml(img)}" alt="" loading="lazy" onerror="this.style.display='none'">` : `<div class="db-candidate-noimg">👤</div>`)}
+        <div class="db-candidate-name">${escapeHtml(name)}</div>
+      </div>`;
+    }
+
+    function dbRenderCandidates() {
+      const q = lower(document.getElementById('dbSearchInput').value);
+      let filtered = dbCandidates;
+      if (dbSinnerFilter !== 'all') filtered = filtered.filter(c => c['수감자'] === dbSinnerFilter);
+      if (q) filtered = filtered.filter(c => lower(c['인격명']).includes(q));
+      const list = [DB_NONE_CARD, ...filtered];
+      document.getElementById('dbCandidates').innerHTML = list.map(dbCandidateHTML).join('');
+    }
+
+    function dbHandleDropToCandidates(payload) {
+      if (!payload) return;
+      const parts = payload.split('|');
+      if (parts[0] === 'board') dbRemoveFromBoard(Number(parts[1]));
+      else if (parts[0] === 'order') dbRemoveFromOrder(Number(parts[1]));
+    }
+
+    function dbCandidateClick(name) {
+      dbTapSelected = dbTapSelected === name ? null : name;
+      dbRenderCandidates();
+    }
+
+    function dbCandidateDblClick(name) {
+      if (name === '없음') return;
+      const c = dbFindCandidate(name);
+      if (!c) return;
+      const boardIdx = SINNER_ORDER.indexOf(c['수감자']);
+      if (boardIdx >= 0 && !dbBoardPlaced[boardIdx]) { dbPlaceInBoard(boardIdx, name); return; }
+      const emptyOrderIdx = dbOrderPlaced.findIndex(s => !s);
+      if (emptyOrderIdx >= 0) dbPlaceInOrder(emptyOrderIdx, name);
+    }
+
+    // ── 제출 / 정답 보기 / 결과 ────────────────────────────────
+    function dbSubmit() {
+      dbBoardJudge = dbJudgeBoard();
       dbOrderJudge = dbJudgeOrder();
+      dbRenderBoardSlots();
       dbRenderOrderSlots();
-      if (dbOrderJudge.every(j => j === 'green')) {
+      const boardClear = dbBoardJudge.every(j => j === 'green');
+      const orderClear = dbOrderJudge.every(j => j === 'green');
+      if (boardClear && orderClear) {
         fireFanfare();
         dbRenderResult(false);
       }
     }
 
-    // ── 정답 보기 / 결과 ──────────────────────────────────────
     function dbGiveUp() {
       dbBoardPlaced = SINNER_ORDER.map(sinner => {
         const slot = dbDeck.slots.find(s => s.수감자 === sinner);
@@ -2022,29 +2036,24 @@
       });
       dbBoardJudge = Array(SINNER_ORDER.length).fill('green');
       const mainSlots = dbMainSlotsSorted();
-      dbOrderCandidates = mainSlots.map(s => dbBoardPlaced[SINNER_ORDER.indexOf(s.수감자)]);
-      dbOrderPlaced = [...dbOrderCandidates];
+      dbOrderPlaced = mainSlots.map(s => dbBoardPlaced[SINNER_ORDER.indexOf(s.수감자)]);
       dbOrderJudge = Array(mainSlots.length).fill('green');
       dbTapSelected = null;
-      dbStage = 2;
-      document.getElementById('dbStageTitle').textContent = '덱 빌더 - 2단계';
-      document.getElementById('dbStage1').style.display = 'none';
-      document.getElementById('dbStage2').style.display = '';
       dbRenderBoardSlots();
-      dbRenderCandidates();
       dbRenderOrderSlots();
-      dbRenderOrderCandidates();
+      dbRenderCandidates();
       dbRenderResult(true);
     }
 
     function dbRenderResult(gaveUp) {
       const resultEl = document.getElementById('dbResult');
       resultEl.style.display = '';
+      const boardGreen = dbBoardJudge.filter(j => j === 'green').length;
       const mainCount = dbDeck.slots.filter(s => s.type === 'Main').length;
       const orderGreen = dbOrderJudge.filter(j => j === 'green').length;
       resultEl.innerHTML = `<div class="panel">
         <div class="db-result-banner">${gaveUp ? '😢 포기' : '🎉 클리어!'}</div>
-        <div class="db-result-stat">1단계 12/12 · 2단계 순서 ${orderGreen}/${mainCount}</div>
+        <div class="db-result-stat">수감자 배치 ${boardGreen}/${SINNER_ORDER.length} · 전투 순서 ${orderGreen}/${mainCount}</div>
         <div class="db-result-actions">
           <button onclick="dbInit()">다음 덱</button>
           <button class="secondary" onclick="dbGoHome()">홈으로</button>
@@ -2056,9 +2065,15 @@
     document.getElementById('homeDeckBuilderCard').addEventListener('click', dbGoToDeckBuilder);
     document.getElementById('dbBackBtn').addEventListener('click', dbGoHome);
     document.getElementById('dbGiveUpBtn').addEventListener('click', dbGiveUp);
-    document.getElementById('dbSubmitStage1Btn').addEventListener('click', dbSubmitStage1);
-    document.getElementById('dbSubmitStage2Btn').addEventListener('click', dbSubmitStage2);
+    document.getElementById('dbSubmitBtn').addEventListener('click', dbSubmit);
     document.getElementById('dbSearchInput').addEventListener('input', () => dbRenderCandidates());
+    document.getElementById('dbSinnerFilter').addEventListener('click', e => {
+      const btn = e.target.closest('.db-sinner-filter-btn');
+      if (!btn) return;
+      dbSinnerFilter = btn.dataset.sinner;
+      dbRenderSinnerFilter();
+      dbRenderCandidates();
+    });
 
     const dbBoardSlotsEl = document.getElementById('dbBoardSlots');
     dbBoardSlotsEl.addEventListener('dragover', e => {
@@ -2091,23 +2106,6 @@
         return;
       }
       dbBoardSlotClick(Number(slot.dataset.idx));
-    });
-
-    const dbCandidatesEl = document.getElementById('dbCandidates');
-    dbCandidatesEl.addEventListener('dragstart', e => {
-      const card = e.target.closest('.db-candidate');
-      if (!card || card.classList.contains('placed')) return;
-      e.dataTransfer.setData('text/plain', `candidate|${card.dataset.name}`);
-    });
-    dbCandidatesEl.addEventListener('dragover', e => e.preventDefault());
-    dbCandidatesEl.addEventListener('drop', e => {
-      e.preventDefault();
-      dbHandleDropToCandidatesFromBoard(e.dataTransfer.getData('text/plain'));
-    });
-    dbCandidatesEl.addEventListener('click', e => {
-      const card = e.target.closest('.db-candidate');
-      if (!card) return;
-      dbCandidateClick(card.dataset.name);
     });
 
     const dbOrderSlotsEl = document.getElementById('dbOrderSlots');
@@ -2143,21 +2141,26 @@
       dbOrderSlotClick(Number(slot.dataset.idx));
     });
 
-    const dbOrderCandidatesEl = document.getElementById('dbOrderCandidates');
-    dbOrderCandidatesEl.addEventListener('dragstart', e => {
-      const card = e.target.closest('.db-candidate');
-      if (!card || card.classList.contains('placed')) return;
-      e.dataTransfer.setData('text/plain', `ordercandidate|${card.dataset.name}`);
-    });
-    dbOrderCandidatesEl.addEventListener('dragover', e => e.preventDefault());
-    dbOrderCandidatesEl.addEventListener('drop', e => {
-      e.preventDefault();
-      dbHandleDropToOrderCandidates(e.dataTransfer.getData('text/plain'));
-    });
-    dbOrderCandidatesEl.addEventListener('click', e => {
+    const dbCandidatesEl = document.getElementById('dbCandidates');
+    dbCandidatesEl.addEventListener('dragstart', e => {
       const card = e.target.closest('.db-candidate');
       if (!card) return;
-      dbOrderCandidateClick(card.dataset.name);
+      e.dataTransfer.setData('text/plain', `candidate|${card.dataset.name}`);
+    });
+    dbCandidatesEl.addEventListener('dragover', e => e.preventDefault());
+    dbCandidatesEl.addEventListener('drop', e => {
+      e.preventDefault();
+      dbHandleDropToCandidates(e.dataTransfer.getData('text/plain'));
+    });
+    dbCandidatesEl.addEventListener('click', e => {
+      const card = e.target.closest('.db-candidate');
+      if (!card) return;
+      dbCandidateClick(card.dataset.name);
+    });
+    dbCandidatesEl.addEventListener('dblclick', e => {
+      const card = e.target.closest('.db-candidate');
+      if (!card) return;
+      dbCandidateDblClick(card.dataset.name);
     });
     // ── 업데이트 기록 ────────────────────────────────────────
     let CHANGELOG = [];
