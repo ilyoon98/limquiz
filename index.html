@@ -332,7 +332,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.1</span>
+          <span class="version-badge">v0.13.2</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -403,7 +403,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.1</span>
+          <span class="version-badge">v0.13.2</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -1929,6 +1929,13 @@
       return dbSlots.findIndex(s => !s);
     }
 
+    function dbLastEmptySlotIndex() {
+      for (let i = DB_SLOT_COUNT - 1; i >= 0; i--) {
+        if (!dbSlots[i]) return i;
+      }
+      return -1;
+    }
+
     function dbPlaceByDoubleClick(key) {
       const m = dbFindCandidateByKey(key);
       if (!m) return;
@@ -1946,7 +1953,9 @@
         dbAfterPlace(conflictIdx);
         return;
       }
-      const idx = dbFirstEmptySlotIndex();
+      // "없음" 카드는 뒤쪽부터, 그 외 실제 인격은 앞쪽부터 채워서
+      // Main 정답이 들어갈 앞쪽 자리를 없음 카드가 미리 차지하지 않게 한다.
+      const idx = m['인격명'] === '없음' ? dbLastEmptySlotIndex() : dbFirstEmptySlotIndex();
       if (idx === -1) { dbShowMessage('12칸이 모두 찼습니다.'); return; }
       dbPlaceInSlot(idx, key);
     }
@@ -1983,12 +1992,23 @@
       const mainAnswers = dbDeck.slots.filter(s => s.type === 'Main');
       const subNullAnswers = dbDeck.slots.filter(s => s.type === 'Sub' || s.type === 'Null');
       const subNullNames = new Set(subNullAnswers.map(s => s.type === 'Null' ? '없음' : s.인격명));
+      const mainNamesSet = new Set(mainAnswers.map(s => s.인격명));
+
+      // Main으로 배치된 슬롯들만(인덱스 오름차순) 추려서, 그 안에서의 상대 순서로 판정한다.
+      // Sub/없음 카드가 앞자리에 섞여 있어도 Main끼리의 상대 순서만 맞으면 정답 처리됨.
+      const placedMainIndices = [];
+      dbSlots.forEach((s, i) => {
+        if (s && mainNamesSet.has(s['인격명'])) placedMainIndices.push(i);
+      });
+
       return dbSlots.map((placed, idx) => {
-        const slotOrder = idx + 1;
         const placedName = placed ? placed['인격명'] : null;
         if (!placedName) return null;
-        const mainMatch = mainAnswers.find(s => s.인격명 === placedName);
-        if (mainMatch) return mainMatch.order === slotOrder ? 'green' : 'yellow';
+        if (mainNamesSet.has(placedName)) {
+          const relativeOrder = placedMainIndices.indexOf(idx) + 1;
+          const mainMatch = mainAnswers.find(s => s.인격명 === placedName);
+          return mainMatch.order === relativeOrder ? 'green' : 'yellow';
+        }
         if (subNullNames.has(placedName)) return 'green';
         return 'red';
       });
