@@ -214,6 +214,8 @@
     .db-title { font-size:22px; font-weight:900; }
     .db-help-btn { height:36px; padding:0 14px; font-size:13px; }
     .db-header-giveup-btn { margin-left:auto; height:36px; padding:0 16px; font-size:13px; }
+    .db-header-submit-btn { height:36px; padding:0 16px; font-size:13px; font-weight:800; border-radius:10px; background:var(--button); color:var(--buttonText); border:none; }
+    .db-header-submit-btn:disabled { opacity:.4; cursor:not-allowed; }
     .db-board-item { display:flex; flex-direction:column; align-items:center; gap:6px; }
     .db-board-item-label { font-size:12px; font-weight:800; color:var(--muted); }
     .db-hint { margin-bottom:16px; }
@@ -250,7 +252,7 @@
     .db-sinner-filter-btn { height:32px; padding:0 14px; border-radius:999px; font-size:13px; font-weight:700; background:var(--panel2); color:var(--muted); border:1px solid var(--border); }
     .db-sinner-filter-btn.active { background:var(--button); color:var(--buttonText); border-color:var(--button); font-weight:800; }
     .db-sinner-filter-btn.placed:not(.active) { border-color:var(--slot-green); color:var(--slot-green); }
-    .db-candidates { display:grid; grid-template-columns:repeat(4, 1fr); gap:14px; max-height:560px; overflow-y:auto; padding:4px; }
+    .db-candidates { display:grid; grid-template-columns:repeat(4, 1fr); gap:14px; padding:4px; }
     .db-candidates-empty { grid-column:1/-1; text-align:center; color:var(--muted); padding:40px 20px; font-size:14px; }
     .db-candidate { border-radius:12px; border:1px solid var(--border); background:var(--panel2); cursor:grab; position:relative; overflow:hidden; display:flex; flex-direction:column; transition:opacity .15s, outline-color .15s; }
     .db-candidate.placed { opacity:.4; cursor:default; }
@@ -333,7 +335,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.4</span>
+          <span class="version-badge">v0.13.5</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -404,7 +406,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.4</span>
+          <span class="version-badge">v0.13.5</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -522,6 +524,7 @@
           <button class="secondary db-help-btn" id="dbHelpBtn" type="button">❓ 도움말</button>
           <button class="secondary db-header-giveup-btn" id="dbClearAllBtn">모두 비우기</button>
           <button class="secondary db-header-giveup-btn" id="dbGiveUpBtn">정답 보기</button>
+          <button class="db-header-submit-btn" id="dbSubmitBtnTop" type="button" disabled>제출 (0/12)</button>
         </div>
 
         <div class="db-hint panel" id="dbHint" style="display:none"></div>
@@ -1863,7 +1866,13 @@
     function dbUpdateSubmitState() {
       const filledCount = dbSlots.filter(Boolean).length;
       const allFilled = filledCount === DB_SLOT_COUNT;
-      document.getElementById('dbSubmitBtn').disabled = !allFilled;
+      const label = `제출 (${filledCount}/12)`;
+      ['dbSubmitBtn', 'dbSubmitBtnTop'].forEach(id => {
+        const btn = document.getElementById(id);
+        if (!btn) return;
+        btn.disabled = !allFilled;
+        btn.textContent = label;
+      });
       document.getElementById('dbProgress').textContent = allFilled ? '' : `12칸을 모두 채워주세요 (현재 ${filledCount}/12)`;
       document.getElementById('dbSlotsProgress').textContent = `${filledCount}/12 배치됨`;
     }
@@ -2118,6 +2127,7 @@
     document.getElementById('dbClearAllBtn').addEventListener('click', dbClearAll);
     document.getElementById('dbGiveUpBtn').addEventListener('click', dbGiveUp);
     document.getElementById('dbSubmitBtn').addEventListener('click', dbSubmit);
+    document.getElementById('dbSubmitBtnTop').addEventListener('click', dbSubmit);
     document.getElementById('dbSearchInput').addEventListener('input', () => dbRenderCandidates());
     document.getElementById('dbSinnerFilter').addEventListener('click', e => {
       const btn = e.target.closest('.db-sinner-filter-btn');
