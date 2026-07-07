@@ -215,7 +215,7 @@
     .db-title { font-size:22px; font-weight:900; white-space:nowrap; }
     .db-help-btn { height:36px; padding:0 14px; font-size:13px; }
     .db-header-giveup-btn { margin-left:auto; height:36px; padding:0 16px; font-size:13px; }
-    .db-header-submit-btn { height:36px; padding:0 16px; font-size:13px; font-weight:800; border-radius:10px; background:var(--button); color:var(--buttonText); border:none; }
+    .db-header-submit-btn { width:100%; height:72px; margin-top:14px; font-size:26px; font-weight:900; border-radius:16px; background:var(--button); color:var(--buttonText); border:none; letter-spacing:.02em; }
     .db-header-submit-btn:disabled { opacity:.4; cursor:not-allowed; }
     .db-board-item { display:flex; flex-direction:column; align-items:center; gap:6px; }
     .db-board-item-label { font-size:12px; font-weight:800; color:var(--muted); }
@@ -275,10 +275,10 @@
     @media (min-width:900px) {
       .db-top-bar { max-width:1300px; }
       .db-wrap { display:flex; align-items:flex-start; gap:24px; max-width:1300px; }
-      .db-sticky-top { width:300px; flex-shrink:0; background:var(--panel); border-radius:14px; padding:16px; }
-      .db-board-grid { grid-template-columns:repeat(3, 1fr); }
+      .db-sticky-top { flex:1; min-width:0; background:var(--panel); border-radius:14px; padding:16px; }
+      .db-board-grid { grid-template-columns:repeat(4, 1fr); }
       .db-candidates-section { flex:1; min-width:0; }
-      .db-candidates { grid-template-columns:repeat(5, 1fr); }
+      .db-candidates { grid-template-columns:repeat(4, 1fr); }
       .db-search-and-filter-sticky { top:var(--db-topbar-height, 0px); }
     }
     .db-result-banner { text-align:center; font-size:24px; font-weight:900; margin-bottom:14px; }
@@ -345,7 +345,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.8</span>
+          <span class="version-badge">v0.13.9</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -416,7 +416,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.8</span>
+          <span class="version-badge">v0.13.9</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -533,8 +533,8 @@
         <button class="secondary db-help-btn" id="dbHelpBtn" type="button">❓ 도움말</button>
         <button class="secondary db-header-giveup-btn" id="dbClearAllBtn">모두 비우기</button>
         <button class="secondary db-header-giveup-btn" id="dbGiveUpBtn">정답 보기</button>
-        <button class="db-header-submit-btn" id="dbSubmitBtnTop" type="button" disabled>제출 (0/12)</button>
       </div>
+      <button class="db-header-submit-btn" id="dbSubmitBtnTop" type="button" disabled>제출 (0/12)</button>
     </div>
 
     <div class="db-wrap">
@@ -557,14 +557,10 @@
         </div>
         <div class="db-candidates" id="dbCandidates"></div>
       </div>
-
-      <div class="db-actions">
-        <button id="dbSubmitBtn" disabled>제출</button>
-      </div>
-      <div class="db-progress" id="dbProgress"></div>
-
-      <div id="dbResult" style="display:none"></div>
     </div>
+
+    <div class="db-progress" id="dbProgress"></div>
+    <div id="dbResult" style="display:none"></div>
     <div class="db-message" id="dbMessage" style="display:none"></div>
   </div>
 
@@ -1880,7 +1876,7 @@
       const filledCount = dbSlots.filter(Boolean).length;
       const allFilled = filledCount === DB_SLOT_COUNT;
       const label = `제출 (${filledCount}/12)`;
-      ['dbSubmitBtn', 'dbSubmitBtnTop'].forEach(id => {
+      ['dbSubmitBtnTop'].forEach(id => {
         const btn = document.getElementById(id);
         if (!btn) return;
         btn.disabled = !allFilled;
@@ -2139,7 +2135,6 @@
     window.addEventListener('resize', () => { if (deckBuilderScreen.style.display !== 'none') dbUpdateStickyOffset(); });
     document.getElementById('dbClearAllBtn').addEventListener('click', dbClearAll);
     document.getElementById('dbGiveUpBtn').addEventListener('click', dbGiveUp);
-    document.getElementById('dbSubmitBtn').addEventListener('click', dbSubmit);
     document.getElementById('dbSubmitBtnTop').addEventListener('click', dbSubmit);
     document.getElementById('dbSearchInput').addEventListener('input', () => dbRenderCandidates());
     document.getElementById('dbSinnerFilter').addEventListener('click', e => {
