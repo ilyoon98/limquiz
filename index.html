@@ -216,7 +216,7 @@
     .db-header-giveup-btn { margin-left:auto; height:36px; padding:0 16px; font-size:13px; }
     .db-header-submit-btn { height:36px; padding:0 16px; font-size:13px; font-weight:800; border-radius:10px; background:var(--button); color:var(--buttonText); border:none; }
     .db-header-submit-btn:disabled { opacity:.4; cursor:not-allowed; }
-    .db-header-submit-btn-bottom { width:100%; height:44px; font-size:14px; margin-top:16px; }
+    .db-header-submit-btn-top { width:100%; height:44px; font-size:14px; margin-bottom:16px; }
     .db-board-item { display:flex; flex-direction:column; align-items:center; gap:6px; }
     .db-board-item-label { font-size:12px; font-weight:800; color:var(--muted); }
     .db-hint { margin-bottom:16px; }
@@ -274,11 +274,12 @@
     @media (max-width:800px) { .db-board-grid { grid-template-columns:repeat(3, 1fr); } .db-candidates { grid-template-columns:repeat(2, 1fr); } }
     @media (min-width:900px) {
       .db-wrap { display:flex; align-items:flex-start; gap:24px; max-width:1300px; }
-      .db-sticky-top { width:300px; flex-shrink:0; position:sticky; top:0; border-bottom:none; background:var(--panel); border-radius:14px; padding:16px; max-height:100vh; overflow-y:auto; }
+      .db-sticky-top { width:300px; flex-shrink:0; position:sticky; top:0; border-bottom:none; background:var(--panel); border-radius:14px; padding:16px; }
       .db-board-grid { grid-template-columns:repeat(3, 1fr); }
       .db-candidates-section { flex:1; min-width:0; }
       .db-candidates { grid-template-columns:repeat(5, 1fr); }
       .db-search-and-filter-sticky { top:0; }
+      .db-header { flex-wrap:wrap; row-gap:8px; }
     }
     .db-result-banner { text-align:center; font-size:24px; font-weight:900; margin-bottom:14px; }
     .db-result-stat { text-align:center; color:var(--muted); font-size:14px; margin-bottom:8px; }
@@ -344,7 +345,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.6</span>
+          <span class="version-badge">v0.13.7</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -415,7 +416,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.6</span>
+          <span class="version-badge">v0.13.7</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -535,6 +536,8 @@
           <button class="secondary db-header-giveup-btn" id="dbGiveUpBtn">정답 보기</button>
         </div>
 
+        <button class="db-header-submit-btn db-header-submit-btn-top" id="dbSubmitBtnTop" type="button" disabled>제출 (0/12)</button>
+
         <div class="db-hint panel" id="dbHint" style="display:none"></div>
 
         <div class="db-slots-section">
@@ -544,8 +547,6 @@
           </div>
           <div class="db-board-grid" id="dbBoardSlots"></div>
         </div>
-
-        <button class="db-header-submit-btn db-header-submit-btn-bottom" id="dbSubmitBtnTop" type="button" disabled>제출 (0/12)</button>
       </div>
 
       <div class="db-candidates-section panel">
