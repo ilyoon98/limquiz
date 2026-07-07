@@ -345,7 +345,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.10</span>
+          <span class="version-badge">v0.13.11</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -416,7 +416,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.10</span>
+          <span class="version-badge">v0.13.11</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -2049,10 +2049,20 @@
     function dbSubmit() {
       if (dbSlots.some(s => !s)) return;
       const result = dbJudgeDeck();
+      // Main 카드의 정답 여부는 "현재 배치된 Main들 사이의 상대 순서"로 판정되므로,
+      // 다른 Main 슬롯이 나중에 바뀌면 이미 초록으로 잠긴 슬롯의 정답 여부가 뒤집힐 수 있다.
+      // 그래서 Main 슬롯은 전체 Main이 동시에 전부 초록일 때만 잠그고(그래야 더 이상 안 바뀜),
+      // 위치와 무관하게 절대 판정되는 Sub/없음 슬롯은 즉시 잠가도 안전하다.
+      const mainAnswers = dbDeck.slots.filter(s => s.type === 'Main');
+      const mainNamesSet = new Set(mainAnswers.map(s => s.인격명));
+      const mainIndices = dbSlots.map((s, i) => (s && mainNamesSet.has(s['인격명'])) ? i : -1).filter(i => i !== -1);
+      // 배치된 Main 개수가 덱이 요구하는 Main 총 개수와 같을 때만 "완성된 상태"로 보고 잠근다.
+      const allMainsGreen = mainIndices.length === mainAnswers.length && mainIndices.every(i => result[i] === 'green');
       result.forEach((j, idx) => {
         dbSlotJudge[idx] = j;
         if (j === 'green') {
-          dbLocked[idx] = true;
+          const isMainSlot = mainIndices.includes(idx);
+          if (!isMainSlot || allMainsGreen) dbLocked[idx] = true;
         } else if (j === 'yellow' || j === 'red') {
           dbKnownJudge[dbCandidateKey(dbSlots[idx])] = j;
         }
