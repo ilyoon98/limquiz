@@ -332,7 +332,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.2</span>
+          <span class="version-badge">v0.13.3</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -403,7 +403,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.2</span>
+          <span class="version-badge">v0.13.3</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -2090,10 +2090,11 @@
 
     function dbRenderCandidates() {
       const q = lower(document.getElementById('dbSearchInput').value);
-      let filtered = dbCandidates.filter(c => c['수감자'] === dbSinnerFilter);
-      if (q) filtered = filtered.filter(c => lower(c['인격명']).includes(q) || (c['인격명'] === '없음' && lower(c['수감자']).includes(q)));
-      const noneIdx = filtered.findIndex(c => c['인격명'] === '없음');
-      if (noneIdx > 0) filtered.unshift(filtered.splice(noneIdx, 1)[0]);
+      const sinnerCandidates = dbCandidates.filter(c => c['수감자'] === dbSinnerFilter);
+      const noneCard = sinnerCandidates.find(c => c['인격명'] === '없음');
+      let identities = sinnerCandidates.filter(c => c['인격명'] !== '없음');
+      if (q) identities = identities.filter(c => lower(c['인격명']).includes(q));
+      const filtered = noneCard ? [noneCard, ...identities] : identities;
       document.getElementById('dbCandidates').innerHTML = filtered.length
         ? filtered.map(dbCandidateHTML).join('')
         : `<div class="db-candidates-empty">해당 인격 없음</div>`;
