@@ -208,15 +208,15 @@
 
     /* ── 덱 빌더 화면 ───────────────────────────── */
     .db-wrap { max-width:1000px; margin:0 auto; }
-    .db-sticky-top { position:sticky; top:0; z-index:50; background:var(--bg); padding:16px 0 14px; margin-bottom:16px; border-bottom:1px solid var(--border); }
-    .db-search-and-filter-sticky { position:sticky; top:var(--db-sticky-top-height, 0px); z-index:40; background:var(--bg); padding:12px 0; }
-    .db-header { display:flex; align-items:center; gap:14px; margin-bottom:16px; }
-    .db-title { font-size:22px; font-weight:900; }
+    .db-top-bar { position:sticky; top:0; z-index:60; background:var(--bg); padding:16px 0 14px; margin-bottom:16px; border-bottom:1px solid var(--border); max-width:1000px; margin-left:auto; margin-right:auto; }
+    .db-sticky-top { position:sticky; top:var(--db-topbar-height, 0px); z-index:50; background:var(--bg); padding-bottom:14px; margin-bottom:16px; }
+    .db-search-and-filter-sticky { position:sticky; top:calc(var(--db-topbar-height, 0px) + var(--db-sticky-top-height, 0px)); z-index:40; background:var(--bg); padding:12px 0; }
+    .db-header { display:flex; align-items:center; gap:14px; flex-wrap:wrap; row-gap:8px; }
+    .db-title { font-size:22px; font-weight:900; white-space:nowrap; }
     .db-help-btn { height:36px; padding:0 14px; font-size:13px; }
     .db-header-giveup-btn { margin-left:auto; height:36px; padding:0 16px; font-size:13px; }
     .db-header-submit-btn { height:36px; padding:0 16px; font-size:13px; font-weight:800; border-radius:10px; background:var(--button); color:var(--buttonText); border:none; }
     .db-header-submit-btn:disabled { opacity:.4; cursor:not-allowed; }
-    .db-header-submit-btn-top { width:100%; height:44px; font-size:14px; margin-bottom:16px; }
     .db-board-item { display:flex; flex-direction:column; align-items:center; gap:6px; }
     .db-board-item-label { font-size:12px; font-weight:800; color:var(--muted); }
     .db-hint { margin-bottom:16px; }
@@ -273,13 +273,13 @@
     .db-message { position:fixed; left:50%; bottom:24px; transform:translateX(-50%); z-index:200; max-width:90vw; text-align:center; font-weight:800; color:#ffb86b; background:color-mix(in srgb, var(--slot-yellow) 20%, var(--panel2)); border:1px solid color-mix(in srgb, var(--slot-yellow) 45%, var(--border)); border-radius:12px; padding:10px 16px; box-shadow:0 12px 30px rgba(0,0,0,.5); }
     @media (max-width:800px) { .db-board-grid { grid-template-columns:repeat(3, 1fr); } .db-candidates { grid-template-columns:repeat(2, 1fr); } }
     @media (min-width:900px) {
+      .db-top-bar { max-width:1300px; }
       .db-wrap { display:flex; align-items:flex-start; gap:24px; max-width:1300px; }
-      .db-sticky-top { width:300px; flex-shrink:0; position:sticky; top:0; border-bottom:none; background:var(--panel); border-radius:14px; padding:16px; }
+      .db-sticky-top { width:300px; flex-shrink:0; background:var(--panel); border-radius:14px; padding:16px; }
       .db-board-grid { grid-template-columns:repeat(3, 1fr); }
       .db-candidates-section { flex:1; min-width:0; }
       .db-candidates { grid-template-columns:repeat(5, 1fr); }
-      .db-search-and-filter-sticky { top:0; }
-      .db-header { flex-wrap:wrap; row-gap:8px; }
+      .db-search-and-filter-sticky { top:var(--db-topbar-height, 0px); }
     }
     .db-result-banner { text-align:center; font-size:24px; font-weight:900; margin-bottom:14px; }
     .db-result-stat { text-align:center; color:var(--muted); font-size:14px; margin-bottom:8px; }
@@ -345,7 +345,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.7</span>
+          <span class="version-badge">v0.13.8</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -416,7 +416,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.7</span>
+          <span class="version-badge">v0.13.8</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -526,18 +526,19 @@
 
   <!-- ══ 덱 빌더 화면 ════════════════════════════════════════════ -->
   <div id="deckBuilderScreen" style="display:none">
+    <div class="db-top-bar">
+      <div class="db-header">
+        <button class="back-btn" id="dbBackBtn">← 홈으로</button>
+        <span class="db-title">덱 빌더</span>
+        <button class="secondary db-help-btn" id="dbHelpBtn" type="button">❓ 도움말</button>
+        <button class="secondary db-header-giveup-btn" id="dbClearAllBtn">모두 비우기</button>
+        <button class="secondary db-header-giveup-btn" id="dbGiveUpBtn">정답 보기</button>
+        <button class="db-header-submit-btn" id="dbSubmitBtnTop" type="button" disabled>제출 (0/12)</button>
+      </div>
+    </div>
+
     <div class="db-wrap">
       <div class="db-sticky-top">
-        <div class="db-header">
-          <button class="back-btn" id="dbBackBtn">← 홈으로</button>
-          <span class="db-title">덱 빌더</span>
-          <button class="secondary db-help-btn" id="dbHelpBtn" type="button">❓ 도움말</button>
-          <button class="secondary db-header-giveup-btn" id="dbClearAllBtn">모두 비우기</button>
-          <button class="secondary db-header-giveup-btn" id="dbGiveUpBtn">정답 보기</button>
-        </div>
-
-        <button class="db-header-submit-btn db-header-submit-btn-top" id="dbSubmitBtnTop" type="button" disabled>제출 (0/12)</button>
-
         <div class="db-hint panel" id="dbHint" style="display:none"></div>
 
         <div class="db-slots-section">
@@ -1834,9 +1835,10 @@
     }
 
     function dbUpdateStickyOffset() {
+      const barEl = document.querySelector('.db-top-bar');
       const topEl = document.querySelector('.db-sticky-top');
-      if (!topEl) return;
-      document.documentElement.style.setProperty('--db-sticky-top-height', `${topEl.getBoundingClientRect().height}px`);
+      if (barEl) document.documentElement.style.setProperty('--db-topbar-height', `${barEl.getBoundingClientRect().height}px`);
+      if (topEl) document.documentElement.style.setProperty('--db-sticky-top-height', `${topEl.getBoundingClientRect().height}px`);
     }
 
     // ── 슬롯 (12칸 통합) ──────────────────────────────────────
