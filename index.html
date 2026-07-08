@@ -345,7 +345,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.15</span>
+          <span class="version-badge">v0.13.16</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -416,7 +416,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.15</span>
+          <span class="version-badge">v0.13.16</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -2043,6 +2043,10 @@
       const subNameSet = new Set(subAnswers.map(s => s.인격명));
       const nullSinnerSet = new Set(nullAnswers.map(s => s.수감자));
       const nullZoneStart = dbNullZoneStart();
+      // Main이 반드시 차지해야 하는 절대 슬롯들. Sub/없음이 여기 잘못 눌러앉아 초록으로
+      // 잠겨버리면 그 Main이 영영 자기 자리에 들어갈 수 없게 되므로, 이 자리를 차지한
+      // Sub/없음은 정답 인격이라도 "순서 다름"으로 취급해 초록/잠금을 막는다.
+      const mainTargetIndices = new Set(mainAnswers.map(s => s.order - 1));
 
       return dbSlots.map((placed, idx) => {
         if (!placed) return null;
@@ -2051,10 +2055,10 @@
           return idx === mainOrderByName[name] - 1 ? 'green' : 'yellow';
         }
         if (name !== '없음' && subNameSet.has(name)) {
-          return 'green';
+          return mainTargetIndices.has(idx) ? 'yellow' : 'green';
         }
         if (name === '없음' && nullSinnerSet.has(placed['수감자'])) {
-          return idx >= nullZoneStart ? 'green' : 'yellow';
+          return (idx >= nullZoneStart && !mainTargetIndices.has(idx)) ? 'green' : 'yellow';
         }
         return 'red';
       });
