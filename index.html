@@ -345,7 +345,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.13</span>
+          <span class="version-badge">v0.13.14</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -416,7 +416,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.13</span>
+          <span class="version-badge">v0.13.14</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -2030,15 +2030,17 @@
       if (parts[0] === 'slot') dbRemoveFromSlot(Number(parts[1]));
     }
 
-    // ── 판정 + 자동 재배치 ────────────────────────────────────
-    // Main은 반드시 order번 슬롯(절대 위치)에 있어야 정답. Sub는 위치 무관(없음만 아니면 됨).
-    // Null("없음")은 위치 무관하지만 관례적으로 뒤쪽 슬롯으로 몰아준다.
-    // 제출할 때마다 정답으로 확인된 카드를 규칙에 맞는 자리로 강제 재배치한 뒤 잠근다.
-    // 이렇게 하면 없음/Sub 카드가 먼저 어떤 슬롯을 잠가버려서 Main이 자기 자리에
-    // 영영 들어갈 수 없게 되는 충돌이 원천적으로 생기지 않는다.
-    function dbSubmit() {
-      if (dbSlots.some(s => !s)) return;
+    // ── 판정 (워들 방식: 놓인 자리 그대로 채점, 자동 재배치 없음) ────
+    // Main: 반드시 order번 슬롯(절대 위치)에 있어야 초록. 정답 인격이지만 자리가 틀리면 노랑.
+    // Sub: 위치 무관, 정답 인격만 있으면 항상 초록.
+    // Null("없음"): 이 덱의 없음 개수만큼 확보된 "뒤쪽 구간"(마지막 N칸) 안에 있어야 초록,
+    //   그 구간 밖이면 노랑(수감자는 맞지만 자리가 틀림).
+    function dbNullZoneStart() {
+      const nullCount = dbDeck.slots.filter(s => s.type === 'Null').length;
+      return DB_SLOT_COUNT - nullCount;
+    }
 
+    function dbJudgeDeck() {
       const mainAnswers = dbDeck.slots.filter(s => s.type === 'Main');
       const subAnswers = dbDeck.slots.filter(s => s.type === 'Sub');
       const nullAnswers = dbDeck.slots.filter(s => s.type === 'Null');
@@ -2046,93 +2048,63 @@
       mainAnswers.forEach(s => { mainOrderByName[s.인격명] = s.order; });
       const subNameSet = new Set(subAnswers.map(s => s.인격명));
       const nullSinnerSet = new Set(nullAnswers.map(s => s.수감자));
+      const nullZoneStart = dbNullZoneStart();
 
-      const oldSlots = dbSlots.slice();
-      const newSlots = Array(DB_SLOT_COUNT).fill(null);
-      const newLocked = Array(DB_SLOT_COUNT).fill(false);
-      const newJudge = Array(DB_SLOT_COUNT).fill(null);
-      const confirmedSubs = [];
-      const confirmedNulls = [];
-      const leftover = [];
-
-      oldSlots.forEach((card, i) => {
-        if (!card) return;
-        const name = card['인격명'];
+      return dbSlots.map((placed, idx) => {
+        if (!placed) return null;
+        const name = placed['인격명'];
         if (mainOrderByName.hasOwnProperty(name)) {
-          const targetIdx = mainOrderByName[name] - 1;
-          newSlots[targetIdx] = card;
-          newLocked[targetIdx] = true;
-          newJudge[targetIdx] = 'green';
-        } else if (name !== '없음' && subNameSet.has(name)) {
-          confirmedSubs.push({ origIdx: i, card });
-        } else if (name === '없음' && nullSinnerSet.has(card['수감자'])) {
-          confirmedNulls.push(card);
-        } else {
-          leftover.push(card);
+          return idx === mainOrderByName[name] - 1 ? 'green' : 'yellow';
+        }
+        if (name !== '없음' && subNameSet.has(name)) {
+          return 'green';
+        }
+        if (name === '없음' && nullSinnerSet.has(placed['수감자'])) {
+          return idx >= nullZoneStart ? 'green' : 'yellow';
+        }
+        return 'red';
+      });
+    }
+
+    function dbSubmit() {
+      if (dbSlots.some(s => !s)) return;
+      const result = dbJudgeDeck();
+      result.forEach((j, idx) => {
+        dbSlotJudge[idx] = j;
+        if (j === 'green') {
+          dbLocked[idx] = true;
+        } else if (j === 'yellow' || j === 'red') {
+          dbKnownJudge[dbCandidateKey(dbSlots[idx])] = j;
         }
       });
-
-      // 정답 Sub는 위치 상관없으니 원래 있던 자리를 최대한 유지(그 자리를 Main이 이미 가져가지 않았다면)
-      confirmedSubs.forEach(({ origIdx, card }) => {
-        const idx = !newSlots[origIdx] ? origIdx : newSlots.findIndex(s => !s);
-        newSlots[idx] = card;
-        newLocked[idx] = true;
-        newJudge[idx] = 'green';
-      });
-
-      // 정답 없음 카드는 뒤쪽 빈 자리부터 채운다
-      confirmedNulls.forEach(card => {
-        for (let i = DB_SLOT_COUNT - 1; i >= 0; i--) {
-          if (!newSlots[i]) { newSlots[i] = card; newLocked[i] = true; newJudge[i] = 'green'; break; }
-        }
-      });
-
-      // 아직 정답으로 확인되지 않은 카드는 원래 순서를 유지한 채 남은 빈 자리에 채운다
-      let li = 0;
-      for (let i = 0; i < DB_SLOT_COUNT && li < leftover.length; i++) {
-        if (!newSlots[i]) { newSlots[i] = leftover[li]; newJudge[i] = 'red'; li++; }
-      }
-
-      const movedIndices = [];
-      newSlots.forEach((card, i) => { if (card && card !== oldSlots[i]) movedIndices.push(i); });
-
-      dbSlots = newSlots;
-      dbLocked = newLocked;
-      dbSlotJudge = newJudge;
-      dbSlots.forEach((card, idx) => {
-        if (newJudge[idx] === 'red') dbKnownJudge[dbCandidateKey(card)] = 'red';
-      });
-
       dbRenderSlots();
       dbRenderCandidates();
-      movedIndices.forEach(idx => {
-        const el = document.querySelector(`.db-slot[data-idx="${idx}"]`);
-        if (el) {
-          el.classList.add('just-placed');
-          setTimeout(() => el.classList.remove('just-placed'), 320);
-        }
-      });
       if (dbSlotJudge.every(j => j === 'green')) {
         fireFanfare();
         dbRenderResult(false);
-      } else if (movedIndices.length) {
-        dbShowMessage('정답으로 확인된 인격은 자동으로 올바른 자리에 고정됩니다.');
       }
     }
 
     function dbGiveUp() {
       const mainAnswers = dbMainSlotsSorted();
-      const subNullAnswers = dbDeck.slots.filter(s => s.type === 'Sub' || s.type === 'Null');
+      const subAnswers = dbDeck.slots.filter(s => s.type === 'Sub');
+      const nullAnswers = dbDeck.slots.filter(s => s.type === 'Null');
       const full = Array(DB_SLOT_COUNT).fill(null);
       mainAnswers.forEach(s => { full[s.order - 1] = dbFindCandidateByKey(s.인격명) || { '인격명': s.인격명, '수감자': s.수감자 }; });
       let fillIdx = 0;
-      subNullAnswers.forEach(s => {
+      subAnswers.forEach(s => {
         while (fillIdx < DB_SLOT_COUNT && full[fillIdx]) fillIdx++;
         if (fillIdx >= DB_SLOT_COUNT) return;
-        full[fillIdx] = s.type === 'Null'
-          ? (dbFindCandidateByKey(`없음:${s.수감자}`) || { '인격명': '없음', '수감자': s.수감자 })
-          : (dbFindCandidateByKey(s.인격명) || { '인격명': s.인격명, '수감자': s.수감자 });
+        full[fillIdx] = dbFindCandidateByKey(s.인격명) || { '인격명': s.인격명, '수감자': s.수감자 };
         fillIdx++;
+      });
+      // 없음은 뒤쪽 구간(마지막 N칸)부터 채운다
+      let backIdx = DB_SLOT_COUNT - 1;
+      nullAnswers.forEach(s => {
+        while (backIdx >= 0 && full[backIdx]) backIdx--;
+        if (backIdx < 0) return;
+        full[backIdx] = dbFindCandidateByKey(`없음:${s.수감자}`) || { '인격명': '없음', '수감자': s.수감자 };
+        backIdx--;
       });
       dbSlots = full;
       dbSlotJudge = Array(DB_SLOT_COUNT).fill('green');
