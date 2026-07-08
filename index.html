@@ -345,7 +345,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.14</span>
+          <span class="version-badge">v0.13.15</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -416,7 +416,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.14</span>
+          <span class="version-badge">v0.13.15</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -1941,16 +1941,10 @@
 
     function dbRemoveFromSlot(idx) {
       if (dbLocked[idx]) return;
-      const freeIdxs = [];
-      for (let i = 0; i < DB_SLOT_COUNT; i++) if (!dbLocked[i]) freeIdxs.push(i);
-      const vals = freeIdxs.map(i => dbSlots[i]);
-      const pos = freeIdxs.indexOf(idx);
-      vals.splice(pos, 1);
-      vals.push(null);
-      freeIdxs.forEach((slotIdx, k) => {
-        dbSlots[slotIdx] = vals[k];
-        if (k >= pos) dbSlotJudge[slotIdx] = null;
-      });
+      // 이 슬롯 하나만 비우고 판정 표시를 지운다. 다른 슬롯은 절대 위치 채점이므로
+      // 절대 건드리지 않는다 (예전 상대 순서 방식의 "당겨서 채우기" 잔재 제거).
+      dbSlots[idx] = null;
+      dbSlotJudge[idx] = null;
       dbRenderSlots();
       dbRenderCandidates();
     }
