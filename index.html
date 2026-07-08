@@ -281,6 +281,7 @@
       .db-candidates { grid-template-columns:repeat(4, 1fr); }
       .db-search-and-filter-sticky { top:var(--db-topbar-height, 0px); }
     }
+    #dbResult { margin-top:14px; }
     .db-result-banner { text-align:center; font-size:24px; font-weight:900; margin-bottom:14px; }
     .db-result-stat { text-align:center; color:var(--muted); font-size:14px; margin-bottom:8px; }
     .db-result-actions { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:16px; }
@@ -345,7 +346,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.18</span>
+          <span class="version-badge">v0.13.19</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -416,7 +417,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.18</span>
+          <span class="version-badge">v0.13.19</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -535,6 +536,7 @@
         <button class="secondary db-header-giveup-btn" id="dbGiveUpBtn">정답 보기</button>
       </div>
       <button class="db-header-submit-btn" id="dbSubmitBtnTop" type="button" disabled>제출 (0/12)</button>
+      <div id="dbResult" style="display:none"></div>
     </div>
 
     <div class="db-wrap">
@@ -560,7 +562,6 @@
     </div>
 
     <div class="db-progress" id="dbProgress"></div>
-    <div id="dbResult" style="display:none"></div>
     <div class="db-message" id="dbMessage" style="display:none"></div>
   </div>
 
@@ -2122,10 +2123,9 @@
         <div class="db-result-stat">${greenCount}/12</div>
         <div class="db-result-actions">
           <button onclick="dbInit()">다음 덱</button>
-          <button class="secondary" onclick="dbGoHome()">홈으로</button>
         </div>
       </div>`;
-      resultEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     // ── 후보 목록 ─────────────────────────────────────────────
