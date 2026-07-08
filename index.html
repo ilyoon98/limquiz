@@ -345,7 +345,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.12</span>
+          <span class="version-badge">v0.13.13</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -416,7 +416,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.12</span>
+          <span class="version-badge">v0.13.13</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -2030,62 +2030,93 @@
       if (parts[0] === 'slot') dbRemoveFromSlot(Number(parts[1]));
     }
 
-    // ── 판정 ──────────────────────────────────────────────────
-    function dbJudgeDeck() {
-      const mainAnswers = dbDeck.slots.filter(s => s.type === 'Main');
-      const subNullAnswers = dbDeck.slots.filter(s => s.type === 'Sub' || s.type === 'Null');
-      // Null 슬롯은 "없음"이라는 이름이 모든 수감자에 공통이라, 수감자까지 포함한 키로 구분해야
-      // 엉뚱한 수감자의 없음 카드가 정답 처리되는 것을 막을 수 있다.
-      const subNullKeys = new Set(subNullAnswers.map(s => s.type === 'Null' ? `없음:${s.수감자}` : s.인격명));
-      const mainNamesSet = new Set(mainAnswers.map(s => s.인격명));
-
-      // Main으로 배치된 슬롯들만(인덱스 오름차순) 추려서, 그 안에서의 상대 순서로 판정한다.
-      // Sub/없음 카드가 앞자리에 섞여 있어도 Main끼리의 상대 순서만 맞으면 정답 처리됨.
-      const placedMainIndices = [];
-      dbSlots.forEach((s, i) => {
-        if (s && mainNamesSet.has(s['인격명'])) placedMainIndices.push(i);
-      });
-
-      return dbSlots.map((placed, idx) => {
-        const placedName = placed ? placed['인격명'] : null;
-        if (!placedName) return null;
-        if (mainNamesSet.has(placedName)) {
-          const relativeOrder = placedMainIndices.indexOf(idx) + 1;
-          const mainMatch = mainAnswers.find(s => s.인격명 === placedName);
-          return mainMatch.order === relativeOrder ? 'green' : 'yellow';
-        }
-        const placedKey = placedName === '없음' ? `없음:${placed['수감자']}` : placedName;
-        if (subNullKeys.has(placedKey)) return 'green';
-        return 'red';
-      });
-    }
-
+    // ── 판정 + 자동 재배치 ────────────────────────────────────
+    // Main은 반드시 order번 슬롯(절대 위치)에 있어야 정답. Sub는 위치 무관(없음만 아니면 됨).
+    // Null("없음")은 위치 무관하지만 관례적으로 뒤쪽 슬롯으로 몰아준다.
+    // 제출할 때마다 정답으로 확인된 카드를 규칙에 맞는 자리로 강제 재배치한 뒤 잠근다.
+    // 이렇게 하면 없음/Sub 카드가 먼저 어떤 슬롯을 잠가버려서 Main이 자기 자리에
+    // 영영 들어갈 수 없게 되는 충돌이 원천적으로 생기지 않는다.
     function dbSubmit() {
       if (dbSlots.some(s => !s)) return;
-      const result = dbJudgeDeck();
-      // Main 카드의 정답 여부는 "현재 배치된 Main들 사이의 상대 순서"로 판정되므로,
-      // 다른 Main 슬롯이 나중에 바뀌면 이미 초록으로 잠긴 슬롯의 정답 여부가 뒤집힐 수 있다.
-      // 그래서 Main 슬롯은 전체 Main이 동시에 전부 초록일 때만 잠그고(그래야 더 이상 안 바뀜),
-      // 위치와 무관하게 절대 판정되는 Sub/없음 슬롯은 즉시 잠가도 안전하다.
+
       const mainAnswers = dbDeck.slots.filter(s => s.type === 'Main');
-      const mainNamesSet = new Set(mainAnswers.map(s => s.인격명));
-      const mainIndices = dbSlots.map((s, i) => (s && mainNamesSet.has(s['인격명'])) ? i : -1).filter(i => i !== -1);
-      // 배치된 Main 개수가 덱이 요구하는 Main 총 개수와 같을 때만 "완성된 상태"로 보고 잠근다.
-      const allMainsGreen = mainIndices.length === mainAnswers.length && mainIndices.every(i => result[i] === 'green');
-      result.forEach((j, idx) => {
-        dbSlotJudge[idx] = j;
-        if (j === 'green') {
-          const isMainSlot = mainIndices.includes(idx);
-          if (!isMainSlot || allMainsGreen) dbLocked[idx] = true;
-        } else if (j === 'yellow' || j === 'red') {
-          dbKnownJudge[dbCandidateKey(dbSlots[idx])] = j;
+      const subAnswers = dbDeck.slots.filter(s => s.type === 'Sub');
+      const nullAnswers = dbDeck.slots.filter(s => s.type === 'Null');
+      const mainOrderByName = {};
+      mainAnswers.forEach(s => { mainOrderByName[s.인격명] = s.order; });
+      const subNameSet = new Set(subAnswers.map(s => s.인격명));
+      const nullSinnerSet = new Set(nullAnswers.map(s => s.수감자));
+
+      const oldSlots = dbSlots.slice();
+      const newSlots = Array(DB_SLOT_COUNT).fill(null);
+      const newLocked = Array(DB_SLOT_COUNT).fill(false);
+      const newJudge = Array(DB_SLOT_COUNT).fill(null);
+      const confirmedSubs = [];
+      const confirmedNulls = [];
+      const leftover = [];
+
+      oldSlots.forEach((card, i) => {
+        if (!card) return;
+        const name = card['인격명'];
+        if (mainOrderByName.hasOwnProperty(name)) {
+          const targetIdx = mainOrderByName[name] - 1;
+          newSlots[targetIdx] = card;
+          newLocked[targetIdx] = true;
+          newJudge[targetIdx] = 'green';
+        } else if (name !== '없음' && subNameSet.has(name)) {
+          confirmedSubs.push({ origIdx: i, card });
+        } else if (name === '없음' && nullSinnerSet.has(card['수감자'])) {
+          confirmedNulls.push(card);
+        } else {
+          leftover.push(card);
         }
       });
+
+      // 정답 Sub는 위치 상관없으니 원래 있던 자리를 최대한 유지(그 자리를 Main이 이미 가져가지 않았다면)
+      confirmedSubs.forEach(({ origIdx, card }) => {
+        const idx = !newSlots[origIdx] ? origIdx : newSlots.findIndex(s => !s);
+        newSlots[idx] = card;
+        newLocked[idx] = true;
+        newJudge[idx] = 'green';
+      });
+
+      // 정답 없음 카드는 뒤쪽 빈 자리부터 채운다
+      confirmedNulls.forEach(card => {
+        for (let i = DB_SLOT_COUNT - 1; i >= 0; i--) {
+          if (!newSlots[i]) { newSlots[i] = card; newLocked[i] = true; newJudge[i] = 'green'; break; }
+        }
+      });
+
+      // 아직 정답으로 확인되지 않은 카드는 원래 순서를 유지한 채 남은 빈 자리에 채운다
+      let li = 0;
+      for (let i = 0; i < DB_SLOT_COUNT && li < leftover.length; i++) {
+        if (!newSlots[i]) { newSlots[i] = leftover[li]; newJudge[i] = 'red'; li++; }
+      }
+
+      const movedIndices = [];
+      newSlots.forEach((card, i) => { if (card && card !== oldSlots[i]) movedIndices.push(i); });
+
+      dbSlots = newSlots;
+      dbLocked = newLocked;
+      dbSlotJudge = newJudge;
+      dbSlots.forEach((card, idx) => {
+        if (newJudge[idx] === 'red') dbKnownJudge[dbCandidateKey(card)] = 'red';
+      });
+
       dbRenderSlots();
       dbRenderCandidates();
+      movedIndices.forEach(idx => {
+        const el = document.querySelector(`.db-slot[data-idx="${idx}"]`);
+        if (el) {
+          el.classList.add('just-placed');
+          setTimeout(() => el.classList.remove('just-placed'), 320);
+        }
+      });
       if (dbSlotJudge.every(j => j === 'green')) {
         fireFanfare();
         dbRenderResult(false);
+      } else if (movedIndices.length) {
+        dbShowMessage('정답으로 확인된 인격은 자동으로 올바른 자리에 고정됩니다.');
       }
     }
 
