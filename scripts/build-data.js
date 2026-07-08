@@ -7,6 +7,7 @@ const OUT_PATH = path.join(__dirname, '..', 'data.json');
 const SLUG_MAP_PATH = path.join(__dirname, 'slug-map.json');
 const SHEET_NAME = 'CharacterData';
 const FIELDS = [
+  'ID',
   '수감자', '인격명', '성급', '소속1', '소속2',
   '키워드1', '키워드2', '키워드3',
   '스킬1명', '스킬1속성', '스킬1유형', '스킬1아이콘',
