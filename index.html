@@ -346,7 +346,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.21</span>
+          <span class="version-badge">v0.13.22</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -417,7 +417,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.21</span>
+          <span class="version-badge">v0.13.22</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -468,7 +468,7 @@
               <div id="dropdown" class="dropdown" role="listbox"></div>
             </div>
             <button id="guessBtn">확인</button>
-            <button id="shareBtn" class="secondary" style="display:none;">결과 복사</button>
+            <button id="shareBtn" class="secondary" style="display:none;">📋 공유하기</button>
             <button id="restartBtn" class="secondary" style="display:none;">재시작</button>
           </div>
         </div>
@@ -721,6 +721,7 @@
       };
       records.push(record);
       saveResultRecordsV2(records);
+      return record;
     }
 
     // ── 카운트다운 ────────────────────────────────────────────
@@ -740,23 +741,11 @@
       countdownInterval = setInterval(tick, 1000);
     }
 
-    // ── 결과 공유 텍스트 ──────────────────────────────────────
-    function buildShareText() {
-      const won = finished && guesses.length > 0 && guesses[guesses.length-1]['인격명'] === answer['인격명'];
-      const lines = [`림버스 인격 두들 #${getDailyChallengeNo()}`, `${won ? guesses.length : 'X'}/${MAX_TRIES}`, ''];
-      FIELDS.forEach(field => {
-        const row = guesses.map(g => judgeCell(field, g, answer).cls === 'hit' ? '✅' : '❌').join('');
-        lines.push(`${field} ${row}`);
-      });
-      return lines.join('\n');
-    }
-    function copyShareText() {
-      const text = buildShareText();
-      const orig = shareBtn.textContent;
-      navigator.clipboard.writeText(text).then(() => {
-        shareBtn.textContent = '복사됨! ✓';
-        setTimeout(() => { shareBtn.textContent = orig; }, 1500);
-      }).catch(() => { prompt('아래 텍스트를 복사하세요:', text); });
+    // ── 결과 공유 (홈 화면의 결과 카드와 동일한 모달을 사용) ──
+    let lastGameRecord = null;
+    function shareGameResult() {
+      if (!lastGameRecord) return;
+      showResultCard(lastGameRecord);
     }
 
     // ── 유틸 / 필터 ─────────────────────────────────────────
@@ -1179,10 +1168,13 @@
       guessInput.disabled = true;
       guessBtn.disabled = true;
       dropdown.classList.remove('open');
-      saveGameResultV2(won);
+      lastGameRecord = saveGameResultV2(won);
       messageEl.innerHTML = buildEndMessage(won);
       scrollAnswerRevealIntoCenter();
-      if (won) fireFanfare();
+      if (won) {
+        fireFanfare();
+        shareBtn.style.display = 'inline-block';
+      }
       if (mode === 'daily') {
         saveDailyResult(won);
       } else {
@@ -1219,7 +1211,7 @@
     function resetGameState() {
       triesLeft = MAX_TRIES; finished = false; resultSaved = false; guesses = [];
       selectedIndex = null; highlightedOption = -1; ignoreSearchForDropdown = false;
-      eliminatedNames.clear();
+      eliminatedNames.clear(); lastGameRecord = null;
       guessInput.disabled = false; guessBtn.disabled = false;
       restartBtn.style.display = 'none'; shareBtn.style.display = 'none';
       alreadyPlayedEl.style.display = 'none';
@@ -1263,6 +1255,11 @@
           triesLeft = Math.max(0, MAX_TRIES - guesses.length);
           triesEl.textContent = triesLeft;
           messageEl.innerHTML = buildEndMessage(saved.won);
+          if (saved.won) {
+            const records = loadResultRecordsV2();
+            lastGameRecord = [...records].reverse().find(r => r.mode === 'daily' && r.date === todayKey()) || null;
+            if (lastGameRecord) shareBtn.style.display = 'inline-block';
+          }
         }
         startCountdown();
       } else {
@@ -1285,7 +1282,7 @@
     // ── 탭 / 버튼 이벤트 ─────────────────────────────────────
     tabDaily.addEventListener('click', () => switchMode('daily'));
     tabRandom.addEventListener('click', () => switchMode('random'));
-    shareBtn.addEventListener('click', copyShareText);
+    shareBtn.addEventListener('click', shareGameResult);
     restartBtn.addEventListener('click', initRandomMode);
     guessBtn.addEventListener('click', makeGuess);
     backToHomeBtn.addEventListener('click', goToHome);
