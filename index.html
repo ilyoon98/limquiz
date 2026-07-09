@@ -76,7 +76,7 @@
     .option.eliminated .option-meta { opacity:.45; }
     .status { display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap; margin-top:14px; color:var(--muted); }
     .message { margin-top:12px; min-height:28px; line-height:1.55; }
-    .legend { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; color:var(--muted); font-size:14px; }
+    .legend { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; color:var(--muted); font-size:14px; }
     .pill { border-radius:999px; padding:4px 10px; border:1px solid var(--border); background:var(--panel2); }
     .pill.hit { background: color-mix(in srgb, var(--green) 70%, #111); color:white; }
     .pill.miss { background: color-mix(in srgb, var(--red) 65%, #111); color:white; }
@@ -84,6 +84,7 @@
     .answer-reveal { display:flex; flex-direction:column; gap:14px; margin-top:4px; padding:20px 22px; border-radius:18px; border:2px solid var(--border); background:var(--panel2); transition:box-shadow .2s; }
     .answer-reveal.success { border-color:var(--green); background:color-mix(in srgb, var(--green) 14%, var(--panel2)); box-shadow:0 0 0 1px color-mix(in srgb, var(--green) 45%, transparent), 0 10px 30px rgba(0,0,0,.35); }
     .answer-reveal.fail { border-color:var(--red); background:color-mix(in srgb, var(--red) 12%, var(--panel2)); box-shadow:0 0 0 1px color-mix(in srgb, var(--red) 40%, transparent), 0 10px 30px rgba(0,0,0,.35); }
+    .answer-text-row { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
     .answer-text-part { font-size:16px; font-weight:700; }
     .answer-info-grid { display:flex; flex-wrap:wrap; gap:10px; }
     .answer-info-card { background:var(--panel2); border:1px solid var(--border); border-radius:12px; padding:10px 16px; min-width:110px; flex:0 0 auto; }
@@ -349,7 +350,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.23</span>
+          <span class="version-badge">v0.13.24</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -420,7 +421,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.23</span>
+          <span class="version-badge">v0.13.24</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -480,14 +481,14 @@
           <div>표시 후보: <strong id="filteredCount">0</strong> / 전체 <strong id="count">0</strong></div>
         </div>
         <div id="message" class="message">정답 인격을 추리해보세요.</div>
+      </section>
+
+      <section class="panel table-wrap">
         <div class="legend">
           <span class="pill hit">일치</span>
           <span class="pill miss">불일치</span>
           <span class="pill">취소선 테스트: 수감자와 키워드가 모두 빗나간 제출 인격</span>
         </div>
-      </section>
-
-      <section class="panel table-wrap">
         <table>
           <thead><tr><th>#</th><th>수감자</th><th>인격명</th><th>성급</th><th>소속1</th><th>소속2</th><th>키워드1</th><th>키워드2</th><th>키워드3</th></tr></thead>
           <tbody id="history"></tbody>
@@ -1143,7 +1144,9 @@
           <img id="answer-image" src="${escapeHtml(currentImg)}" alt="${escapeHtml(answer['인격명'])}" onerror="this.parentElement.style.display='none'" />
           ${(gacksungImg && normalImg) ? `<button id="image-toggle-btn" class="img-toggle-btn" onclick="toggleAnswerImage()">${isGacksung ? '일반' : '각성'}</button>` : ''}
         </div>` : '';
-      return `<div class="answer-reveal ${won ? 'success' : 'fail'}" id="answerReveal"><div class="answer-text-part">${resultLine}</div>${infoCards}${imgHtml}</div>`;
+      return `<div class="answer-reveal ${won ? 'success' : 'fail'}" id="answerReveal">
+        <div class="answer-text-row"><div class="answer-text-part">${resultLine}</div><span id="answerShareSlot"></span></div>
+        ${infoCards}${imgHtml}</div>`;
     }
 
     function scrollAnswerRevealIntoCenter() {
@@ -1177,6 +1180,8 @@
       scrollAnswerRevealIntoCenter();
       if (won) {
         fireFanfare();
+        const shareSlot = document.getElementById('answerShareSlot');
+        if (shareSlot) shareSlot.appendChild(shareBtn);
         shareBtn.style.display = 'inline-block';
       }
       if (mode === 'daily') {
@@ -1262,7 +1267,11 @@
           if (saved.won) {
             const records = loadResultRecordsV2();
             lastGameRecord = [...records].reverse().find(r => r.mode === 'daily' && r.date === todayKey()) || null;
-            if (lastGameRecord) shareBtn.style.display = 'inline-block';
+            if (lastGameRecord) {
+              const shareSlot = document.getElementById('answerShareSlot');
+              if (shareSlot) shareSlot.appendChild(shareBtn);
+              shareBtn.style.display = 'inline-block';
+            }
           }
         }
         startCountdown();
