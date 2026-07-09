@@ -253,6 +253,9 @@
     .db-sinner-filter-btn { height:32px; padding:0 14px; border-radius:999px; font-size:13px; font-weight:700; background:var(--panel2); color:var(--muted); border:1px solid var(--border); }
     .db-sinner-filter-btn.active { background:var(--button); color:var(--buttonText); border-color:var(--button); font-weight:800; }
     .db-sinner-filter-btn.placed:not(.active) { border-color:var(--slot-green); color:var(--slot-green); }
+    .db-keyword-filter { display:flex; gap:6px; flex-wrap:wrap; }
+    .db-keyword-filter-btn { height:30px; padding:0 12px; border-radius:999px; font-size:12px; font-weight:700; background:var(--panel2); color:var(--muted); border:1px solid var(--border); opacity:.7; }
+    .db-keyword-filter-btn.active { opacity:1; font-weight:800; border-color:currentColor; }
     .db-candidates { display:grid; grid-template-columns:repeat(4, 1fr); gap:14px; padding:4px; }
     .db-candidates-empty { grid-column:1/-1; text-align:center; color:var(--muted); padding:40px 20px; font-size:14px; }
     .db-candidate { border-radius:12px; border:1px solid var(--border); background:var(--panel2); cursor:grab; position:relative; overflow:hidden; display:flex; flex-direction:column; transition:opacity .15s, outline-color .15s; }
@@ -346,7 +349,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.22</span>
+          <span class="version-badge">v0.13.23</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -417,7 +420,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.22</span>
+          <span class="version-badge">v0.13.23</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -556,6 +559,7 @@
         <div class="db-search-and-filter-sticky">
           <input id="dbSearchInput" class="db-search" placeholder="인격명 검색" autocomplete="off" />
           <div class="db-sinner-filter" id="dbSinnerFilter"></div>
+          <div class="db-keyword-filter" id="dbKeywordFilter"></div>
         </div>
         <div class="db-candidates" id="dbCandidates"></div>
       </div>
@@ -1724,6 +1728,7 @@
     let dbKnownJudge = {};
     let dbCandidates = [];
     let dbSinnerFilter = SINNER_ORDER[0];
+    let dbKeywordFilter = [];
     let dbMessageTimeout = null;
 
     function dbCandidateKey(c) {
@@ -1774,11 +1779,13 @@
       dbLocked = Array(DB_SLOT_COUNT).fill(false);
       dbKnownJudge = {};
       dbSinnerFilter = SINNER_ORDER[0];
+      dbKeywordFilter = [];
       dbCandidates = [...DATA, ...DB_NONE_CARDS].sort(() => Math.random() - 0.5);
       document.getElementById('dbSearchInput').value = '';
       document.getElementById('dbHint').style.display = 'none';
       dbRenderHint();
       dbRenderSinnerFilter();
+      dbRenderKeywordFilter();
       dbRenderSlots();
       dbRenderCandidates();
     }
@@ -1801,6 +1808,27 @@
         const placed = isPlaced ? ' placed' : '';
         const label = (isPlaced ? '✓ ' : '') + s;
         return `<button class="db-sinner-filter-btn${active}${placed}" data-sinner="${escapeHtml(s)}" type="button">${escapeHtml(label)}</button>`;
+      }).join('');
+    }
+
+    function dbAllKeywords() {
+      const seen = [];
+      const set = new Set();
+      DATA.forEach(row => {
+        keywordsOf(row).forEach(kw => {
+          if (!set.has(kw)) { set.add(kw); seen.push(kw); }
+        });
+      });
+      return seen;
+    }
+
+    function dbRenderKeywordFilter() {
+      const el = document.getElementById('dbKeywordFilter');
+      el.innerHTML = dbAllKeywords().map(kw => {
+        const active = dbKeywordFilter.includes(kw) ? ' active' : '';
+        const c = KEYWORD_COLOR[kw];
+        const style = c ? ` style="background:${c.bg};color:${c.text}"` : '';
+        return `<button class="db-keyword-filter-btn${active}" data-keyword="${escapeHtml(kw)}" type="button"${style}>${escapeHtml(kw)}</button>`;
       }).join('');
     }
 
@@ -2148,6 +2176,12 @@
       const noneCard = sinnerCandidates.find(c => c['인격명'] === '없음');
       let identities = sinnerCandidates.filter(c => c['인격명'] !== '없음');
       if (q) identities = identities.filter(c => lower(c['인격명']).includes(q));
+      if (dbKeywordFilter.length) {
+        identities = identities.filter(c => {
+          const kws = keywordsOf(c);
+          return dbKeywordFilter.every(kw => kws.includes(kw));
+        });
+      }
       const filtered = noneCard ? [noneCard, ...identities] : identities;
       document.getElementById('dbCandidates').innerHTML = filtered.length
         ? filtered.map(dbCandidateHTML).join('')
@@ -2167,6 +2201,16 @@
       if (!btn) return;
       dbSinnerFilter = btn.dataset.sinner;
       dbRenderSinnerFilter();
+      dbRenderCandidates();
+    });
+    document.getElementById('dbKeywordFilter').addEventListener('click', e => {
+      const btn = e.target.closest('.db-keyword-filter-btn');
+      if (!btn) return;
+      const kw = btn.dataset.keyword;
+      const idx = dbKeywordFilter.indexOf(kw);
+      if (idx === -1) dbKeywordFilter.push(kw);
+      else dbKeywordFilter.splice(idx, 1);
+      dbRenderKeywordFilter();
       dbRenderCandidates();
     });
 
