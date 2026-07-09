@@ -350,7 +350,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.24</span>
+          <span class="version-badge">v0.13.25</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -421,7 +421,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.24</span>
+          <span class="version-badge">v0.13.25</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -625,6 +625,7 @@
     let isGacksung = false;
     let selectedIndex = null, highlightedOption = -1, ignoreSearchForDropdown = false;
     const eliminatedNames = new Set();
+    const excludedKeywords = new Set();
     let countdownInterval = null;
     let currentCardRecord = null;
 
@@ -804,11 +805,14 @@
       return SORTED_DATA.filter(row => rowMatchesFilters(row) && (!q || lower(row['인격명']).includes(q)));
     }
     function renderDropdown(open = true, ignoreSearch = ignoreSearchForDropdown) {
-      const rows = filteredRows(ignoreSearch);
+      const filtered = filteredRows(ignoreSearch);
+      const notEliminated = filtered.filter(row => !isEliminatedCandidate(row));
+      const eliminated = filtered.filter(row => isEliminatedCandidate(row));
+      const rows = [...notEliminated, ...eliminated];
       filteredCountEl.textContent = rows.length;
       highlightedOption = Math.min(highlightedOption, rows.length - 1);
       dropdown.innerHTML = rows.length ? rows.map((row, i) => `
-        <div class="option ${eliminatedNames.has(row['인격명']) ? 'eliminated' : ''} ${i === highlightedOption ? 'active' : ''}" data-idx="${row.__idx}" role="option">
+        <div class="option ${isEliminatedCandidate(row) ? 'eliminated' : ''} ${i === highlightedOption ? 'active' : ''}" data-idx="${row.__idx}" role="option">
           <span class="option-name">${escapeHtml(row['인격명'])}</span>
           <span class="option-meta">${sinnerDot(row['수감자'])} · ${gradeSpan(row['성급'])} · ${keywordsOf(row).map(k => kwChip(k)).join(' ') || '키워드 없음'}</span>
         </div>
@@ -868,6 +872,9 @@
       const guessKeywords = keywordsOf(guess);
       const ansKeywords = keywordsOf(ans);
       return sinnerMiss && (guessKeywords.length === 0 || !guessKeywords.some(k => ansKeywords.includes(k)));
+    }
+    function isEliminatedCandidate(row) {
+      return eliminatedNames.has(row['인격명']) || keywordsOf(row).some(k => excludedKeywords.has(k));
     }
 
     // ── 홈 화면 ─────────────────────────────────────────────
@@ -1206,6 +1213,10 @@
       triesLeft -= 1;
       triesEl.textContent = triesLeft;
       if (shouldStrikeCandidate(guess, answer)) eliminatedNames.add(guess['인격명']);
+      ['키워드1', '키워드2', '키워드3'].forEach(field => {
+        const kv = normalize(guess[field]);
+        if (kv && judgeCell(field, guess, answer).cls === 'miss') excludedKeywords.add(kv);
+      });
       renderHistory();
       const won = guess['인격명'] === answer['인격명'];
       if (won) return showEnd(true);
@@ -1220,7 +1231,7 @@
     function resetGameState() {
       triesLeft = MAX_TRIES; finished = false; resultSaved = false; guesses = [];
       selectedIndex = null; highlightedOption = -1; ignoreSearchForDropdown = false;
-      eliminatedNames.clear(); lastGameRecord = null;
+      eliminatedNames.clear(); excludedKeywords.clear(); lastGameRecord = null;
       guessInput.disabled = false; guessBtn.disabled = false;
       restartBtn.style.display = 'none'; shareBtn.style.display = 'none';
       alreadyPlayedEl.style.display = 'none';
