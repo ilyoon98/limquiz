@@ -210,7 +210,7 @@
     /* ── 덱 빌더 화면 ───────────────────────────── */
     .db-wrap { max-width:1000px; margin:0 auto; }
     .db-top-bar { position:sticky; top:0; z-index:60; background:var(--bg); padding:16px 0 14px; margin-bottom:16px; border-bottom:1px solid var(--border); max-width:1000px; margin-left:auto; margin-right:auto; }
-    .db-sticky-top { background:var(--bg); padding-bottom:14px; margin-bottom:16px; }
+    .db-sticky-top { position:sticky; top:var(--db-topbar-height, 0px); z-index:50; background:var(--bg); padding-bottom:14px; margin-bottom:16px; }
     .db-search-and-filter-sticky { position:sticky; top:calc(var(--db-topbar-height, 0px) + var(--db-sticky-top-height, 0px)); z-index:40; background:var(--bg); padding:12px 0; }
     .db-header { display:flex; align-items:center; gap:14px; flex-wrap:wrap; row-gap:8px; }
     .db-title { font-size:22px; font-weight:900; white-space:nowrap; }
@@ -267,7 +267,10 @@
     .db-candidate-badge { position:absolute; top:6px; right:6px; background:color-mix(in srgb, var(--slot-yellow) 70%, #000); color:#fff; font-size:10px; font-weight:800; padding:2px 7px; border-radius:999px; }
     .db-candidate-x { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:34px; font-weight:900; color:#ff4d4d; text-shadow:0 2px 8px rgba(0,0,0,.85); pointer-events:none; }
     .db-candidate.selected-tap { outline:3px solid var(--button); }
+    .db-candidate-img-wrap { position:relative; }
     .db-candidate img { width:100%; aspect-ratio:1/1; object-fit:cover; object-position:top center; display:block; background:#111; pointer-events:none; }
+    .db-candidate-img-toggle { position:absolute; bottom:3px; right:3px; width:22px; height:22px; border-radius:999px; background:rgba(0,0,0,.72); color:#fff; border:0; font-size:11px; line-height:1; display:flex; align-items:center; justify-content:center; padding:0; cursor:pointer; z-index:2; }
+    .db-candidate-img-toggle:hover { background:var(--button); }
     .db-candidate-noimg { width:100%; aspect-ratio:1/1; display:flex; align-items:center; justify-content:center; font-size:38px; color:var(--muted); background:#111; }
     .db-candidate-name { font-size:13px; font-weight:700; padding:8px 6px; text-align:center; line-height:1.3; flex:1; display:flex; align-items:center; justify-content:center; }
     .db-actions { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:20px 0 8px; }
@@ -350,7 +353,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.27</span>
+          <span class="version-badge">v0.13.28</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -421,7 +424,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.27</span>
+          <span class="version-badge">v0.13.28</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -2178,16 +2181,32 @@
       const key = dbCandidateKey(m);
       const isNone = m['인격명'] === '없음';
       const placed = dbIsPlaced(key);
-      const img = !isNone ? (m['이미지(일반)'] || m['이미지(각성)']) : '';
+      const normalImg = m['이미지(일반)'];
+      const awakenImg = m['이미지(각성)'];
+      const img = !isNone ? (normalImg || awakenImg) : '';
+      const hasToggle = !isNone && normalImg && awakenImg && normalImg !== awakenImg;
       const label = isNone ? `${m['수감자']} 없음` : m['인격명'];
       const mark = !placed ? dbKnownJudge[key] : null;
       const markClass = mark ? ` mark-${mark}` : '';
       return `<div class="db-candidate${placed ? ' placed' : ''}${markClass}" data-key="${escapeHtml(key)}" draggable="${placed ? 'false' : 'true'}">
-        ${isNone ? `<div class="db-candidate-noimg">🚫</div>` : (img ? `<img src="${escapeHtml(img)}" alt="" loading="lazy" onerror="this.style.display='none'">` : `<div class="db-candidate-noimg">👤</div>`)}
+        ${isNone ? `<div class="db-candidate-noimg">🚫</div>` : `<div class="db-candidate-img-wrap">
+          ${img ? `<img src="${escapeHtml(img)}" alt="" loading="lazy" onerror="this.style.display='none'">` : `<div class="db-candidate-noimg">👤</div>`}
+          ${hasToggle ? `<button class="db-candidate-img-toggle" type="button" data-normal="${escapeHtml(normalImg)}" data-awaken="${escapeHtml(awakenImg)}" data-showing="normal" onclick="dbToggleCandidateImage(event, this)">🔄</button>` : ''}
+        </div>`}
         ${mark === 'red' ? `<div class="db-candidate-x">✕</div>` : ''}
         ${mark === 'yellow' ? `<div class="db-candidate-badge">🟡 순서 다름</div>` : ''}
         <div class="db-candidate-name">${escapeHtml(label)}</div>
       </div>`;
+    }
+
+    function dbToggleCandidateImage(event, btn) {
+      event.preventDefault();
+      event.stopPropagation();
+      const img = btn.previousElementSibling;
+      if (!img || img.tagName !== 'IMG') return;
+      const showingAwaken = btn.dataset.showing === 'awaken';
+      img.src = showingAwaken ? btn.dataset.normal : btn.dataset.awaken;
+      btn.dataset.showing = showingAwaken ? 'normal' : 'awaken';
     }
 
     function dbRenderCandidates() {
@@ -2280,12 +2299,14 @@
     });
     if (dbIsTouchDevice) {
       dbCandidatesEl.addEventListener('click', e => {
+        if (e.target.closest('.db-candidate-img-toggle')) return;
         const card = e.target.closest('.db-candidate');
         if (!card || card.classList.contains('placed')) return;
         dbPlaceByDoubleClick(card.dataset.key);
       });
     } else {
       dbCandidatesEl.addEventListener('dblclick', e => {
+        if (e.target.closest('.db-candidate-img-toggle')) return;
         const card = e.target.closest('.db-candidate');
         if (!card || card.classList.contains('placed')) return;
         dbPlaceByDoubleClick(card.dataset.key);
