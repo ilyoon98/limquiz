@@ -5,36 +5,66 @@ const path = require('path');
 const XLSX_PATH = path.join(__dirname, '..', 'CharacterTable.xlsx');
 const OUT_PATH = path.join(__dirname, '..', 'data.json');
 const SLUG_MAP_PATH = path.join(__dirname, 'slug-map.json');
-const SHEET_NAME = 'CharacterData';
-const FIELDS = [
+const CHAR_SHEET_NAME = 'CharacterData';
+const SKILL_SHEET_NAME = 'SkillData';
+
+const CHAR_FIELDS = [
   'ID',
   '수감자', '인격명', '성급', '소속1', '소속2',
   '키워드1', '키워드2', '키워드3',
+  '이미지(일반)', '이미지(각성)',
+];
+const SKILL_FIELDS = [
   '스킬1명', '스킬1속성', '스킬1유형', '스킬1아이콘',
   '스킬2명', '스킬2속성', '스킬2유형', '스킬2아이콘',
   '스킬3명', '스킬3속성', '스킬3유형', '스킬3아이콘',
-  '이미지(일반)', '이미지(각성)', '프로필(각성)',
 ];
 
 const slugMap = JSON.parse(fs.readFileSync(SLUG_MAP_PATH, 'utf8'));
 
 const workbook = XLSX.readFile(XLSX_PATH);
 
-if (!workbook.SheetNames.includes(SHEET_NAME)) {
-  console.error(`시트 "${SHEET_NAME}"를 찾을 수 없습니다. 시트 목록: ${workbook.SheetNames.join(', ')}`);
+[CHAR_SHEET_NAME, SKILL_SHEET_NAME].forEach(name => {
+  if (!workbook.SheetNames.includes(name)) {
+    console.error(`시트 "${name}"를 찾을 수 없습니다. 시트 목록: ${workbook.SheetNames.join(', ')}`);
+    process.exit(1);
+  }
+});
+
+const charRows = XLSX.utils.sheet_to_json(workbook.Sheets[CHAR_SHEET_NAME], { defval: '' });
+const skillRows = XLSX.utils.sheet_to_json(workbook.Sheets[SKILL_SHEET_NAME], { defval: '' });
+
+// ── CharacterData/SkillData ID 집합 검증 ─────────────────
+const skillById = new Map();
+skillRows.forEach(row => {
+  const id = row['ID'];
+  if (id === '' || id === undefined || id === null) return;
+  skillById.set(id, row);
+});
+
+const charIds = new Set(charRows.map(r => r['ID']).filter(id => id !== '' && id !== undefined && id !== null));
+const skillIds = new Set(skillById.keys());
+const onlyInChar = [...charIds].filter(id => !skillIds.has(id));
+const onlyInSkill = [...skillIds].filter(id => !charIds.has(id));
+if (onlyInChar.length || onlyInSkill.length) {
+  console.error('✗ CharacterData와 SkillData의 ID 집합이 일치하지 않습니다.');
+  if (onlyInChar.length) console.error(`  CharacterData에만 있음: ${onlyInChar.join(', ')}`);
+  if (onlyInSkill.length) console.error(`  SkillData에만 있음: ${onlyInSkill.join(', ')}`);
   process.exit(1);
 }
 
-const sheet = workbook.Sheets[SHEET_NAME];
-const rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+function cleanVal(val) {
+  return (val === undefined || val === null || val !== val) ? '' : String(val).trim();
+}
 
 let missingSlug = 0;
-const data = rows.map(row => {
+const data = charRows.map(row => {
   const entry = {};
-  for (const field of FIELDS) {
-    const val = row[field];
-    entry[field] = (val === undefined || val === null || val !== val) ? '' : String(val).trim();
-  }
+  for (const field of CHAR_FIELDS) entry[field] = cleanVal(row[field]);
+
+  const skillRow = skillById.get(row['ID']) || {};
+  for (const field of SKILL_FIELDS) entry[field] = cleanVal(skillRow[field]);
+
   const slug = slugMap[entry['인격명']] || '';
   if (!slug) { console.warn(`⚠ slug 없음: ${entry['인격명']}`); missingSlug++; }
   entry['slug'] = slug;
