@@ -353,7 +353,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.30</span>
+          <span class="version-badge">v0.13.31</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -424,7 +424,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.30</span>
+          <span class="version-badge">v0.13.31</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -2191,7 +2191,7 @@
       return `<div class="db-candidate${placed ? ' placed' : ''}${markClass}" data-key="${escapeHtml(key)}" draggable="${placed ? 'false' : 'true'}">
         ${isNone ? `<div class="db-candidate-noimg">🚫</div>` : `<div class="db-candidate-img-wrap">
           ${img ? `<img src="${escapeHtml(img)}" alt="" loading="lazy" onerror="this.style.display='none'">` : `<div class="db-candidate-noimg">👤</div>`}
-          ${hasToggle ? `<button class="db-candidate-img-toggle" type="button" data-normal="${escapeHtml(normalImg)}" data-awaken="${escapeHtml(awakenImg)}" data-showing="normal" onclick="dbToggleCandidateImage(event, this)">🔄</button>` : ''}
+          ${hasToggle ? `<button class="db-candidate-img-toggle" type="button" draggable="false" data-normal="${escapeHtml(normalImg)}" data-awaken="${escapeHtml(awakenImg)}" data-showing="normal" onclick="dbToggleCandidateImage(event, this)">🔄</button>` : ''}
         </div>`}
         ${mark === 'red' ? `<div class="db-candidate-x">✕</div>` : ''}
         ${mark === 'yellow' ? `<div class="db-candidate-badge">🟡 순서 다름</div>` : ''}
@@ -2288,6 +2288,7 @@
 
     const dbCandidatesEl = document.getElementById('dbCandidates');
     dbCandidatesEl.addEventListener('dragstart', e => {
+      if (e.target.closest('.db-candidate-img-toggle')) { e.preventDefault(); return; }
       const card = e.target.closest('.db-candidate');
       if (!card || card.classList.contains('placed')) return;
       e.dataTransfer.setData('text/plain', `candidate|${card.dataset.key}`);
