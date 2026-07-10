@@ -58,6 +58,7 @@
     button { border:0; padding:0 18px; background:var(--button); color:var(--buttonText); font-weight:800; cursor:pointer; white-space:nowrap; }
     button.secondary { background:var(--panel2); color:var(--text); border:1px solid var(--border); }
     button:disabled { opacity:.55; cursor:not-allowed; }
+    .img-pref-toggle-btn.active { background:var(--button); color:var(--buttonText); border-color:var(--button); }
     .mode-box { display:flex; gap:8px; flex-wrap:wrap; align-items:center; min-width:150px; }
     .mode-box label { display:flex; gap:6px; align-items:center; height:36px; padding:0 14px; border:1px solid var(--border); border-radius:999px; background:var(--panel2); cursor:pointer; color:var(--muted); transition:background .15s, color .15s, border-color .15s; }
     .mode-box label:has(input:checked) { background:var(--button); color:var(--buttonText); border-color:var(--button); font-weight:800; }
@@ -346,7 +347,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.32</span>
+          <span class="version-badge">v0.13.33</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -417,7 +418,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.32</span>
+          <span class="version-badge">v0.13.33</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -627,8 +628,15 @@
       if (!row) return '';
       return preferAwaken ? (row['이미지(각성)'] || row['이미지(일반)']) : (row['이미지(일반)'] || row['이미지(각성)']);
     }
+    function updateImgPrefButtons() {
+      document.querySelectorAll('.img-pref-toggle-btn').forEach(btn => {
+        btn.classList.toggle('active', preferAwaken);
+        btn.textContent = preferAwaken ? '🌙 각성 이미지' : '☀️ 일반 이미지';
+      });
+    }
     function toggleImagePref(rerenderFn) {
       preferAwaken = !preferAwaken;
+      updateImgPrefButtons();
       if (rerenderFn) rerenderFn();
     }
     function refreshGameImage() {
@@ -2314,6 +2322,7 @@
       .catch(err => console.error('업데이트 기록 로드 실패:', err));
 
     // ── 데이터 로드 ──────────────────────────────────────────
+    updateImgPrefButtons();
     updateHomeDailyStatus();
     renderRecordsHome();
     fetch('./data.json')
