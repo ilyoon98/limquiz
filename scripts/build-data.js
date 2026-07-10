@@ -57,13 +57,29 @@ function cleanVal(val) {
   return (val === undefined || val === null || val !== val) ? '' : String(val).trim();
 }
 
+// 1성(LCB 수감자) 등 실제로는 각성 이미지가 없는 인격의 경우, 엑셀 값이
+// 존재하지 않는 파일을 가리킬 수 있다. 로컬에 실제 파일이 있는지 확인해서
+// 없으면 빈 값으로 처리한다 (깨진 이미지 노출 방지).
+const REPO_ROOT = path.join(__dirname, '..');
+function imageFileExists(relPath) {
+  if (!relPath) return false;
+  return fs.existsSync(path.join(REPO_ROOT, relPath.replace(/^\.\//, '')));
+}
+
 let missingSlug = 0;
+let missingAwakenFile = 0;
 const data = charRows.map(row => {
   const entry = {};
   for (const field of CHAR_FIELDS) entry[field] = cleanVal(row[field]);
 
   const skillRow = skillById.get(row['ID']) || {};
   for (const field of SKILL_FIELDS) entry[field] = cleanVal(skillRow[field]);
+
+  if (entry['이미지(각성)'] && !imageFileExists(entry['이미지(각성)'])) {
+    console.warn(`⚠ 각성 이미지 파일 없음, 제외 처리: ${entry['인격명']} (${entry['이미지(각성)']})`);
+    entry['이미지(각성)'] = '';
+    missingAwakenFile++;
+  }
 
   const slug = slugMap[entry['인격명']] || '';
   if (!slug) { console.warn(`⚠ slug 없음: ${entry['인격명']}`); missingSlug++; }
@@ -72,4 +88,4 @@ const data = charRows.map(row => {
 });
 
 fs.writeFileSync(OUT_PATH, JSON.stringify(data, null, 0), 'utf8');
-console.log(`✓ data.json 생성 완료: ${data.length}개 인격${missingSlug ? ` (slug 누락 ${missingSlug}개)` : ''}`);
+console.log(`✓ data.json 생성 완료: ${data.length}개 인격${missingSlug ? ` (slug 누락 ${missingSlug}개)` : ''}${missingAwakenFile ? ` (각성 이미지 파일 없음 ${missingAwakenFile}개)` : ''}`);
