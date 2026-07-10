@@ -58,6 +58,8 @@
     button { border:0; padding:0 18px; background:var(--button); color:var(--buttonText); font-weight:800; cursor:pointer; white-space:nowrap; }
     button.secondary { background:var(--panel2); color:var(--text); border:1px solid var(--border); }
     button:disabled { opacity:.55; cursor:not-allowed; }
+    .img-pref-toggle-btn { position:absolute; top:8px; right:8px; z-index:5; width:36px; height:36px; padding:0; border-radius:999px; display:flex; align-items:center; justify-content:center; font-size:16px; line-height:1; background:color-mix(in srgb, var(--panel2) 78%, transparent); color:var(--text); border:1px solid var(--border); box-shadow:0 2px 10px rgba(0,0,0,.35); backdrop-filter:blur(2px); }
+    .db-slots-section > .img-pref-toggle-btn { top:38px; }
     .img-pref-toggle-btn.active { background:var(--button); color:var(--buttonText); border-color:var(--button); }
     .mode-box { display:flex; gap:8px; flex-wrap:wrap; align-items:center; min-width:150px; }
     .mode-box label { display:flex; gap:6px; align-items:center; height:36px; padding:0 14px; border:1px solid var(--border); border-radius:999px; background:var(--panel2); cursor:pointer; color:var(--muted); transition:background .15s, color .15s, border-color .15s; }
@@ -192,7 +194,7 @@
     .sq-s2-btn { height:44px; padding:0 14px; border-radius:10px; font-size:14px; font-weight:800; white-space:nowrap; }
     .sq-give-up { text-align:center; margin-top:8px; }
     .sq-result-banner { text-align:center; font-size:26px; font-weight:900; margin-bottom:18px; }
-    .sq-result-img { text-align:center; margin-bottom:16px; }
+    .sq-result-img { position:relative; text-align:center; margin-bottom:16px; }
     .sq-result-img img { max-width:100%; max-height:360px; object-fit:contain; border-radius:12px; box-shadow:0 4px 24px #0008; }
     .sq-result-name { text-align:center; font-size:21px; font-weight:900; margin-bottom:4px; }
     .sq-result-meta { text-align:center; color:var(--muted); font-size:14px; margin-bottom:18px; }
@@ -221,7 +223,7 @@
     .db-hint-title { font-size:13px; color:var(--muted); font-weight:800; margin-bottom:8px; text-transform:uppercase; letter-spacing:.05em; }
     .db-hint-kws { display:flex; gap:6px; flex-wrap:wrap; }
     .db-hint-desc { margin-top:12px; font-size:14px; color:var(--muted); }
-    .db-slots-section { margin-bottom:0; }
+    .db-slots-section { margin-bottom:0; position:relative; }
     .db-slots-label { display:flex; align-items:center; justify-content:space-between; font-size:13px; font-weight:800; color:var(--muted); margin-bottom:10px; text-transform:uppercase; letter-spacing:.05em; }
     .db-slots-progress { font-size:12px; font-weight:800; color:var(--muted); text-transform:none; letter-spacing:0; }
     .db-slots-row { display:flex; gap:10px; flex-wrap:wrap; }
@@ -347,7 +349,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.34</span>
+          <span class="version-badge">v0.13.35</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -418,7 +420,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.34</span>
+          <span class="version-badge">v0.13.35</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -434,7 +436,6 @@
       <div class="tab-bar">
         <button class="tab active" id="tabDaily">오늘의 인격</button>
         <button class="tab" id="tabRandom">랜덤 플레이</button>
-        <button class="secondary img-pref-toggle-btn" type="button" onclick="toggleImagePref(refreshGameImage)">🔄 일반/각성</button>
       </div>
 
       <section class="panel">
@@ -501,7 +502,6 @@
       <div class="sq-header">
         <button class="back-btn" id="sqBackBtn">← 홈으로</button>
         <span class="sq-title">스킬 퀴즈</span>
-        <button class="secondary img-pref-toggle-btn" type="button" onclick="toggleImagePref(refreshSqImage)">🔄 일반/각성</button>
       </div>
 
       <div id="sq-identity-card" class="sq-identity-card"></div>
@@ -535,7 +535,6 @@
         <button class="back-btn" id="dbBackBtn">← 홈으로</button>
         <span class="db-title">덱 빌더</span>
         <button class="secondary db-help-btn" id="dbHelpBtn" type="button">❓ 도움말</button>
-        <button class="secondary img-pref-toggle-btn" type="button" onclick="toggleImagePref(refreshDbImages)">🔄 일반/각성</button>
         <button class="secondary db-header-giveup-btn" id="dbClearAllBtn">모두 비우기</button>
         <button class="secondary db-header-giveup-btn" id="dbGiveUpBtn">정답 보기</button>
       </div>
@@ -548,6 +547,7 @@
         <div class="db-hint panel" id="dbHint" style="display:none"></div>
 
         <div class="db-slots-section">
+          <button class="img-pref-toggle-btn" type="button" onclick="toggleImagePref(refreshDbImages)" title="일반/각성 이미지 전환">🔄</button>
           <div class="db-slots-label">
             <span>인격 배치 순서 (12칸)</span>
             <span class="db-slots-progress" id="dbSlotsProgress"></span>
@@ -631,13 +631,14 @@
     function updateImgPrefButtons() {
       document.querySelectorAll('.img-pref-toggle-btn').forEach(btn => {
         btn.classList.toggle('active', preferAwaken);
-        btn.textContent = preferAwaken ? '🌙 각성 이미지' : '☀️ 일반 이미지';
+        btn.textContent = preferAwaken ? '🌙' : '☀️';
+        btn.title = preferAwaken ? '각성 이미지 표시 중 (클릭 시 일반 이미지로 전환)' : '일반 이미지 표시 중 (클릭 시 각성 이미지로 전환)';
       });
     }
     function toggleImagePref(rerenderFn) {
       preferAwaken = !preferAwaken;
-      updateImgPrefButtons();
       if (rerenderFn) rerenderFn();
+      updateImgPrefButtons();
     }
     function refreshGameImage() {
       const img = document.getElementById('answer-image');
@@ -649,6 +650,10 @@
     }
     function refreshDbImages() {
       if (dbDeck) { dbRenderSlots(); dbRenderCandidates(); }
+    }
+    function refreshSqResultImage() {
+      const img = document.querySelector('#sq-result .sq-result-img img');
+      if (img && sqIdentity) img.src = pickIdImg(sqIdentity);
     }
     let selectedIndex = null, highlightedOption = -1, ignoreSearchForDropdown = false;
     const eliminatedNames = new Set();
@@ -1158,6 +1163,7 @@
       const imgHtml = currentImg ? `
         <div class="answer-img-area">
           <img id="answer-image" src="${escapeHtml(currentImg)}" alt="${escapeHtml(answer['인격명'])}" onerror="this.parentElement.style.display='none'" />
+          <button class="img-pref-toggle-btn" type="button" onclick="toggleImagePref(refreshGameImage)" title="일반/각성 이미지 전환">🔄</button>
         </div>` : '';
       return `<div class="answer-reveal ${won ? 'success' : 'fail'}" id="answerReveal">
         <div class="answer-text-row"><div class="answer-text-part">${resultLine}</div><span id="answerShareSlot"></span></div>
@@ -1192,6 +1198,7 @@
       dropdown.classList.remove('open');
       lastGameRecord = saveGameResultV2(won);
       messageEl.innerHTML = buildEndMessage(won);
+      updateImgPrefButtons();
       scrollAnswerRevealIntoCenter();
       if (won) {
         fireFanfare();
@@ -1283,6 +1290,7 @@
           triesLeft = Math.max(0, MAX_TRIES - guesses.length);
           triesEl.textContent = triesLeft;
           messageEl.innerHTML = buildEndMessage(saved.won);
+          updateImgPrefButtons();
           if (saved.won) {
             const records = loadResultRecordsV2();
             lastGameRecord = [...records].reverse().find(r => r.mode === 'daily' && r.date === todayKey()) || null;
@@ -1496,7 +1504,8 @@
       const kws = [id['키워드1'], id['키워드2'], id['키워드3']].filter(Boolean);
       return `
         <div class="sq-img-wrap">
-          ${currentImg ? `<img src="${escapeHtml(currentImg)}" alt="${escapeHtml(id['인격명'])}" onerror="this.style.display='none'">` : ''}
+          ${currentImg ? `<img src="${escapeHtml(currentImg)}" alt="${escapeHtml(id['인격명'])}" onerror="this.style.display='none'">
+          <button class="img-pref-toggle-btn" type="button" onclick="toggleImagePref(refreshSqImage)" title="일반/각성 이미지 전환">🔄</button>` : ''}
         </div>
         <div class="sq-identity-info">
           <div class="sq-identity-name">${escapeHtml(id['인격명'])}</div>
@@ -1574,6 +1583,7 @@
 
     function sqRenderStage1() {
       document.getElementById('sq-identity-card').innerHTML = sqIdentityCardHTML();
+      updateImgPrefButtons();
       document.getElementById('sq-identity-card').style.display = '';
       document.getElementById('sq-stage1').style.display = '';
       document.getElementById('sq-stage2').style.display = 'none';
@@ -1725,7 +1735,9 @@
       }).join('');
       resultEl.innerHTML = `<div class="panel">
         <div class="sq-result-banner">${anyGaveUp ? '🙌 완료 (일부 포기)' : '🎉 완벽 클리어!'}</div>
-        ${imgUrl ? `<div class="sq-result-img"><img src="${escapeHtml(imgUrl)}" alt="${escapeHtml(id['인격명'])}" onerror="this.parentElement.style.display='none'"></div>` : ''}
+        ${imgUrl ? `<div class="sq-result-img"><img src="${escapeHtml(imgUrl)}" alt="${escapeHtml(id['인격명'])}" onerror="this.parentElement.style.display='none'">
+          <button class="img-pref-toggle-btn" type="button" onclick="toggleImagePref(refreshSqResultImage)" title="일반/각성 이미지 전환">🔄</button>
+        </div>` : ''}
         <div class="sq-result-name">${escapeHtml(id['인격명'])}</div>
         <div class="sq-result-meta">${sinnerDot(id['수감자'])} · ${gradeSpan(id['성급'])}${affilParts.length ? ' · ' + escapeHtml(affilParts.join(' · ')) : ''}</div>
         <div class="sq-result-stat">직접 맞힌 항목 ${totalItems - gaveUpItems}/${totalItems}${gaveUpItems ? ` · 포기 ${gaveUpItems}개 (👀 표시)` : ''}</div>
