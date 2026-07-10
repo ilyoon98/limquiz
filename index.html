@@ -95,8 +95,6 @@
     .answer-info-card.kw-card .answer-info-value { display:flex; flex-wrap:wrap; gap:6px; }
     .answer-img-area { position:relative; text-align:center; }
     .answer-img-area img { max-width:100%; max-height:520px; object-fit:contain; display:inline-block; border-radius:10px; box-shadow:0 4px 24px #0008; }
-    .img-toggle-btn { position:absolute; top:8px; right:8px; height:30px; padding:0 12px; font-size:13px; font-weight:800; border-radius:8px; border:1px solid var(--border); background:rgba(20,20,20,.78); color:var(--text); cursor:pointer; backdrop-filter:blur(4px); }
-    .img-toggle-btn:hover { background:var(--panel2); border-color:var(--button); color:#ffd98a; }
     .table-wrap { overflow:auto; }
     .record-head { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:10px; }
     .record-head h2 { margin:0; font-size:20px; }
@@ -160,8 +158,6 @@
     .sq-identity-card { display:grid; grid-template-columns:1fr; background:var(--panel); border:1px solid var(--border); border-radius:18px; overflow:hidden; margin-bottom:20px; }
     .sq-img-wrap { position:relative; min-height:520px; background:var(--panel2); }
     .sq-img-wrap img { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; object-position:center; display:block; }
-    .sq-img-toggle { position:absolute; top:12px; right:12px; height:36px; padding:0 16px; font-size:14px; font-weight:800; border-radius:10px; border:1px solid var(--border); background:rgba(20,20,20,.78); color:var(--text); cursor:pointer; }
-    .sq-img-toggle:hover { background:var(--panel2); border-color:var(--button); color:#ffd98a; }
     .sq-identity-info { padding:20px 22px; }
     .sq-identity-name { font-size:19px; font-weight:900; margin-bottom:8px; }
     .sq-identity-meta { color:var(--muted); font-size:14px; line-height:1.7; }
@@ -267,10 +263,7 @@
     .db-candidate-badge { position:absolute; top:6px; right:6px; background:color-mix(in srgb, var(--slot-yellow) 70%, #000); color:#fff; font-size:10px; font-weight:800; padding:2px 7px; border-radius:999px; }
     .db-candidate-x { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:34px; font-weight:900; color:#ff4d4d; text-shadow:0 2px 8px rgba(0,0,0,.85); pointer-events:none; }
     .db-candidate.selected-tap { outline:3px solid var(--button); }
-    .db-candidate-img-wrap { position:relative; }
     .db-candidate img { width:100%; aspect-ratio:1/1; object-fit:cover; object-position:top center; display:block; background:#111; pointer-events:none; }
-    .db-candidate-img-toggle { position:absolute; bottom:3px; right:3px; width:22px; height:22px; border-radius:999px; background:rgba(0,0,0,.72); color:#fff; border:0; font-size:11px; line-height:1; display:flex; align-items:center; justify-content:center; padding:0; cursor:pointer; z-index:2; }
-    .db-candidate-img-toggle:hover { background:var(--button); }
     .db-candidate-noimg { width:100%; aspect-ratio:1/1; display:flex; align-items:center; justify-content:center; font-size:38px; color:var(--muted); background:#111; }
     .db-candidate-name { font-size:13px; font-weight:700; padding:8px 6px; text-align:center; line-height:1.3; flex:1; display:flex; align-items:center; justify-content:center; }
     .db-actions { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:20px 0 8px; }
@@ -353,7 +346,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.31</span>
+          <span class="version-badge">v0.13.32</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -424,7 +417,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.31</span>
+          <span class="version-badge">v0.13.32</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -440,6 +433,7 @@
       <div class="tab-bar">
         <button class="tab active" id="tabDaily">오늘의 인격</button>
         <button class="tab" id="tabRandom">랜덤 플레이</button>
+        <button class="secondary img-pref-toggle-btn" type="button" onclick="toggleImagePref(refreshGameImage)">🔄 일반/각성</button>
       </div>
 
       <section class="panel">
@@ -506,6 +500,7 @@
       <div class="sq-header">
         <button class="back-btn" id="sqBackBtn">← 홈으로</button>
         <span class="sq-title">스킬 퀴즈</span>
+        <button class="secondary img-pref-toggle-btn" type="button" onclick="toggleImagePref(refreshSqImage)">🔄 일반/각성</button>
       </div>
 
       <div id="sq-identity-card" class="sq-identity-card"></div>
@@ -539,6 +534,7 @@
         <button class="back-btn" id="dbBackBtn">← 홈으로</button>
         <span class="db-title">덱 빌더</span>
         <button class="secondary db-help-btn" id="dbHelpBtn" type="button">❓ 도움말</button>
+        <button class="secondary img-pref-toggle-btn" type="button" onclick="toggleImagePref(refreshDbImages)">🔄 일반/각성</button>
         <button class="secondary db-header-giveup-btn" id="dbClearAllBtn">모두 비우기</button>
         <button class="secondary db-header-giveup-btn" id="dbGiveUpBtn">정답 보기</button>
       </div>
@@ -625,7 +621,27 @@
 
     let mode = 'daily';
     let answer = null, triesLeft = MAX_TRIES, finished = false, resultSaved = false, guesses = [];
-    let isGacksung = false;
+    // 화면 전체에서 공유하는 일반/각성 이미지 표시 선호도 (각 화면 상단의 토글 버튼 하나로 전환)
+    let preferAwaken = false;
+    function pickIdImg(row) {
+      if (!row) return '';
+      return preferAwaken ? (row['이미지(각성)'] || row['이미지(일반)']) : (row['이미지(일반)'] || row['이미지(각성)']);
+    }
+    function toggleImagePref(rerenderFn) {
+      preferAwaken = !preferAwaken;
+      if (rerenderFn) rerenderFn();
+    }
+    function refreshGameImage() {
+      const img = document.getElementById('answer-image');
+      if (img && answer) img.src = pickIdImg(answer);
+    }
+    function refreshSqImage() {
+      const cardEl = document.getElementById('sq-identity-card');
+      if (cardEl && cardEl.style.display !== 'none' && sqIdentity) cardEl.innerHTML = sqIdentityCardHTML();
+    }
+    function refreshDbImages() {
+      if (dbDeck) { dbRenderSlots(); dbRenderCandidates(); }
+    }
     let selectedIndex = null, highlightedOption = -1, ignoreSearchForDropdown = false;
     const eliminatedNames = new Set();
     const excludedKeywords = new Set();
@@ -1102,21 +1118,6 @@
     }
 
     // ── 게임 종료 ─────────────────────────────────────────────
-    function toggleAnswerImage() {
-      isGacksung = !isGacksung;
-      const imgEl = document.getElementById('answer-image');
-      const btnEl = document.getElementById('image-toggle-btn');
-      if (!imgEl || !btnEl) return;
-      if (isGacksung && answer['이미지(각성)']) {
-        imgEl.src = answer['이미지(각성)'];
-        btnEl.textContent = '일반';
-      } else {
-        imgEl.src = answer['이미지(일반)'];
-        btnEl.textContent = '각성';
-        isGacksung = false;
-      }
-    }
-
     function buildEndMessage(won) {
       const resultLine = won ? '정답입니다! 🎉' : '기회를 모두 사용했습니다. 정답은 아래와 같습니다.';
       const sinnerColor = SINNER_COLOR[answer['수감자']] || '#c9a86a';
@@ -1145,14 +1146,10 @@
             <div class="answer-info-value">${kws.length ? kws.map(k => kwChip(k)).join('') : '<span class="empty">없음</span>'}</div>
           </div>
         </div>`;
-      const normalImg = answer['이미지(일반)'];
-      const gacksungImg = answer['이미지(각성)'];
-      isGacksung = !!gacksungImg;
-      const currentImg = isGacksung ? gacksungImg : normalImg;
+      const currentImg = pickIdImg(answer);
       const imgHtml = currentImg ? `
         <div class="answer-img-area">
           <img id="answer-image" src="${escapeHtml(currentImg)}" alt="${escapeHtml(answer['인격명'])}" onerror="this.parentElement.style.display='none'" />
-          ${(gacksungImg && normalImg) ? `<button id="image-toggle-btn" class="img-toggle-btn" onclick="toggleAnswerImage()">${isGacksung ? '일반' : '각성'}</button>` : ''}
         </div>` : '';
       return `<div class="answer-reveal ${won ? 'success' : 'fail'}" id="answerReveal">
         <div class="answer-text-row"><div class="answer-text-part">${resultLine}</div><span id="answerShareSlot"></span></div>
@@ -1449,7 +1446,7 @@
     const SQ_TYPE_SLUG = {'참격':'slash','관통':'pierce','타격':'blunt','방어':'Guard','회피':'Evade','반격':'Counter'};
     const SQ_TYPE_BASE = 'https://baslimbus.info/assets/attackType/';
 
-    let sqIdentity = null, sqIsGacksung = false, sqSkillCount = 0;
+    let sqIdentity = null, sqSkillCount = 0;
     let sqS1Sel = [], sqS2Done = [], sqS1Feedback = [];
     let sqS1SinGaveUp = [], sqS1TypeGaveUp = [], sqS2GaveUp = [];
 
@@ -1468,7 +1465,6 @@
     }
 
     function sqInit() {
-      sqIsGacksung = true;
       sqPickIdentity();
       sqRenderStage1();
     }
@@ -1487,15 +1483,12 @@
 
     function sqIdentityCardHTML() {
       const id = sqIdentity;
-      const normalImg = id['이미지(일반)'];
-      const gacksungImg = id['이미지(각성)'];
-      const currentImg = sqIsGacksung && gacksungImg ? gacksungImg : normalImg;
+      const currentImg = pickIdImg(id);
       const affilParts = [id['소속1'], id['소속2']].filter(Boolean);
       const kws = [id['키워드1'], id['키워드2'], id['키워드3']].filter(Boolean);
       return `
         <div class="sq-img-wrap">
           ${currentImg ? `<img src="${escapeHtml(currentImg)}" alt="${escapeHtml(id['인격명'])}" onerror="this.style.display='none'">` : ''}
-          ${gacksungImg ? `<button class="sq-img-toggle" onclick="sqToggleImg()">${sqIsGacksung ? '일반' : '각성'}</button>` : ''}
         </div>
         <div class="sq-identity-info">
           <div class="sq-identity-name">${escapeHtml(id['인격명'])}</div>
@@ -1505,11 +1498,6 @@
             ${kws.length ? '<br>' + kws.map(k => kwChip(k)).join(' ') : ''}
           </div>
         </div>`;
-    }
-
-    function sqToggleImg() {
-      sqIsGacksung = !sqIsGacksung;
-      document.getElementById('sq-identity-card').innerHTML = sqIdentityCardHTML();
     }
 
     function sqSinBtnHTML(si, sin) {
@@ -1706,7 +1694,7 @@
       const anyGaveUp = sqS1SinGaveUp.some(Boolean) || sqS1TypeGaveUp.some(Boolean) || sqS2GaveUp.some(Boolean);
       if (!anyGaveUp) fireFanfare();
       const id = sqIdentity;
-      const imgUrl = id['이미지(각성)'] || id['이미지(일반)'];
+      const imgUrl = pickIdImg(id);
       const affilParts = [id['소속1'], id['소속2']].filter(Boolean);
       const totalItems = sqSkillCount * 3;
       const gaveUpItems = sqS1SinGaveUp.filter(Boolean).length + sqS1TypeGaveUp.filter(Boolean).length + sqS2GaveUp.filter(Boolean).length;
@@ -1916,7 +1904,7 @@
       } else if (m['인격명'] === '없음') {
         inner = `<span class="db-slot-empty-label">🚫 ${escapeHtml(m['수감자'])}<br>없음</span>${removeOrLock}`;
       } else {
-        const img = m['이미지(일반)'] || m['이미지(각성)'];
+        const img = pickIdImg(m);
         inner = `${img ? `<img src="${escapeHtml(img)}" alt="" loading="lazy" onerror="this.style.display='none'">` : `<span class="db-slot-empty-label">${escapeHtml(m['인격명'])}</span>`}
           ${j === 'red' ? `<div class="db-slot-x">✕</div>` : ''}
           <div class="db-slot-name">${escapeHtml(m['인격명'])}</div>
@@ -2181,32 +2169,16 @@
       const key = dbCandidateKey(m);
       const isNone = m['인격명'] === '없음';
       const placed = dbIsPlaced(key);
-      const normalImg = m['이미지(일반)'];
-      const awakenImg = m['이미지(각성)'];
-      const img = !isNone ? (normalImg || awakenImg) : '';
-      const hasToggle = !isNone && normalImg && awakenImg && normalImg !== awakenImg;
+      const img = !isNone ? pickIdImg(m) : '';
       const label = isNone ? `${m['수감자']} 없음` : m['인격명'];
       const mark = !placed ? dbKnownJudge[key] : null;
       const markClass = mark ? ` mark-${mark}` : '';
       return `<div class="db-candidate${placed ? ' placed' : ''}${markClass}" data-key="${escapeHtml(key)}" draggable="${placed ? 'false' : 'true'}">
-        ${isNone ? `<div class="db-candidate-noimg">🚫</div>` : `<div class="db-candidate-img-wrap">
-          ${img ? `<img src="${escapeHtml(img)}" alt="" loading="lazy" onerror="this.style.display='none'">` : `<div class="db-candidate-noimg">👤</div>`}
-          ${hasToggle ? `<button class="db-candidate-img-toggle" type="button" draggable="false" data-normal="${escapeHtml(normalImg)}" data-awaken="${escapeHtml(awakenImg)}" data-showing="normal" onclick="dbToggleCandidateImage(event, this)">🔄</button>` : ''}
-        </div>`}
+        ${isNone ? `<div class="db-candidate-noimg">🚫</div>` : (img ? `<img src="${escapeHtml(img)}" alt="" loading="lazy" onerror="this.style.display='none'">` : `<div class="db-candidate-noimg">👤</div>`)}
         ${mark === 'red' ? `<div class="db-candidate-x">✕</div>` : ''}
         ${mark === 'yellow' ? `<div class="db-candidate-badge">🟡 순서 다름</div>` : ''}
         <div class="db-candidate-name">${escapeHtml(label)}</div>
       </div>`;
-    }
-
-    function dbToggleCandidateImage(event, btn) {
-      event.preventDefault();
-      event.stopPropagation();
-      const img = btn.previousElementSibling;
-      if (!img || img.tagName !== 'IMG') return;
-      const showingAwaken = btn.dataset.showing === 'awaken';
-      img.src = showingAwaken ? btn.dataset.normal : btn.dataset.awaken;
-      btn.dataset.showing = showingAwaken ? 'normal' : 'awaken';
     }
 
     function dbRenderCandidates() {
@@ -2288,7 +2260,6 @@
 
     const dbCandidatesEl = document.getElementById('dbCandidates');
     dbCandidatesEl.addEventListener('dragstart', e => {
-      if (e.target.closest('.db-candidate-img-toggle')) { e.preventDefault(); return; }
       const card = e.target.closest('.db-candidate');
       if (!card || card.classList.contains('placed')) return;
       e.dataTransfer.setData('text/plain', `candidate|${card.dataset.key}`);
@@ -2300,14 +2271,12 @@
     });
     if (dbIsTouchDevice) {
       dbCandidatesEl.addEventListener('click', e => {
-        if (e.target.closest('.db-candidate-img-toggle')) return;
         const card = e.target.closest('.db-candidate');
         if (!card || card.classList.contains('placed')) return;
         dbPlaceByDoubleClick(card.dataset.key);
       });
     } else {
       dbCandidatesEl.addEventListener('dblclick', e => {
-        if (e.target.closest('.db-candidate-img-toggle')) return;
         const card = e.target.closest('.db-candidate');
         if (!card || card.classList.contains('placed')) return;
         dbPlaceByDoubleClick(card.dataset.key);
