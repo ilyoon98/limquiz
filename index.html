@@ -666,7 +666,7 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-    const APP_VERSION = 'v0.13.53';
+    const APP_VERSION = 'v0.13.54';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -1912,7 +1912,10 @@
     }
 
     function dbPickDeck() {
-      const eligible = DECKS.filter(d => d.slots.filter(s => s.type === 'Main').length >= 3);
+      // Main 개수가 아니라 실제 배치할 인격(Main+Sub) 수로 판단한다.
+      // Main 기준(>=3)이면 Sub 중심 덱(거미집: Main 1/Sub 9, 흑수덱: Main 1/Sub 10)이
+      // 영영 출제되지 않는다. Sub도 절대 위치 채점 대상이라 그대로 플레이 가능하다.
+      const eligible = DECKS.filter(d => d.slots.filter(s => s.type !== 'Null').length >= 3);
       if (!eligible.length) return null;
       return eligible[Math.floor(Math.random() * eligible.length)];
     }
