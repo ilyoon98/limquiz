@@ -4,9 +4,16 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>림버스 인격 두들</title>
+  <meta name="description" content="림버스 컴퍼니 인격을 맞히는 웹 기반 추리 게임. 오늘의 인격, 랜덤 플레이, 스킬 퀴즈, 덱 퀴즈를 즐겨보세요." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="림버스 인격 두들" />
+  <meta property="og:description" content="림버스 컴퍼니 인격을 맞히는 웹 기반 추리 게임. 오늘의 인격, 랜덤 플레이, 스킬 퀴즈, 덱 퀴즈를 즐겨보세요." />
+  <meta property="og:url" content="https://limquiz.vercel.app/" />
+  <meta property="og:image" content="https://limquiz.vercel.app/Thumbnail.png" />
+  <meta name="twitter:card" content="summary" />
   <link rel="icon" type="image/png" href="./Thumbnail.png" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha384-ZZ1pncU3bQe8y31yfZdMFdSpttDoPmOZg2wguVK9almUodir1PghgT0eY7Mrty8H" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js" integrity="sha384-sPwMflxqfAN+Q5mvlkLmHiX3PORGbZSXHiSGPTXT9VHCD/AB+b+r+vJWsqprv+7k" crossorigin="anonymous"></script>
   <style>
     :root {
       --bg: #141414; --panel: #1f1f1f; --panel2: #292929; --text: #f4f1ea;
@@ -355,7 +362,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.40</span>
+          <span class="version-badge"></span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -426,7 +433,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.40</span>
+          <span class="version-badge"></span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -606,6 +613,12 @@
   </div>
 
   <script>
+    // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
+    const APP_VERSION = 'v0.13.41';
+    document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
+    // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
+    const DEBUG = new URLSearchParams(location.search).has('debug');
+
     let DATA = [], SORTED_DATA = [], DECKS = [];
     const SINNER_COLOR = {
       '이상':'#d4e1e8','파우스트':'#ffb1b4','돈키호테':'#ffef23','료슈':'#cf0000',
@@ -722,7 +735,9 @@
     function getDailyAnswer(data) {
       const d = new Date();
       const seed = d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
-      const hash = (seed * 2654435761) >>> 0;
+      // Math.imul로 32비트 정수 곱셈을 수행한다. 일반 곱셈(seed * 2654435761)은
+      // 2^53을 넘어 하위 비트가 반올림되므로 인격 수가 짝수일 때 편향이 생길 수 있다.
+      const hash = Math.imul(seed, 2654435761) >>> 0;
       return data[hash % data.length];
     }
 
@@ -989,7 +1004,7 @@
       const sinnerColor = SINNER_COLOR[ans['수감자']] || '#555';
       const sinnerColorDark = sinnerColor + '33';
       const slug = ans['slug'];
-      const cdnUrl = ans['이미지(각성)'] || ans['이미지(일반)'] || (slug ? `https://assets.limbusdeck.com/identities/full/${escapeHtml(slug)}.webp` : '');
+      const cdnUrl = ans['이미지(각성)'] || ans['이미지(일반)'] || (slug ? `https://assets.limbusdeck.com/identities/full/${slug}.webp` : '');
       const affilParts = [ans['소속1'], ans['소속2']].filter(Boolean);
       const kws = [ans['키워드1'], ans['키워드2'], ans['키워드3']].filter(Boolean);
       const modeLabel = record.mode === 'daily' ? `오늘의 인격 #${record.challengeNo ?? '?'}` : '랜덤 플레이';
@@ -1005,7 +1020,7 @@
         </div>
         <div class="card-identity-wrap">
           <div class="card-identity" id="cardIdentityBlur" style="background:${sinnerColorDark};min-height:340px">
-            ${cdnUrl ? `<img src="${cdnUrl}" alt="${escapeHtml(ans['인격명'] || '')}" onerror="this.style.display='none'" />` : ''}
+            ${cdnUrl ? `<img src="${escapeHtml(cdnUrl)}" alt="${escapeHtml(ans['인격명'] || '')}" onerror="this.style.display='none'" />` : ''}
             <div class="card-identity-overlay">
               <div class="card-identity-name">${escapeHtml(ans['인격명'] || '알 수 없음')}</div>
               <div class="card-identity-sinner">${escapeHtml(ans['수감자'] || '')} ${gradeSpan(ans['성급'] || '')}</div>
@@ -1275,16 +1290,22 @@
       resetFilters();
       answer = pickAnswer();
       renderDropdown(false);
-      console.log('정답:', answer);
+      if (DEBUG) console.log('정답:', answer);
     }
 
     function initDailyMode() {
       challengeInfoEl.style.display = '';
       challengeNoEl.textContent = `오늘의 인격 #${getDailyChallengeNo()}`;
       answer = getDailyAnswer(DATA);
-      console.log('정답:', answer);
 
       const saved = loadDailyResult();
+      // 이미 플레이한 날에는 저장된 정답 이름을 우선 사용한다. 플레이 이후 데이터가
+      // 갱신되면 재계산된 정답이 당시 정답과 달라져 기록·공개 정보가 어긋날 수 있다.
+      if (saved && saved.answerName) {
+        const savedRow = DATA.find(r => r['인격명'] === saved.answerName);
+        if (savedRow) answer = savedRow;
+      }
+      if (DEBUG) console.log('정답:', answer);
       if (saved) {
         resetGameState();
         resetFilters();

@@ -1,5 +1,8 @@
 .vercel
 node_modules
 data.json
+changelog.json
+decks.json
+deckKeywords.json
 dev/changelog_dev.json
 .env*
