@@ -58,9 +58,13 @@
     button { border:0; padding:0 18px; background:var(--button); color:var(--buttonText); font-weight:800; cursor:pointer; white-space:nowrap; }
     button.secondary { background:var(--panel2); color:var(--text); border:1px solid var(--border); }
     button:disabled { opacity:.55; cursor:not-allowed; }
-    .img-pref-toggle-btn { position:absolute; top:8px; right:8px; z-index:5; width:36px; height:36px; padding:0; border-radius:999px; display:flex; align-items:center; justify-content:center; font-size:16px; line-height:1; background:color-mix(in srgb, var(--panel2) 78%, transparent); color:var(--text); border:1px solid var(--border); box-shadow:0 2px 10px rgba(0,0,0,.35); backdrop-filter:blur(2px); }
+    .img-pref-toggle-btn { position:absolute; top:8px; right:8px; z-index:5; height:30px; padding:0 10px 0 4px; border-radius:999px; display:flex; align-items:center; gap:6px; font-size:12px; font-weight:800; line-height:1; background:color-mix(in srgb, var(--panel2) 85%, transparent); color:var(--text); border:1px solid var(--border); box-shadow:0 2px 10px rgba(0,0,0,.35); backdrop-filter:blur(2px); }
     .db-slots-section > .img-pref-toggle-btn { top:38px; }
-    .img-pref-toggle-btn.active { background:var(--button); color:var(--buttonText); border-color:var(--button); }
+    .img-pref-switch { position:relative; width:30px; height:17px; border-radius:999px; background:var(--border); flex-shrink:0; transition:background .2s; }
+    .img-pref-switch::after { content:''; position:absolute; top:2px; left:2px; width:13px; height:13px; border-radius:50%; background:#fff; transition:transform .2s; box-shadow:0 1px 2px rgba(0,0,0,.4); }
+    .img-pref-toggle-btn.active .img-pref-switch { background:var(--button); }
+    .img-pref-toggle-btn.active .img-pref-switch::after { transform:translateX(13px); }
+    .img-pref-label { min-width:24px; text-align:left; }
     .mode-box { display:flex; gap:8px; flex-wrap:wrap; align-items:center; min-width:150px; }
     .mode-box label { display:flex; gap:6px; align-items:center; height:36px; padding:0 14px; border:1px solid var(--border); border-radius:999px; background:var(--panel2); cursor:pointer; color:var(--muted); transition:background .15s, color .15s, border-color .15s; }
     .mode-box label:has(input:checked) { background:var(--button); color:var(--buttonText); border-color:var(--button); font-weight:800; }
@@ -349,7 +353,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.35</span>
+          <span class="version-badge">v0.13.36</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -420,7 +424,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.35</span>
+          <span class="version-badge">v0.13.36</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -547,7 +551,7 @@
         <div class="db-hint panel" id="dbHint" style="display:none"></div>
 
         <div class="db-slots-section">
-          <button class="img-pref-toggle-btn" type="button" onclick="toggleImagePref(refreshDbImages)" title="일반/각성 이미지 전환">🔄</button>
+          <button class="img-pref-toggle-btn" type="button" onclick="toggleImagePref(refreshDbImages)" title="일반/각성 이미지 전환"><span class="img-pref-switch"></span><span class="img-pref-label">일반</span></button>
           <div class="db-slots-label">
             <span>인격 배치 순서 (12칸)</span>
             <span class="db-slots-progress" id="dbSlotsProgress"></span>
@@ -631,7 +635,8 @@
     function updateImgPrefButtons() {
       document.querySelectorAll('.img-pref-toggle-btn').forEach(btn => {
         btn.classList.toggle('active', preferAwaken);
-        btn.textContent = preferAwaken ? '🌙' : '☀️';
+        const label = btn.querySelector('.img-pref-label');
+        if (label) label.textContent = preferAwaken ? '각성' : '일반';
         btn.title = preferAwaken ? '각성 이미지 표시 중 (클릭 시 일반 이미지로 전환)' : '일반 이미지 표시 중 (클릭 시 각성 이미지로 전환)';
       });
     }
@@ -1163,7 +1168,7 @@
       const imgHtml = currentImg ? `
         <div class="answer-img-area">
           <img id="answer-image" src="${escapeHtml(currentImg)}" alt="${escapeHtml(answer['인격명'])}" onerror="this.parentElement.style.display='none'" />
-          <button class="img-pref-toggle-btn" type="button" onclick="toggleImagePref(refreshGameImage)" title="일반/각성 이미지 전환">🔄</button>
+          <button class="img-pref-toggle-btn" type="button" onclick="toggleImagePref(refreshGameImage)" title="일반/각성 이미지 전환"><span class="img-pref-switch"></span><span class="img-pref-label">일반</span></button>
         </div>` : '';
       return `<div class="answer-reveal ${won ? 'success' : 'fail'}" id="answerReveal">
         <div class="answer-text-row"><div class="answer-text-part">${resultLine}</div><span id="answerShareSlot"></span></div>
@@ -1505,7 +1510,7 @@
       return `
         <div class="sq-img-wrap">
           ${currentImg ? `<img src="${escapeHtml(currentImg)}" alt="${escapeHtml(id['인격명'])}" onerror="this.style.display='none'">
-          <button class="img-pref-toggle-btn" type="button" onclick="toggleImagePref(refreshSqImage)" title="일반/각성 이미지 전환">🔄</button>` : ''}
+          <button class="img-pref-toggle-btn" type="button" onclick="toggleImagePref(refreshSqImage)" title="일반/각성 이미지 전환"><span class="img-pref-switch"></span><span class="img-pref-label">일반</span></button>` : ''}
         </div>
         <div class="sq-identity-info">
           <div class="sq-identity-name">${escapeHtml(id['인격명'])}</div>
@@ -1736,7 +1741,7 @@
       resultEl.innerHTML = `<div class="panel">
         <div class="sq-result-banner">${anyGaveUp ? '🙌 완료 (일부 포기)' : '🎉 완벽 클리어!'}</div>
         ${imgUrl ? `<div class="sq-result-img"><img src="${escapeHtml(imgUrl)}" alt="${escapeHtml(id['인격명'])}" onerror="this.parentElement.style.display='none'">
-          <button class="img-pref-toggle-btn" type="button" onclick="toggleImagePref(refreshSqResultImage)" title="일반/각성 이미지 전환">🔄</button>
+          <button class="img-pref-toggle-btn" type="button" onclick="toggleImagePref(refreshSqResultImage)" title="일반/각성 이미지 전환"><span class="img-pref-switch"></span><span class="img-pref-label">일반</span></button>
         </div>` : ''}
         <div class="sq-result-name">${escapeHtml(id['인격명'])}</div>
         <div class="sq-result-meta">${sinnerDot(id['수감자'])} · ${gradeSpan(id['성급'])}${affilParts.length ? ' · ' + escapeHtml(affilParts.join(' · ')) : ''}</div>
