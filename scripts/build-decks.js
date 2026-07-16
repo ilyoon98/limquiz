@@ -22,45 +22,23 @@ const deckRows = XLSX.utils.sheet_to_json(workbook.Sheets[DECK_SHEET_NAME], { de
 const deckInfoRows = XLSX.utils.sheet_to_json(workbook.Sheets[DECK_INFO_SHEET_NAME], { defval: '' });
 const charRows = XLSX.utils.sheet_to_json(workbook.Sheets[CHAR_SHEET_NAME], { defval: '' });
 
-// 수감자별 인격명 목록 (이름 매칭용)
-const bySinner = new Map();
+// DeckData의 인격명 컬럼은 이제 문자열이 아니라 CharacterData ID를 가리키는
+// 숫자 참조다(Null 타입은 0). ID로 실제 인격명을 조회한다. 참고용 info 컬럼이
+// 있으면 조회 실패 시 폴백으로 사용한다.
+const charById = new Map();
 charRows.forEach(r => {
-  const sinner = String(r['수감자'] || '').trim();
-  const name = String(r['인격명'] || '').trim();
-  if (!sinner || !name) return;
-  if (!bySinner.has(sinner)) bySinner.set(sinner, []);
-  bySinner.get(sinner).push(name);
+  if (r['ID'] === '' || r['ID'] === undefined || r['ID'] === null) return;
+  charById.set(Number(r['ID']), String(r['인격명'] || '').trim());
 });
 
-// DeckData의 인격명은 종종 축약형(중간 타이틀 생략)이거나 공백 등 사소한 오타가 있어서,
-// 토큰이 순서대로 fullName 안에 등장하는지로 매칭한다.
-// 예: "약지 이상" -> "약지 야수파 도슨트 이상"
-function isOrderedSubsequence(shortName, fullName) {
-  const tokens = shortName.split(/\s+/).filter(Boolean);
-  let idx = 0;
-  for (const t of tokens) {
-    const found = fullName.indexOf(t, idx);
-    if (found === -1) return false;
-    idx = found + t.length;
-  }
-  return true;
-}
-
 let unresolvedCount = 0;
-function resolveName(shortName, sinner) {
-  const candidates = bySinner.get(sinner) || [];
-  if (candidates.includes(shortName)) return shortName;
-  const matches = candidates.filter(full => isOrderedSubsequence(shortName, full));
-  if (!matches.length) {
-    console.warn(`⚠ 매칭 실패: "${shortName}" (수감자: ${sinner}) - CharacterData에서 후보를 찾지 못해 원본 텍스트 유지`);
-    unresolvedCount++;
-    return shortName;
-  }
-  matches.sort((a, b) => a.length - b.length);
-  if (matches.length > 1) {
-    console.warn(`⚠ 다중 매칭: "${shortName}" (수감자: ${sinner}) → [${matches.join(' | ')}] 중 "${matches[0]}" 선택`);
-  }
-  return matches[0];
+function resolveName(idRef, sinner, fallbackInfo) {
+  const resolved = charById.get(Number(idRef));
+  if (resolved) return resolved;
+  const fallback = String(fallbackInfo || '').trim();
+  console.warn(`⚠ ID 조회 실패: "${idRef}" (수감자: ${sinner}) - CharacterData에서 ID를 찾지 못해 ${fallback ? `info 컬럼값("${fallback}")으로 대체` : '원본 값 유지'}`);
+  unresolvedCount++;
+  return fallback || String(idRef);
 }
 
 // ── DeckData를 ID별로 그룹화 ─────────────────────────────
@@ -109,9 +87,9 @@ const decks = [...byId.entries()].map(([id, memberRows]) => {
   const slots = memberRows.map(r => {
     const sinner = String(r['수감자'] || '').trim();
     const type = String(r['Type'] || '').trim();
-    const rawName = String(r['인격명'] || '').trim();
+    const idRef = r['인격명'];
     const order = Number(r['순서']) || 0;
-    const 인격명 = type === 'Null' ? null : resolveName(rawName, sinner);
+    const 인격명 = type === 'Null' ? null : resolveName(idRef, sinner, r['info']);
     return { 수감자: sinner, 인격명, type, order };
   });
   return { id, deckName, slots };
