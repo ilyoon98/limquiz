@@ -58,8 +58,8 @@
     button { border:0; padding:0 18px; background:var(--button); color:var(--buttonText); font-weight:800; cursor:pointer; white-space:nowrap; }
     button.secondary { background:var(--panel2); color:var(--text); border:1px solid var(--border); }
     button:disabled { opacity:.55; cursor:not-allowed; }
-    .img-pref-toggle-btn { position:absolute; top:8px; right:8px; z-index:5; height:30px; padding:0 10px 0 4px; border-radius:999px; display:flex; align-items:center; gap:6px; font-size:12px; font-weight:800; line-height:1; background:color-mix(in srgb, var(--panel2) 85%, transparent); color:var(--text); border:1px solid var(--border); box-shadow:0 2px 10px rgba(0,0,0,.35); backdrop-filter:blur(2px); }
-    .img-pref-toggle-btn.inline { position:static; box-shadow:none; height:24px; flex-shrink:0; }
+    .img-pref-toggle-btn { position:absolute; top:8px; right:8px; z-index:5; height:32px; padding:0 12px 0 4px; border-radius:999px; display:flex; align-items:center; gap:6px; font-size:14px; font-weight:800; line-height:1; background:color-mix(in srgb, var(--panel2) 85%, transparent); color:var(--text); border:1px solid var(--border); box-shadow:0 2px 10px rgba(0,0,0,.35); backdrop-filter:blur(2px); }
+    .img-pref-toggle-btn.inline { position:static; box-shadow:none; height:28px; flex-shrink:0; }
     .img-pref-switch { position:relative; width:30px; height:17px; border-radius:999px; background:var(--border); flex-shrink:0; transition:background .2s; }
     .img-pref-switch::after { content:''; position:absolute; top:2px; left:2px; width:13px; height:13px; border-radius:50%; background:#fff; transition:transform .2s; box-shadow:0 1px 2px rgba(0,0,0,.4); }
     .img-pref-toggle-btn.active .img-pref-switch { background:var(--button); }
@@ -228,8 +228,8 @@
     .db-hint-kws { display:flex; gap:6px; flex-wrap:wrap; }
     .db-hint-desc { margin-top:12px; font-size:14px; color:var(--muted); }
     .db-slots-section { margin-bottom:0; position:relative; }
-    .db-slots-label { display:flex; align-items:center; justify-content:space-between; font-size:13px; font-weight:800; color:var(--muted); margin-bottom:10px; text-transform:uppercase; letter-spacing:.05em; }
-    .db-slots-progress { font-size:12px; font-weight:800; color:var(--muted); text-transform:none; letter-spacing:0; }
+    .db-slots-label { display:flex; align-items:center; justify-content:space-between; font-size:15px; font-weight:800; color:var(--muted); margin-bottom:10px; text-transform:uppercase; letter-spacing:.05em; }
+    .db-slots-progress { font-size:14px; font-weight:800; color:var(--muted); text-transform:none; letter-spacing:0; }
     .db-slots-row { display:flex; gap:10px; flex-wrap:wrap; }
     .db-board-grid { display:grid; grid-template-columns:repeat(6, 1fr); gap:10px; }
     .db-slot { width:100%; aspect-ratio:96/132; border-radius:12px; border:2px dashed var(--border); display:flex; align-items:center; justify-content:center; position:relative; background:var(--panel2); cursor:pointer; transition:border-color .15s, background .15s; overflow:hidden; }
@@ -257,9 +257,11 @@
     .db-sinner-filter-btn { height:32px; padding:0 14px; border-radius:999px; font-size:13px; font-weight:700; background:var(--panel2); color:var(--muted); border:1px solid var(--border); }
     .db-sinner-filter-btn.active { background:var(--button); color:var(--buttonText); border-color:var(--button); font-weight:800; }
     .db-sinner-filter-btn.placed:not(.active) { border-color:var(--slot-green); color:var(--slot-green); }
-    .db-keyword-filter { display:flex; gap:6px; flex-wrap:wrap; }
+    .db-keyword-filter { display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
     .db-keyword-filter-btn { height:30px; padding:0 12px; border-radius:999px; font-size:12px; font-weight:700; background:var(--panel2); color:var(--muted); border:1px solid var(--border); opacity:.7; }
     .db-keyword-filter-btn.active { opacity:1; font-weight:800; border-color:currentColor; }
+    .db-keyword-filter-clear { height:30px; padding:0 12px; border-radius:999px; font-size:12px; font-weight:700; background:transparent; color:var(--muted); border:1px dashed var(--border); }
+    .db-keyword-filter-clear:hover { color:var(--text); border-color:var(--text); }
     .db-candidates { display:grid; grid-template-columns:repeat(4, 1fr); gap:14px; padding:4px; }
     .db-candidates-empty { grid-column:1/-1; text-align:center; color:var(--muted); padding:40px 20px; font-size:14px; }
     .db-candidate { border-radius:12px; border:1px solid var(--border); background:var(--panel2); cursor:grab; position:relative; overflow:hidden; display:flex; flex-direction:column; transition:opacity .15s, outline-color .15s; }
@@ -353,7 +355,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.39</span>
+          <span class="version-badge">v0.13.40</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -424,7 +426,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.39</span>
+          <span class="version-badge">v0.13.40</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -1860,12 +1862,16 @@
 
     function dbRenderKeywordFilter() {
       const el = document.getElementById('dbKeywordFilter');
-      el.innerHTML = dbAllKeywords().map(kw => {
+      const btns = dbAllKeywords().map(kw => {
         const active = dbKeywordFilter.includes(kw) ? ' active' : '';
         const c = KEYWORD_COLOR[kw];
         const style = c ? ` style="background:${c.bg};color:${c.text}"` : '';
         return `<button class="db-keyword-filter-btn${active}" data-keyword="${escapeHtml(kw)}" type="button"${style}>${escapeHtml(kw)}</button>`;
       }).join('');
+      const clearBtn = dbKeywordFilter.length
+        ? `<button class="db-keyword-filter-clear" id="dbKeywordFilterClear" type="button">✕ 초기화</button>`
+        : '';
+      el.innerHTML = btns + clearBtn;
     }
 
     function dbShowMessage(text) {
@@ -2240,6 +2246,12 @@
       dbRenderCandidates();
     });
     document.getElementById('dbKeywordFilter').addEventListener('click', e => {
+      if (e.target.closest('#dbKeywordFilterClear')) {
+        dbKeywordFilter.length = 0;
+        dbRenderKeywordFilter();
+        dbRenderCandidates();
+        return;
+      }
       const btn = e.target.closest('.db-keyword-filter-btn');
       if (!btn) return;
       const kw = btn.dataset.keyword;
