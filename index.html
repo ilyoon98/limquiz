@@ -225,7 +225,6 @@
     .db-header { display:flex; align-items:center; gap:14px; flex-wrap:wrap; row-gap:8px; }
     .db-title { font-size:22px; font-weight:900; white-space:nowrap; }
     .db-help-btn { height:36px; padding:0 14px; font-size:14px; }
-    .db-header-giveup-btn { margin-left:auto; height:36px; padding:0 16px; font-size:14px; }
     .db-header-submit-btn { width:100%; height:72px; margin-top:14px; font-size:26px; font-weight:900; border-radius:16px; background:var(--button); color:var(--buttonText); border:none; letter-spacing:.02em; }
     .db-header-submit-btn:disabled { opacity:.4; cursor:not-allowed; }
     .db-board-item { display:flex; flex-direction:column; align-items:center; gap:6px; }
@@ -267,7 +266,9 @@
     .db-slot-lock { position:absolute; top:2px; right:2px; width:20px; height:20px; border-radius:999px; background:rgba(0,0,0,.72); font-size:11px; line-height:1; display:flex; align-items:center; justify-content:center; pointer-events:none; }
     .db-slot-x { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:42px; font-weight:900; color:#ff4d4d; text-shadow:0 2px 8px rgba(0,0,0,.85); pointer-events:none; }
     .db-candidates-section { padding:16px; margin-bottom:18px; }
-    .db-search { margin-bottom:12px; }
+    .db-search { margin-top:12px; }
+    .db-board-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:10px; }
+    .db-board-actions button { height:34px; padding:0 14px; font-size:14px; }
     /* 12수감자를 6열×2줄 고정 그리드로 배치. flex-wrap이면 배치 시 "✓ " 접두사로
        버튼 폭이 변해 줄바꿈이 바뀌고, 클릭하려던 버튼이 움직이는 문제가 있었다. */
     .db-sinner-filter { display:grid; grid-template-columns:repeat(6, 1fr); gap:6px; margin-bottom:14px; }
@@ -295,7 +296,6 @@
     .db-actions { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:20px 0 8px; }
     .db-actions button { height:48px; padding:0 26px; font-size:15px; font-weight:800; border-radius:14px; }
     .db-actions button:disabled { opacity:.4; cursor:not-allowed; }
-    .db-progress { text-align:center; color:var(--muted); font-size:14px; margin-bottom:16px; }
     .db-message { position:fixed; left:50%; bottom:24px; transform:translateX(-50%); z-index:200; max-width:90vw; text-align:center; font-weight:800; color:#ffb86b; background:color-mix(in srgb, var(--slot-yellow) 20%, var(--panel2)); border:1px solid color-mix(in srgb, var(--slot-yellow) 45%, var(--border)); border-radius:12px; padding:10px 16px; box-shadow:0 12px 30px rgba(0,0,0,.5); }
     @media (max-width:800px) { .db-board-grid { grid-template-columns:repeat(3, 1fr); } .db-candidates { grid-template-columns:repeat(2, 1fr); } }
     @media (min-width:900px) {
@@ -560,8 +560,6 @@
         <button class="back-btn" id="dbBackBtn">← 홈으로</button>
         <span class="db-title">덱 퀴즈</span>
         <button class="secondary db-help-btn" id="dbHelpBtn" type="button">❓ 도움말</button>
-        <button class="secondary db-header-giveup-btn" id="dbClearAllBtn" title="초록(고정)과 노랑(순서 다름)은 남기고 나머지만 비웁니다">오답 비우기</button>
-        <button class="secondary db-header-giveup-btn" id="dbGiveUpBtn">정답 보기</button>
       </div>
       <button class="db-header-submit-btn" id="dbSubmitBtnTop" type="button" disabled>제출 (0/12)</button>
       <div id="dbResult" style="display:none"></div>
@@ -578,20 +576,24 @@
             <button class="img-pref-toggle-btn inline" type="button" onclick="toggleImagePref(refreshDbImages)" title="일반/각성 이미지 전환"><span class="img-pref-switch"></span><span class="img-pref-label">일반</span></button>
           </div>
           <div class="db-board-grid" id="dbBoardSlots"></div>
+          <!-- 보드에 작용하는 버튼이므로 보드 바로 아래에 배치 (제출 버튼과 분리해 오클릭 방지) -->
+          <div class="db-board-actions">
+            <button class="secondary" id="dbClearAllBtn" title="초록(고정)과 노랑(순서 다름)은 남기고 나머지만 비웁니다">오답 비우기</button>
+            <button class="secondary" id="dbGiveUpBtn">정답 보기</button>
+          </div>
         </div>
       </div>
 
       <div class="db-candidates-section panel">
         <div class="db-search-and-filter-sticky">
-          <input id="dbSearchInput" class="db-search" placeholder="인격명 검색" autocomplete="off" />
+          <!-- 사용 흐름(수감자 → 키워드 → 이름 검색) 순서. 검색창은 목록 바로 위 -->
           <div class="db-sinner-filter" id="dbSinnerFilter"></div>
           <div class="db-keyword-filter" id="dbKeywordFilter"></div>
+          <input id="dbSearchInput" class="db-search" placeholder="인격명 검색" autocomplete="off" />
         </div>
         <div class="db-candidates" id="dbCandidates"></div>
       </div>
     </div>
-
-    <div class="db-progress" id="dbProgress"></div>
     <div class="db-message" id="dbMessage" style="display:none"></div>
   </div>
 
@@ -626,7 +628,7 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-    const APP_VERSION = 'v0.13.46';
+    const APP_VERSION = 'v0.13.47';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -2013,7 +2015,6 @@
         btn.disabled = !allFilled;
         btn.textContent = label;
       });
-      document.getElementById('dbProgress').textContent = allFilled ? '' : `12칸을 모두 채워주세요 (현재 ${filledCount}/12)`;
       document.getElementById('dbSlotsProgress').textContent = `${filledCount}/12 배치됨`;
     }
 
