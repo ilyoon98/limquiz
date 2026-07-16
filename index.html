@@ -238,6 +238,7 @@
     .db-hint { margin-bottom:16px; }
     .db-hint-title { font-size:14px; color:var(--muted); font-weight:800; margin-bottom:8px; text-transform:uppercase; letter-spacing:.05em; }
     .db-hint-kws { display:flex; gap:6px; flex-wrap:wrap; }
+    .db-hint-keywords { display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:8px; font-size:14px; font-weight:800; color:#ffd98a; }
     .db-hint-desc { margin-top:12px; font-size:14px; color:var(--muted); }
     .db-slots-section { margin-bottom:0; position:relative; }
     .db-slots-label { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; row-gap:6px; font-size:15px; font-weight:800; color:var(--muted); margin-bottom:10px; text-transform:uppercase; letter-spacing:.05em; }
@@ -607,11 +608,13 @@
               <span class="db-slots-progress" id="dbSlotsProgress"></span>
               <button class="img-pref-toggle-btn inline" type="button" onclick="toggleImagePref(refreshDbImages)" title="일반/각성 이미지 전환"><span class="img-pref-switch"></span><span class="img-pref-label">일반</span></button>
               <span class="db-board-actions">
+                <button class="secondary" id="dbHintBtn" title="덱 키워드를 하나씩 공개합니다">💡 힌트 0/0</button>
                 <button class="secondary" id="dbClearAllBtn" title="초록(고정)과 노랑(순서 다름)은 남기고 나머지만 비웁니다">오답 비우기</button>
                 <button class="secondary" id="dbGiveUpBtn" title="정답을 공개하고 이 덱을 포기합니다">포기</button>
               </span>
             </span>
           </div>
+          <div class="db-hint-keywords" id="dbHintKeywords" style="display:none"></div>
           <div class="db-board-grid" id="dbBoardSlots"></div>
         </div>
         <!-- 제출 버튼은 세로 공간이 남는 보드(왼쪽 열) 아래에 둔다. 상단 전체 폭 배치는
@@ -663,12 +666,12 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-    const APP_VERSION = 'v0.13.52';
+    const APP_VERSION = 'v0.13.53';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
 
-    let DATA = [], SORTED_DATA = [], DECKS = [];
+    let DATA = [], SORTED_DATA = [], DECKS = [], DECK_KEYWORDS = {};
     const SINNER_COLOR = {
       '이상':'#d4e1e8','파우스트':'#ffb1b4','돈키호테':'#ffef23','료슈':'#cf0000',
       '뫼르소':'#293b95','홍루':'#5bffde','히스클리프':'#4e3076','이스마엘':'#ff9500',
@@ -1879,6 +1882,7 @@
     let dbSlots = [], dbSlotJudge = [], dbLocked = [];
     let dbGaveUp = false; // 포기한 덱은 제출해도 정답 처리하지 않는다
     let dbSubmitCount = 0; // 이 덱에서 제출(채점)한 횟수 - 결과 화면에 표시
+    let dbHintsUsed = 0;   // 사용한 힌트(공개된 덱 키워드) 개수 - 플레이 중·결과에 표시
     let dbKnownJudge = {};
     let dbCandidates = [];
     let dbSinnerFilter = SINNER_ORDER[0];
@@ -1933,6 +1937,7 @@
       dbLocked = Array(DB_SLOT_COUNT).fill(false);
       dbGaveUp = false;
       dbSubmitCount = 0;
+      dbHintsUsed = 0;
       dbKnownJudge = {};
       dbSinnerFilter = SINNER_ORDER[0];
       dbKeywordFilter = [];
@@ -1943,6 +1948,8 @@
       document.getElementById('dbSearchInput').value = '';
       document.getElementById('dbHint').style.display = 'none';
       dbRenderHint();
+      dbRenderHintKeywords();
+      dbUpdateHintBtn();
       dbRenderSinnerFilter();
       dbRenderKeywordFilter();
       dbRenderSlots();
@@ -1994,6 +2001,39 @@
         ? `<button class="db-keyword-filter-clear" id="dbKeywordFilterClear" type="button">✕ 초기화</button>`
         : '';
       el.innerHTML = btns + clearBtn;
+    }
+
+    // ── 힌트 (DeckInfo Keyword1~4를 하나씩 공개) ─────────────
+    function dbDeckKeywords() {
+      if (!dbDeck) return [];
+      const info = DECK_KEYWORDS[String(dbDeck.id)];
+      return info && Array.isArray(info.keywords) ? info.keywords : [];
+    }
+    function dbHintChip(kw) {
+      const c = KEYWORD_COLOR[kw];
+      return c ? kwChip(kw) : `<span class="kw-chip" style="background:#2e2a24;color:#e8dcc8">${escapeHtml(kw)}</span>`;
+    }
+    function dbRenderHintKeywords() {
+      const el = document.getElementById('dbHintKeywords');
+      const revealed = dbDeckKeywords().slice(0, dbHintsUsed);
+      if (!revealed.length) { el.style.display = 'none'; el.innerHTML = ''; return; }
+      el.style.display = '';
+      el.innerHTML = `<span>💡 힌트:</span> ${revealed.map(dbHintChip).join(' ')}`;
+      dbUpdateStickyOffset();
+    }
+    function dbUpdateHintBtn() {
+      const btn = document.getElementById('dbHintBtn');
+      if (!btn) return;
+      const total = dbDeckKeywords().length;
+      btn.textContent = `💡 힌트 ${dbHintsUsed}/${total}`;
+    }
+    function dbUseHint() {
+      const kws = dbDeckKeywords();
+      if (!kws.length) { dbShowMessage('이 덱은 제공되는 힌트가 없습니다.'); return; }
+      if (dbHintsUsed >= kws.length) { dbShowMessage('더 보여줄 힌트가 없습니다.'); return; }
+      dbHintsUsed++;
+      dbRenderHintKeywords();
+      dbUpdateHintBtn();
     }
 
     function dbShowMessage(text) {
@@ -2331,7 +2371,7 @@
         <div class="db-result-banner">${gaveUp ? '😢 포기' : '🎉 클리어!'}</div>
         <div class="db-hint-title" style="text-align:center;margin-bottom:10px">덱: ${escapeHtml(dbDeck.deckName)}</div>
         <div class="db-result-stat">${greenCount}/12</div>
-        <div class="db-result-stat">${gaveUp ? `제출 ${dbSubmitCount}회 후 포기` : `총 ${dbSubmitCount}회 제출 만에 완료!`}</div>
+        <div class="db-result-stat">${gaveUp ? `제출 ${dbSubmitCount}회 후 포기` : `총 ${dbSubmitCount}회 제출 만에 완료!`} · 힌트 ${dbHintsUsed}회 사용</div>
         <div class="db-result-actions">
           <button onclick="dbInit()">다음 덱</button>
         </div>
@@ -2378,6 +2418,7 @@
     document.getElementById('dbBackBtn').addEventListener('click', dbGoHome);
     document.getElementById('dbHelpBtn').addEventListener('click', dbToggleHint);
     window.addEventListener('resize', () => { if (deckBuilderScreen.style.display !== 'none') dbUpdateStickyOffset(); });
+    document.getElementById('dbHintBtn').addEventListener('click', dbUseHint);
     document.getElementById('dbClearAllBtn').addEventListener('click', dbClearAll);
     document.getElementById('dbGiveUpBtn').addEventListener('click', dbGiveUp);
     document.getElementById('dbSubmitBtnTop').addEventListener('click', dbSubmit);
@@ -2533,6 +2574,15 @@
       })
       .catch(err => {
         console.error('덱 데이터 로드 실패:', err);
+      });
+    fetch('./deckKeywords.json')
+      .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+      .then(json => {
+        DECK_KEYWORDS = json;
+        if (dbDeck) dbUpdateHintBtn(); // 이미 덱 화면이면 버튼 카운터 갱신
+      })
+      .catch(err => {
+        console.error('덱 키워드 로드 실패:', err);
       });
   </script>
 </body>
