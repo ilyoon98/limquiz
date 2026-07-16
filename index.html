@@ -234,7 +234,8 @@
     .db-hint-kws { display:flex; gap:6px; flex-wrap:wrap; }
     .db-hint-desc { margin-top:12px; font-size:14px; color:var(--muted); }
     .db-slots-section { margin-bottom:0; position:relative; }
-    .db-slots-label { display:flex; align-items:center; justify-content:space-between; font-size:15px; font-weight:800; color:var(--muted); margin-bottom:10px; text-transform:uppercase; letter-spacing:.05em; }
+    .db-slots-label { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; row-gap:6px; font-size:15px; font-weight:800; color:var(--muted); margin-bottom:10px; text-transform:uppercase; letter-spacing:.05em; }
+    .db-slots-label-right { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
     .db-slots-progress { font-size:14px; font-weight:800; color:var(--muted); text-transform:none; letter-spacing:0; }
     .db-slots-row { display:flex; gap:10px; flex-wrap:wrap; }
     .db-board-grid { display:grid; grid-template-columns:repeat(6, 1fr); gap:10px; }
@@ -267,8 +268,8 @@
     .db-slot-x { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:42px; font-weight:900; color:#ff4d4d; text-shadow:0 2px 8px rgba(0,0,0,.85); pointer-events:none; }
     .db-candidates-section { padding:16px; margin-bottom:18px; }
     .db-search { margin-top:12px; }
-    .db-board-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:10px; }
-    .db-board-actions button { height:34px; padding:0 14px; font-size:14px; }
+    .db-board-actions { display:flex; gap:8px; }
+    .db-board-actions button { height:32px; padding:0 12px; font-size:14px; }
     /* 12수감자를 6열×2줄 고정 그리드로 배치. flex-wrap이면 배치 시 "✓ " 접두사로
        버튼 폭이 변해 줄바꿈이 바뀌고, 클릭하려던 버튼이 움직이는 문제가 있었다. */
     .db-sinner-filter { display:grid; grid-template-columns:repeat(6, 1fr); gap:6px; margin-bottom:14px; }
@@ -307,6 +308,27 @@
       .db-candidates-section { flex:1.35; min-width:0; }
       .db-candidates { grid-template-columns:repeat(6, 1fr); }
       .db-search-and-filter-sticky { top:var(--db-topbar-height, 0px); }
+    }
+    .db-header .back-btn { margin-bottom:0; }
+    /* 1920×1080에서 페이지 스크롤 없이 한 화면에 들어가도록 하는 컴팩트 레이아웃.
+       내부 스크롤은 쓰지 않고, 보드를 6열×2줄로 눕히고 여백·높이를 줄여서 맞춘다.
+       카드 이미지는 이 폭에서만 정사각형(그래도 확대 전보다 큼)으로 3줄이 들어가게 한다. */
+    @media (min-width:1500px) {
+      #deckBuilderScreen { margin:-12px 0; }
+      .db-top-bar { padding:8px 0 8px; margin-bottom:10px; }
+      .db-board-grid { grid-template-columns:repeat(6, 1fr); gap:8px; }
+      .db-header-submit-btn { height:56px; font-size:22px; margin-top:10px; }
+      .db-sticky-top { padding-bottom:8px; margin-bottom:8px; }
+      .db-slots-label { margin-bottom:8px; }
+      .db-candidates-section { padding:8px 12px; margin-bottom:0; }
+      .db-search-and-filter-sticky { padding:4px 0; }
+      .db-search { height:34px; margin-top:6px; }
+      .db-sinner-filter { margin-bottom:6px; gap:5px; }
+      .db-sinner-filter-btn { height:27px; }
+      .db-keyword-filter-btn { height:25px; }
+      .db-candidates { gap:8px; }
+      .db-candidate img, .db-candidate-noimg { aspect-ratio:1/1; }
+      .db-candidate-name { padding:4px; line-height:1.2; }
     }
     #dbResult { margin-top:14px; }
     .db-result-banner { text-align:center; font-size:24px; font-weight:900; margin-bottom:14px; }
@@ -561,7 +583,6 @@
         <span class="db-title">덱 퀴즈</span>
         <button class="secondary db-help-btn" id="dbHelpBtn" type="button">❓ 도움말</button>
       </div>
-      <button class="db-header-submit-btn" id="dbSubmitBtnTop" type="button" disabled>제출 (0/12)</button>
       <div id="dbResult" style="display:none"></div>
     </div>
 
@@ -572,16 +593,20 @@
         <div class="db-slots-section">
           <div class="db-slots-label">
             <span>인격 배치 순서 (12칸)</span>
-            <span class="db-slots-progress" id="dbSlotsProgress"></span>
-            <button class="img-pref-toggle-btn inline" type="button" onclick="toggleImagePref(refreshDbImages)" title="일반/각성 이미지 전환"><span class="img-pref-switch"></span><span class="img-pref-label">일반</span></button>
+            <span class="db-slots-label-right">
+              <span class="db-slots-progress" id="dbSlotsProgress"></span>
+              <button class="img-pref-toggle-btn inline" type="button" onclick="toggleImagePref(refreshDbImages)" title="일반/각성 이미지 전환"><span class="img-pref-switch"></span><span class="img-pref-label">일반</span></button>
+              <span class="db-board-actions">
+                <button class="secondary" id="dbClearAllBtn" title="초록(고정)과 노랑(순서 다름)은 남기고 나머지만 비웁니다">오답 비우기</button>
+                <button class="secondary" id="dbGiveUpBtn">정답 보기</button>
+              </span>
+            </span>
           </div>
           <div class="db-board-grid" id="dbBoardSlots"></div>
-          <!-- 보드에 작용하는 버튼이므로 보드 바로 아래에 배치 (제출 버튼과 분리해 오클릭 방지) -->
-          <div class="db-board-actions">
-            <button class="secondary" id="dbClearAllBtn" title="초록(고정)과 노랑(순서 다름)은 남기고 나머지만 비웁니다">오답 비우기</button>
-            <button class="secondary" id="dbGiveUpBtn">정답 보기</button>
-          </div>
         </div>
+        <!-- 제출 버튼은 세로 공간이 남는 보드(왼쪽 열) 아래에 둔다. 상단 전체 폭 배치는
+             와이드 화면에서 세로 공간을 크게 낭비해 페이지 스크롤을 유발했다. -->
+        <button class="db-header-submit-btn" id="dbSubmitBtnTop" type="button" disabled>제출 (0/12)</button>
       </div>
 
       <div class="db-candidates-section panel">
@@ -628,7 +653,7 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-    const APP_VERSION = 'v0.13.47';
+    const APP_VERSION = 'v0.13.48';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
