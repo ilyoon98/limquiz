@@ -67,6 +67,9 @@
     button:disabled { opacity:.55; cursor:not-allowed; }
     .img-pref-toggle-btn { position:absolute; top:8px; right:8px; z-index:5; height:32px; padding:0 12px 0 4px; border-radius:999px; display:flex; align-items:center; gap:6px; font-size:14px; font-weight:800; line-height:1; background:color-mix(in srgb, var(--panel2) 85%, transparent); color:var(--text); border:1px solid var(--border); box-shadow:0 2px 10px rgba(0,0,0,.35); backdrop-filter:blur(2px); }
     .img-pref-toggle-btn.inline { position:static; box-shadow:none; height:28px; flex-shrink:0; }
+    /* 이미지 위에 떠 있던 토글을 이미지 위쪽 우측 정렬 줄로 배치 (모서리에 뜬 버튼이 어색하다는 피드백) */
+    .img-pref-row { display:flex; justify-content:flex-end; margin-bottom:8px; }
+    .sq-toggle-row { padding:12px 12px 0; margin-bottom:4px; }
     .img-pref-switch { position:relative; width:30px; height:17px; border-radius:999px; background:var(--border); flex-shrink:0; transition:background .2s; }
     .img-pref-switch::after { content:''; position:absolute; top:2px; left:2px; width:13px; height:13px; border-radius:50%; background:#fff; transition:transform .2s; box-shadow:0 1px 2px rgba(0,0,0,.4); }
     .img-pref-toggle-btn.active .img-pref-switch { background:var(--button); }
@@ -329,8 +332,8 @@
       .db-sticky-top { padding-bottom:8px; margin-bottom:8px; }
       .db-slots-label { margin-bottom:8px; }
       .db-search-and-filter-sticky { padding:4px 0; }
-      .db-search { height:34px; margin-top:6px; }
-      .db-sinner-filter { margin-bottom:6px; gap:5px; }
+      .db-search { height:34px; margin-top:12px; }
+      .db-sinner-filter { margin-bottom:12px; gap:5px; }
       .db-sinner-filter-btn { height:32px; }
       .db-keyword-filter-btn, .db-keyword-filter-clear { height:30px; }
       .db-candidates { gap:8px; }
@@ -660,7 +663,7 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-    const APP_VERSION = 'v0.13.51';
+    const APP_VERSION = 'v0.13.52';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -1259,8 +1262,8 @@
       const currentImg = pickIdImg(answer);
       const imgHtml = currentImg ? `
         <div class="answer-img-area">
+          <div class="img-pref-row"><button class="img-pref-toggle-btn inline" type="button" onclick="toggleImagePref(refreshGameImage)" title="일반/각성 이미지 전환"><span class="img-pref-switch"></span><span class="img-pref-label">일반</span></button></div>
           <img id="answer-image" src="${escapeHtml(currentImg)}" alt="${escapeHtml(answer['인격명'])}" onerror="this.parentElement.style.display='none'" />
-          <button class="img-pref-toggle-btn" type="button" onclick="toggleImagePref(refreshGameImage)" title="일반/각성 이미지 전환"><span class="img-pref-switch"></span><span class="img-pref-label">일반</span></button>
         </div>` : '';
       return `<div class="answer-reveal ${won ? 'success' : 'fail'}" id="answerReveal">
         <div class="answer-text-row"><div class="answer-text-part">${resultLine}</div><span id="answerShareSlot"></span></div>
@@ -1620,9 +1623,9 @@
       const affilParts = [id['소속1'], id['소속2']].filter(Boolean);
       const kws = [id['키워드1'], id['키워드2'], id['키워드3']].filter(Boolean);
       return `
+        ${currentImg ? `<div class="img-pref-row sq-toggle-row"><button class="img-pref-toggle-btn inline" type="button" onclick="toggleImagePref(refreshSqImage)" title="일반/각성 이미지 전환"><span class="img-pref-switch"></span><span class="img-pref-label">일반</span></button></div>` : ''}
         <div class="sq-img-wrap">
-          ${currentImg ? `<img src="${escapeHtml(currentImg)}" alt="${escapeHtml(id['인격명'])}" onerror="this.style.display='none'">
-          <button class="img-pref-toggle-btn" type="button" onclick="toggleImagePref(refreshSqImage)" title="일반/각성 이미지 전환"><span class="img-pref-switch"></span><span class="img-pref-label">일반</span></button>` : ''}
+          ${currentImg ? `<img src="${escapeHtml(currentImg)}" alt="${escapeHtml(id['인격명'])}" onerror="this.style.display='none'">` : ''}
         </div>
         <div class="sq-identity-info">
           <div class="sq-identity-name">${escapeHtml(id['인격명'])}</div>
@@ -1853,9 +1856,8 @@
       }).join('');
       resultEl.innerHTML = `<div class="panel">
         <div class="sq-result-banner">${anyGaveUp ? '🙌 완료 (일부 포기)' : '🎉 완벽 클리어!'}</div>
-        ${imgUrl ? `<div class="sq-result-img"><img src="${escapeHtml(imgUrl)}" alt="${escapeHtml(id['인격명'])}" onerror="this.parentElement.style.display='none'">
-          <button class="img-pref-toggle-btn" type="button" onclick="toggleImagePref(refreshSqResultImage)" title="일반/각성 이미지 전환"><span class="img-pref-switch"></span><span class="img-pref-label">일반</span></button>
-        </div>` : ''}
+        ${imgUrl ? `<div class="img-pref-row"><button class="img-pref-toggle-btn inline" type="button" onclick="toggleImagePref(refreshSqResultImage)" title="일반/각성 이미지 전환"><span class="img-pref-switch"></span><span class="img-pref-label">일반</span></button></div>
+        <div class="sq-result-img"><img src="${escapeHtml(imgUrl)}" alt="${escapeHtml(id['인격명'])}" onerror="this.parentElement.style.display='none'"></div>` : ''}
         <div class="sq-result-name">${escapeHtml(id['인격명'])}</div>
         <div class="sq-result-meta">${sinnerDot(id['수감자'])} · ${gradeSpan(id['성급'])}${affilParts.length ? ' · ' + escapeHtml(affilParts.join(' · ')) : ''}</div>
         <div class="sq-result-stat">직접 맞힌 항목 ${totalItems - gaveUpItems}/${totalItems}${gaveUpItems ? ` · 포기 ${gaveUpItems}개 (👀 표시)` : ''}</div>
@@ -1876,6 +1878,7 @@
     let dbDeck = null;
     let dbSlots = [], dbSlotJudge = [], dbLocked = [];
     let dbGaveUp = false; // 포기한 덱은 제출해도 정답 처리하지 않는다
+    let dbSubmitCount = 0; // 이 덱에서 제출(채점)한 횟수 - 결과 화면에 표시
     let dbKnownJudge = {};
     let dbCandidates = [];
     let dbSinnerFilter = SINNER_ORDER[0];
@@ -1929,6 +1932,7 @@
       dbSlotJudge = Array(DB_SLOT_COUNT).fill(null);
       dbLocked = Array(DB_SLOT_COUNT).fill(false);
       dbGaveUp = false;
+      dbSubmitCount = 0;
       dbKnownJudge = {};
       dbSinnerFilter = SINNER_ORDER[0];
       dbKeywordFilter = [];
@@ -2271,6 +2275,7 @@
     function dbSubmit() {
       if (dbGaveUp) return; // 포기 후에는 제출로 클리어 처리되지 않는다
       if (dbSlots.some(s => !s)) return;
+      dbSubmitCount++;
       const result = dbJudgeDeck();
       result.forEach((j, idx) => {
         dbSlotJudge[idx] = j;
@@ -2326,6 +2331,7 @@
         <div class="db-result-banner">${gaveUp ? '😢 포기' : '🎉 클리어!'}</div>
         <div class="db-hint-title" style="text-align:center;margin-bottom:10px">덱: ${escapeHtml(dbDeck.deckName)}</div>
         <div class="db-result-stat">${greenCount}/12</div>
+        <div class="db-result-stat">${gaveUp ? `제출 ${dbSubmitCount}회 후 포기` : `총 ${dbSubmitCount}회 제출 만에 완료!`}</div>
         <div class="db-result-actions">
           <button onclick="dbInit()">다음 덱</button>
         </div>
