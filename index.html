@@ -59,7 +59,7 @@
     button.secondary { background:var(--panel2); color:var(--text); border:1px solid var(--border); }
     button:disabled { opacity:.55; cursor:not-allowed; }
     .img-pref-toggle-btn { position:absolute; top:8px; right:8px; z-index:5; height:30px; padding:0 10px 0 4px; border-radius:999px; display:flex; align-items:center; gap:6px; font-size:12px; font-weight:800; line-height:1; background:color-mix(in srgb, var(--panel2) 85%, transparent); color:var(--text); border:1px solid var(--border); box-shadow:0 2px 10px rgba(0,0,0,.35); backdrop-filter:blur(2px); }
-    .db-slots-section > .img-pref-toggle-btn { top:38px; }
+    .img-pref-toggle-btn.inline { position:static; box-shadow:none; height:24px; flex-shrink:0; }
     .img-pref-switch { position:relative; width:30px; height:17px; border-radius:999px; background:var(--border); flex-shrink:0; transition:background .2s; }
     .img-pref-switch::after { content:''; position:absolute; top:2px; left:2px; width:13px; height:13px; border-radius:50%; background:#fff; transition:transform .2s; box-shadow:0 1px 2px rgba(0,0,0,.4); }
     .img-pref-toggle-btn.active .img-pref-switch { background:var(--button); }
@@ -353,7 +353,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.38</span>
+          <span class="version-badge">v0.13.39</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -387,11 +387,11 @@
           </div>
         </div>
         <div class="home-group home-deck-group">
-          <div class="home-group-label">덱 빌더</div>
+          <div class="home-group-label">덱 퀴즈</div>
           <div class="home-group-body">
             <div class="mode-card" id="homeDeckBuilderCard">
               <span class="mode-card-new-badge">NEW</span>
-              <div class="mode-card-title">덱 빌더</div>
+              <div class="mode-card-title">덱 퀴즈</div>
               <div class="mode-card-desc">추천덱의 빈 슬롯에 인격을 드래그해서 채워보세요</div>
             </div>
           </div>
@@ -424,7 +424,7 @@
     <div class="wrap">
       <header>
         <div class="top-actions">
-          <span class="version-badge">v0.13.38</span>
+          <span class="version-badge">v0.13.39</span>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -537,7 +537,7 @@
     <div class="db-top-bar">
       <div class="db-header">
         <button class="back-btn" id="dbBackBtn">← 홈으로</button>
-        <span class="db-title">덱 빌더</span>
+        <span class="db-title">덱 퀴즈</span>
         <button class="secondary db-help-btn" id="dbHelpBtn" type="button">❓ 도움말</button>
         <button class="secondary db-header-giveup-btn" id="dbClearAllBtn">모두 비우기</button>
         <button class="secondary db-header-giveup-btn" id="dbGiveUpBtn">정답 보기</button>
@@ -551,10 +551,10 @@
         <div class="db-hint panel" id="dbHint" style="display:none"></div>
 
         <div class="db-slots-section">
-          <button class="img-pref-toggle-btn" type="button" onclick="toggleImagePref(refreshDbImages)" title="일반/각성 이미지 전환"><span class="img-pref-switch"></span><span class="img-pref-label">일반</span></button>
           <div class="db-slots-label">
             <span>인격 배치 순서 (12칸)</span>
             <span class="db-slots-progress" id="dbSlotsProgress"></span>
+            <button class="img-pref-toggle-btn inline" type="button" onclick="toggleImagePref(refreshDbImages)" title="일반/각성 이미지 전환"><span class="img-pref-switch"></span><span class="img-pref-label">일반</span></button>
           </div>
           <div class="db-board-grid" id="dbBoardSlots"></div>
         </div>
