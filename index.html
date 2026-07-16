@@ -273,13 +273,13 @@
     /* 12수감자를 6열×2줄 고정 그리드로 배치. flex-wrap이면 배치 시 "✓ " 접두사로
        버튼 폭이 변해 줄바꿈이 바뀌고, 클릭하려던 버튼이 움직이는 문제가 있었다. */
     .db-sinner-filter { display:grid; grid-template-columns:repeat(6, 1fr); gap:6px; margin-bottom:14px; }
-    .db-sinner-filter-btn { height:32px; padding:0 4px; border-radius:999px; font-size:14px; font-weight:700; background:var(--panel2); color:var(--muted); border:1px solid var(--border); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .db-sinner-filter-btn { height:36px; padding:0 4px; border-radius:999px; font-size:15px; font-weight:700; background:var(--panel2); color:var(--muted); border:1px solid var(--border); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .db-sinner-filter-btn.active { background:var(--button); color:var(--buttonText); border-color:var(--button); font-weight:800; }
     .db-sinner-filter-btn.placed:not(.active) { border-color:var(--slot-green); color:var(--slot-green); }
     .db-keyword-filter { display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
-    .db-keyword-filter-btn { height:30px; padding:0 12px; border-radius:999px; font-size:13px; font-weight:700; background:var(--panel2); color:var(--muted); border:1px solid var(--border); opacity:.7; }
+    .db-keyword-filter-btn { height:34px; padding:0 14px; border-radius:999px; font-size:14px; font-weight:700; background:var(--panel2); color:var(--muted); border:1px solid var(--border); opacity:.7; }
     .db-keyword-filter-btn.active { opacity:1; font-weight:800; border-color:currentColor; }
-    .db-keyword-filter-clear { height:30px; padding:0 12px; border-radius:999px; font-size:13px; font-weight:700; background:transparent; color:var(--muted); border:1px dashed var(--border); }
+    .db-keyword-filter-clear { height:34px; padding:0 14px; border-radius:999px; font-size:14px; font-weight:700; background:transparent; color:var(--muted); border:1px dashed var(--border); }
     .db-keyword-filter-clear:hover { color:var(--text); border-color:var(--text); }
     .db-candidates { display:grid; grid-template-columns:repeat(6, 1fr); gap:10px; padding:4px; }
     .db-candidates-empty { grid-column:1/-1; text-align:center; color:var(--muted); padding:40px 20px; font-size:14px; }
@@ -315,17 +315,19 @@
        카드 이미지는 이 폭에서만 정사각형(그래도 확대 전보다 큼)으로 3줄이 들어가게 한다. */
     @media (min-width:1500px) {
       #deckBuilderScreen { margin:-12px 0; }
-      .db-top-bar { padding:8px 0 8px; margin-bottom:10px; }
+      /* 화면을 더 넓게 쓰고(1860px) 보드 쪽 비중을 늘려 슬롯을 키운다 */
+      .db-top-bar { max-width:1860px; padding:8px 0 8px; margin-bottom:10px; }
+      .db-wrap { max-width:1860px; }
+      .db-candidates-section { flex:1.25; padding:8px 12px; margin-bottom:0; }
       .db-board-grid { grid-template-columns:repeat(6, 1fr); gap:8px; }
       .db-header-submit-btn { height:56px; font-size:22px; margin-top:10px; }
       .db-sticky-top { padding-bottom:8px; margin-bottom:8px; }
       .db-slots-label { margin-bottom:8px; }
-      .db-candidates-section { padding:8px 12px; margin-bottom:0; }
       .db-search-and-filter-sticky { padding:4px 0; }
       .db-search { height:34px; margin-top:6px; }
       .db-sinner-filter { margin-bottom:6px; gap:5px; }
-      .db-sinner-filter-btn { height:27px; }
-      .db-keyword-filter-btn { height:25px; }
+      .db-sinner-filter-btn { height:32px; }
+      .db-keyword-filter-btn, .db-keyword-filter-clear { height:30px; }
       .db-candidates { gap:8px; }
       .db-candidate img, .db-candidate-noimg { aspect-ratio:1/1; }
       .db-candidate-name { padding:4px; line-height:1.2; }
@@ -598,7 +600,7 @@
               <button class="img-pref-toggle-btn inline" type="button" onclick="toggleImagePref(refreshDbImages)" title="일반/각성 이미지 전환"><span class="img-pref-switch"></span><span class="img-pref-label">일반</span></button>
               <span class="db-board-actions">
                 <button class="secondary" id="dbClearAllBtn" title="초록(고정)과 노랑(순서 다름)은 남기고 나머지만 비웁니다">오답 비우기</button>
-                <button class="secondary" id="dbGiveUpBtn">정답 보기</button>
+                <button class="secondary" id="dbGiveUpBtn" title="정답을 공개하고 이 덱을 포기합니다">포기</button>
               </span>
             </span>
           </div>
@@ -653,7 +655,7 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-    const APP_VERSION = 'v0.13.48';
+    const APP_VERSION = 'v0.13.49';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -1825,6 +1827,7 @@
     const dbIsTouchDevice = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
     let dbDeck = null;
     let dbSlots = [], dbSlotJudge = [], dbLocked = [];
+    let dbGaveUp = false; // 포기한 덱은 제출해도 정답 처리하지 않는다
     let dbKnownJudge = {};
     let dbCandidates = [];
     let dbSinnerFilter = SINNER_ORDER[0];
@@ -1877,6 +1880,7 @@
       dbSlots = Array(DB_SLOT_COUNT).fill(null);
       dbSlotJudge = Array(DB_SLOT_COUNT).fill(null);
       dbLocked = Array(DB_SLOT_COUNT).fill(false);
+      dbGaveUp = false;
       dbKnownJudge = {};
       dbSinnerFilter = SINNER_ORDER[0];
       dbKeywordFilter = [];
@@ -2033,11 +2037,11 @@
     function dbUpdateSubmitState() {
       const filledCount = dbSlots.filter(Boolean).length;
       const allFilled = filledCount === DB_SLOT_COUNT;
-      const label = `제출 (${filledCount}/12)`;
+      const label = dbGaveUp ? '포기한 덱입니다' : `제출 (${filledCount}/12)`;
       ['dbSubmitBtnTop'].forEach(id => {
         const btn = document.getElementById(id);
         if (!btn) return;
-        btn.disabled = !allFilled;
+        btn.disabled = !allFilled || dbGaveUp;
         btn.textContent = label;
       });
       document.getElementById('dbSlotsProgress').textContent = `${filledCount}/12 배치됨`;
@@ -2216,6 +2220,7 @@
     }
 
     function dbSubmit() {
+      if (dbGaveUp) return; // 포기 후에는 제출로 클리어 처리되지 않는다
       if (dbSlots.some(s => !s)) return;
       const result = dbJudgeDeck();
       result.forEach((j, idx) => {
@@ -2235,6 +2240,7 @@
     }
 
     function dbGiveUp() {
+      dbGaveUp = true;
       const mainAnswers = dbMainSlotsSorted();
       const subAnswers = dbDeck.slots.filter(s => s.type === 'Sub');
       const nullAnswers = dbDeck.slots.filter(s => s.type === 'Null');
