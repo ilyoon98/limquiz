@@ -83,6 +83,12 @@ const decks = [...byId.entries()].map(([id, memberRows]) => {
   if (dupOrders.length) {
     console.warn(`⚠ ID ${id}(${deckName}): Main 순서 값이 중복됩니다 (${[...new Set(dupOrders)].join(', ')}).`);
   }
+  // Main 목표 자리가 없음 전용 뒤쪽 구간(마지막 N칸)과 겹치면 클리어 불가능한 덱이 된다
+  const nullCount = memberRows.filter(r => String(r['Type']).trim() === 'Null').length;
+  const nullZoneStart = 12 - nullCount;
+  mainOrders.forEach(o => {
+    if (o - 1 >= nullZoneStart) console.warn(`⚠ ID ${id}(${deckName}): Main 순서 ${o}이(가) 없음 전용 구간(${nullZoneStart + 1}번 이후)과 겹칩니다. 클리어 불가능한 덱입니다.`);
+  });
 
   const slots = memberRows.map(r => {
     const sinner = String(r['수감자'] || '').trim();

@@ -248,9 +248,13 @@
     .db-slot.reject-flash { animation:db-reject-shake .25s; border-color:var(--slot-red) !important; }
     @keyframes db-slot-pop { 0%{transform:scale(1)} 40%{transform:scale(1.1)} 100%{transform:scale(1)} }
     .db-slot.just-placed { animation:db-slot-pop .32s ease; }
-    .db-slot.judged-green { border-color:var(--slot-green); background:color-mix(in srgb, var(--slot-green) 45%, var(--panel2)); }
-    .db-slot.judged-yellow { border-color:var(--slot-yellow); background:color-mix(in srgb, var(--slot-yellow) 45%, var(--panel2)); }
-    .db-slot.judged-red { border-color:var(--slot-red); background:color-mix(in srgb, var(--slot-red) 45%, var(--panel2)); }
+    /* 판정 결과는 멀리서도 구분되도록 밝은 색 3px 테두리 + 글로우 + 좌상단 배지로 표시 */
+    .db-slot.judged-green { border:3px solid #4ade80; background:color-mix(in srgb, var(--slot-green) 50%, var(--panel2)); box-shadow:0 0 0 1px rgba(0,0,0,.4), 0 0 12px color-mix(in srgb, #4ade80 55%, transparent); }
+    .db-slot.judged-yellow { border:3px solid #facc15; background:color-mix(in srgb, var(--slot-yellow) 50%, var(--panel2)); box-shadow:0 0 0 1px rgba(0,0,0,.4), 0 0 12px color-mix(in srgb, #facc15 55%, transparent); }
+    .db-slot.judged-red { border:3px solid #f87171; background:color-mix(in srgb, var(--slot-red) 50%, var(--panel2)); box-shadow:0 0 0 1px rgba(0,0,0,.4), 0 0 12px color-mix(in srgb, #f87171 45%, transparent); }
+    .db-slot-judge-badge { position:absolute; top:2px; left:2px; font-size:9px; font-weight:800; padding:2px 6px; border-radius:999px; color:#fff; pointer-events:none; z-index:2; }
+    .db-slot-judge-badge.green { background:color-mix(in srgb, var(--slot-green) 80%, #000); border:1px solid #4ade80; }
+    .db-slot-judge-badge.yellow { background:color-mix(in srgb, var(--slot-yellow) 80%, #000); border:1px solid #facc15; }
     .db-slot.locked { cursor:default; }
     .db-slot-empty-label { font-size:11px; color:var(--muted); text-align:center; padding:6px; line-height:1.4; }
     .db-slot img { width:100%; height:100%; object-fit:cover; object-position:top center; display:block; pointer-events:none; }
@@ -269,7 +273,7 @@
     .db-keyword-filter-btn.active { opacity:1; font-weight:800; border-color:currentColor; }
     .db-keyword-filter-clear { height:30px; padding:0 12px; border-radius:999px; font-size:12px; font-weight:700; background:transparent; color:var(--muted); border:1px dashed var(--border); }
     .db-keyword-filter-clear:hover { color:var(--text); border-color:var(--text); }
-    .db-candidates { display:grid; grid-template-columns:repeat(4, 1fr); gap:14px; padding:4px; }
+    .db-candidates { display:grid; grid-template-columns:repeat(6, 1fr); gap:10px; padding:4px; }
     .db-candidates-empty { grid-column:1/-1; text-align:center; color:var(--muted); padding:40px 20px; font-size:14px; }
     .db-candidate { border-radius:12px; border:1px solid var(--border); background:var(--panel2); cursor:grab; position:relative; overflow:hidden; display:flex; flex-direction:column; transition:opacity .15s, outline-color .15s; }
     .db-candidate.placed { opacity:.4; cursor:default; }
@@ -294,7 +298,7 @@
       .db-sticky-top { flex:1; min-width:0; background:var(--panel); border-radius:14px; padding:16px; }
       .db-board-grid { grid-template-columns:repeat(4, 1fr); }
       .db-candidates-section { flex:1; min-width:0; }
-      .db-candidates { grid-template-columns:repeat(4, 1fr); }
+      .db-candidates { grid-template-columns:repeat(6, 1fr); }
       .db-search-and-filter-sticky { top:var(--db-topbar-height, 0px); }
     }
     #dbResult { margin-top:14px; }
@@ -614,7 +618,7 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-    const APP_VERSION = 'v0.13.41';
+    const APP_VERSION = 'v0.13.42';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -1950,15 +1954,19 @@
       const lockedClass = locked ? ' locked' : '';
       const cls = `db-slot board${filledClass}${judgeClass}${lockedClass}`;
       const removeOrLock = locked ? `<span class="db-slot-lock">🔒</span>` : `<button class="db-slot-remove" type="button">✕</button>`;
+      // 초록/노랑 판정은 테두리만으로는 눈에 잘 안 띄어서 좌상단에 텍스트 배지도 함께 표시
+      const judgeBadge = j === 'green' ? `<div class="db-slot-judge-badge green">✓ 정답</div>`
+        : j === 'yellow' ? `<div class="db-slot-judge-badge yellow">순서 다름</div>` : '';
       let inner;
       if (!m) {
         inner = `<span class="db-slot-empty-label">빈 슬롯</span>`;
       } else if (m['인격명'] === '없음') {
-        inner = `<span class="db-slot-empty-label">🚫 ${escapeHtml(m['수감자'])}<br>없음</span>${removeOrLock}`;
+        inner = `<span class="db-slot-empty-label">🚫 ${escapeHtml(m['수감자'])}<br>없음</span>${judgeBadge}${removeOrLock}`;
       } else {
         const img = pickIdImg(m);
         inner = `${img ? `<img src="${escapeHtml(img)}" alt="" loading="lazy" onerror="this.style.display='none'">` : `<span class="db-slot-empty-label">${escapeHtml(m['인격명'])}</span>`}
           ${j === 'red' ? `<div class="db-slot-x">✕</div>` : ''}
+          ${judgeBadge}
           <div class="db-slot-name">${escapeHtml(m['인격명'])}</div>
           ${removeOrLock}`;
       }
@@ -2143,8 +2151,11 @@
         if (mainOrderByName.hasOwnProperty(name)) {
           return idx === mainOrderByName[name] - 1 ? 'green' : 'yellow';
         }
+        // Sub는 위치 무관이지만, 없음 전용 뒤쪽 구간(마지막 N칸)까지 초록으로 잠그면
+        // 없음 카드가 들어갈 자리가 부족해져 영원히 클리어할 수 없게 된다.
+        // Main 목표 자리와 마찬가지로 이 구간의 Sub도 "순서 다름"으로 취급한다.
         if (name !== '없음' && subNameSet.has(name)) {
-          return mainTargetIndices.has(idx) ? 'yellow' : 'green';
+          return (mainTargetIndices.has(idx) || idx >= nullZoneStart) ? 'yellow' : 'green';
         }
         if (name === '없음' && nullSinnerSet.has(placed['수감자'])) {
           return (idx >= nullZoneStart && !mainTargetIndices.has(idx)) ? 'green' : 'yellow';
