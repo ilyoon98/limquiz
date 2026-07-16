@@ -129,6 +129,7 @@
     .empty { opacity:.65; }
     .kw-chip { display:inline-block; border-radius:5px; padding:2px 10px; font-size:14px; font-weight:700; line-height:1.5; border:1px solid rgba(255,255,255,.12); }
     .sinner-dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:5px; vertical-align:middle; flex-shrink:0; }
+    .sinner-emblem { width:20px; height:20px; object-fit:contain; margin-right:4px; flex-shrink:0; }
     .grade-1 { color:#888; }
     .grade-2 { color:#c8aa60; }
     .grade-3 { color:#ffd060; text-shadow:0 0 10px rgba(255,200,60,.45); }
@@ -179,7 +180,8 @@
     .sq-skill-label { font-size:14px; font-weight:800; color:#ffd98a; margin-bottom:10px; }
     .sq-row-label { font-size:13px; color:var(--muted); font-weight:700; margin:8px 0 6px; }
     .sq-btn-group { display:flex; gap:6px; flex-wrap:wrap; }
-    .sq-sin-btn { height:34px; padding:0 12px; border-radius:999px; border:1px solid var(--border); background:var(--panel2); color:var(--muted); font:inherit; font-size:14px; font-weight:700; cursor:pointer; transition:all .12s; }
+    .sq-sin-btn { height:34px; padding:0 12px; border-radius:999px; border:1px solid var(--border); background:var(--panel2); color:var(--muted); font:inherit; font-size:14px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:5px; transition:all .12s; }
+    .sq-sin-btn img { width:18px; height:18px; object-fit:contain; }
     .sq-sin-btn.sel { font-weight:900; }
     .sq-sin-btn.dim { opacity:.28; }
     .sq-type-btn { height:34px; padding:0 10px; border-radius:999px; border:1px solid var(--border); background:var(--panel2); color:var(--muted); font:inherit; font-size:14px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:5px; transition:all .12s; }
@@ -212,7 +214,8 @@
     .sq-result-skills { display:flex; flex-direction:column; gap:8px; margin-bottom:22px; }
     .sq-result-skill-row { display:flex; align-items:center; gap:10px; background:var(--panel2); border-radius:10px; padding:10px 14px; flex-wrap:wrap; }
     .sq-result-skill-name { font-weight:800; flex:1; min-width:120px; }
-    .sq-sin-chip { border-radius:999px; padding:3px 10px; font-size:13px; font-weight:800; border:1px solid rgba(255,255,255,.15); }
+    .sq-sin-chip { border-radius:999px; padding:3px 10px; font-size:13px; font-weight:800; border:1px solid rgba(255,255,255,.15); display:inline-flex; align-items:center; gap:4px; }
+    .sq-sin-chip img { width:16px; height:16px; object-fit:contain; }
     .sq-result-actions { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
     .sq-result-actions button { height:46px; padding:0 28px; font-size:15px; font-weight:800; border-radius:12px; }
     @media (max-width:640px) { .sq-img-wrap{min-height:320px} .sq-s2-row{grid-template-columns:80px 1fr 1fr} .sq-s2-icon,.sq-s2-icon-fb{width:80px;height:80px} }
@@ -273,7 +276,9 @@
     /* 12수감자를 6열×2줄 고정 그리드로 배치. flex-wrap이면 배치 시 "✓ " 접두사로
        버튼 폭이 변해 줄바꿈이 바뀌고, 클릭하려던 버튼이 움직이는 문제가 있었다. */
     .db-sinner-filter { display:grid; grid-template-columns:repeat(6, 1fr); gap:6px; margin-bottom:14px; }
-    .db-sinner-filter-btn { height:36px; padding:0 4px; border-radius:999px; font-size:15px; font-weight:700; background:var(--panel2); color:var(--muted); border:1px solid var(--border); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .db-sinner-filter-btn { height:36px; padding:0 6px; border-radius:999px; font-size:15px; font-weight:700; background:var(--panel2); color:var(--muted); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; gap:4px; overflow:hidden; }
+    .db-sinner-filter-icon { width:22px; height:22px; object-fit:contain; flex-shrink:0; }
+    .db-sinner-filter-name { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .db-sinner-filter-btn.active { background:var(--button); color:var(--buttonText); border-color:var(--button); font-weight:800; }
     .db-sinner-filter-btn.placed:not(.active) { border-color:var(--slot-green); color:var(--slot-green); }
     .db-keyword-filter { display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
@@ -655,7 +660,7 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-    const APP_VERSION = 'v0.13.49';
+    const APP_VERSION = 'v0.13.50';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -671,6 +676,20 @@
       '진동':{bg:'#2e2200',text:'#ffe066'},'파열':{bg:'#0d2e18',text:'#6ddb8a'},
       '침잠':{bg:'#0a2030',text:'#70c8f0'},'호흡':{bg:'#0c1840',text:'#7090ff'},
       '충전':{bg:'#1e0a30',text:'#c080f0'},
+    };
+    // 수감자 문장(엠블럼)·죄악속성 아이콘 (게임 리소스에서 추출, images/ 하위에 커밋됨)
+    const SINNER_ICON = {
+      '이상':'./images/sinners/yisang.png','파우스트':'./images/sinners/faust.png',
+      '돈키호테':'./images/sinners/donquixote.png','료슈':'./images/sinners/ryoshu.png',
+      '뫼르소':'./images/sinners/meursault.png','홍루':'./images/sinners/honglu.png',
+      '히스클리프':'./images/sinners/heathcliff.png','이스마엘':'./images/sinners/ishmael.png',
+      '로쟈':'./images/sinners/rodion.png','싱클레어':'./images/sinners/sinclair.png',
+      '오티스':'./images/sinners/outis.png','그레고르':'./images/sinners/gregor.png',
+    };
+    const SIN_ICON = {
+      '분노':'./images/sins/wrath.png','색욕':'./images/sins/lust.png','나태':'./images/sins/sloth.png',
+      '탐식':'./images/sins/gluttony.png','우울':'./images/sins/gloom.png','오만':'./images/sins/pride.png',
+      '질투':'./images/sins/envy.png',
     };
     const GRADE_CLASS = {'★':'grade-1','★★':'grade-2','★★★':'grade-3'};
     const MAX_TRIES = 7;
@@ -936,9 +955,14 @@
     }
 
     function sinnerDot(sinner) {
+      // 수감자 문장 아이콘이 있으면 색상 점 대신 문장을 표시한다
+      const icon = SINNER_ICON[sinner];
       const color = SINNER_COLOR[sinner];
-      if (!color) return escapeHtml(sinner);
-      return `<span style="display:inline-flex;align-items:center;gap:0"><span class="sinner-dot" style="background:${color}"></span>${escapeHtml(sinner)}</span>`;
+      if (!icon && !color) return escapeHtml(sinner);
+      const mark = icon
+        ? `<img class="sinner-emblem" src="${icon}" alt="" loading="lazy">`
+        : `<span class="sinner-dot" style="background:${color}"></span>`;
+      return `<span style="display:inline-flex;align-items:center;gap:0">${mark}${escapeHtml(sinner)}</span>`;
     }
     function kwChip(kw) {
       if (!kw) return '<span class="empty">-</span>';
@@ -1591,9 +1615,10 @@
       const c = SQ_SIN_COLOR[sin] || {};
       const sel = sqS1Sel[si].sin === sin;
       const dim = sqS1Sel[si].sin && !sel;
+      const icon = SIN_ICON[sin] ? `<img src="${SIN_ICON[sin]}" alt="" loading="lazy">` : '';
       return `<button class="sq-sin-btn${sel?' sel':''}${dim?' dim':''}"
         style="${sel ? `background:${c.bg};color:${c.text};border-color:${c.border}` : ''}"
-        onclick="sqSelectSin(${si},'${sin}')">${escapeHtml(sin)}</button>`;
+        onclick="sqSelectSin(${si},'${sin}')">${icon}${escapeHtml(sin)}</button>`;
     }
 
     function sqTypeBtnHTML(si, type) {
@@ -1799,7 +1824,7 @@
         const typeBadge = sqS1TypeGaveUp[i] ? ' 👀' : '';
         return `<div class="sq-result-skill-row">
           <div class="sq-result-skill-name">${escapeHtml(id[`스킬${n}명`])}${nameBadge}</div>
-          <span class="sq-sin-chip" style="background:${sc.bg};color:${sc.text};border-color:${sc.border}">${escapeHtml(sin)}${sinBadge}</span>
+          <span class="sq-sin-chip" style="background:${sc.bg};color:${sc.text};border-color:${sc.border}">${SIN_ICON[sin] ? `<img src="${SIN_ICON[sin]}" alt="">` : ''}${escapeHtml(sin)}${sinBadge}</span>
           ${typeHtml}${typeBadge}
         </div>`;
       }).join('');
@@ -1914,7 +1939,8 @@
         const isPlaced = dbSinnerHasPlacement(s);
         const placed = isPlaced ? ' placed' : '';
         const label = (isPlaced ? '✓ ' : '') + s;
-        return `<button class="db-sinner-filter-btn${active}${placed}" data-sinner="${escapeHtml(s)}" type="button">${escapeHtml(label)}</button>`;
+        const icon = SINNER_ICON[s] ? `<img class="db-sinner-filter-icon" src="${SINNER_ICON[s]}" alt="" loading="lazy">` : '';
+        return `<button class="db-sinner-filter-btn${active}${placed}" data-sinner="${escapeHtml(s)}" type="button">${icon}<span class="db-sinner-filter-name">${escapeHtml(label)}</span></button>`;
       }).join('');
     }
 
