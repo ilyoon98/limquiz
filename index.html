@@ -255,6 +255,10 @@
     .db-slot-judge-badge { position:absolute; top:2px; left:2px; font-size:9px; font-weight:800; padding:2px 6px; border-radius:999px; color:#fff; pointer-events:none; z-index:2; }
     .db-slot-judge-badge.green { background:color-mix(in srgb, var(--slot-green) 80%, #000); border:1px solid #4ade80; }
     .db-slot-judge-badge.yellow { background:color-mix(in srgb, var(--slot-yellow) 80%, #000); border:1px solid #facc15; }
+    .db-slot-judge-badge.red { background:color-mix(in srgb, var(--slot-red) 80%, #000); border:1px solid #f87171; }
+    /* 이전 제출로 알아낸 판정을 옮긴 뒤에도 유지하는 점선 힌트 (실선 판정보다 약하게) */
+    .db-slot.known-yellow { border:3px dashed color-mix(in srgb, #facc15 75%, var(--border)); }
+    .db-slot.known-red { border:3px dashed color-mix(in srgb, #f87171 75%, var(--border)); }
     .db-slot.locked { cursor:default; }
     .db-slot-empty-label { font-size:11px; color:var(--muted); text-align:center; padding:6px; line-height:1.4; }
     .db-slot img { width:100%; height:100%; object-fit:cover; object-position:top center; display:block; pointer-events:none; }
@@ -293,11 +297,12 @@
     .db-message { position:fixed; left:50%; bottom:24px; transform:translateX(-50%); z-index:200; max-width:90vw; text-align:center; font-weight:800; color:#ffb86b; background:color-mix(in srgb, var(--slot-yellow) 20%, var(--panel2)); border:1px solid color-mix(in srgb, var(--slot-yellow) 45%, var(--border)); border-radius:12px; padding:10px 16px; box-shadow:0 12px 30px rgba(0,0,0,.5); }
     @media (max-width:800px) { .db-board-grid { grid-template-columns:repeat(3, 1fr); } .db-candidates { grid-template-columns:repeat(2, 1fr); } }
     @media (min-width:900px) {
-      .db-top-bar { max-width:1300px; }
-      .db-wrap { display:flex; align-items:flex-start; gap:24px; max-width:1300px; }
+      /* 인격 카드가 너무 작다는 피드백으로 전체 폭을 넓히고 후보 패널에 더 많은 비중을 준다 */
+      .db-top-bar { max-width:1560px; }
+      .db-wrap { display:flex; align-items:flex-start; gap:24px; max-width:1560px; }
       .db-sticky-top { flex:1; min-width:0; background:var(--panel); border-radius:14px; padding:16px; }
       .db-board-grid { grid-template-columns:repeat(4, 1fr); }
-      .db-candidates-section { flex:1; min-width:0; }
+      .db-candidates-section { flex:1.2; min-width:0; }
       .db-candidates { grid-template-columns:repeat(6, 1fr); }
       .db-search-and-filter-sticky { top:var(--db-topbar-height, 0px); }
     }
@@ -552,7 +557,7 @@
         <button class="back-btn" id="dbBackBtn">← 홈으로</button>
         <span class="db-title">덱 퀴즈</span>
         <button class="secondary db-help-btn" id="dbHelpBtn" type="button">❓ 도움말</button>
-        <button class="secondary db-header-giveup-btn" id="dbClearAllBtn">모두 비우기</button>
+        <button class="secondary db-header-giveup-btn" id="dbClearAllBtn" title="초록(고정)과 노랑(순서 다름)은 남기고 나머지만 비웁니다">오답 비우기</button>
         <button class="secondary db-header-giveup-btn" id="dbGiveUpBtn">정답 보기</button>
       </div>
       <button class="db-header-submit-btn" id="dbSubmitBtnTop" type="button" disabled>제출 (0/12)</button>
@@ -618,7 +623,7 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-    const APP_VERSION = 'v0.13.42';
+    const APP_VERSION = 'v0.13.43';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -1855,7 +1860,7 @@
 
     function dbRenderHint() {
       document.getElementById('dbHint').innerHTML = `
-        <div class="db-hint-desc">인격을 더블클릭(모바일은 탭 한 번)해서 순서대로 배치하세요. 같은 수감자는 중복 배치할 수 없습니다 (안 쓰는 수감자는 그 수감자의 "없음" 카드로 배치). 배치 후에는 드래그로 순서를 바꿀 수 있어요.</div>
+        <div class="db-hint-desc">인격을 더블클릭(모바일은 탭 한 번)해서 순서대로 배치하세요. 같은 수감자는 중복 배치할 수 없습니다 (안 쓰는 수감자는 그 수감자의 "없음" 카드로 배치). 배치 후에는 드래그로 순서를 바꿀 수 있어요.<br>제출 후 노랑(순서 다름) 인격을 다른 자리로 옮기면 노란 점선 "🟡 인격 맞음" 표시로 남아요. "오답 비우기"는 초록·노랑은 남기고 나머지만 비웁니다.</div>
       `;
     }
 
@@ -1952,11 +1957,18 @@
       const judgeClass = (j === 'green' || j === 'yellow' || j === 'red') ? ` judged-${j}` : '';
       const filledClass = m ? ' filled' : '';
       const lockedClass = locked ? ' locked' : '';
-      const cls = `db-slot board${filledClass}${judgeClass}${lockedClass}`;
+      // 아직 판정 전(j가 null)인 슬롯이라도, 이전 제출에서 알아낸 판정(dbKnownJudge)이
+      // 있으면 점선 힌트로 유지한다. 노랑 인격을 다른 자리로 옮기면 판정 표시가 전부
+      // 사라져 헷갈린다는 피드백 대응: "인격은 맞음(위치는 미확인)" 상태를 계속 보여준다.
+      const known = (!j && m) ? dbKnownJudge[dbCandidateKey(m)] : null;
+      const knownClass = known === 'yellow' ? ' known-yellow' : known === 'red' ? ' known-red' : '';
+      const cls = `db-slot board${filledClass}${judgeClass}${knownClass}${lockedClass}`;
       const removeOrLock = locked ? `<span class="db-slot-lock">🔒</span>` : `<button class="db-slot-remove" type="button">✕</button>`;
       // 초록/노랑 판정은 테두리만으로는 눈에 잘 안 띄어서 좌상단에 텍스트 배지도 함께 표시
       const judgeBadge = j === 'green' ? `<div class="db-slot-judge-badge green">✓ 정답</div>`
-        : j === 'yellow' ? `<div class="db-slot-judge-badge yellow">순서 다름</div>` : '';
+        : j === 'yellow' ? `<div class="db-slot-judge-badge yellow">순서 다름</div>`
+        : known === 'yellow' ? `<div class="db-slot-judge-badge yellow">🟡 인격 맞음</div>`
+        : known === 'red' ? `<div class="db-slot-judge-badge red">✕ 오답 인격</div>` : '';
       let inner;
       if (!m) {
         inner = `<span class="db-slot-empty-label">빈 슬롯</span>`;
@@ -2101,6 +2113,9 @@
     function dbClearAll() {
       for (let i = 0; i < DB_SLOT_COUNT; i++) {
         if (dbLocked[i]) continue;
+        // 노랑(인격은 정답, 순서만 다름)은 유용한 정보이므로 남기고
+        // 오답(빨강)과 아직 판정 안 된 배치만 비운다.
+        if (dbSlotJudge[i] === 'yellow') continue;
         dbSlots[i] = null;
         dbSlotJudge[i] = null;
       }
