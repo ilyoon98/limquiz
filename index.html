@@ -342,10 +342,18 @@
       .db-candidate-name { padding:4px; line-height:1.2; }
     }
     #dbResult { margin-top:14px; }
-    .db-result-banner { text-align:center; font-size:24px; font-weight:900; margin-bottom:14px; }
+    .db-result-banner { text-align:center; font-size:28px; font-weight:900; margin-bottom:14px; }
     .db-result-stat { text-align:center; color:var(--muted); font-size:16px; margin-bottom:8px; }
-    .db-result-actions { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:16px; }
-    .db-result-actions button { height:46px; padding:0 28px; font-size:15px; font-weight:800; border-radius:12px; }
+    .db-result-panel { border:2px solid var(--border); transition:box-shadow .2s; }
+    .db-result-panel.success { border-color:var(--green); background:color-mix(in srgb, var(--green) 14%, var(--panel2)); box-shadow:0 0 0 1px color-mix(in srgb, var(--green) 45%, transparent), 0 10px 30px rgba(0,0,0,.35); }
+    .db-result-panel.fail { border-color:var(--red); background:color-mix(in srgb, var(--red) 12%, var(--panel2)); box-shadow:0 0 0 1px color-mix(in srgb, var(--red) 40%, transparent), 0 10px 30px rgba(0,0,0,.35); }
+    .db-result-stats { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:6px; }
+    .db-stat-card { background:var(--panel2); border:1px solid var(--border); border-radius:12px; padding:14px 22px; min-width:120px; text-align:center; }
+    .db-stat-card.highlight { border-left:4px solid var(--button); background:color-mix(in srgb, var(--button) 16%, var(--panel2)); }
+    .db-stat-icon { font-size:24px; margin-bottom:6px; line-height:1; }
+    .db-stat-label { font-size:12px; color:var(--muted); font-weight:800; margin-bottom:4px; text-transform:uppercase; letter-spacing:.05em; }
+    .db-stat-value { font-size:21px; font-weight:900; }
+    .db-stat-card.highlight .db-stat-value { color:#ffd98a; }
     @media (max-width:640px) {
       .db-board-grid { grid-template-columns:none; grid-auto-flow:column; grid-auto-columns:80px; overflow-x:auto; padding-bottom:6px; }
       .db-slot{width:80px;height:110px} .db-candidate{width:70px;height:98px} .db-candidate img{height:66px}
@@ -666,7 +674,7 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-    const APP_VERSION = 'v0.13.54';
+    const APP_VERSION = 'v0.13.55';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -1881,6 +1889,7 @@
     let dbDeck = null;
     let dbSlots = [], dbSlotJudge = [], dbLocked = [];
     let dbGaveUp = false; // 포기한 덱은 제출해도 정답 처리하지 않는다
+    let dbResultShown = false; // 결과(클리어/포기)가 표시된 상태 - 제출 버튼이 "다음 게임 시작하기"로 전환된다
     let dbSubmitCount = 0; // 이 덱에서 제출(채점)한 횟수 - 결과 화면에 표시
     let dbHintsUsed = 0;   // 사용한 힌트(공개된 덱 키워드) 개수 - 플레이 중·결과에 표시
     let dbKnownJudge = {};
@@ -1926,6 +1935,7 @@
 
     function dbInit() {
       dbDeck = dbPickDeck();
+      dbResultShown = false;
       document.getElementById('dbResult').style.display = 'none';
       document.getElementById('dbMessage').style.display = 'none';
       if (!dbDeck) {
@@ -2133,11 +2143,11 @@
     function dbUpdateSubmitState() {
       const filledCount = dbSlots.filter(Boolean).length;
       const allFilled = filledCount === DB_SLOT_COUNT;
-      const label = dbGaveUp ? '포기한 덱입니다' : `제출 (${filledCount}/12)`;
+      const label = dbResultShown ? '▶ 다음 게임 시작하기' : (dbGaveUp ? '포기한 덱입니다' : `제출 (${filledCount}/12)`);
       ['dbSubmitBtnTop'].forEach(id => {
         const btn = document.getElementById(id);
         if (!btn) return;
-        btn.disabled = !allFilled || dbGaveUp;
+        btn.disabled = dbResultShown ? false : (!allFilled || dbGaveUp);
         btn.textContent = label;
       });
       document.getElementById('dbSlotsProgress').textContent = `${filledCount}/12 배치됨`;
@@ -2316,6 +2326,7 @@
     }
 
     function dbSubmit() {
+      if (dbResultShown) { dbInit(); return; } // 결과 화면에서는 이 버튼이 "다음 게임 시작하기"로 동작한다
       if (dbGaveUp) return; // 포기 후에는 제출로 클리어 처리되지 않는다
       if (dbSlots.some(s => !s)) return;
       dbSubmitCount++;
@@ -2367,18 +2378,32 @@
     }
 
     function dbRenderResult(gaveUp) {
+      dbResultShown = true;
       const resultEl = document.getElementById('dbResult');
       resultEl.style.display = '';
       const greenCount = dbSlotJudge.filter(j => j === 'green').length;
-      resultEl.innerHTML = `<div class="panel">
+      resultEl.innerHTML = `<div class="panel db-result-panel ${gaveUp ? 'fail' : 'success'}">
         <div class="db-result-banner">${gaveUp ? '😢 포기' : '🎉 클리어!'}</div>
-        <div class="db-hint-title" style="text-align:center;margin-bottom:10px">덱: ${escapeHtml(dbDeck.deckName)}</div>
-        <div class="db-result-stat">${greenCount}/12</div>
-        <div class="db-result-stat">${gaveUp ? `제출 ${dbSubmitCount}회 후 포기` : `총 ${dbSubmitCount}회 제출 만에 완료!`} · 힌트 ${dbHintsUsed}회 사용</div>
-        <div class="db-result-actions">
-          <button onclick="dbInit()">다음 덱</button>
+        <div class="db-hint-title" style="text-align:center;margin-bottom:14px">덱: ${escapeHtml(dbDeck.deckName)}</div>
+        <div class="db-result-stats">
+          <div class="db-stat-card highlight">
+            <div class="db-stat-icon">${gaveUp ? '📉' : '✅'}</div>
+            <div class="db-stat-label">정답</div>
+            <div class="db-stat-value">${greenCount}/12</div>
+          </div>
+          <div class="db-stat-card">
+            <div class="db-stat-icon">🔁</div>
+            <div class="db-stat-label">제출 횟수</div>
+            <div class="db-stat-value">${dbSubmitCount}회</div>
+          </div>
+          <div class="db-stat-card">
+            <div class="db-stat-icon">💡</div>
+            <div class="db-stat-label">힌트 사용</div>
+            <div class="db-stat-value">${dbHintsUsed}회</div>
+          </div>
         </div>
       </div>`;
+      dbUpdateSubmitState();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
