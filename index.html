@@ -674,7 +674,7 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-    const APP_VERSION = 'v0.13.55';
+    const APP_VERSION = 'v0.13.56';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -933,11 +933,17 @@
       const q = ignoreSearch ? '' : lower(guessInput.value);
       return SORTED_DATA.filter(row => rowMatchesFilters(row) && (!q || lower(row['인격명']).includes(q)));
     }
-    function renderDropdown(open = true, ignoreSearch = ignoreSearchForDropdown) {
+    // 드롭다운에는 취소선(빗나간) 후보를 뒤로 미뤄 재배열한 순서로 표시한다.
+    // 키보드 탐색(화살표/엔터)도 반드시 이 순서를 기준으로 인덱싱해야
+    // 하이라이트된 항목과 실제 선택되는 항목이 어긋나지 않는다.
+    function orderedFilteredRows(ignoreSearch = ignoreSearchForDropdown) {
       const filtered = filteredRows(ignoreSearch);
       const notEliminated = filtered.filter(row => !isEliminatedCandidate(row));
       const eliminated = filtered.filter(row => isEliminatedCandidate(row));
-      const rows = [...notEliminated, ...eliminated];
+      return [...notEliminated, ...eliminated];
+    }
+    function renderDropdown(open = true, ignoreSearch = ignoreSearchForDropdown) {
+      const rows = orderedFilteredRows(ignoreSearch);
       filteredCountEl.textContent = rows.length;
       highlightedOption = Math.min(highlightedOption, rows.length - 1);
       dropdown.innerHTML = rows.length ? rows.map((row, i) => `
@@ -1500,7 +1506,7 @@
     guessInput.addEventListener('focus', openDropdownFromSelectedValue);
     guessInput.addEventListener('click', openDropdownFromSelectedValue);
     guessInput.addEventListener('keydown', e => {
-      const rows = filteredRows(ignoreSearchForDropdown);
+      const rows = orderedFilteredRows(ignoreSearchForDropdown);
       if (e.key === 'ArrowDown') { e.preventDefault(); highlightedOption = Math.min(rows.length-1, highlightedOption+1); renderDropdown(true); dropdown.querySelector('.option.active')?.scrollIntoView({block:'nearest'}); }
       else if (e.key === 'ArrowUp') { e.preventDefault(); highlightedOption = Math.max(0, highlightedOption-1); renderDropdown(true); dropdown.querySelector('.option.active')?.scrollIntoView({block:'nearest'}); }
       else if (e.key === 'Enter') {
