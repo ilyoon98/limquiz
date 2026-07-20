@@ -484,7 +484,10 @@
           </div>
           <div class="record-head-btns">
             <button id="statsBtn" class="secondary small-btn">📊 통계</button>
+            <button id="exportRecordsBtn" class="secondary small-btn" title="기록을 JSON 파일로 저장합니다">⬇️ 백업</button>
+            <button id="importRecordsBtn" class="secondary small-btn" title="백업 파일에서 기록을 불러옵니다 (기존 기록에 병합)">⬆️ 복원</button>
             <button id="clearRecordsBtn" class="secondary small-btn">기록 초기화</button>
+            <input type="file" id="importRecordsFile" accept=".json,application/json" style="display:none">
           </div>
         </div>
         <div class="rec-tab-wrap">
@@ -709,7 +712,7 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-    const APP_VERSION = 'v0.13.59';
+    const APP_VERSION = 'v0.13.60';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -1119,6 +1122,51 @@
           renderRecordsHome();
         });
       });
+    }
+
+    // ── 기록 백업/복원 ───────────────────────────────────────
+    function exportRecords() {
+      const records = loadResultRecordsV2();
+      if (!records.length) { alert('내보낼 기록이 없습니다.'); return; }
+      const payload = { app: 'limquiz', type: 'records-backup', exportedAt: todayKey(), count: records.length, records };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `limquiz-기록-${todayKey().replace(/-/g, '')}.json`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+    // 파싱된 백업 데이터를 기존 기록에 병합한다 (완전 동일한 기록은 중복 제외, 날짜순 정렬).
+    // 반환값으로 결과를 알려 파일 리더와 분리해 테스트 가능하게 한다.
+    function applyImportedRecords(parsed) {
+      const incoming = Array.isArray(parsed) ? parsed : (parsed && Array.isArray(parsed.records) ? parsed.records : null);
+      if (!incoming || !incoming.every(r => r && typeof r === 'object' && typeof r.mode === 'string')) {
+        return { ok: false, reason: 'invalid' };
+      }
+      const current = loadResultRecordsV2();
+      const seen = new Set(current.map(r => JSON.stringify(r)));
+      const added = incoming.filter(r => !seen.has(JSON.stringify(r)));
+      if (!added.length) return { ok: false, reason: 'nothing-new', dup: incoming.length };
+      const merged = [...current, ...added].sort((a, b) => String(a.date || '').localeCompare(String(b.date || '')));
+      return { ok: true, added: added.length, dup: incoming.length - added.length, merged };
+    }
+    function importRecordsFromFile(file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        let parsed;
+        try { parsed = JSON.parse(reader.result); }
+        catch (e) { alert('파일을 읽지 못했습니다. 올바른 백업 파일인지 확인해주세요.'); return; }
+        const res = applyImportedRecords(parsed);
+        if (!res.ok) {
+          alert(res.reason === 'nothing-new' ? '가져올 새 기록이 없습니다. (모두 이미 존재)' : '올바른 기록 백업 파일이 아닙니다.');
+          return;
+        }
+        if (!confirm(`백업에서 ${res.added}개 기록을 추가할까요?${res.dup ? ` (중복 ${res.dup}개 제외)` : ''} 기존 기록은 유지됩니다.`)) return;
+        saveResultRecordsV2(res.merged);
+        renderRecordsHome();
+        alert(`${res.added}개 기록을 가져왔습니다.`);
+      };
+      reader.readAsText(file);
     }
 
     // ── 통계 ─────────────────────────────────────────────────
@@ -1629,6 +1677,13 @@
         saveResultRecordsV2(loadResultRecordsV2().filter(r => r.mode !== recordFilter));
       }
       renderRecordsHome();
+    });
+    document.getElementById('exportRecordsBtn').addEventListener('click', exportRecords);
+    document.getElementById('importRecordsBtn').addEventListener('click', () => document.getElementById('importRecordsFile').click());
+    document.getElementById('importRecordsFile').addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (file) importRecordsFromFile(file);
+      e.target.value = ''; // 같은 파일 재선택도 가능하게 초기화
     });
     document.getElementById('statsBtn').addEventListener('click', openStats);
     document.getElementById('statsCloseBtn').addEventListener('click', closeStats);
