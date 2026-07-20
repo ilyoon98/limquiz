@@ -189,12 +189,14 @@
     .sq-wrap { max-width:860px; margin:0 auto; }
     .sq-header { display:flex; align-items:center; gap:14px; margin-bottom:20px; }
     .sq-title { font-size:22px; font-weight:900; }
-    .sq-identity-card { display:grid; grid-template-columns:1fr; background:var(--panel); border:1px solid var(--border); border-radius:18px; overflow:hidden; margin-bottom:20px; }
+    /* 이미지(미디어)는 일반 스크롤로 흘러가고, 이름+정보 카드(스티키)는 스킬 3까지
+       스크롤해도 화면 상단에 붙어 계속 보인다. 두 요소를 분리해야 스티키의 유효 범위가
+       스킬 블록 목록까지 이어진다 (부모가 짧게 끝나면 sticky가 일찍 풀려버림). */
+    .sq-identity-media { display:grid; grid-template-columns:1fr; background:var(--panel); border:1px solid var(--border); border-radius:18px 18px 0 0; overflow:hidden; }
+    .sq-identity-sticky { position:sticky; top:0; z-index:30; background:var(--panel); border:1px solid var(--border); border-top:0; border-radius:0 0 18px 18px; padding:16px 22px 18px; margin-bottom:20px; box-shadow:0 10px 20px rgba(0,0,0,.28); }
     .sq-img-wrap { position:relative; min-height:520px; background:var(--panel2); }
     .sq-img-wrap img { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; object-position:center; display:block; }
-    .sq-identity-info { padding:22px 24px; }
-    .sq-identity-name { font-size:23px; font-weight:900; margin-bottom:10px; }
-    .sq-identity-meta { color:var(--muted); font-size:17px; line-height:1.8; }
+    .sq-identity-name { font-size:23px; font-weight:900; margin-bottom:12px; }
     .sq-skill-block { background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:18px 20px; }
     .sq-skill-header { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; }
     .sq-skill-label { font-size:17px; font-weight:800; color:#ffd98a; }
@@ -608,7 +610,8 @@
         <span class="sq-title">스킬 퀴즈</span>
       </div>
 
-      <div id="sq-identity-card" class="sq-identity-card"></div>
+      <div id="sq-identity-media" class="sq-identity-media"></div>
+      <div id="sq-identity-sticky" class="sq-identity-sticky"></div>
       <div class="sq-progress-stats" id="sqProgressStats"></div>
 
       <!-- 스테이지 1: 속성/유형 -->
@@ -727,7 +730,7 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-    const APP_VERSION = 'v0.13.63';
+    const APP_VERSION = 'v0.13.64';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -793,8 +796,8 @@
       if (img && answer) img.src = pickIdImg(answer);
     }
     function refreshSqImage() {
-      const cardEl = document.getElementById('sq-identity-card');
-      if (cardEl && cardEl.style.display !== 'none' && sqIdentity) cardEl.innerHTML = sqIdentityCardHTML();
+      const cardEl = document.getElementById('sq-identity-media');
+      if (cardEl && cardEl.style.display !== 'none' && sqIdentity) cardEl.innerHTML = sqIdentityMediaHTML();
     }
     function refreshDbImages() {
       if (dbDeck) { dbRenderSlots(); dbRenderCandidates(); }
@@ -1898,7 +1901,10 @@
       homeScreen.style.display = 'none';
       skillQuizScreen.style.display = '';
       if (DATA.length) sqInit();
-      else document.getElementById('sq-identity-card').innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted)">데이터를 불러오는 중...</div>';
+      else {
+        document.getElementById('sq-identity-media').innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted)">데이터를 불러오는 중...</div>';
+        document.getElementById('sq-identity-sticky').style.display = 'none';
+      }
     }
 
     function sqGoHome() {
@@ -1944,22 +1950,40 @@
       sqResultSaved = false;
     }
 
-    function sqIdentityCardHTML() {
+    // 이미지 영역: 일반 스크롤로 흘러간다 (스티키 아님)
+    function sqIdentityMediaHTML() {
       const id = sqIdentity;
       const currentImg = pickIdImg(id);
-      const affilParts = [id['소속1'], id['소속2']].filter(Boolean);
-      const kws = [id['키워드1'], id['키워드2'], id['키워드3']].filter(Boolean);
       return `
         ${currentImg ? `<div class="img-pref-row sq-toggle-row"><button class="img-pref-toggle-btn inline" type="button" onclick="toggleImagePref(refreshSqImage)" title="일반/각성 이미지 전환"><span class="img-pref-switch"></span><span class="img-pref-label">일반</span></button></div>` : ''}
         <div class="sq-img-wrap">
           ${currentImg ? `<img src="${escapeHtml(currentImg)}" alt="${escapeHtml(id['인격명'])}" onerror="this.style.display='none'">` : ''}
-        </div>
-        <div class="sq-identity-info">
-          <div class="sq-identity-name">${escapeHtml(id['인격명'])}</div>
-          <div class="sq-identity-meta">
-            ${sinnerDot(id['수감자'])} · ${gradeSpan(id['성급'])}
-            ${affilParts.length ? '<br>' + escapeHtml(affilParts.join(' · ')) : ''}
-            ${kws.length ? '<br>' + kws.map(k => kwChip(k)).join(' ') : ''}
+        </div>`;
+    }
+    // 이름 + 수감자/성급/소속/키워드 카드: 스킬 3까지 스크롤해도 상단에 붙어 계속 보인다
+    function sqIdentityStickyHTML() {
+      const id = sqIdentity;
+      const affilParts = [id['소속1'], id['소속2']].filter(Boolean);
+      const kws = [id['키워드1'], id['키워드2'], id['키워드3']].filter(Boolean);
+      const sinnerColor = SINNER_COLOR[id['수감자']] || '#c9a86a';
+      return `
+        <div class="sq-identity-name">${escapeHtml(id['인격명'])}</div>
+        <div class="answer-info-grid" style="--sinner-c:${sinnerColor}">
+          <div class="answer-info-card">
+            <div class="answer-info-label">수감자</div>
+            <div class="answer-info-value">${sinnerDot(id['수감자'])}</div>
+          </div>
+          <div class="answer-info-card">
+            <div class="answer-info-label">성급</div>
+            <div class="answer-info-value">${gradeSpan(id['성급'])}</div>
+          </div>
+          ${affilParts.length ? `<div class="answer-info-card">
+            <div class="answer-info-label">소속</div>
+            <div class="answer-info-value">${escapeHtml(affilParts.join(' · '))}</div>
+          </div>` : ''}
+          <div class="answer-info-card kw-card">
+            <div class="answer-info-label">키워드</div>
+            <div class="answer-info-value">${kws.length ? kws.map(k => kwChip(k)).join('') : '<span class="empty">없음</span>'}</div>
           </div>
         </div>`;
     }
@@ -2044,9 +2068,11 @@
     }
 
     function sqRenderStage1() {
-      document.getElementById('sq-identity-card').innerHTML = sqIdentityCardHTML();
+      document.getElementById('sq-identity-media').innerHTML = sqIdentityMediaHTML();
+      document.getElementById('sq-identity-sticky').innerHTML = sqIdentityStickyHTML();
       updateImgPrefButtons();
-      document.getElementById('sq-identity-card').style.display = '';
+      document.getElementById('sq-identity-media').style.display = '';
+      document.getElementById('sq-identity-sticky').style.display = '';
       document.getElementById('sq-stage1').style.display = '';
       document.getElementById('sq-stage2').style.display = 'none';
       document.getElementById('sq-result').style.display = 'none';
@@ -2111,7 +2137,18 @@
     function sqPositionSkillDropdown() {
       if (!sqSkillActiveInput) return;
       const r = sqSkillActiveInput.getBoundingClientRect();
-      sqSkillDropdown.style.top = (r.bottom + 4) + 'px';
+      // 스킬3처럼 화면 하단에 가까운 입력은 아래로 펼치면 화면 밖으로 나가 보이지 않는다.
+      // 아래 공간이 부족하고 위 공간이 더 넓으면 입력 위쪽으로 뒤집어 펼친다.
+      const dropdownH = 260; // 인라인 max-height와 동일한 추정치
+      const spaceBelow = window.innerHeight - r.bottom;
+      const spaceAbove = r.top;
+      if (spaceBelow < dropdownH + 10 && spaceAbove > spaceBelow) {
+        sqSkillDropdown.style.bottom = (window.innerHeight - r.top + 4) + 'px';
+        sqSkillDropdown.style.top = 'auto';
+      } else {
+        sqSkillDropdown.style.top = (r.bottom + 4) + 'px';
+        sqSkillDropdown.style.bottom = 'auto';
+      }
       sqSkillDropdown.style.left = r.left + 'px';
       sqSkillDropdown.style.width = r.width + 'px';
     }
@@ -2161,7 +2198,11 @@
         const inp = document.getElementById(`sq-s2-inp-${si}`);
         if (!inp) return;
         inp.addEventListener('input', () => { sqSkillActiveInput = inp; sqSkillHighlight = -1; sqRenderSkillDropdown(); });
-        inp.addEventListener('focus', () => { sqSkillActiveInput = inp; sqSkillHighlight = -1; sqRenderSkillDropdown(); });
+        inp.addEventListener('focus', () => {
+          sqSkillActiveInput = inp; sqSkillHighlight = -1; sqRenderSkillDropdown();
+          // 화면 하단 근처 입력은 포커스 시 살짝 스크롤해 드롭다운이 보일 공간을 확보한다
+          inp.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        });
         inp.addEventListener('keydown', e => {
           const vals = sqSkillFilteredNames(inp.value);
           if (e.key === 'ArrowDown') { e.preventDefault(); sqSkillHighlight = Math.min(vals.length - 1, sqSkillHighlight + 1); sqRenderSkillDropdown(); sqSkillDropdown.querySelector('.option.active')?.scrollIntoView({block:'nearest'}); }
@@ -2205,17 +2246,24 @@
       }
     }
 
-    // 힌트를 누를 때마다 이름의 앞부분을 한 글자씩 더 공개한다 (전부 공개하진 않음)
+    // 첫 힌트는 글자 수만 알려주고, 두 번째부터는 앞부분을 한 글자씩 더 공개한다
+    // (레벨 1 = 글자 수 안내, 레벨 N(N>=2) = 앞 N-1자 공개, 전부 공개하진 않음)
     function sqHint(si) {
       if (sqS2Done[si]) return;
       const name = sqIdentity[`스킬${si+1}명`];
-      const maxLevel = Math.max(1, name.length - 1);
-      const level = Math.min((sqS2HintLevel[si] || 0) + 1, maxLevel);
-      const grew = level !== sqS2HintLevel[si];
+      const maxChars = Math.max(1, name.length - 1);
+      const maxLevel = maxChars + 1;
+      const prevLevel = sqS2HintLevel[si] || 0;
+      const level = Math.min(prevLevel === 0 ? 1 : prevLevel + 1, maxLevel);
+      const grew = level !== prevLevel;
       sqS2HintLevel[si] = level;
       if (grew) { sqHintsUsed++; sqUpdateProgressStats(); }
       const hint = document.getElementById(`sq-s2-hint-${si}`);
-      if (hint) { hint.style.color = '#ffd98a'; hint.textContent = `힌트: "${name.slice(0, level)}..."`; }
+      if (!hint) return;
+      hint.style.color = '#ffd98a';
+      hint.textContent = level === 1
+        ? `힌트: 총 ${name.length}글자입니다`
+        : `힌트: "${name.slice(0, level - 1)}..."`;
     }
 
     function sqGiveUp() {
@@ -2234,7 +2282,8 @@
     }
 
     function sqRenderResult() {
-      document.getElementById('sq-identity-card').style.display = 'none';
+      document.getElementById('sq-identity-media').style.display = 'none';
+      document.getElementById('sq-identity-sticky').style.display = 'none';
       document.getElementById('sq-stage2').style.display = 'none';
       const resultEl = document.getElementById('sq-result');
       resultEl.style.display = '';
