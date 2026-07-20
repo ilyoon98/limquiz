@@ -370,6 +370,17 @@
     .db-stat-label { font-size:12px; color:var(--muted); font-weight:800; margin-bottom:4px; text-transform:uppercase; letter-spacing:.05em; }
     .db-stat-value { font-size:21px; font-weight:900; }
     .db-stat-card.highlight .db-stat-value { color:#ffd98a; }
+    .db-result-share { display:flex; justify-content:center; margin-top:14px; }
+    .db-result-share button { height:42px; padding:0 24px; font-size:15px; font-weight:800; border-radius:12px; }
+    /* 덱 퀴즈 공유 카드 그리드 */
+    .deck-card-name { font-size:20px; font-weight:900; color:#ffd98a; text-align:center; margin:8px 0 12px; }
+    .deck-card-grid { display:flex; flex-direction:column; gap:4px; margin-top:8px; align-items:center; }
+    .deck-card-row { display:flex; gap:3px; align-items:center; }
+    .deck-card-row-num { width:24px; font-size:12px; color:var(--muted); font-weight:800; text-align:right; margin-right:5px; }
+    .deck-card-cell { width:20px; height:20px; border-radius:4px; }
+    .deck-card-cell.g { background:#3f8f57; }
+    .deck-card-cell.y { background:#b48a30; }
+    .deck-card-cell.r { background:#8b3a36; }
     @media (max-width:640px) {
       .db-board-grid { grid-template-columns:none; grid-auto-flow:column; grid-auto-columns:80px; overflow-x:auto; padding-bottom:6px; }
       .db-slot{width:80px;height:110px} .db-candidate{width:70px;height:98px} .db-candidate img{height:66px}
@@ -712,7 +723,7 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-    const APP_VERSION = 'v0.13.60';
+    const APP_VERSION = 'v0.13.61';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -1097,7 +1108,7 @@
         const answerCell = r.mode === 'deck' ? escapeHtml(r.deckName || '-')
           : r.mode === 'skill' ? escapeHtml(r.answerName || '-')
           : escapeHtml(r.answer?.['인격명'] || '-');
-        const cardBtn = (r.mode === 'daily' || r.mode === 'random') ? `<button class="copy-btn" data-ridx="${idx}" title="결과 카드 보기">📋</button> ` : '';
+        const cardBtn = (r.mode === 'daily' || r.mode === 'random' || r.mode === 'deck') ? `<button class="copy-btn" data-ridx="${idx}" title="결과 카드 보기">📋</button> ` : '';
         return `<tr>
           <td>${modeLabel}</td>
           <td>${escapeHtml(r.date || '-')}</td>
@@ -1334,6 +1345,28 @@
       `;
     }
 
+    // ── 덱 퀴즈 공유 카드 ────────────────────────────────────
+    function buildDeckCardHTML(record) {
+      const rows = (record.judges || []).map((s, i) => `
+        <div class="deck-card-row"><span class="deck-card-row-num">${i + 1}</span>${[...s].map(ch =>
+          `<span class="deck-card-cell ${ch === 'g' ? 'g' : ch === 'y' ? 'y' : 'r'}"></span>`).join('')}</div>`).join('');
+      return `
+        <div class="card-header">
+          <div class="card-title-text">림버스 인격 두들 · 덱 퀴즈</div>
+          <div class="card-subtitle-text">${escapeHtml(record.date || '')}</div>
+        </div>
+        <div class="deck-card-name">🃏 ${escapeHtml(record.deckName || '')}</div>
+        <div class="card-result-row">
+          <span class="card-result-label ${record.success ? 'card-result-success' : 'card-result-fail'}">${record.success ? '클리어! 🎉' : '포기'}</span>
+          <span class="card-tries-text">제출 ${record.submits ?? '?'}회 · 힌트 ${record.hints ?? 0}회</span>
+        </div>
+        ${rows ? `<div class="deck-card-grid">${rows}</div>` : '<div style="color:var(--muted);font-size:13px">제출 기록이 없는 이전 버전의 기록입니다</div>'}
+      `;
+    }
+    function dbShareResult() {
+      if (dbLastRecord) showResultCard(dbLastRecord);
+    }
+
     let cardSpoilerHidden = false;
 
     function applyCardSpoilerState() {
@@ -1354,7 +1387,7 @@
     function showResultCard(record) {
       currentCardRecord = record;
       cardSpoilerHidden = record.mode === 'daily';
-      resultCardEl.innerHTML = buildCardHTML(record);
+      resultCardEl.innerHTML = record.mode === 'deck' ? buildDeckCardHTML(record) : buildCardHTML(record);
       applyCardSpoilerState();
       cardModal.style.display = '';
       document.body.style.overflow = 'hidden';
@@ -1402,7 +1435,7 @@
       try {
         const canvas = await captureCardCanvas();
         const link = document.createElement('a');
-        const no = currentCardRecord.challengeNo ? `#${currentCardRecord.challengeNo}` : 'R';
+        const no = currentCardRecord.mode === 'deck' ? '덱' : currentCardRecord.challengeNo ? `#${currentCardRecord.challengeNo}` : 'R';
         const date = (currentCardRecord.date || todayKey()).replace(/-/g, '');
         link.download = `limbus-두들-${no}-${date}.png`;
         link.href = canvas.toDataURL('image/png');
@@ -2116,6 +2149,8 @@
     let dbResultShown = false; // 결과(클리어/포기)가 표시된 상태 - 제출 버튼이 "다음 게임 시작하기"로 전환된다
     let dbSubmitCount = 0; // 이 덱에서 제출(채점)한 횟수 - 결과 화면에 표시
     let dbHintsUsed = 0;   // 사용한 힌트(공개된 덱 키워드) 개수 - 플레이 중·결과에 표시
+    let dbJudgeHistory = []; // 제출별 판정 스냅샷 (12자리 g/y/r 문자열) - 공유 카드 그리드용
+    let dbLastRecord = null; // 이 덱의 저장된 기록 - 결과 화면 공유 버튼용
     let dbKnownJudge = {};
     let dbCandidates = [];
     let dbSinnerFilter = SINNER_ORDER[0];
@@ -2175,6 +2210,8 @@
       dbGaveUp = false;
       dbSubmitCount = 0;
       dbHintsUsed = 0;
+      dbJudgeHistory = [];
+      dbLastRecord = null;
       dbKnownJudge = {};
       dbSinnerFilter = SINNER_ORDER[0];
       dbKeywordFilter = [];
@@ -2555,6 +2592,7 @@
       if (dbSlots.some(s => !s)) return;
       dbSubmitCount++;
       const result = dbJudgeDeck();
+      dbJudgeHistory.push(result.map(j => j === 'green' ? 'g' : j === 'yellow' ? 'y' : 'r').join(''));
       result.forEach((j, idx) => {
         dbSlotJudge[idx] = j;
         if (j === 'green') {
@@ -2606,10 +2644,12 @@
       // 결과 확정 시 플레이 기록에 1회만 저장 (dbResultShown이 저장 1회 가드를 겸한다)
       if (!dbResultShown) {
         const records = loadResultRecordsV2();
-        records.push({
+        dbLastRecord = {
           mode: 'deck', date: todayKey(), deckName: dbDeck.deckName,
           submits: dbSubmitCount, hints: dbHintsUsed, success: !gaveUp,
-        });
+          judges: dbJudgeHistory.slice(),
+        };
+        records.push(dbLastRecord);
         saveResultRecordsV2(records);
       }
       dbResultShown = true;
@@ -2636,6 +2676,7 @@
             <div class="db-stat-value">${dbHintsUsed}회</div>
           </div>
         </div>
+        <div class="db-result-share"><button class="secondary" type="button" onclick="dbShareResult()">📋 결과 공유</button></div>
       </div>`;
       dbUpdateSubmitState();
       window.scrollTo({ top: 0, behavior: 'smooth' });
