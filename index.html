@@ -237,6 +237,8 @@
     .sq-sin-chip img { width:16px; height:16px; object-fit:contain; }
     .sq-result-actions { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
     .sq-result-actions button { height:46px; padding:0 28px; font-size:15px; font-weight:800; border-radius:12px; }
+    .sq-progress-stats { display:flex; gap:16px; flex-wrap:wrap; color:var(--muted); font-size:13px; font-weight:700; margin:-10px 0 16px; }
+    .sq-progress-stats strong { color:#ffd98a; }
     @media (max-width:640px) { .sq-img-wrap{min-height:320px} .sq-s2-row{grid-template-columns:80px 1fr 1fr} .sq-s2-icon,.sq-s2-icon-fb{width:80px;height:80px} }
 
     /* ── 덱 빌더 화면 ───────────────────────────── */
@@ -606,6 +608,7 @@
       </div>
 
       <div id="sq-identity-card" class="sq-identity-card"></div>
+      <div class="sq-progress-stats" id="sqProgressStats"></div>
 
       <!-- 스테이지 1: 속성/유형 -->
       <div id="sq-stage1">
@@ -723,7 +726,7 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-    const APP_VERSION = 'v0.13.61';
+    const APP_VERSION = 'v0.13.62';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -1108,7 +1111,7 @@
         const answerCell = r.mode === 'deck' ? escapeHtml(r.deckName || '-')
           : r.mode === 'skill' ? escapeHtml(r.answerName || '-')
           : escapeHtml(r.answer?.['인격명'] || '-');
-        const cardBtn = (r.mode === 'daily' || r.mode === 'random' || r.mode === 'deck') ? `<button class="copy-btn" data-ridx="${idx}" title="결과 카드 보기">📋</button> ` : '';
+        const cardBtn = (r.mode === 'daily' || r.mode === 'random' || r.mode === 'deck' || r.mode === 'skill') ? `<button class="copy-btn" data-ridx="${idx}" title="결과 카드 보기">📋</button> ` : '';
         return `<tr>
           <td>${modeLabel}</td>
           <td>${escapeHtml(r.date || '-')}</td>
@@ -1367,6 +1370,45 @@
       if (dbLastRecord) showResultCard(dbLastRecord);
     }
 
+    // ── 스킬 퀴즈 공유 카드 ───────────────────────────────────
+    function buildSkillCardHTML(record) {
+      const skills = record.skills || [];
+      const sinnerColor = SINNER_COLOR[record.sinner] || '#555';
+      const rows = skills.map((s, i) => {
+        const sc = SQ_SIN_COLOR[s.sin] || {bg:'#1e1e1e',text:'#888',border:'#555'};
+        const slug = SQ_TYPE_SLUG[s.type];
+        const typeHtml = slug
+          ? `<img src="${SQ_TYPE_BASE}${slug}.webp" style="width:20px;height:20px;object-fit:contain" alt="${escapeHtml(s.type || '')}">`
+          : `<span style="font-size:13px;color:var(--muted)">${escapeHtml(s.type || '')}</span>`;
+        const nameBadge = s.nameGaveUp ? '<span class="sq-gaveup-badge">👀 포기</span>' : '<span class="sq-correct-badge">✅ 정답</span>';
+        return `<div class="sq-result-skill-row">
+          <div class="sq-result-skill-name">${escapeHtml(s.name || '')}${nameBadge}</div>
+          <span class="sq-sin-chip" style="background:${sc.bg};color:${sc.text};border-color:${sc.border}">${SIN_ICON[s.sin] ? `<img src="${SIN_ICON[s.sin]}" alt="">` : ''}${escapeHtml(s.sin || '')}${s.sinGaveUp ? ' 👀' : ''}</span>
+          ${typeHtml}${s.typeGaveUp ? ' 👀' : ''}
+        </div>`;
+      }).join('');
+      return `
+        <div class="card-header">
+          <div class="card-title-text">림버스 인격 두들 · 스킬 퀴즈</div>
+          <div class="card-subtitle-text">${escapeHtml(record.date || '')}</div>
+        </div>
+        <div class="card-identity-wrap">
+          <div class="card-identity" style="background:${sinnerColor}33;min-height:260px">
+            ${record.img ? `<img src="${escapeHtml(record.img)}" alt="${escapeHtml(record.answerName || '')}" onerror="this.style.display='none'" />` : ''}
+            <div class="card-identity-overlay">
+              <div class="card-identity-name">${escapeHtml(record.answerName || '알 수 없음')}</div>
+              <div class="card-identity-sinner">${escapeHtml(record.sinner || '')} ${gradeSpan(record.grade || '')}</div>
+            </div>
+          </div>
+        </div>
+        <div class="card-result-row">
+          <span class="card-result-label ${record.success ? 'card-result-success' : 'card-result-fail'}">${record.success ? '완벽 클리어! 🎉' : '일부 포기'}</span>
+          <span class="card-tries-text">${record.solved ?? '?'}/${record.total ?? '?'} 맞힘 · 제출 ${record.submits ?? '?'}회 · 힌트 ${record.hints ?? 0}회</span>
+        </div>
+        <div class="sq-result-skills" style="padding:0 4px">${rows || '<div style="color:var(--muted);font-size:13px">스킬 기록이 없는 이전 버전의 기록입니다</div>'}</div>
+      `;
+    }
+
     let cardSpoilerHidden = false;
 
     function applyCardSpoilerState() {
@@ -1387,7 +1429,7 @@
     function showResultCard(record) {
       currentCardRecord = record;
       cardSpoilerHidden = record.mode === 'daily';
-      resultCardEl.innerHTML = record.mode === 'deck' ? buildDeckCardHTML(record) : buildCardHTML(record);
+      resultCardEl.innerHTML = record.mode === 'deck' ? buildDeckCardHTML(record) : record.mode === 'skill' ? buildSkillCardHTML(record) : buildCardHTML(record);
       applyCardSpoilerState();
       cardModal.style.display = '';
       document.body.style.overflow = 'hidden';
@@ -1435,7 +1477,7 @@
       try {
         const canvas = await captureCardCanvas();
         const link = document.createElement('a');
-        const no = currentCardRecord.mode === 'deck' ? '덱' : currentCardRecord.challengeNo ? `#${currentCardRecord.challengeNo}` : 'R';
+        const no = currentCardRecord.mode === 'deck' ? '덱' : currentCardRecord.mode === 'skill' ? '스킬' : currentCardRecord.challengeNo ? `#${currentCardRecord.challengeNo}` : 'R';
         const date = (currentCardRecord.date || todayKey()).replace(/-/g, '');
         link.download = `limbus-두들-${no}-${date}.png`;
         link.href = canvas.toDataURL('image/png');
@@ -1841,7 +1883,14 @@
     let sqIdentity = null, sqSkillCount = 0;
     let sqS1Sel = [], sqS2Done = [], sqS1Feedback = [];
     let sqS1SinGaveUp = [], sqS1TypeGaveUp = [], sqS2GaveUp = [];
+    let sqS1HintLevel = [], sqS2HintLevel = []; // 스킬별 힌트 단계 (0~2 / 점진 공개)
+    let sqSubmitCount = 0; // 이 라운드에서 제출/확인 버튼을 누른 횟수 (스테이지1+2 합산)
+    let sqHintsUsed = 0;   // 이 라운드에서 힌트를 사용한 횟수 (스테이지1+2 합산)
+    let sqLastRecord = null; // 이 라운드의 저장된 기록 - 결과 화면 공유 버튼용
     let sqResultSaved = false; // 라운드당 기록 1회 저장 가드
+    let SQ_SKILL_NAMES = []; // 전체 스킬명 풀 (스테이지2 검색 드롭다운용, 데이터 로드 후 채움)
+    const SQ_RECENT_KEY = 'sq_recent_identities';
+    const SQ_RECENT_MAX = 15; // 최근 출제된 인격은 이 개수만큼 재출제에서 제외
 
     function sqGoToSkillQuiz() {
       homeScreen.style.display = 'none';
@@ -1853,6 +1902,7 @@
     function sqGoHome() {
       skillQuizScreen.style.display = 'none';
       homeScreen.style.display = '';
+      sqCloseSkillDropdown();
       updateHomeDailyStatus();
       renderRecordsHome();
     }
@@ -1862,9 +1912,21 @@
       sqRenderStage1();
     }
 
+    // 최근 출제된 인격 이름 목록 (localStorage, 새로고침해도 유지)
+    function sqLoadRecentNames() {
+      try { const raw = localStorage.getItem(SQ_RECENT_KEY); const arr = raw ? JSON.parse(raw) : []; return Array.isArray(arr) ? arr : []; }
+      catch (e) { return []; }
+    }
+    function sqSaveRecentNames(arr) { localStorage.setItem(SQ_RECENT_KEY, JSON.stringify(arr.slice(-SQ_RECENT_MAX))); }
+
     function sqPickIdentity() {
       const eligible = DATA.filter(d => d['스킬1명'] && d['스킬1명'].trim());
-      sqIdentity = eligible[Math.floor(Math.random() * eligible.length)];
+      const recent = sqLoadRecentNames();
+      // 최근 출제분을 제외하되, 제외하고 나면 후보가 없을 만큼 데이터가 적으면 전체 풀로 되돌린다
+      const notRecent = eligible.filter(d => !recent.includes(d['인격명']));
+      const pool = notRecent.length ? notRecent : eligible;
+      sqIdentity = pool[Math.floor(Math.random() * pool.length)];
+      sqSaveRecentNames([...recent, sqIdentity['인격명']]);
       sqSkillCount = [1,2,3].filter(n => sqIdentity[`스킬${n}명`] && sqIdentity[`스킬${n}명`].trim()).length;
       sqS1Sel = Array.from({length: sqSkillCount}, () => ({sin:'', type:''}));
       sqS1Feedback = Array(sqSkillCount).fill('');
@@ -1872,6 +1934,11 @@
       sqS1SinGaveUp = Array(sqSkillCount).fill(false);
       sqS1TypeGaveUp = Array(sqSkillCount).fill(false);
       sqS2GaveUp = Array(sqSkillCount).fill(false);
+      sqS1HintLevel = Array(sqSkillCount).fill(0);
+      sqS2HintLevel = Array(sqSkillCount).fill(0);
+      sqSubmitCount = 0;
+      sqHintsUsed = 0;
+      sqLastRecord = null;
       sqResultSaved = false;
     }
 
@@ -1914,8 +1981,14 @@
       </button>`;
     }
 
+    function sqHintBtnLabel(level) {
+      return level === 0 ? '💡 힌트 보기' : level === 1 ? '💡 힌트 (1/2) · 더 보기' : '💡 힌트 (2/2)';
+    }
+
     function sqRenderSkillBlocks() {
-      document.getElementById('sq-skills-s1').innerHTML = sqS1Sel.map((_, si) => `
+      document.getElementById('sq-skills-s1').innerHTML = sqS1Sel.map((_, si) => {
+        const level = sqS1HintLevel[si] || 0;
+        return `
         <div class="sq-skill-block">
           <div class="sq-skill-label">스킬 ${si+1}</div>
           <div class="sq-row-label">죄악속성</div>
@@ -1924,17 +1997,27 @@
           <div class="sq-btn-group">${SQ_TYPES.map(t => sqTypeBtnHTML(si, t)).join('')}</div>
           <div class="sq-s1-feedback" id="sq-s1-fb-${si}">${sqS1Feedback[si] || ''}</div>
           <div class="sq-s1-actions">
-            <button class="sq-s1-action-btn" onclick="sqStage1Hint(${si})">💡 힌트 보기</button>
+            <button class="sq-s1-action-btn" onclick="sqStage1Hint(${si})"${level >= 2 ? ' disabled' : ''}>${sqHintBtnLabel(level)}</button>
             <button class="sq-s1-action-btn" onclick="sqStage1Reveal(${si})">👀 정답 보기</button>
           </div>
-        </div>`).join('');
+        </div>`;
+      }).join('');
       sqUpdateSubmit();
     }
 
+    // 힌트는 누를 때마다 한 단계씩 더 공개한다: 1단계 죄악속성, 2단계 공격유형까지 추가.
+    // '정답 보기'와 달리 값을 자동으로 선택해주지는 않고 텍스트로만 알려준다.
     function sqStage1Hint(si) {
+      const level = sqS1HintLevel[si] || 0;
+      if (level >= 2) return;
+      sqS1HintLevel[si] = level + 1;
+      sqHintsUsed++;
+      sqUpdateProgressStats();
       const n = si + 1;
       const id = sqIdentity;
-      sqS1Feedback[si] = `<span style="color:#ffd98a">💡 힌트: 죄악속성은 <strong>${escapeHtml(id[`스킬${n}속성`])}</strong> 입니다</span>`;
+      sqS1Feedback[si] = sqS1HintLevel[si] === 1
+        ? `<span style="color:#ffd98a">💡 힌트 (1/2): 죄악속성은 <strong>${escapeHtml(id[`스킬${n}속성`])}</strong> 입니다</span>`
+        : `<span style="color:#ffd98a">💡 힌트 (2/2): 죄악속성 <strong>${escapeHtml(id[`스킬${n}속성`])}</strong> · 공격유형 <strong>${escapeHtml(id[`스킬${n}유형`])}</strong> 입니다</span>`;
       sqRenderSkillBlocks();
     }
 
@@ -1960,6 +2043,13 @@
       document.getElementById('sqSubmitBtn').disabled = !sqS1Sel.every(s => s.sin && s.type);
     }
 
+    // 제출/힌트 사용 횟수를 화면에 실시간으로 보여준다 (덱 퀴즈와 동일한 취지)
+    function sqUpdateProgressStats() {
+      const el = document.getElementById('sqProgressStats');
+      if (!el) return;
+      el.innerHTML = `<span>🔁 제출 <strong>${sqSubmitCount}</strong>회</span><span>💡 힌트 <strong>${sqHintsUsed}</strong>회</span>`;
+    }
+
     function sqRenderStage1() {
       document.getElementById('sq-identity-card').innerHTML = sqIdentityCardHTML();
       updateImgPrefButtons();
@@ -1968,9 +2058,12 @@
       document.getElementById('sq-stage2').style.display = 'none';
       document.getElementById('sq-result').style.display = 'none';
       sqRenderSkillBlocks();
+      sqUpdateProgressStats();
     }
 
     function sqSubmitS1() {
+      sqSubmitCount++;
+      sqUpdateProgressStats();
       const id = sqIdentity;
       let allCorrect = true;
       sqS1Sel.forEach((sel, si) => {
@@ -2008,6 +2101,48 @@
       setTimeout(sqRenderStage2, 500);
     }
 
+    // 스테이지2 스킬명 검색 드롭다운 (전체 스킬명 풀에서 검색해 선택 - 정확한 철자를
+    // 몰라도 아는 부분만으로 찾을 수 있게 한다). 여러 입력 중 하나에서만 열리므로
+    // 덱 퀴즈 필터 드롭다운과 같은 패턴으로 하나의 부유 패널을 공유한다.
+    const sqSkillDropdown = document.createElement('div');
+    sqSkillDropdown.className = 'dropdown sq-skill-dropdown';
+    sqSkillDropdown.style.cssText = 'position:fixed;z-index:200;max-height:260px;';
+    document.body.appendChild(sqSkillDropdown);
+    let sqSkillActiveInput = null, sqSkillHighlight = -1;
+
+    function sqSkillFilteredNames(q) {
+      const query = (q || '').toLowerCase().trim();
+      const list = query ? SQ_SKILL_NAMES.filter(n => n.toLowerCase().includes(query)) : SQ_SKILL_NAMES;
+      return list.slice(0, 60);
+    }
+    function sqPositionSkillDropdown() {
+      if (!sqSkillActiveInput) return;
+      const r = sqSkillActiveInput.getBoundingClientRect();
+      sqSkillDropdown.style.top = (r.bottom + 4) + 'px';
+      sqSkillDropdown.style.left = r.left + 'px';
+      sqSkillDropdown.style.width = r.width + 'px';
+    }
+    function sqRenderSkillDropdown() {
+      if (!sqSkillActiveInput) { sqSkillDropdown.classList.remove('open'); return; }
+      const vals = sqSkillFilteredNames(sqSkillActiveInput.value);
+      sqSkillHighlight = Math.min(sqSkillHighlight, vals.length - 1);
+      sqSkillDropdown.innerHTML = vals.length
+        ? vals.map((v, i) => `<div class="option ${i === sqSkillHighlight ? 'active' : ''}" data-val="${escapeHtml(v)}"><span class="option-name">${escapeHtml(v)}</span></div>`).join('')
+        : '<div class="option"><span class="option-name">검색 결과가 없습니다</span></div>';
+      sqPositionSkillDropdown();
+      sqSkillDropdown.classList.add('open');
+    }
+    function sqCloseSkillDropdown() { sqSkillDropdown.classList.remove('open'); sqSkillActiveInput = null; sqSkillHighlight = -1; }
+    sqSkillDropdown.addEventListener('mousedown', e => {
+      e.preventDefault();
+      const opt = e.target.closest('.option[data-val]');
+      if (!opt || !sqSkillActiveInput) return;
+      sqSkillActiveInput.value = opt.dataset.val;
+      sqCloseSkillDropdown();
+    });
+    window.addEventListener('scroll', sqPositionSkillDropdown, { passive: true });
+    window.addEventListener('resize', sqPositionSkillDropdown, { passive: true });
+
     function sqRenderStage2() {
       document.getElementById('sq-stage1').style.display = 'none';
       document.getElementById('sq-stage2').style.display = '';
@@ -2022,7 +2157,7 @@
         return `<div class="sq-s2-row" id="sq-s2-row-${si}">
           ${iconHtml}
           <div>
-            <input class="sq-s2-inp" id="sq-s2-inp-${si}" placeholder="스킬 ${n} 이름" autocomplete="off">
+            <input class="sq-s2-inp" id="sq-s2-inp-${si}" placeholder="스킬 ${n} 이름 검색" autocomplete="off">
             <div class="sq-s2-hint" id="sq-s2-hint-${si}"></div>
           </div>
           <button class="sq-s2-btn" onclick="sqCheckS2(${si})">확인</button>
@@ -2031,7 +2166,21 @@
       }).join('');
       sqS1Sel.forEach((_, si) => {
         const inp = document.getElementById(`sq-s2-inp-${si}`);
-        if (inp) inp.addEventListener('keydown', e => { if (e.key === 'Enter') sqCheckS2(si); });
+        if (!inp) return;
+        inp.addEventListener('input', () => { sqSkillActiveInput = inp; sqSkillHighlight = -1; sqRenderSkillDropdown(); });
+        inp.addEventListener('focus', () => { sqSkillActiveInput = inp; sqSkillHighlight = -1; sqRenderSkillDropdown(); });
+        inp.addEventListener('keydown', e => {
+          const vals = sqSkillFilteredNames(inp.value);
+          if (e.key === 'ArrowDown') { e.preventDefault(); sqSkillHighlight = Math.min(vals.length - 1, sqSkillHighlight + 1); sqRenderSkillDropdown(); sqSkillDropdown.querySelector('.option.active')?.scrollIntoView({block:'nearest'}); }
+          else if (e.key === 'ArrowUp') { e.preventDefault(); sqSkillHighlight = Math.max(0, sqSkillHighlight - 1); sqRenderSkillDropdown(); sqSkillDropdown.querySelector('.option.active')?.scrollIntoView({block:'nearest'}); }
+          else if (e.key === 'Enter') {
+            e.preventDefault();
+            if (sqSkillDropdown.classList.contains('open') && sqSkillHighlight >= 0 && vals[sqSkillHighlight]) { inp.value = vals[sqSkillHighlight]; sqCloseSkillDropdown(); }
+            sqCheckS2(si);
+          }
+          else if (e.key === 'Escape') { sqCloseSkillDropdown(); }
+        });
+        inp.addEventListener('blur', () => setTimeout(() => { if (sqSkillActiveInput === inp) sqCloseSkillDropdown(); }, 150));
       });
     }
 
@@ -2041,6 +2190,8 @@
 
     function sqCheckS2(si) {
       if (sqS2Done[si]) return;
+      sqSubmitCount++;
+      sqUpdateProgressStats();
       const n = si + 1;
       const inp = document.getElementById(`sq-s2-inp-${si}`);
       const hint = document.getElementById(`sq-s2-hint-${si}`);
@@ -2061,11 +2212,17 @@
       }
     }
 
+    // 힌트를 누를 때마다 이름의 앞부분을 한 글자씩 더 공개한다 (전부 공개하진 않음)
     function sqHint(si) {
       if (sqS2Done[si]) return;
       const name = sqIdentity[`스킬${si+1}명`];
+      const maxLevel = Math.max(1, name.length - 1);
+      const level = Math.min((sqS2HintLevel[si] || 0) + 1, maxLevel);
+      const grew = level !== sqS2HintLevel[si];
+      sqS2HintLevel[si] = level;
+      if (grew) { sqHintsUsed++; sqUpdateProgressStats(); }
       const hint = document.getElementById(`sq-s2-hint-${si}`);
-      if (hint) { hint.style.color = '#ffd98a'; hint.textContent = `힌트: "${name[0]}..."` ; }
+      if (hint) { hint.style.color = '#ffd98a'; hint.textContent = `힌트: "${name.slice(0, level)}..."`; }
     }
 
     function sqGiveUp() {
@@ -2095,15 +2252,24 @@
       const affilParts = [id['소속1'], id['소속2']].filter(Boolean);
       const totalItems = sqSkillCount * 3;
       const gaveUpItems = sqS1SinGaveUp.filter(Boolean).length + sqS1TypeGaveUp.filter(Boolean).length + sqS2GaveUp.filter(Boolean).length;
-      // 라운드 종료 시 플레이 기록에 1회만 저장
+      // 라운드 종료 시 플레이 기록에 1회만 저장 (공유 카드가 그대로 재현할 수 있도록
+      // 스킬별 판정 내역과 인격 정보도 함께 저장한다)
       if (!sqResultSaved) {
         sqResultSaved = true;
         const records = loadResultRecordsV2();
-        records.push({
+        const record = {
           mode: 'skill', date: todayKey(), answerName: id['인격명'],
           total: totalItems, solved: totalItems - gaveUpItems, success: !anyGaveUp,
-        });
+          submits: sqSubmitCount, hints: sqHintsUsed,
+          sinner: id['수감자'], grade: id['성급'], img: pickIdImg(id),
+          skills: Array.from({length: sqSkillCount}, (_, i) => ({
+            sin: id[`스킬${i+1}속성`], type: id[`스킬${i+1}유형`], name: id[`스킬${i+1}명`],
+            sinGaveUp: sqS1SinGaveUp[i], typeGaveUp: sqS1TypeGaveUp[i], nameGaveUp: sqS2GaveUp[i],
+          })),
+        };
+        records.push(record);
         saveResultRecordsV2(records);
+        sqLastRecord = record;
       }
       const skillRows = Array.from({length: sqSkillCount}, (_, i) => {
         const n = i + 1;
@@ -2129,13 +2295,19 @@
         <div class="sq-result-name">${escapeHtml(id['인격명'])}</div>
         <div class="sq-result-meta">${sinnerDot(id['수감자'])} · ${gradeSpan(id['성급'])}${affilParts.length ? ' · ' + escapeHtml(affilParts.join(' · ')) : ''}</div>
         <div class="sq-result-stat">직접 맞힌 항목 ${totalItems - gaveUpItems}/${totalItems}${gaveUpItems ? ` · 포기 ${gaveUpItems}개 (👀 표시)` : ''}</div>
+        <div class="sq-result-stat">제출 ${sqSubmitCount}회 · 힌트 ${sqHintsUsed}회 사용</div>
         <div class="sq-result-skills">${skillRows}</div>
         <div class="sq-result-actions">
+          <button class="secondary" onclick="sqShareResult()">📋 결과 공유</button>
           <button onclick="sqInit()">다음 문제</button>
           <button class="secondary" onclick="sqGoHome()">홈으로</button>
         </div>
       </div>`;
       updateImgPrefButtons();
+    }
+
+    function sqShareResult() {
+      if (sqLastRecord) showResultCard(sqLastRecord);
     }
 
     // ── 덱 빌더 ──────────────────────────────────────────────
@@ -2860,6 +3032,10 @@
       .then(json => {
         DATA = json;
         SORTED_DATA = DATA.map((row, idx) => ({...row, __idx: idx})).sort((a, b) => a['인격명'].localeCompare(b['인격명'], 'ko-KR'));
+        // 스킬 퀴즈 스테이지2 검색 드롭다운용 전체 스킬명 풀 (중복 제거, 가나다순)
+        const skillNameSet = new Set();
+        DATA.forEach(row => [1, 2, 3].forEach(n => { const v = row[`스킬${n}명`]; if (v) skillNameSet.add(v); }));
+        SQ_SKILL_NAMES = [...skillNameSet].sort((a, b) => a.localeCompare(b, 'ko-KR'));
         countEl.textContent = DATA.length;
         updateHomeDailyStatus();
         if (gameScreen.style.display !== 'none') { switchMode(mode, true); }
