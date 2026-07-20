@@ -240,7 +240,7 @@
     .sq-sin-chip img { width:18px; height:18px; object-fit:contain; }
     .sq-result-actions { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
     .sq-result-actions button { height:48px; padding:0 28px; font-size:16px; font-weight:800; border-radius:12px; }
-    .sq-progress-stats { display:flex; gap:18px; flex-wrap:wrap; color:var(--muted); font-size:15px; font-weight:700; margin:-6px 0 16px; }
+    .sq-progress-stats { display:flex; gap:18px; flex-wrap:wrap; color:var(--muted); font-size:15px; font-weight:700; margin-top:12px; }
     .sq-progress-stats strong { color:#ffd98a; }
     @media (max-width:640px) { .sq-img-wrap{min-height:320px} .sq-s2-row{grid-template-columns:80px 1fr 1fr} .sq-s2-icon,.sq-s2-icon-fb{width:80px;height:80px} }
 
@@ -612,7 +612,6 @@
 
       <div id="sq-identity-media" class="sq-identity-media"></div>
       <div id="sq-identity-sticky" class="sq-identity-sticky"></div>
-      <div class="sq-progress-stats" id="sqProgressStats"></div>
 
       <!-- 스테이지 1: 속성/유형 -->
       <div id="sq-stage1">
@@ -730,7 +729,7 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-    const APP_VERSION = 'v0.13.64';
+    const APP_VERSION = 'v0.13.65';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -1985,7 +1984,8 @@
             <div class="answer-info-label">키워드</div>
             <div class="answer-info-value">${kws.length ? kws.map(k => kwChip(k)).join('') : '<span class="empty">없음</span>'}</div>
           </div>
-        </div>`;
+        </div>
+        <div class="sq-progress-stats" id="sqProgressStats"></div>`;
     }
 
     function sqSinBtnHTML(si, sin) {
@@ -2261,9 +2261,11 @@
       const hint = document.getElementById(`sq-s2-hint-${si}`);
       if (!hint) return;
       hint.style.color = '#ffd98a';
-      hint.textContent = level === 1
-        ? `힌트: 총 ${name.length}글자입니다`
-        : `힌트: "${name.slice(0, level - 1)}..."`;
+      // 글자 수 안내는 계속 남겨둔다(첫 힌트를 잊지 않도록). 2회차부터의 글자 힌트만
+      // 새로 누를 때마다 덮어쓴다.
+      const countLine = `힌트: 총 ${name.length}글자입니다`;
+      const lettersLine = level >= 2 ? `앞글자: "${name.slice(0, level - 1)}..."` : '';
+      hint.innerHTML = lettersLine ? `${escapeHtml(countLine)}<br>${escapeHtml(lettersLine)}` : escapeHtml(countLine);
     }
 
     function sqGiveUp() {
