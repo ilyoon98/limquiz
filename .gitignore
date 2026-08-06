@@ -5,5 +5,7 @@ data.json
 changelog.json
 decks.json
 deckKeywords.json
+egoData.json
+egoGiftData.json
 dev/changelog_dev.json
 .env*
