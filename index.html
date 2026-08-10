@@ -829,7 +829,7 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-    const APP_VERSION = 'v0.13.71';
+    const APP_VERSION = 'v0.13.72';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -2072,14 +2072,17 @@
 
     // ── 스킬 퀴즈 ────────────────────────────────────────────
     const SQ_SINS = ['분노','색욕','나태','탐식','우울','오만','질투'];
+    // 7죄악 색상은 빨강→주황→노랑→초록→하늘→파랑→보라 순 무지개 배열을 따른다
+    // (분노→색욕→나태→탐식→우울→오만→질투). 이전엔 이 순서를 안 지켜서(예: 나태가
+    // 회색, 우울이 파랑, 오만이 보라) 죄악 색이 제멋대로로 보였다.
     const SQ_SIN_COLOR = {
       '분노':{bg:'#3a0e0e',text:'#ff7070',border:'#c44'},
-      '색욕':{bg:'#3a102c',text:'#ff88d8',border:'#b46'},
-      '나태':{bg:'#252525',text:'#b0b0b0',border:'#666'},
+      '색욕':{bg:'#3a1c0a',text:'#ffa050',border:'#c73'},
+      '나태':{bg:'#332c06',text:'#ffd93d',border:'#cb3'},
       '탐식':{bg:'#0f2a0f',text:'#70dd70',border:'#484'},
-      '우울':{bg:'#0e1a3a',text:'#7aa8ff',border:'#46a'},
-      '오만':{bg:'#220e3a',text:'#cc88ff',border:'#84c'},
-      '질투':{bg:'#0e2e28',text:'#44ddcc',border:'#4aa'},
+      '우울':{bg:'#0a2838',text:'#5ec8f0',border:'#4ac'},
+      '오만':{bg:'#0e1a3a',text:'#7aa8ff',border:'#46a'},
+      '질투':{bg:'#220e3a',text:'#cc88ff',border:'#84c'},
     };
     // 실제 데이터에 방어/회피/반격 유형이 존재하지 않아 선택지에서 제외한다
     const SQ_TYPES = ['참격','관통','타격'];
