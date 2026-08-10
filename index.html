@@ -829,7 +829,7 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-    const APP_VERSION = 'v0.13.70';
+    const APP_VERSION = 'v0.13.71';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -3646,25 +3646,41 @@
       if (!text) return [];
       return Object.keys(KEYWORD_COLOR).filter(kw => text.includes(kw));
     }
-    // 7키워드만큼 흔하진 않지만 기프트 효과 문구에 자주 등장하는 상태이상/자원 용어.
-    // (egoGiftData.json 표본 분석 기준 상위 빈도 용어) 7키워드처럼 색깔 칩으로 분리하면
-    // 문장 흐름이 너무 끊겨서, 본문 안에서는 굵게+색만 입혀 "강조" 수준으로 표시한다.
+    // 정신력·피해량은 스탯 이름 하나뿐이라 굳이 그룹 없이 고정 색 하나씩 배정.
+    const STAT_TERM_COLOR = { '정신력':'#9ecbff', '피해량':'#ffb703' };
+    // 공격 유형 3종(SQ_TYPES, 스킬 퀴즈에서도 쓰는 것과 동일한 값). 이 앱에는 아직
+    // 유형별 색이 없어서 여기서 새로 배정.
+    const ATTACK_TYPE_HIGHLIGHT_COLOR = { '참격':'#d8d8f0', '관통':'#ffd166', '타격':'#c97b4a' };
+    // 7키워드만큼 흔하진 않지만 기프트 효과 문구에 자주 등장하는 상태이상·특수 키워드.
+    // (egoGiftData.json 표본 분석 기준 상위 빈도 용어 + 페로몬/새벽맞이처럼 극히 드물게
+    // 한두 기프트에만 등장하는 고유 명칭 일부) 7키워드처럼 색깔 칩으로 분리하면 문장
+    // 흐름이 너무 끊겨서, 본문 안에서는 굵게+색만 입혀 "강조" 수준으로 표시한다.
+    // 주의: 이런 기프트 고유 명칭은 계속 새로 추가되므로 이 목록이 전부를 잡아내진
+    // 못한다 — 강조가 안 되는 용어를 발견하면 이 배열에 추가하면 된다.
     const EFFECT_SECONDARY_HIGHLIGHT = {
       color: '#ffd98a',
-      terms: ['신속','역장','보호','강화','예지','취약','광신','마비','사기저하','속박','약화','도발'],
+      terms: [
+        '신속','역장','보호','강화','예지','취약','광신','마비','사기저하','속박','약화','도발',
+        '공격 레벨','방어 레벨','페로몬','새벽맞이',
+      ],
     };
-    // 효과 문구를 이스케이프한 뒤, 7키워드는 각자의 색으로, 그 외 상태이상 용어는 공통
-    // 강조색으로 굵게 표시한다. 한 번의 정규식 패스로 치환해 이미 삽입된 <span> 태그
-    // 안쪽 텍스트가 다시 매칭되는 것을 막는다.
+    // 효과 문구를 이스케이프한 뒤, 아래 순서로 각자의 색을 입혀 강조한다:
+    // 7키워드(KEYWORD_COLOR) → 7죄악(SQ_SIN_COLOR, 죄악 칩과 같은 색) → 공격 유형 3종 →
+    // 정신력/피해량 → 그 외 상태이상·특수 키워드(공통 강조색). 한 번의 정규식 패스로
+    // 치환해 이미 삽입된 <span> 태그 안쪽 텍스트가 다시 매칭되는 것을 막는다.
     function highlightEffectHTML(rawText) {
       if (!rawText) return '';
       const escaped = escapeHtml(rawText);
-      const terms = [...Object.keys(KEYWORD_COLOR), ...EFFECT_SECONDARY_HIGHLIGHT.terms].sort((a, b) => b.length - a.length);
+      const colorMap = {
+        ...Object.fromEntries(Object.entries(KEYWORD_COLOR).map(([k, v]) => [k, v.text])),
+        ...Object.fromEntries(Object.entries(SQ_SIN_COLOR).map(([k, v]) => [k, v.text])),
+        ...ATTACK_TYPE_HIGHLIGHT_COLOR,
+        ...STAT_TERM_COLOR,
+        ...Object.fromEntries(EFFECT_SECONDARY_HIGHLIGHT.terms.map(t => [t, EFFECT_SECONDARY_HIGHLIGHT.color])),
+      };
+      const terms = Object.keys(colorMap).sort((a, b) => b.length - a.length);
       const re = new RegExp(terms.join('|'), 'g');
-      const highlighted = escaped.replace(re, term => {
-        const color = KEYWORD_COLOR[term] ? KEYWORD_COLOR[term].text : EFFECT_SECONDARY_HIGHLIGHT.color;
-        return `<span class="effect-kw-highlight" style="color:${color}">${term}</span>`;
-      });
+      const highlighted = escaped.replace(re, term => `<span class="effect-kw-highlight" style="color:${colorMap[term]}">${term}</span>`);
       return highlighted.replace(/\n/g, '<br>');
     }
     function gqLogBadge(label, hit) {
