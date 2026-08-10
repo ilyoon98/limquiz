@@ -285,6 +285,7 @@
     .gq-icon-wrap { text-align:center; margin-bottom:20px; }
     .gq-icon-wrap img { width:400px; height:400px; max-width:92%; object-fit:contain; border-radius:16px; background:var(--panel2); }
     .gq-effect-box { background:var(--panel2); border:1px solid var(--border); border-radius:14px; padding:18px 22px; margin-top:18px; font-size:16px; line-height:1.75; color:var(--text); }
+    .effect-kw-highlight { font-weight:800; }
     .gq-effect-box-label { font-size:13px; color:var(--muted); font-weight:800; margin-bottom:8px; text-transform:uppercase; letter-spacing:.05em; }
     /* EGO/EGO 기프트 퀴즈의 정보 패널 안 배지·칩·힌트 텍스트는 다른 화면(스킬 퀴즈 등)과
        공유하는 클래스라도 여기서만 크게 키운다 (전역 크기는 건드리지 않기 위해 정보
@@ -828,7 +829,7 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-    const APP_VERSION = 'v0.13.69';
+    const APP_VERSION = 'v0.13.70';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -3318,7 +3319,8 @@
       WAW:{bg:'#3a2a0e',text:'#ffcf70',border:'#c94'},
       ALEPH:{bg:'#3a0e0e',text:'#ff8f8f',border:'#c44'},
     };
-    let eqEgo = null, eqNameDone = false, eqNameGaveUp = false, eqHintLevel = 0;
+    let eqEgo = null, eqNameDone = false, eqNameGaveUp = false;
+    let eqRevealedTiers = new Set(), eqLetterHintLevel = 0;
     let eqInfoTiers = [], eqResourceParts = [], eqWrongGuesses = new Set();
     let eqSubmitCount = 0, eqHintsUsed = 0, eqLastRecord = null, eqResultSaved = false;
     let eqGuessHistory = [];
@@ -3342,11 +3344,30 @@
     function eqLogBadge(label, hit) {
       return `<span class="pill ${hit ? 'hit' : 'miss'}">${escapeHtml(label)}</span>`;
     }
+    // 오답의 수감자·등급·속성이 정답과 정확히 같거나, 자원에 정답과 같은 죄악이 하나라도
+    // 섞여 있으면 그 항목은 이미 로그로 드러난 정보다. 힌트를 눌러 같은 걸 또 공개하면
+    // "중복 힌트"가 되므로, 확인된 즉시 무료로 잠금을 풀어 다음 힌트가 새 정보를 주게 한다.
+    function eqAutoRevealFromGuess(g) {
+      if (!g) return false;
+      let changed = false;
+      const reveal = tier => { if (!eqRevealedTiers.has(tier)) { eqRevealedTiers.add(tier); changed = true; } };
+      if (g['수감자'] === eqEgo['수감자']) reveal('수감자');
+      if (g['등급'] === eqEgo['등급']) reveal('등급');
+      if (g['속성'] === eqEgo['속성']) reveal('속성');
+      const ansSins = resourceSins(eqEgo['자원']);
+      const guessSins = resourceSins(g['자원']);
+      eqResourceParts.forEach((part, i) => {
+        const sin = (part.match(/^(.+?)\s*x\d+$/) || [])[1];
+        if (sin && guessSins.includes(sin) && ansSins.includes(sin)) reveal(`자원${i}`);
+      });
+      return changed;
+    }
     function eqRenderGuessLog() {
       const el = document.getElementById('eq-guess-log');
       if (!el) return;
       if (!eqGuessHistory.length) { el.innerHTML = ''; el.style.display = 'none'; return; }
       el.style.display = '';
+      const ansSins = resourceSins(eqEgo['자원']);
       el.innerHTML = [...eqGuessHistory].reverse().map((row, i) => {
         const n = eqGuessHistory.length - i;
         if (!row.ego) {
@@ -3356,7 +3377,13 @@
         const sinnerHit = g['수감자'] === eqEgo['수감자'];
         const gradeHit = g['등급'] === eqEgo['등급'];
         const sinHit = g['속성'] === eqEgo['속성'];
-        const sharedSins = resourceSins(g['자원']).filter(s => resourceSins(eqEgo['자원']).includes(s));
+        // 자원은 여러 죄악이 섞인 문자열이라 하나만 맞아도 전체를 "일치"로 뭉뚱그리면
+        // (예: 정답 우울/질투, 추측 우울/분노) 분노까지 맞은 것처럼 보인다. 각 죄악을
+        // 따로 떼어 개별로 일치/불일치를 보여준다.
+        const guessSins = resourceSins(g['자원']);
+        const resourceBadges = guessSins.length
+          ? guessSins.map(s => eqLogBadge('자원 ' + s, ansSins.includes(s))).join('')
+          : eqLogBadge('자원 없음', false);
         return `<div class="gq-log-row">
           <span class="gq-log-idx">#${n}</span>
           <span class="gq-log-name">${escapeHtml(g['이름'])}</span>
@@ -3364,7 +3391,7 @@
             ${eqLogBadge('수감자 ' + (g['수감자'] || '-'), sinnerHit)}
             ${eqLogBadge('등급 ' + (g['등급'] || '-'), gradeHit)}
             ${eqLogBadge('속성 ' + (g['속성'] || '-'), sinHit)}
-            ${eqLogBadge(sharedSins.length ? '자원 ' + sharedSins.join('/') : '자원 불일치', sharedSins.length > 0)}
+            ${resourceBadges}
           </span>
         </div>`;
       }).join('');
@@ -3413,7 +3440,7 @@
         ...eqResourceParts.map((_, i) => `자원${i}`),
         eqEgo['아이콘'] && '이미지',
       ].filter(Boolean);
-      eqNameDone = false; eqNameGaveUp = false; eqHintLevel = 0; eqWrongGuesses = new Set();
+      eqNameDone = false; eqNameGaveUp = false; eqRevealedTiers = new Set(); eqLetterHintLevel = 0; eqWrongGuesses = new Set();
       eqSubmitCount = 0; eqHintsUsed = 0; eqLastRecord = null; eqResultSaved = false; eqGuessHistory = [];
     }
     function eqUpdateProgressStats() {
@@ -3431,7 +3458,7 @@
     function eqInfoPanelHTML() {
       const e = eqEgo;
       const gc = EQ_GRADE_COLOR[e['등급']] || {bg:'#1e1e1e',text:'#888',border:'#555'};
-      const revealed = new Set(eqInfoTiers.slice(0, eqHintLevel));
+      const revealed = eqRevealedTiers;
       const badges = [];
       if (e['수감자']) badges.push(statBadgeHTML('수감자', revealed.has('수감자'), sinnerDot(e['수감자'])));
       if (e['등급']) badges.push(statBadgeHTML('등급', revealed.has('등급'), `<span class="eq-grade-chip" style="background:${gc.bg};color:${gc.text};border-color:${gc.border}">${escapeHtml(e['등급'])}</span>`));
@@ -3499,8 +3526,14 @@
         setTimeout(eqRenderResult, 600);
       } else {
         eqWrongGuesses.add(normed);
-        eqGuessHistory.push({ name: inp.value.trim(), ego: eqFindEgoByName(inp.value) });
+        const guessedEgo = eqFindEgoByName(inp.value);
+        eqGuessHistory.push({ name: inp.value.trim(), ego: guessedEgo });
         eqRenderGuessLog();
+        // 로그에서 이미 드러난 항목(수감자·등급·속성 정확히 일치, 자원 겹침)은 힌트
+        // 소모 없이 바로 공개해, 아래 eqHint()가 같은 정보를 또 힌트로 주지 않게 한다.
+        if (eqAutoRevealFromGuess(guessedEgo)) {
+          document.getElementById('eq-info-panel').innerHTML = eqInfoPanelHTML();
+        }
         inp.style.borderColor = 'var(--red)';
         if (hint) { hint.style.color = '#ff8888'; hint.textContent = '❌ 오답입니다. 힌트를 하나 공개할게요.'; }
         setTimeout(() => { inp.style.borderColor = ''; }, 700);
@@ -3510,11 +3543,13 @@
     }
     // 힌트는 두 단계로 나뉜다: 1) 정보 공개 단계(수감자→등급→속성→자원→이미지, 데이터가
     // 채워진 항목만) 2) 정보를 다 공개한 뒤부터는 이름 글자를 점진적으로 공개한다.
+    // 1단계는 항상 "아직 안 밝혀진 항목 중 순서상 가장 앞선 것"을 공개한다 — 오답 로그로
+    // 이미 무료로 밝혀진 항목은 건너뛰어 중복 힌트를 주지 않는다.
     function eqHint() {
       if (eqNameDone) return;
-      const infoMax = eqInfoTiers.length;
-      if (eqHintLevel < infoMax) {
-        eqHintLevel++;
+      const nextTier = eqInfoTiers.find(t => !eqRevealedTiers.has(t));
+      if (nextTier) {
+        eqRevealedTiers.add(nextTier);
         eqHintsUsed++;
         document.getElementById('eq-info-panel').innerHTML = eqInfoPanelHTML();
         eqUpdateProgressStats();
@@ -3523,10 +3558,9 @@
       const name = eqEgo['이름'];
       const maxChars = Math.max(1, name.length - 1);
       const maxLetterLevel = maxChars + 1;
-      const prevLetterLevel = eqHintLevel - infoMax;
-      const nextLetterLevel = Math.min(prevLetterLevel === 0 ? 1 : prevLetterLevel + 1, maxLetterLevel);
-      const grew = nextLetterLevel !== prevLetterLevel;
-      if (grew) { eqHintLevel = infoMax + nextLetterLevel; eqHintsUsed++; eqUpdateProgressStats(); }
+      const nextLetterLevel = Math.min(eqLetterHintLevel === 0 ? 1 : eqLetterHintLevel + 1, maxLetterLevel);
+      const grew = nextLetterLevel !== eqLetterHintLevel;
+      if (grew) { eqLetterHintLevel = nextLetterLevel; eqHintsUsed++; eqUpdateProgressStats(); }
       const hint = document.getElementById('eq-name-hint');
       if (!hint) return;
       hint.style.color = '#ffd98a';
@@ -3537,7 +3571,7 @@
     function eqGiveUp() {
       if (!eqNameDone) {
         eqNameGaveUp = true;
-        eqHintLevel = eqInfoTiers.length;
+        eqInfoTiers.forEach(t => eqRevealedTiers.add(t));
         document.getElementById('eq-info-panel').innerHTML = eqInfoPanelHTML();
         const inp = document.getElementById('eq-name-inp');
         if (inp) { inp.value = eqAnswerText(eqEgo); inp.disabled = true; }
@@ -3593,7 +3627,8 @@
     // 처음엔 정보 없이 이름만으로 시작하고, 힌트를 누를 때마다 등급→속성→(효과
     // 문구에서 발견된) 키워드→효과 문장→이미지 순으로 하나씩 공개한 뒤, 그 다음부터
     // 이름 글자를 점진적으로 공개한다. 이미지가 가장 정보량이 많은 힌트라 가장 마지막에 둔다.
-    let gqGift = null, gqNameDone = false, gqNameGaveUp = false, gqHintLevel = 0;
+    let gqGift = null, gqNameDone = false, gqNameGaveUp = false;
+    let gqRevealedTiers = new Set(), gqLetterHintLevel = 0;
     let gqInfoTiers = [], gqKeywords = [], gqEffectLines = [], gqWrongGuesses = new Set();
     let gqSubmitCount = 0, gqHintsUsed = 0, gqLastRecord = null, gqResultSaved = false;
     let gqGuessHistory = [];
@@ -3611,8 +3646,42 @@
       if (!text) return [];
       return Object.keys(KEYWORD_COLOR).filter(kw => text.includes(kw));
     }
+    // 7키워드만큼 흔하진 않지만 기프트 효과 문구에 자주 등장하는 상태이상/자원 용어.
+    // (egoGiftData.json 표본 분석 기준 상위 빈도 용어) 7키워드처럼 색깔 칩으로 분리하면
+    // 문장 흐름이 너무 끊겨서, 본문 안에서는 굵게+색만 입혀 "강조" 수준으로 표시한다.
+    const EFFECT_SECONDARY_HIGHLIGHT = {
+      color: '#ffd98a',
+      terms: ['신속','역장','보호','강화','예지','취약','광신','마비','사기저하','속박','약화','도발'],
+    };
+    // 효과 문구를 이스케이프한 뒤, 7키워드는 각자의 색으로, 그 외 상태이상 용어는 공통
+    // 강조색으로 굵게 표시한다. 한 번의 정규식 패스로 치환해 이미 삽입된 <span> 태그
+    // 안쪽 텍스트가 다시 매칭되는 것을 막는다.
+    function highlightEffectHTML(rawText) {
+      if (!rawText) return '';
+      const escaped = escapeHtml(rawText);
+      const terms = [...Object.keys(KEYWORD_COLOR), ...EFFECT_SECONDARY_HIGHLIGHT.terms].sort((a, b) => b.length - a.length);
+      const re = new RegExp(terms.join('|'), 'g');
+      const highlighted = escaped.replace(re, term => {
+        const color = KEYWORD_COLOR[term] ? KEYWORD_COLOR[term].text : EFFECT_SECONDARY_HIGHLIGHT.color;
+        return `<span class="effect-kw-highlight" style="color:${color}">${term}</span>`;
+      });
+      return highlighted.replace(/\n/g, '<br>');
+    }
     function gqLogBadge(label, hit) {
       return `<span class="pill ${hit ? 'hit' : 'miss'}">${escapeHtml(label)}</span>`;
+    }
+    // 오답의 등급·속성이 정답과 정확히 같거나, 효과에서 뽑힌 키워드가 정답과 겹치면
+    // 그 항목은 이미 로그로 드러난 정보다. 힌트 소모 없이 바로 공개해, gqHint()가
+    // 같은 정보를 또 힌트로 주는(중복 힌트) 일을 막는다.
+    function gqAutoRevealFromGuess(g) {
+      if (!g) return false;
+      let changed = false;
+      const reveal = tier => { if (!gqRevealedTiers.has(tier)) { gqRevealedTiers.add(tier); changed = true; } };
+      if (g['등급'] === gqGift['등급']) reveal('등급');
+      if (g['속성'] === gqGift['속성']) reveal('속성');
+      const guessKeywords = extractEffectKeywords(g['효과']);
+      gqKeywords.forEach((kw, i) => { if (guessKeywords.includes(kw)) reveal(`키워드${i}`); });
+      return changed;
     }
     // 오답을 제출할 때마다 그 기프트의 등급/속성/키워드가 정답과 맞았는지를 워들처럼
     // 초록/빨강 배지 한 줄로 남긴다. 목록에 없는 이름을 그냥 입력한 경우엔 비교할
@@ -3630,14 +3699,20 @@
         const g = row.gift;
         const gradeHit = g['등급'] === gqGift['등급'];
         const sinHit = g['속성'] === gqGift['속성'];
-        const matchedKeywords = extractEffectKeywords(g['효과']).filter(k => gqKeywords.includes(k));
+        // 기프트 하나가 키워드를 여러 개 가질 수 있어, 겹치는 것만 뭉뚱그려 보여주면
+        // 겹치지 않은 나머지 키워드가 안 보인다. 추측한 기프트가 가진 키워드를 전부
+        // 나열하고 각각 정답과 겹치는지 따로 표시한다.
+        const guessKeywords = extractEffectKeywords(g['효과']);
+        const keywordBadges = guessKeywords.length
+          ? guessKeywords.map(k => gqLogBadge('키워드 ' + k, gqKeywords.includes(k))).join('')
+          : gqLogBadge('키워드 없음', false);
         return `<div class="gq-log-row">
           <span class="gq-log-idx">#${n}</span>
           <span class="gq-log-name">${escapeHtml(g['이름'])}</span>
           <span class="gq-log-badges">
             ${gqLogBadge('등급 ' + (g['등급'] || '-'), gradeHit)}
             ${gqLogBadge('속성 ' + (g['속성'] || '-'), sinHit)}
-            ${matchedKeywords.length ? `<span class="pill hit">키워드 ${matchedKeywords.map(kwChip).join('')}</span>` : gqLogBadge('키워드 불일치', false)}
+            ${keywordBadges}
           </span>
         </div>`;
       }).join('');
@@ -3684,7 +3759,7 @@
         ...gqEffectLines.map((_, i) => `효과${i}`),
         gqGift['아이콘'] && '이미지',
       ].filter(Boolean);
-      gqNameDone = false; gqNameGaveUp = false; gqHintLevel = 0; gqWrongGuesses = new Set();
+      gqNameDone = false; gqNameGaveUp = false; gqRevealedTiers = new Set(); gqLetterHintLevel = 0; gqWrongGuesses = new Set();
       gqSubmitCount = 0; gqHintsUsed = 0; gqLastRecord = null; gqResultSaved = false; gqGuessHistory = [];
     }
     function gqUpdateProgressStats() {
@@ -3694,7 +3769,7 @@
     }
     function gqInfoPanelHTML() {
       const g = gqGift;
-      const revealed = new Set(gqInfoTiers.slice(0, gqHintLevel));
+      const revealed = gqRevealedTiers;
       const badges = [];
       if (g['등급']) badges.push(statBadgeHTML('등급', revealed.has('등급'), escapeHtml(g['등급'])));
       if (g['속성']) badges.push(statBadgeHTML('속성', revealed.has('속성'), sinChipHTML(g['속성'])));
@@ -3703,7 +3778,7 @@
       const revealedEffectLines = gqEffectLines.filter((_, i) => revealed.has(`효과${i}`));
       return `
         <div class="gq-badge-row">${badges.join('')}</div>
-        ${revealedEffectLines.length ? `<div class="gq-effect-box"><div class="gq-effect-box-label">효과 (일부 공개)</div>${escapeHtml(revealedEffectLines.join('\n')).replace(/\n/g, '<br>')}</div>` : ''}
+        ${revealedEffectLines.length ? `<div class="gq-effect-box"><div class="gq-effect-box-label">효과 (일부 공개)</div>${revealedEffectLines.map(highlightEffectHTML).join('<br>')}</div>` : ''}
         <div class="gq-icon-wrap">
           ${revealed.has('이미지') && g['아이콘'] ? `<img src="${escapeHtml(g['아이콘'])}" alt="" onerror="this.style.display='none'">` : '<div class="eq-icon-locked">🔒</div>'}
         </div>
@@ -3761,19 +3836,28 @@
         setTimeout(gqRenderResult, 600);
       } else {
         gqWrongGuesses.add(normed);
-        gqGuessHistory.push({ name: inp.value.trim(), gift: gqFindGiftByName(inp.value) });
+        const guessedGift = gqFindGiftByName(inp.value);
+        gqGuessHistory.push({ name: inp.value.trim(), gift: guessedGift });
         gqRenderGuessLog();
+        // 로그에서 이미 드러난 항목(등급·속성 정확히 일치, 키워드 겹침)은 힌트 소모
+        // 없이 바로 공개해, 아래 gqHint()가 같은 정보를 또 힌트로 주지 않게 한다.
+        if (gqAutoRevealFromGuess(guessedGift)) {
+          document.getElementById('gq-info-panel').innerHTML = gqInfoPanelHTML();
+        }
         inp.style.borderColor = 'var(--red)';
         if (hint) { hint.style.color = '#ff8888'; hint.textContent = '❌ 오답입니다. 힌트를 하나 공개할게요.'; }
         setTimeout(() => { inp.style.borderColor = ''; }, 700);
         gqHint();
       }
     }
+    // 1단계(등급→속성→키워드→효과→이미지)는 항상 "아직 안 밝혀진 항목 중 순서상 가장
+    // 앞선 것"을 공개한다 — 오답 로그로 이미 무료로 밝혀진 항목은 건너뛰어 중복 힌트를
+    // 주지 않는다. 다 밝혀지면 2단계(이름 글자 점진 공개)로 넘어간다.
     function gqHint() {
       if (gqNameDone) return;
-      const infoMax = gqInfoTiers.length;
-      if (gqHintLevel < infoMax) {
-        gqHintLevel++;
+      const nextTier = gqInfoTiers.find(t => !gqRevealedTiers.has(t));
+      if (nextTier) {
+        gqRevealedTiers.add(nextTier);
         gqHintsUsed++;
         document.getElementById('gq-info-panel').innerHTML = gqInfoPanelHTML();
         gqUpdateProgressStats();
@@ -3782,10 +3866,9 @@
       const name = gqGift['이름'];
       const maxChars = Math.max(1, name.length - 1);
       const maxLetterLevel = maxChars + 1;
-      const prevLetterLevel = gqHintLevel - infoMax;
-      const nextLetterLevel = Math.min(prevLetterLevel === 0 ? 1 : prevLetterLevel + 1, maxLetterLevel);
-      const grew = nextLetterLevel !== prevLetterLevel;
-      if (grew) { gqHintLevel = infoMax + nextLetterLevel; gqHintsUsed++; gqUpdateProgressStats(); }
+      const nextLetterLevel = Math.min(gqLetterHintLevel === 0 ? 1 : gqLetterHintLevel + 1, maxLetterLevel);
+      const grew = nextLetterLevel !== gqLetterHintLevel;
+      if (grew) { gqLetterHintLevel = nextLetterLevel; gqHintsUsed++; gqUpdateProgressStats(); }
       const hint = document.getElementById('gq-name-hint');
       if (!hint) return;
       hint.style.color = '#ffd98a';
@@ -3796,7 +3879,7 @@
     function gqGiveUp() {
       if (!gqNameDone) {
         gqNameGaveUp = true;
-        gqHintLevel = gqInfoTiers.length;
+        gqInfoTiers.forEach(t => gqRevealedTiers.add(t));
         document.getElementById('gq-info-panel').innerHTML = gqInfoPanelHTML();
         const inp = document.getElementById('gq-name-inp');
         if (inp) { inp.value = gqGift['이름']; inp.disabled = true; }
@@ -3831,8 +3914,8 @@
         <div class="sq-result-banner">${gqNameGaveUp ? '🙌 완료 (포기)' : '🎉 정답!'}</div>
         ${g['아이콘'] ? `<div class="gq-icon-wrap"><img src="${escapeHtml(g['아이콘'])}" alt="" onerror="this.style.display='none'"></div>` : ''}
         <div class="sq-result-name">${escapeHtml(g['이름'])}${nameBadge}</div>
-        <div class="sq-result-meta">${g['등급'] ? escapeHtml(g['등급']) + ' · ' : ''}${sinChipHTML(g['속성'])}</div>
-        ${g['효과'] ? `<div class="gq-effect-box"><div class="gq-effect-box-label">효과</div>${escapeHtml(g['효과']).replace(/\n/g, '<br>')}</div>` : ''}
+        <div class="sq-result-meta">${g['등급'] ? `<span class="gq-badge">${escapeHtml(g['등급'])}</span> ` : ''}${sinChipHTML(g['속성'])}</div>
+        ${g['효과'] ? `<div class="gq-effect-box"><div class="gq-effect-box-label">효과</div>${highlightEffectHTML(g['효과'])}</div>` : ''}
         <div class="sq-result-stat">제출 ${gqSubmitCount}회 · 힌트 ${gqHintsUsed}회 사용</div>
         <div class="sq-result-actions">
           <button class="secondary" onclick="gqShareResult()">📋 결과 공유</button>
