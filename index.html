@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>림버스 인격 두들</title>
-  <meta name="description" content="림버스 컴퍼니 인격을 맞히는 웹 기반 추리 게임. 오늘의 인격, 랜덤 플레이, 스킬 퀴즈, 덱 퀴즈를 즐겨보세요." />
+  <title>림퀴즈</title>
+  <meta name="description" content="림버스 컴퍼니 퀴즈 모음. 인격 두들, 스킬 퀴즈, 덱 퀴즈, EGO 퀴즈, EGO 기프트 퀴즈를 즐겨보세요." />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="림버스 인격 두들" />
-  <meta property="og:description" content="림버스 컴퍼니 인격을 맞히는 웹 기반 추리 게임. 오늘의 인격, 랜덤 플레이, 스킬 퀴즈, 덱 퀴즈를 즐겨보세요." />
+  <meta property="og:title" content="림퀴즈" />
+  <meta property="og:description" content="림버스 컴퍼니 퀴즈 모음. 인격 두들, 스킬 퀴즈, 덱 퀴즈, EGO 퀴즈, EGO 기프트 퀴즈를 즐겨보세요." />
   <meta property="og:url" content="https://limquiz.vercel.app/" />
   <meta property="og:image" content="https://limquiz.vercel.app/Thumbnail.png" />
   <meta name="twitter:card" content="summary" />
@@ -508,8 +508,8 @@
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
-        <h1>림버스 인격 두들</h1>
-        <div class="sub">인격명만 검색해서 선택합니다. 정답은 수감자, 인격명, 성급, 키워드 3개를 비교하며, 키워드는 순서와 상관없이 판정합니다.</div>
+        <h1>림퀴즈</h1>
+        <div class="sub">림버스 컴퍼니 퀴즈 모음집. 인격 두들, 스킬, 덱, EGO, EGO 기프트까지 원하는 모드를 골라 플레이하세요.</div>
       </header>
 
       <div class="home-modes">
@@ -590,7 +590,7 @@
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
         <button class="back-btn" id="backToHomeBtn">← 홈으로</button>
-        <h1>림버스 인격 두들</h1>
+        <h1>인격 두들</h1>
         <div class="sub">인격명만 검색해서 선택합니다. 정답은 수감자, 인격명, 성급, 키워드 3개를 비교하며, 키워드는 순서와 상관없이 판정합니다.</div>
         <div class="challenge-info" id="challengeInfo">
           <span class="challenge-no" id="challengeNo"></span>
@@ -828,7 +828,7 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-    const APP_VERSION = 'v0.13.68';
+    const APP_VERSION = 'v0.13.69';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -1458,7 +1458,7 @@
       const fieldLabels = FIELDS.map((f, i) => `<div style="font-size:13px;color:var(--muted);text-align:center;width:36px;overflow:hidden">${SHORT_LABELS[i]}</div>`).join('');
       return `
         <div class="card-header">
-          <div class="card-title-text">림버스 인격 두들</div>
+          <div class="card-title-text">림퀴즈 · 인격 두들</div>
           <div class="card-subtitle-text">${escapeHtml(modeLabel)} · ${escapeHtml(record.date || '')}</div>
         </div>
         <div class="card-identity-wrap">
@@ -1495,7 +1495,7 @@
           `<span class="deck-card-cell ${ch === 'g' ? 'g' : ch === 'y' ? 'y' : 'r'}"></span>`).join('')}</div>`).join('');
       return `
         <div class="card-header">
-          <div class="card-title-text">림버스 인격 두들 · 덱 퀴즈</div>
+          <div class="card-title-text">림퀴즈 · 덱 퀴즈</div>
           <div class="card-subtitle-text">${escapeHtml(record.date || '')}</div>
         </div>
         <div class="deck-card-name">🃏 ${escapeHtml(record.deckName || '')}</div>
@@ -1529,7 +1529,7 @@
       }).join('');
       return `
         <div class="card-header">
-          <div class="card-title-text">림버스 인격 두들 · 스킬 퀴즈</div>
+          <div class="card-title-text">림퀴즈 · 스킬 퀴즈</div>
           <div class="card-subtitle-text">${escapeHtml(record.date || '')}</div>
         </div>
         <div class="card-identity-wrap">
@@ -1555,7 +1555,7 @@
       const nameBadge = record.success ? '<span class="sq-correct-badge">✅ 정답</span>' : '<span class="sq-gaveup-badge">👀 포기</span>';
       return `
         <div class="card-header">
-          <div class="card-title-text">림버스 인격 두들 · EGO 퀴즈</div>
+          <div class="card-title-text">림퀴즈 · EGO 퀴즈</div>
           <div class="card-subtitle-text">${escapeHtml(record.date || '')}</div>
         </div>
         <div class="gq-icon-wrap" style="margin-top:16px">
@@ -1583,7 +1583,7 @@
       const nameBadge = record.success ? '<span class="sq-correct-badge">✅ 정답</span>' : '<span class="sq-gaveup-badge">👀 포기</span>';
       return `
         <div class="card-header">
-          <div class="card-title-text">림버스 인격 두들 · EGO 기프트 퀴즈</div>
+          <div class="card-title-text">림퀴즈 · EGO 기프트 퀴즈</div>
           <div class="card-subtitle-text">${escapeHtml(record.date || '')}</div>
         </div>
         <div class="gq-icon-wrap" style="margin-top:16px">
