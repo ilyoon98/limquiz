@@ -14,6 +14,7 @@
   <link rel="icon" type="image/png" href="./Thumbnail.png" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha384-ZZ1pncU3bQe8y31yfZdMFdSpttDoPmOZg2wguVK9almUodir1PghgT0eY7Mrty8H" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js" integrity="sha384-sPwMflxqfAN+Q5mvlkLmHiX3PORGbZSXHiSGPTXT9VHCD/AB+b+r+vJWsqprv+7k" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@4.5.0/dist/bundles/anime.umd.min.js" integrity="sha384-InMmvD3VoYcY7hGjSC80aLb2bNNE4CzpX+Eq6FVDlmB0IKgDvmfPw4UY8L/M++iG" crossorigin="anonymous"></script>
   <style>
     :root {
       --bg: #141414; --panel: #1f1f1f; --panel2: #292929; --text: #f4f1ea;
@@ -829,7 +830,7 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-    const APP_VERSION = 'v0.13.72';
+    const APP_VERSION = 'v0.13.73';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -1774,6 +1775,31 @@
         if (Date.now() < end) requestAnimationFrame(frame);
       })();
       confetti({ particleCount: 80, spread: 100, origin: { y: 0.6 }, colors: ['#ffd98a', '#c9a86a', '#ff9500', '#8b9c15'] });
+    }
+
+    // ── anime.js 등장 연출 (EGO/EGO 기프트 퀴즈: 힌트 배지 팝인, 시도 로그 슬라이드인,
+    // 결과 화면 스태거) — CDN 로드 실패 시에도 게임 진행엔 지장 없도록 조용히 무시한다.
+    function animPopIn(elsOrSelector) {
+      if (typeof anime === 'undefined') return;
+      try {
+        const els = typeof elsOrSelector === 'string' ? document.querySelectorAll(elsOrSelector) : elsOrSelector;
+        if (!els || !els.length) return;
+        anime.animate(els, { scale: [0.5, 1], opacity: [0, 1], duration: 480, ease: 'outElastic(1, .6)' });
+      } catch (e) { if (DEBUG) console.error('animPopIn 실패:', e); }
+    }
+    function animSlideIn(el) {
+      if (typeof anime === 'undefined' || !el) return;
+      try {
+        anime.animate(el, { translateY: [-14, 0], opacity: [0, 1], duration: 320, ease: 'outQuad' });
+      } catch (e) { if (DEBUG) console.error('animSlideIn 실패:', e); }
+    }
+    function animResultStagger(container) {
+      if (typeof anime === 'undefined' || !container) return;
+      try {
+        const items = container.querySelectorAll(':scope > *');
+        if (!items.length) return;
+        anime.animate(items, { translateY: [16, 0], opacity: [0, 1], duration: 420, delay: anime.stagger(70), ease: 'outQuad' });
+      } catch (e) { if (DEBUG) console.error('animResultStagger 실패:', e); }
     }
 
     function showEnd(won) {
@@ -3398,6 +3424,9 @@
           </span>
         </div>`;
       }).join('');
+      // 새로 추가된 시도는 항상 맨 위(reverse로 최신순 정렬)에 오므로, 첫 번째 줄만
+      // 슬라이드인 시켜 "방금 추가됨"을 표시한다.
+      animSlideIn(el.firstElementChild);
     }
 
     function updateEqCardState() {
@@ -3453,27 +3482,43 @@
     }
     // 공개된 항목은 "라벨: 값" 배지로, 아직 공개되지 않은 항목은 같은 자리에 잠금
     // 배지("라벨: 미공개")로 항상 표시한다. 처음부터 무엇을 알아낼 수 있는지 보이게 하기 위함.
-    function statBadgeHTML(label, isRevealed, valueHtml) {
+    // badgeKey는 힌트 팝인 연출이 "방금 새로 드러난 배지"를 찾을 때 쓰는 data-badge
+    // 값이다. 잠금/공개 두 상태 모두 같은 badgeKey를 달아 상태가 바뀌어도 같은
+    // 자리를 계속 가리킬 수 있게 한다.
+    function statBadgeHTML(label, isRevealed, valueHtml, badgeKey) {
+      const attr = badgeKey ? ` data-badge="${badgeKey}"` : '';
       return isRevealed
-        ? `<span class="gq-badge-kv"><span class="gq-badge-kv-label">${escapeHtml(label)}</span>${valueHtml}</span>`
-        : `<span class="gq-badge-locked">${escapeHtml(label)}: 미공개</span>`;
+        ? `<span class="gq-badge-kv"${attr}><span class="gq-badge-kv-label">${escapeHtml(label)}</span>${valueHtml}</span>`
+        : `<span class="gq-badge-locked"${attr}>${escapeHtml(label)}: 미공개</span>`;
     }
     function eqInfoPanelHTML() {
       const e = eqEgo;
       const gc = EQ_GRADE_COLOR[e['등급']] || {bg:'#1e1e1e',text:'#888',border:'#555'};
       const revealed = eqRevealedTiers;
       const badges = [];
-      if (e['수감자']) badges.push(statBadgeHTML('수감자', revealed.has('수감자'), sinnerDot(e['수감자'])));
-      if (e['등급']) badges.push(statBadgeHTML('등급', revealed.has('등급'), `<span class="eq-grade-chip" style="background:${gc.bg};color:${gc.text};border-color:${gc.border}">${escapeHtml(e['등급'])}</span>`));
-      if (e['속성']) badges.push(statBadgeHTML('속성', revealed.has('속성'), sinChipHTML(e['속성'])));
+      if (e['수감자']) badges.push(statBadgeHTML('수감자', revealed.has('수감자'), sinnerDot(e['수감자']), 'sinner'));
+      if (e['등급']) badges.push(statBadgeHTML('등급', revealed.has('등급'), `<span class="eq-grade-chip" style="background:${gc.bg};color:${gc.text};border-color:${gc.border}">${escapeHtml(e['등급'])}</span>`, 'grade'));
+      if (e['속성']) badges.push(statBadgeHTML('속성', revealed.has('속성'), sinChipHTML(e['속성']), 'sin'));
       const revealedResourceParts = eqResourceParts.filter((_, i) => revealed.has(`자원${i}`));
-      if (eqResourceParts.length) badges.push(statBadgeHTML('자원', revealedResourceParts.length > 0, resourceChipsHTML(revealedResourceParts.join(', '))));
+      if (eqResourceParts.length) badges.push(statBadgeHTML('자원', revealedResourceParts.length > 0, resourceChipsHTML(revealedResourceParts.join(', ')), 'resource'));
       return `
         <div class="gq-badge-row">${badges.join('')}</div>
-        <div class="gq-icon-wrap">
+        <div class="gq-icon-wrap" data-badge="image">
           ${revealed.has('이미지') && e['아이콘'] ? `<img src="${escapeHtml(e['아이콘'])}" alt="" onerror="this.style.display='none'">` : '<div class="eq-icon-locked">🔒</div>'}
         </div>
       `;
+    }
+    // 힌트/오답으로 새로 드러난 항목만 골라 팝인 연출을 건다. prevRevealed는 이 함수
+    // 호출 직전(공개 처리 전) 상태의 eqRevealedTiers 스냅샷이어야 한다.
+    function eqRerenderInfoPanel(prevRevealed) {
+      const changed = [];
+      if (eqRevealedTiers.has('수감자') && !prevRevealed.has('수감자')) changed.push('sinner');
+      if (eqRevealedTiers.has('등급') && !prevRevealed.has('등급')) changed.push('grade');
+      if (eqRevealedTiers.has('속성') && !prevRevealed.has('속성')) changed.push('sin');
+      if (eqResourceParts.some((_, i) => eqRevealedTiers.has(`자원${i}`) && !prevRevealed.has(`자원${i}`))) changed.push('resource');
+      if (eqRevealedTiers.has('이미지') && !prevRevealed.has('이미지')) changed.push('image');
+      document.getElementById('eq-info-panel').innerHTML = eqInfoPanelHTML();
+      if (changed.length) animPopIn(changed.map(g => `#eq-info-panel [data-badge="${g}"]`).join(','));
     }
     function eqRenderCard() {
       document.getElementById('eq-result').style.display = 'none';
@@ -3534,8 +3579,9 @@
         eqRenderGuessLog();
         // 로그에서 이미 드러난 항목(수감자·등급·속성 정확히 일치, 자원 겹침)은 힌트
         // 소모 없이 바로 공개해, 아래 eqHint()가 같은 정보를 또 힌트로 주지 않게 한다.
+        const prevRevealedFromGuess = new Set(eqRevealedTiers);
         if (eqAutoRevealFromGuess(guessedEgo)) {
-          document.getElementById('eq-info-panel').innerHTML = eqInfoPanelHTML();
+          eqRerenderInfoPanel(prevRevealedFromGuess);
         }
         inp.style.borderColor = 'var(--red)';
         if (hint) { hint.style.color = '#ff8888'; hint.textContent = '❌ 오답입니다. 힌트를 하나 공개할게요.'; }
@@ -3552,9 +3598,10 @@
       if (eqNameDone) return;
       const nextTier = eqInfoTiers.find(t => !eqRevealedTiers.has(t));
       if (nextTier) {
+        const prevRevealed = new Set(eqRevealedTiers);
         eqRevealedTiers.add(nextTier);
         eqHintsUsed++;
-        document.getElementById('eq-info-panel').innerHTML = eqInfoPanelHTML();
+        eqRerenderInfoPanel(prevRevealed);
         eqUpdateProgressStats();
         return;
       }
@@ -3623,6 +3670,7 @@
           <button class="secondary" onclick="eqGoHome()">홈으로</button>
         </div>
       </div>`;
+      animResultStagger(resultEl.querySelector('.panel'));
     }
 
     // ── EGO 기프트 퀴즈 ──────────────────────────────────────
@@ -3735,6 +3783,9 @@
           </span>
         </div>`;
       }).join('');
+      // 새로 추가된 시도는 항상 맨 위(reverse로 최신순 정렬)에 오므로, 첫 번째 줄만
+      // 슬라이드인 시켜 "방금 추가됨"을 표시한다.
+      animSlideIn(el.firstElementChild);
     }
 
     function updateGqCardState() {
@@ -3790,18 +3841,30 @@
       const g = gqGift;
       const revealed = gqRevealedTiers;
       const badges = [];
-      if (g['등급']) badges.push(statBadgeHTML('등급', revealed.has('등급'), escapeHtml(g['등급'])));
-      if (g['속성']) badges.push(statBadgeHTML('속성', revealed.has('속성'), sinChipHTML(g['속성'])));
+      if (g['등급']) badges.push(statBadgeHTML('등급', revealed.has('등급'), escapeHtml(g['등급']), 'grade'));
+      if (g['속성']) badges.push(statBadgeHTML('속성', revealed.has('속성'), sinChipHTML(g['속성']), 'sin'));
       const revealedKeywords = gqKeywords.filter((_, i) => revealed.has(`키워드${i}`));
-      if (gqKeywords.length) badges.push(statBadgeHTML('키워드', revealedKeywords.length > 0, revealedKeywords.map(kwChip).join('')));
+      if (gqKeywords.length) badges.push(statBadgeHTML('키워드', revealedKeywords.length > 0, revealedKeywords.map(kwChip).join(''), 'keyword'));
       const revealedEffectLines = gqEffectLines.filter((_, i) => revealed.has(`효과${i}`));
       return `
         <div class="gq-badge-row">${badges.join('')}</div>
-        ${revealedEffectLines.length ? `<div class="gq-effect-box"><div class="gq-effect-box-label">효과 (일부 공개)</div>${revealedEffectLines.map(highlightEffectHTML).join('<br>')}</div>` : ''}
-        <div class="gq-icon-wrap">
+        ${revealedEffectLines.length ? `<div class="gq-effect-box" data-badge="effect"><div class="gq-effect-box-label">효과 (일부 공개)</div>${revealedEffectLines.map(highlightEffectHTML).join('<br>')}</div>` : ''}
+        <div class="gq-icon-wrap" data-badge="image">
           ${revealed.has('이미지') && g['아이콘'] ? `<img src="${escapeHtml(g['아이콘'])}" alt="" onerror="this.style.display='none'">` : '<div class="eq-icon-locked">🔒</div>'}
         </div>
       `;
+    }
+    // 힌트/오답으로 새로 드러난 항목만 골라 팝인 연출을 건다. prevRevealed는 이 함수
+    // 호출 직전(공개 처리 전) 상태의 gqRevealedTiers 스냅샷이어야 한다.
+    function gqRerenderInfoPanel(prevRevealed) {
+      const changed = [];
+      if (gqRevealedTiers.has('등급') && !prevRevealed.has('등급')) changed.push('grade');
+      if (gqRevealedTiers.has('속성') && !prevRevealed.has('속성')) changed.push('sin');
+      if (gqKeywords.some((_, i) => gqRevealedTiers.has(`키워드${i}`) && !prevRevealed.has(`키워드${i}`))) changed.push('keyword');
+      if (gqEffectLines.some((_, i) => gqRevealedTiers.has(`효과${i}`) && !prevRevealed.has(`효과${i}`))) changed.push('effect');
+      if (gqRevealedTiers.has('이미지') && !prevRevealed.has('이미지')) changed.push('image');
+      document.getElementById('gq-info-panel').innerHTML = gqInfoPanelHTML();
+      if (changed.length) animPopIn(changed.map(k => `#gq-info-panel [data-badge="${k}"]`).join(','));
     }
     function gqRenderCard() {
       document.getElementById('gq-result').style.display = 'none';
@@ -3860,8 +3923,9 @@
         gqRenderGuessLog();
         // 로그에서 이미 드러난 항목(등급·속성 정확히 일치, 키워드 겹침)은 힌트 소모
         // 없이 바로 공개해, 아래 gqHint()가 같은 정보를 또 힌트로 주지 않게 한다.
+        const prevRevealedFromGuess = new Set(gqRevealedTiers);
         if (gqAutoRevealFromGuess(guessedGift)) {
-          document.getElementById('gq-info-panel').innerHTML = gqInfoPanelHTML();
+          gqRerenderInfoPanel(prevRevealedFromGuess);
         }
         inp.style.borderColor = 'var(--red)';
         if (hint) { hint.style.color = '#ff8888'; hint.textContent = '❌ 오답입니다. 힌트를 하나 공개할게요.'; }
@@ -3876,9 +3940,10 @@
       if (gqNameDone) return;
       const nextTier = gqInfoTiers.find(t => !gqRevealedTiers.has(t));
       if (nextTier) {
+        const prevRevealed = new Set(gqRevealedTiers);
         gqRevealedTiers.add(nextTier);
         gqHintsUsed++;
-        document.getElementById('gq-info-panel').innerHTML = gqInfoPanelHTML();
+        gqRerenderInfoPanel(prevRevealed);
         gqUpdateProgressStats();
         return;
       }
@@ -3942,6 +4007,7 @@
           <button class="secondary" onclick="gqGoHome()">홈으로</button>
         </div>
       </div>`;
+      animResultStagger(resultEl.querySelector('.panel'));
     }
 
     // ── 업데이트 기록 ────────────────────────────────────────
