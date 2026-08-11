@@ -890,7 +890,7 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-    const APP_VERSION = 'v0.13.76';
+    const APP_VERSION = 'v0.13.77';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -1955,25 +1955,45 @@
       if (target instanceof Element) return [target];
       return [...target];
     }
-    function animRun(name, target, params) {
+    // 등장 연출은 opacity:0 / rotateX(-92deg) 같은 "안 보이는 시작값"에서 출발한다.
+    // 그런데 anime의 엔진은 requestAnimationFrame으로 도는데, 탭이 백그라운드가 되면
+    // rAF가 아예 발화하지 않아 엔진이 멈추고 요소가 시작값에 갇혀 내용이 통째로
+    // 사라진다. 재생 실패가 곧 "화면 유실"이 되면 안 되므로, 끝날 때쯤 인라인
+    // transform/opacity를 걷어내 원래 상태(=최종 상태)로 반드시 돌아오게 한다.
+    // 등장 연출은 모두 identity(rotateX 0·translate 0·scale 1·opacity 1)로 끝나므로
+    // 인라인 스타일을 지우는 것이 곧 최종 상태다.
+    // 반대로 막대 width/height나 도넛 strokeDashoffset은 애니메이션의 끝값 자체가
+    // 결과이므로 절대 지우면 안 된다 — 그쪽은 settle을 켜지 않는다.
+    function animSettle(els, params) {
+      const delay = typeof params.delay === 'number' ? params.delay : 900; // 스태거는 넉넉히
+      const wait = (params.duration || 400) + delay + 250;
+      setTimeout(() => {
+        els.forEach(el => {
+          if (el.style.opacity !== '') el.style.opacity = '';
+          if (el.style.transform !== '') el.style.transform = '';
+        });
+      }, wait);
+    }
+    function animRun(name, target, params, settle) {
       if (!animEnabled()) return;
       try {
         const els = animEls(target);
         if (!els.length) return;
         anime.animate(els, params);
+        if (settle) animSettle(els, params);
       } catch (e) { if (DEBUG) console.error(`${name} 실패:`, e); }
     }
 
     function animPopIn(target) {
-      animRun('animPopIn', target, { scale: [0.5, 1], opacity: [0, 1], duration: 480, ease: 'outElastic(1, .6)' });
+      animRun('animPopIn', target, { scale: [0.5, 1], opacity: [0, 1], duration: 480, ease: 'outElastic(1, .6)' }, true);
     }
     function animSlideIn(target) {
-      animRun('animSlideIn', target, { translateY: [-14, 0], opacity: [0, 1], duration: 320, ease: 'outQuad' });
+      animRun('animSlideIn', target, { translateY: [-14, 0], opacity: [0, 1], duration: 320, ease: 'outQuad' }, true);
     }
     function animResultStagger(container) {
       if (!animEnabled() || !container) return;
       animRun('animResultStagger', container.querySelectorAll(':scope > *'),
-        { translateY: [16, 0], opacity: [0, 1], duration: 420, delay: anime.stagger(70), ease: 'outQuad' });
+        { translateY: [16, 0], opacity: [0, 1], duration: 420, delay: anime.stagger(70), ease: 'outQuad' }, true);
     }
     // 카드/셀이 순서대로 뒤집히며 나타난다 (오늘의 인격 제출 행, 덱 퀴즈 판정 슬롯).
     // 판정에 따라 뒤집히는 성격을 다르게 줘서 결과를 색뿐 아니라 움직임으로도 읽게 한다.
@@ -1995,23 +2015,23 @@
     function animFlipIn(target, step = 70, delayStart = 0, classify) {
       if (!animEnabled()) return;
       animEls(target).forEach((el, i) => {
-        animRun('animFlipIn', el, { ...animFlipParams(classify ? classify(el, i) : 'plain'), delay: delayStart + i * step });
+        animRun('animFlipIn', el, { ...animFlipParams(classify ? classify(el, i) : 'plain'), delay: delayStart + i * step }, true);
       });
     }
     // 아래에서 위로 순서대로 떠오른다 (스킬 블록, 결과 목록)
     function animRiseIn(target, step = 60, delayStart = 0) {
       if (!animEnabled()) return;
       animRun('animRiseIn', target,
-        { translateY: [18, 0], opacity: [0, 1], duration: 420, delay: anime.stagger(step, { start: delayStart }), ease: 'outQuad' });
+        { translateY: [18, 0], opacity: [0, 1], duration: 420, delay: anime.stagger(step, { start: delayStart }), ease: 'outQuad' }, true);
     }
     function animShake(target) {
-      animRun('animShake', target, { translateX: [0, -9, 8, -6, 4, 0], duration: 440, ease: 'outQuad' });
+      animRun('animShake', target, { translateX: [0, -9, 8, -6, 4, 0], duration: 440, ease: 'outQuad' }, true);
     }
     function animBump(target) {
-      animRun('animBump', target, { scale: [1, 1.35, 1], duration: 420, ease: 'outBack(2)' });
+      animRun('animBump', target, { scale: [1, 1.35, 1], duration: 420, ease: 'outBack(2)' }, true);
     }
     function animCorrectPop(target) {
-      animRun('animCorrectPop', target, { scale: [0.86, 1.06, 1], opacity: [0.4, 1], duration: 520, ease: 'outElastic(1, .7)' });
+      animRun('animCorrectPop', target, { scale: [0.86, 1.06, 1], opacity: [0.4, 1], duration: 520, ease: 'outElastic(1, .7)' }, true);
     }
 
     // 숫자가 0에서 목표값까지 올라간다. anime가 없으면 즉시 최종값을 넣는다.
@@ -2120,14 +2140,20 @@
       const lines = [...root.querySelectorAll('.chart-spark-line')];
       const counts = [...root.querySelectorAll('[data-count-to]')];
 
-      if (!animEnabled()) {
-        arcs.forEach(a => a.setAttribute('stroke-dashoffset', a.dataset.arcTo));
+      // 차트는 등장 연출과 달리 "애니메이션의 끝값" 자체가 보여줄 수치다. 그래서
+      // 인라인 스타일을 지우는 settle을 쓸 수 없고, 최종 수치를 직접 찍어줘야 한다.
+      const applyFinal = () => {
+        arcs.forEach(a => { a.style.strokeDashoffset = a.dataset.arcTo; });
         bars.forEach(b => { b.style.height = `${b.dataset.barH}%`; });
         splits.forEach(s => { s.style.width = `${s.dataset.splitW}%`; });
         dists.forEach(d => { d.style.width = `${d.dataset.distW}%`; });
+        lines.forEach(l => { l.style.strokeDashoffset = '0'; });
         counts.forEach(c => { c.textContent = `${c.dataset.countTo}${c.dataset.countSuffix || ''}`; });
-        return;
-      }
+      };
+      if (!animEnabled()) { applyFinal(); return; }
+      // 탭이 백그라운드면 anime 엔진(rAF)이 멈춰 막대가 0%, 도넛이 빈 원에 갇힌다.
+      // 가장 긴 연출이 끝날 즈음 최종 수치를 한 번 더 확정한다 (이미 재생됐으면 무해).
+      setTimeout(applyFinal, 2600);
       arcs.forEach((a, i) => animRun('arc', a, {
         strokeDashoffset: [Number(a.dataset.arcFrom), Number(a.dataset.arcTo)],
         duration: 1100, delay: 120 + i * 80, ease: 'outExpo',
@@ -2144,7 +2170,7 @@
         } catch (e) { if (DEBUG) console.error('spark 실패:', e); }
       });
       animRun('sparkDot', root.querySelectorAll('.chart-spark-dot'),
-        { opacity: [0, 1], duration: 260, delay: anime.stagger(60, { start: 320 }), ease: 'outQuad' });
+        { opacity: [0, 1], duration: 260, delay: anime.stagger(60, { start: 320 }), ease: 'outQuad' }, true);
       counts.forEach((c, i) => animCountUp(c, c.dataset.countTo, {
         suffix: c.dataset.countSuffix || '', decimals: Number(c.dataset.countDecimals || 0), delay: 100 + i * 60,
       }));
@@ -2162,7 +2188,7 @@
       // 마지막 제출 행이 다 뒤집힌 뒤에 정답 공개가 이어지도록 살짝 늦춘다
       const revealEl = document.getElementById('answerReveal');
       if (revealEl) {
-        animRun('answerReveal', revealEl, { opacity: [0, 1], scale: [0.97, 1], duration: 420, delay: 200, ease: 'outQuad' });
+        animRun('answerReveal', revealEl, { opacity: [0, 1], scale: [0.97, 1], duration: 420, delay: 200, ease: 'outQuad' }, true);
         animRiseIn(revealEl.querySelectorAll('.answer-info-card'), 70, 380);
         animPopIn(revealEl.querySelectorAll('.answer-img-area img'));
       }
@@ -2877,7 +2903,7 @@
         animCorrectPop(row);
         // 스킬 아이콘이 한 바퀴 돌면서 "이 스킬이 확정됐다"를 보여준다
         animRun('sqIconSpin', row?.querySelectorAll('.sq-s2-icon, .sq-s2-icon-fb'),
-          { rotateY: [0, 360], scale: [1, 1.15, 1], duration: 700, ease: 'outCubic' });
+          { rotateY: [0, 360], scale: [1, 1.15, 1], duration: 700, ease: 'outCubic' }, true);
         sqUpdateProgressStats();
         if (sqS2Done.every(Boolean)) setTimeout(sqRenderResult, 600);
       } else {
@@ -3208,7 +3234,7 @@
       if (el) {
         el.classList.add('just-placed');
         setTimeout(() => el.classList.remove('just-placed'), 320);
-        animRun('dbPlace', el, { scale: [0.72, 1.06, 1], opacity: [0.35, 1], duration: 520, ease: 'outElastic(1, .65)' });
+        animRun('dbPlace', el, { scale: [0.72, 1.06, 1], opacity: [0.35, 1], duration: 520, ease: 'outElastic(1, .65)' }, true);
       }
       dbShowMessage(`${idx + 1}번째 순서에 배치됨`);
       dbAdvanceToNextUnplacedSinner();
@@ -3494,7 +3520,7 @@
         : el.classList.contains('judged-yellow') ? 'moved'
         : el.classList.contains('judged-red') ? 'miss' : 'plain');
       animRun('dbJudgeBadge', document.querySelectorAll('#dbBoardSlots .db-slot-judge-badge'),
-        { scale: [0.4, 1], opacity: [0, 1], duration: 380, delay: animEnabled() ? anime.stagger(45, { start: 260 }) : 0, ease: 'outBack(2)' });
+        { scale: [0.4, 1], opacity: [0, 1], duration: 380, delay: animEnabled() ? anime.stagger(45, { start: 260 }) : 0, ease: 'outBack(2)' }, true);
       const allGreen = dbSlotJudge.every(j => j === 'green');
       if (allGreen) {
         // 마지막 슬롯까지 뒤집힌 뒤에 팡파레와 결과가 나와야 판정을 눈으로 확인할 수 있다.
