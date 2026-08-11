@@ -1228,7 +1228,8 @@
       const lastRow = historyEl.lastElementChild;
       if (!animate || !lastRow || !lastRow.classList.contains('reveal-row') || !animEnabled()) return;
       lastRow.classList.remove('reveal-row');
-      animFlipIn(lastRow.querySelectorAll('td'), 65);
+      animFlipIn(lastRow.querySelectorAll('td'), 65, 0,
+        td => td.classList.contains('hit') ? 'hit' : td.classList.contains('miss') ? 'miss' : 'plain');
     }
     function shouldStrikeCandidate(guess, ans) {
       const sinnerMiss = normalize(guess['수감자']) !== normalize(ans['수감자']);
@@ -1954,11 +1955,28 @@
       animRun('animResultStagger', container.querySelectorAll(':scope > *'),
         { translateY: [16, 0], opacity: [0, 1], duration: 420, delay: anime.stagger(70), ease: 'outQuad' });
     }
-    // 카드/셀이 순서대로 뒤집히며 나타난다 (오늘의 인격 제출 행, 덱 퀴즈 판정 슬롯)
-    function animFlipIn(target, step = 70, delayStart = 0) {
+    // 카드/셀이 순서대로 뒤집히며 나타난다 (오늘의 인격 제출 행, 덱 퀴즈 판정 슬롯).
+    // 판정에 따라 뒤집히는 성격을 다르게 줘서 결과를 색뿐 아니라 움직임으로도 읽게 한다.
+    //   hit(정답)   : 크게 튀어오르며 오버슈트 — 가장 오래 남는다
+    //   miss(오답)  : 오버슈트 없이 툭 떨어져 내려앉는다 — 짧고 둔탁하다
+    //   moved(순서 다름) : 자리를 못 찾은 듯 좌우로 흔들린다 (덱 퀴즈 노랑)
+    //   plain       : 판정이 없는 칸 (행 번호 등)
+    // 파라미터에 배열이 들어가므로 매번 새 객체를 만들어 넘긴다 (재사용 시 상호 간섭 방지).
+    function animFlipParams(kind) {
+      switch (kind) {
+        case 'hit':   return { rotateX: [-92, 0], scale: [0.8, 1.08, 1], opacity: [0, 1], duration: 560, ease: 'outBack(2.4)' };
+        case 'miss':  return { rotateX: [-92, 0], translateY: [-7, 3, 0], opacity: [0, 1], duration: 340, ease: 'outQuad' };
+        case 'moved': return { rotateX: [-92, 0], translateX: [0, -6, 6, 0], opacity: [0, 1], duration: 480, ease: 'outQuad' };
+        default:      return { rotateX: [-92, 0], opacity: [0, 1], duration: 400, ease: 'outBack(1.6)' };
+      }
+    }
+    // classify(el, i)로 칸마다 판정을 정한다. 판정별로 duration이 달라 anime.stagger를
+    // 쓸 수 없으므로, 왼쪽부터 순서대로 넘어가는 흐름은 delay를 직접 계산해서 유지한다.
+    function animFlipIn(target, step = 70, delayStart = 0, classify) {
       if (!animEnabled()) return;
-      animRun('animFlipIn', target,
-        { rotateX: [-92, 0], opacity: [0, 1], duration: 400, delay: anime.stagger(step, { start: delayStart }), ease: 'outBack(1.6)' });
+      animEls(target).forEach((el, i) => {
+        animRun('animFlipIn', el, { ...animFlipParams(classify ? classify(el, i) : 'plain'), delay: delayStart + i * step });
+      });
     }
     // 아래에서 위로 순서대로 떠오른다 (스킬 블록, 결과 목록)
     function animRiseIn(target, step = 60, delayStart = 0) {
@@ -3449,8 +3467,12 @@
       });
       dbRenderSlots();
       dbRenderCandidates();
-      // 12칸이 왼쪽부터 한 장씩 뒤집히며 판정이 드러난다
-      animFlipIn(document.querySelectorAll('#dbBoardSlots .db-slot'), 45);
+      // 12칸이 왼쪽부터 한 장씩 뒤집히며 판정이 드러난다.
+      // 초록은 튀어오르고, 노랑(순서 다름)은 좌우로 흔들리고, 빨강은 툭 떨어진다.
+      animFlipIn(document.querySelectorAll('#dbBoardSlots .db-slot'), 45, 0, el =>
+        el.classList.contains('judged-green') ? 'hit'
+        : el.classList.contains('judged-yellow') ? 'moved'
+        : el.classList.contains('judged-red') ? 'miss' : 'plain');
       animRun('dbJudgeBadge', document.querySelectorAll('#dbBoardSlots .db-slot-judge-badge'),
         { scale: [0.4, 1], opacity: [0, 1], duration: 380, delay: animEnabled() ? anime.stagger(45, { start: 260 }) : 0, ease: 'outBack(2)' });
       const allGreen = dbSlotJudge.every(j => j === 'green');
