@@ -198,35 +198,55 @@
     .grade-3 { color:#ffd060; text-shadow:0 0 10px rgba(255,200,60,.45); }
     h1 { margin:0 0 8px; font-size:clamp(28px,4vw,44px); letter-spacing:-.04em; background:linear-gradient(90deg,#e8c97a 0%,#c07858 30%,#9060c0 65%,#4090c8 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
     /* ── 판정 칸 뒤집기 (오늘의 인격) ───────────────
-       게임의 핵심 피드백이라 JS 애니메이션 엔진에 의존하지 않는다. anime.js는 탭이
-       백그라운드면 엔진이 멈춰(pauseOnDocumentHidden) 연출이 아예 재생되지 않을 수
-       있는데, CSS 키프레임은 브라우저가 직접 돌리므로 그런 실패가 없다.
-       판정별로 성격을 다르게 준다: 정답은 튀어오르고, 오답은 툭 떨어진다. */
-    @keyframes cell-flip-plain { 0%{opacity:0;transform:rotateX(-92deg)} 100%{opacity:1;transform:rotateX(0deg)} }
-    @keyframes cell-flip-hit { 0%{opacity:0;transform:rotateX(-92deg) scale(.86)} 62%{opacity:1;transform:rotateX(0deg) scale(1.09)} 100%{opacity:1;transform:rotateX(0deg) scale(1)} }
-    @keyframes cell-flip-miss { 0%{opacity:0;transform:rotateX(-92deg) translateY(-7px)} 70%{opacity:1;transform:rotateX(0deg) translateY(3px)} 100%{opacity:1;transform:rotateX(0deg) translateY(0)} }
-    .reveal-row td { animation:cell-flip-plain .40s cubic-bezier(.34,1.4,.64,1) both; transform-origin:center; }
-    .reveal-row td.hit { animation-name:cell-flip-hit; animation-duration:.56s; }
-    .reveal-row td.miss { animation-name:cell-flip-miss; animation-duration:.34s; animation-timing-function:ease-out; }
-    .reveal-row td:nth-child(1){animation-delay:0ms} .reveal-row td:nth-child(2){animation-delay:80ms} .reveal-row td:nth-child(3){animation-delay:160ms} .reveal-row td:nth-child(4){animation-delay:240ms} .reveal-row td:nth-child(5){animation-delay:320ms} .reveal-row td:nth-child(6){animation-delay:400ms} .reveal-row td:nth-child(7){animation-delay:480ms} .reveal-row td:nth-child(8){animation-delay:560ms} .reveal-row td:nth-child(9){animation-delay:640ms}
+       게임의 핵심 피드백이라 JS 애니메이션 엔진에 의존하지 않는다. anime.js는 자체
+       rAF 루프로 도는데 탭이 백그라운드면 엔진이 멈춰(pauseOnDocumentHidden) 연출이
+       아예 재생되지 않는다. (다만 CSS도 만능은 아니다 — 렌더링이 멈춘 탭에서는
+       document.timeline 자체가 멈춰 CSS 애니메이션도 진행되지 않는다. 차이는
+       "라이브러리 상태에 좌우되지 않는다"는 점이다.)
+       판정별로 성격을 다르게 준다: 정답은 튀어오르고, 오답은 툭 떨어진다.
+       원근(perspective)을 주지 않으면 rotateX는 그냥 세로로 눌렸다 펴지는 정도로만
+       보여서 "그냥 뿅 나타났다"로 읽힌다. tr에 perspective를 걸어 자식 td가 실제로
+       넘어가는 3D 뒤집기가 되게 한다. */
+    @keyframes cell-flip-plain { 0%{opacity:0;transform:rotateX(-100deg)} 70%{opacity:1;transform:rotateX(12deg)} 100%{opacity:1;transform:rotateX(0deg)} }
+    @keyframes cell-flip-hit { 0%{opacity:0;transform:rotateX(-100deg) scale(.82)} 55%{opacity:1;transform:rotateX(14deg) scale(1.12)} 78%{transform:rotateX(-5deg) scale(.98)} 100%{opacity:1;transform:rotateX(0deg) scale(1)} }
+    @keyframes cell-flip-miss { 0%{opacity:0;transform:rotateX(-100deg) translateY(-10px)} 65%{opacity:1;transform:rotateX(8deg) translateY(5px)} 100%{opacity:1;transform:rotateX(0deg) translateY(0)} }
+    .reveal-row { perspective:900px; }
+    .reveal-row td { animation:cell-flip-plain .52s cubic-bezier(.34,1.3,.64,1) both; transform-origin:center top; backface-visibility:hidden; }
+    .reveal-row td.hit { animation-name:cell-flip-hit; animation-duration:.72s; }
+    .reveal-row td.miss { animation-name:cell-flip-miss; animation-duration:.50s; animation-timing-function:ease-out; }
+    .reveal-row td:nth-child(1){animation-delay:0ms} .reveal-row td:nth-child(2){animation-delay:110ms} .reveal-row td:nth-child(3){animation-delay:220ms} .reveal-row td:nth-child(4){animation-delay:330ms} .reveal-row td:nth-child(5){animation-delay:440ms} .reveal-row td:nth-child(6){animation-delay:550ms} .reveal-row td:nth-child(7){animation-delay:660ms} .reveal-row td:nth-child(8){animation-delay:770ms} .reveal-row td:nth-child(9){animation-delay:880ms}
 
     /* ── 판정 칸 뒤집기 (덱 퀴즈 12칸) ──────────────
        초록=튀어오름 / 노랑(순서 다름)=좌우로 흔들림 / 빨강=툭 떨어짐.
        칸별 지연은 dbSubmit에서 animation-delay 인라인으로 넣는다. */
-    @keyframes slot-flip-plain { 0%{opacity:0;transform:rotateX(-92deg)} 100%{opacity:1;transform:rotateX(0deg)} }
-    @keyframes slot-flip-green { 0%{opacity:0;transform:rotateX(-92deg) scale(.8)} 62%{opacity:1;transform:rotateX(0deg) scale(1.08)} 100%{opacity:1;transform:rotateX(0deg) scale(1)} }
-    @keyframes slot-flip-yellow { 0%{opacity:0;transform:rotateX(-92deg)} 55%{opacity:1;transform:rotateX(0deg) translateX(-6px)} 78%{transform:rotateX(0deg) translateX(6px)} 100%{opacity:1;transform:rotateX(0deg) translateX(0)} }
-    @keyframes slot-flip-red { 0%{opacity:0;transform:rotateX(-92deg) translateY(-7px)} 70%{opacity:1;transform:rotateX(0deg) translateY(3px)} 100%{opacity:1;transform:rotateX(0deg) translateY(0)} }
-    .db-slot.flip-in { animation:slot-flip-plain .40s cubic-bezier(.34,1.4,.64,1) both; }
-    .db-slot.flip-in.judged-green { animation-name:slot-flip-green; animation-duration:.56s; }
-    .db-slot.flip-in.judged-yellow { animation-name:slot-flip-yellow; animation-duration:.48s; animation-timing-function:ease-out; }
-    .db-slot.flip-in.judged-red { animation-name:slot-flip-red; animation-duration:.34s; animation-timing-function:ease-out; }
+    @keyframes slot-flip-plain { 0%{opacity:0;transform:rotateX(-100deg)} 70%{opacity:1;transform:rotateX(10deg)} 100%{opacity:1;transform:rotateX(0deg)} }
+    @keyframes slot-flip-green { 0%{opacity:0;transform:rotateX(-100deg) scale(.78)} 55%{opacity:1;transform:rotateX(13deg) scale(1.12)} 78%{transform:rotateX(-4deg) scale(.97)} 100%{opacity:1;transform:rotateX(0deg) scale(1)} }
+    @keyframes slot-flip-yellow { 0%{opacity:0;transform:rotateX(-100deg)} 50%{opacity:1;transform:rotateX(6deg) translateX(-9px)} 72%{transform:rotateX(0deg) translateX(9px)} 88%{transform:translateX(-4px)} 100%{opacity:1;transform:rotateX(0deg) translateX(0)} }
+    @keyframes slot-flip-red { 0%{opacity:0;transform:rotateX(-100deg) translateY(-12px)} 65%{opacity:1;transform:rotateX(7deg) translateY(6px)} 100%{opacity:1;transform:rotateX(0deg) translateY(0)} }
+    .db-board-item { perspective:900px; }
+    .db-slot.flip-in { animation:slot-flip-plain .52s cubic-bezier(.34,1.3,.64,1) both; transform-origin:center top; backface-visibility:hidden; }
+    .db-slot.flip-in.judged-green { animation-name:slot-flip-green; animation-duration:.72s; }
+    .db-slot.flip-in.judged-yellow { animation-name:slot-flip-yellow; animation-duration:.62s; animation-timing-function:ease-out; }
+    .db-slot.flip-in.judged-red { animation-name:slot-flip-red; animation-duration:.50s; animation-timing-function:ease-out; }
+    /* ── 정답 공개 (오늘의 인격 / 랜덤) ─────────────
+       판정 칸과 같은 이유로 CSS가 전담한다. 이 영역이 안 보이면 게임 결과 자체를
+       못 보게 되므로 재생 실패 여지를 남기지 않는다. */
+    @keyframes answer-reveal-in { 0%{opacity:0;transform:scale(.97)} 100%{opacity:1;transform:none} }
+    @keyframes answer-card-in { 0%{opacity:0;transform:translateY(18px)} 100%{opacity:1;transform:none} }
+    @keyframes answer-img-in { 0%{opacity:0;transform:scale(.5)} 100%{opacity:1;transform:scale(1)} }
+    .answer-reveal { animation:answer-reveal-in .42s ease-out .2s both; }
+    .answer-reveal .answer-info-card { animation:answer-card-in .42s ease-out both; }
+    .answer-reveal .answer-info-card:nth-child(1){animation-delay:.38s} .answer-reveal .answer-info-card:nth-child(2){animation-delay:.45s} .answer-reveal .answer-info-card:nth-child(3){animation-delay:.52s} .answer-reveal .answer-info-card:nth-child(4){animation-delay:.59s} .answer-reveal .answer-info-card:nth-child(5){animation-delay:.66s}
+    .answer-reveal .answer-img-area img { animation:answer-img-in .48s cubic-bezier(.34,1.56,.64,1) .5s both; }
+
     /* 판정별 규칙(.reveal-row td.hit 등)이 특이도가 더 높아서, 여기서도 같은 선택자를
        모두 나열해줘야 '동작 줄이기'가 실제로 먹는다. */
     @media (prefers-reduced-motion:reduce) {
       .reveal-row td, .reveal-row td.hit, .reveal-row td.miss,
       .db-slot.flip-in, .db-slot.flip-in.judged-green,
-      .db-slot.flip-in.judged-yellow, .db-slot.flip-in.judged-red { animation:none; }
+      .db-slot.flip-in.judged-yellow, .db-slot.flip-in.judged-red,
+      .answer-reveal, .answer-reveal .answer-info-card,
+      .answer-reveal .answer-img-area img { animation:none; }
     }
 
     /* ── 홈 화면 ─────────────────────────────────── */
@@ -917,7 +937,7 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-    const APP_VERSION = 'v0.13.78';
+    const APP_VERSION = 'v0.13.79';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -2190,13 +2210,8 @@
       messageEl.innerHTML = buildEndMessage(won);
       updateImgPrefButtons();
       scrollAnswerRevealIntoCenter();
-      // 마지막 제출 행이 다 뒤집힌 뒤에 정답 공개가 이어지도록 살짝 늦춘다
-      const revealEl = document.getElementById('answerReveal');
-      if (revealEl) {
-        animRun('answerReveal', revealEl, { opacity: [0, 1], scale: [0.97, 1], duration: 420, delay: 200, ease: 'outQuad' }, true);
-        animRiseIn(revealEl.querySelectorAll('.answer-info-card'), 70, 380);
-        animPopIn(revealEl.querySelectorAll('.answer-img-area img'));
-      }
+      // 정답 공개 등장(패널 페이드 → 정보 카드 스태거 → 이미지 팝)은 .answer-reveal
+      // CSS 키프레임이 전담한다. 결과를 못 보게 되는 실패가 없어야 하기 때문.
       if (won) {
         fireFanfare();
         const shareSlot = document.getElementById('answerShareSlot');
@@ -2236,9 +2251,9 @@
       if (won) return showEnd(true);
       if (triesLeft <= 0) return showEnd(false);
       messageEl.textContent = `오답입니다. 남은 기회는 ${triesLeft}번입니다.`;
-      // 셀 뒤집기(마지막 칸 640ms 지연 + 재생)가 끝난 뒤에 입력창이 흔들려야
+      // 셀 뒤집기(마지막 칸 880ms 지연 + 재생)가 끝난 뒤에 입력창이 흔들려야
       // "오답"이라는 인과가 읽힌다
-      setTimeout(() => animShake(guessInput), 900);
+      setTimeout(() => animShake(guessInput), 1400);
       guessInput.value = '';
       selectedIndex = null;
       ignoreSearchForDropdown = false;
@@ -3532,8 +3547,8 @@
         // (dbRenderResult가 dbUpdateSubmitState로 "다음 게임" 상태를 다시 켜준다).
         const submitBtn = document.getElementById('dbSubmitBtnTop');
         if (submitBtn) submitBtn.disabled = true;
-        // 마지막 칸(11번)은 495ms 지연 + 560ms 재생이라 1055ms에 끝난다
-        setTimeout(() => { fireFanfare(); dbRenderResult(false); }, motionEnabled() ? 1100 : 0);
+        // 마지막 칸(11번)은 495ms 지연 + 720ms 재생이라 1215ms에 끝난다
+        setTimeout(() => { fireFanfare(); dbRenderResult(false); }, motionEnabled() ? 1300 : 0);
       }
     }
 
