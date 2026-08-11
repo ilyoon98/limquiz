@@ -197,10 +197,37 @@
     .grade-2 { color:#c8aa60; }
     .grade-3 { color:#ffd060; text-shadow:0 0 10px rgba(255,200,60,.45); }
     h1 { margin:0 0 8px; font-size:clamp(28px,4vw,44px); letter-spacing:-.04em; background:linear-gradient(90deg,#e8c97a 0%,#c07858 30%,#9060c0 65%,#4090c8 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-    @keyframes cell-reveal { 0%{opacity:0;transform:scaleY(.4)} 60%{transform:scaleY(1.06)} 100%{opacity:1;transform:scaleY(1)} }
-    .reveal-row td { animation:cell-reveal .28s ease both; transform-origin:center; }
+    /* ── 판정 칸 뒤집기 (오늘의 인격) ───────────────
+       게임의 핵심 피드백이라 JS 애니메이션 엔진에 의존하지 않는다. anime.js는 탭이
+       백그라운드면 엔진이 멈춰(pauseOnDocumentHidden) 연출이 아예 재생되지 않을 수
+       있는데, CSS 키프레임은 브라우저가 직접 돌리므로 그런 실패가 없다.
+       판정별로 성격을 다르게 준다: 정답은 튀어오르고, 오답은 툭 떨어진다. */
+    @keyframes cell-flip-plain { 0%{opacity:0;transform:rotateX(-92deg)} 100%{opacity:1;transform:rotateX(0deg)} }
+    @keyframes cell-flip-hit { 0%{opacity:0;transform:rotateX(-92deg) scale(.86)} 62%{opacity:1;transform:rotateX(0deg) scale(1.09)} 100%{opacity:1;transform:rotateX(0deg) scale(1)} }
+    @keyframes cell-flip-miss { 0%{opacity:0;transform:rotateX(-92deg) translateY(-7px)} 70%{opacity:1;transform:rotateX(0deg) translateY(3px)} 100%{opacity:1;transform:rotateX(0deg) translateY(0)} }
+    .reveal-row td { animation:cell-flip-plain .40s cubic-bezier(.34,1.4,.64,1) both; transform-origin:center; }
+    .reveal-row td.hit { animation-name:cell-flip-hit; animation-duration:.56s; }
+    .reveal-row td.miss { animation-name:cell-flip-miss; animation-duration:.34s; animation-timing-function:ease-out; }
     .reveal-row td:nth-child(1){animation-delay:0ms} .reveal-row td:nth-child(2){animation-delay:80ms} .reveal-row td:nth-child(3){animation-delay:160ms} .reveal-row td:nth-child(4){animation-delay:240ms} .reveal-row td:nth-child(5){animation-delay:320ms} .reveal-row td:nth-child(6){animation-delay:400ms} .reveal-row td:nth-child(7){animation-delay:480ms} .reveal-row td:nth-child(8){animation-delay:560ms} .reveal-row td:nth-child(9){animation-delay:640ms}
-    @media (prefers-reduced-motion:reduce) { .reveal-row td { animation:none; } }
+
+    /* ── 판정 칸 뒤집기 (덱 퀴즈 12칸) ──────────────
+       초록=튀어오름 / 노랑(순서 다름)=좌우로 흔들림 / 빨강=툭 떨어짐.
+       칸별 지연은 dbSubmit에서 animation-delay 인라인으로 넣는다. */
+    @keyframes slot-flip-plain { 0%{opacity:0;transform:rotateX(-92deg)} 100%{opacity:1;transform:rotateX(0deg)} }
+    @keyframes slot-flip-green { 0%{opacity:0;transform:rotateX(-92deg) scale(.8)} 62%{opacity:1;transform:rotateX(0deg) scale(1.08)} 100%{opacity:1;transform:rotateX(0deg) scale(1)} }
+    @keyframes slot-flip-yellow { 0%{opacity:0;transform:rotateX(-92deg)} 55%{opacity:1;transform:rotateX(0deg) translateX(-6px)} 78%{transform:rotateX(0deg) translateX(6px)} 100%{opacity:1;transform:rotateX(0deg) translateX(0)} }
+    @keyframes slot-flip-red { 0%{opacity:0;transform:rotateX(-92deg) translateY(-7px)} 70%{opacity:1;transform:rotateX(0deg) translateY(3px)} 100%{opacity:1;transform:rotateX(0deg) translateY(0)} }
+    .db-slot.flip-in { animation:slot-flip-plain .40s cubic-bezier(.34,1.4,.64,1) both; }
+    .db-slot.flip-in.judged-green { animation-name:slot-flip-green; animation-duration:.56s; }
+    .db-slot.flip-in.judged-yellow { animation-name:slot-flip-yellow; animation-duration:.48s; animation-timing-function:ease-out; }
+    .db-slot.flip-in.judged-red { animation-name:slot-flip-red; animation-duration:.34s; animation-timing-function:ease-out; }
+    /* 판정별 규칙(.reveal-row td.hit 등)이 특이도가 더 높아서, 여기서도 같은 선택자를
+       모두 나열해줘야 '동작 줄이기'가 실제로 먹는다. */
+    @media (prefers-reduced-motion:reduce) {
+      .reveal-row td, .reveal-row td.hit, .reveal-row td.miss,
+      .db-slot.flip-in, .db-slot.flip-in.judged-green,
+      .db-slot.flip-in.judged-yellow, .db-slot.flip-in.judged-red { animation:none; }
+    }
 
     /* ── 홈 화면 ─────────────────────────────────── */
     /* 6개 모드를 3×2 그리드로 배치. 900px 이하는 2열, 640px 이하는 1열로 줄어든다. */
@@ -890,7 +917,7 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-    const APP_VERSION = 'v0.13.77';
+    const APP_VERSION = 'v0.13.78';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -1243,13 +1270,10 @@
       historyEl.innerHTML = guesses.map((g, i) => `
         <tr class="${animate && i === guesses.length - 1 ? 'reveal-row' : ''}"><td>${i + 1}</td>${renderCell('수감자', g, answer)}${renderCell('인격명', g, answer)}${renderCell('성급', g, answer)}${renderCell('소속1', g, answer)}${renderCell('소속2', g, answer)}${renderCell('키워드1', g, answer)}${renderCell('키워드2', g, answer)}${renderCell('키워드3', g, answer)}</tr>
       `).join('');
-      // anime.js가 있으면 CSS 키프레임 대신 셀이 한 장씩 뒤집히는 연출로 대체한다
-      // (CSS 쪽은 CDN 실패 시의 폴백으로 그대로 남겨둔다).
-      const lastRow = historyEl.lastElementChild;
-      if (!animate || !lastRow || !lastRow.classList.contains('reveal-row') || !animEnabled()) return;
-      lastRow.classList.remove('reveal-row');
-      animFlipIn(lastRow.querySelectorAll('td'), 65, 0,
-        td => td.classList.contains('hit') ? 'hit' : td.classList.contains('miss') ? 'miss' : 'plain');
+      // 뒤집기는 .reveal-row CSS 키프레임이 전담한다. 판정별 성격(정답=튀어오름,
+      // 오답=툭 떨어짐)도 td의 hit/miss 클래스를 CSS가 직접 선택해서 처리하므로
+      // 여기서 따로 할 일이 없다. JS 애니메이션 엔진에 의존하지 않기 위한 것 —
+      // anime는 탭이 백그라운드면 엔진이 멈춰 연출이 통째로 재생되지 않을 수 있다.
     }
     function shouldStrikeCandidate(guess, ans) {
       const sinnerMiss = normalize(guess['수감자']) !== normalize(ans['수감자']);
@@ -1948,7 +1972,9 @@
     // 모든 연출은 "있으면 좋은 것"이다. CDN 로드 실패나 OS의 '동작 줄이기' 설정에서도
     // 게임 진행엔 지장이 없어야 하므로, 실패는 조용히 무시하고 최종 상태만 보장한다.
     const animMotionQuery = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
-    function animEnabled() { return typeof anime !== 'undefined' && !(animMotionQuery && animMotionQuery.matches); }
+    // CSS 키프레임 연출은 anime 로드 여부와 무관하게 돌아가므로 '동작 줄이기'만 본다.
+    function motionEnabled() { return !(animMotionQuery && animMotionQuery.matches); }
+    function animEnabled() { return typeof anime !== 'undefined' && motionEnabled(); }
     function animEls(target) {
       if (!target) return [];
       if (typeof target === 'string') return [...document.querySelectorAll(target)];
@@ -1995,29 +2021,8 @@
       animRun('animResultStagger', container.querySelectorAll(':scope > *'),
         { translateY: [16, 0], opacity: [0, 1], duration: 420, delay: anime.stagger(70), ease: 'outQuad' }, true);
     }
-    // 카드/셀이 순서대로 뒤집히며 나타난다 (오늘의 인격 제출 행, 덱 퀴즈 판정 슬롯).
-    // 판정에 따라 뒤집히는 성격을 다르게 줘서 결과를 색뿐 아니라 움직임으로도 읽게 한다.
-    //   hit(정답)   : 크게 튀어오르며 오버슈트 — 가장 오래 남는다
-    //   miss(오답)  : 오버슈트 없이 툭 떨어져 내려앉는다 — 짧고 둔탁하다
-    //   moved(순서 다름) : 자리를 못 찾은 듯 좌우로 흔들린다 (덱 퀴즈 노랑)
-    //   plain       : 판정이 없는 칸 (행 번호 등)
-    // 파라미터에 배열이 들어가므로 매번 새 객체를 만들어 넘긴다 (재사용 시 상호 간섭 방지).
-    function animFlipParams(kind) {
-      switch (kind) {
-        case 'hit':   return { rotateX: [-92, 0], scale: [0.8, 1.08, 1], opacity: [0, 1], duration: 560, ease: 'outBack(2.4)' };
-        case 'miss':  return { rotateX: [-92, 0], translateY: [-7, 3, 0], opacity: [0, 1], duration: 340, ease: 'outQuad' };
-        case 'moved': return { rotateX: [-92, 0], translateX: [0, -6, 6, 0], opacity: [0, 1], duration: 480, ease: 'outQuad' };
-        default:      return { rotateX: [-92, 0], opacity: [0, 1], duration: 400, ease: 'outBack(1.6)' };
-      }
-    }
-    // classify(el, i)로 칸마다 판정을 정한다. 판정별로 duration이 달라 anime.stagger를
-    // 쓸 수 없으므로, 왼쪽부터 순서대로 넘어가는 흐름은 delay를 직접 계산해서 유지한다.
-    function animFlipIn(target, step = 70, delayStart = 0, classify) {
-      if (!animEnabled()) return;
-      animEls(target).forEach((el, i) => {
-        animRun('animFlipIn', el, { ...animFlipParams(classify ? classify(el, i) : 'plain'), delay: delayStart + i * step }, true);
-      });
-    }
+    // 판정 칸 뒤집기는 CSS 키프레임(.reveal-row td / .db-slot.flip-in)이 전담한다.
+    // 게임의 핵심 피드백이라 JS 엔진이 멈추면 안 되기 때문 — 위 animEnabled() 주석 참고.
     // 아래에서 위로 순서대로 떠오른다 (스킬 블록, 결과 목록)
     function animRiseIn(target, step = 60, delayStart = 0) {
       if (!animEnabled()) return;
@@ -2231,8 +2236,9 @@
       if (won) return showEnd(true);
       if (triesLeft <= 0) return showEnd(false);
       messageEl.textContent = `오답입니다. 남은 기회는 ${triesLeft}번입니다.`;
-      // 셀 뒤집기가 끝난 뒤에 입력창이 흔들려야 "오답"이라는 인과가 읽힌다
-      setTimeout(() => animShake(guessInput), 620);
+      // 셀 뒤집기(마지막 칸 640ms 지연 + 재생)가 끝난 뒤에 입력창이 흔들려야
+      // "오답"이라는 인과가 읽힌다
+      setTimeout(() => animShake(guessInput), 900);
       guessInput.value = '';
       selectedIndex = null;
       ignoreSearchForDropdown = false;
@@ -3513,14 +3519,12 @@
       });
       dbRenderSlots();
       dbRenderCandidates();
-      // 12칸이 왼쪽부터 한 장씩 뒤집히며 판정이 드러난다.
-      // 초록은 튀어오르고, 노랑(순서 다름)은 좌우로 흔들리고, 빨강은 툭 떨어진다.
-      animFlipIn(document.querySelectorAll('#dbBoardSlots .db-slot'), 45, 0, el =>
-        el.classList.contains('judged-green') ? 'hit'
-        : el.classList.contains('judged-yellow') ? 'moved'
-        : el.classList.contains('judged-red') ? 'miss' : 'plain');
-      animRun('dbJudgeBadge', document.querySelectorAll('#dbBoardSlots .db-slot-judge-badge'),
-        { scale: [0.4, 1], opacity: [0, 1], duration: 380, delay: animEnabled() ? anime.stagger(45, { start: 260 }) : 0, ease: 'outBack(2)' }, true);
+      // 12칸이 왼쪽부터 한 장씩 뒤집히며 판정이 드러난다 (CSS 키프레임 — 판정별
+      // 성격은 judged-* 클래스로 갈린다). 칸별 지연만 여기서 인라인으로 넣는다.
+      document.querySelectorAll('#dbBoardSlots .db-slot').forEach((el, i) => {
+        el.style.animationDelay = `${i * 45}ms`;
+        el.classList.add('flip-in');
+      });
       const allGreen = dbSlotJudge.every(j => j === 'green');
       if (allGreen) {
         // 마지막 슬롯까지 뒤집힌 뒤에 팡파레와 결과가 나와야 판정을 눈으로 확인할 수 있다.
@@ -3528,7 +3532,8 @@
         // (dbRenderResult가 dbUpdateSubmitState로 "다음 게임" 상태를 다시 켜준다).
         const submitBtn = document.getElementById('dbSubmitBtnTop');
         if (submitBtn) submitBtn.disabled = true;
-        setTimeout(() => { fireFanfare(); dbRenderResult(false); }, animEnabled() ? 700 : 0);
+        // 마지막 칸(11번)은 495ms 지연 + 560ms 재생이라 1055ms에 끝난다
+        setTimeout(() => { fireFanfare(); dbRenderResult(false); }, motionEnabled() ? 1100 : 0);
       }
     }
 
