@@ -105,6 +105,7 @@
     .pill { border-radius:999px; padding:4px 10px; border:1px solid var(--border); background:var(--panel2); }
     .pill.hit { background: color-mix(in srgb, var(--green) 70%, #111); color:white; }
     .pill.miss { background: color-mix(in srgb, var(--red) 65%, #111); color:white; }
+    .pill.moved { background: color-mix(in srgb, var(--slot-yellow) 80%, #111); color:white; }
     .answer { font-weight:900; color:#ffd98a; }
     .answer-reveal { display:flex; flex-direction:column; gap:14px; margin-top:4px; padding:20px 22px; border-radius:18px; border:2px solid var(--border); background:var(--panel2); transition:box-shadow .2s; }
     .answer-reveal.success { border-color:var(--green); background:color-mix(in srgb, var(--green) 14%, var(--panel2)); box-shadow:0 0 0 1px color-mix(in srgb, var(--green) 45%, transparent), 0 10px 30px rgba(0,0,0,.35); }
@@ -189,6 +190,7 @@
     .judge { font-size:14px; opacity:.95; }
     .hit { background: color-mix(in srgb, var(--green) 70%, #111); }
     .miss { background: color-mix(in srgb, var(--red) 65%, #111); }
+    .moved { background: color-mix(in srgb, var(--slot-yellow) 72%, #111); }
     .empty { opacity:.65; }
     .kw-chip { display:inline-block; border-radius:5px; padding:2px 10px; font-size:14px; font-weight:700; line-height:1.5; border:1px solid rgba(255,255,255,.12); }
     .sinner-dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:5px; vertical-align:middle; flex-shrink:0; }
@@ -213,8 +215,12 @@
     /* 정답: 초록 테두리가 밝게 번쩍인다 / 오답: 빨간 테두리가 짧고 둔탁하게 번쩍인다 */
     @keyframes cell-flash-hit { 0%,100%{box-shadow:none} 40%{box-shadow:inset 0 0 0 2px #7ee89a, 0 0 14px 1px color-mix(in srgb, var(--green) 75%, transparent)} }
     @keyframes cell-flash-miss { 0%,100%{box-shadow:none} 45%{box-shadow:inset 0 0 0 2px #ff8f88} }
+    /* 순서 다름: 노란 테두리가 번쩍이며 칸이 좌우로 한 번 밀린다 (자리를 못 찾았다는 뜻) */
+    @keyframes cell-flash-moved { 0%,100%{box-shadow:none} 45%{box-shadow:inset 0 0 0 2px #facc15, 0 0 12px 1px color-mix(in srgb, #facc15 55%, transparent)} }
+    @keyframes cell-reveal-moved { 0%{opacity:0;transform:scaleY(.4) translateX(0)} 50%{opacity:1;transform:scaleY(1.04) translateX(6px)} 75%{transform:translateX(-4px)} 100%{opacity:1;transform:scaleY(1) translateX(0)} }
     .reveal-row td { animation:cell-reveal .28s ease both; transform-origin:center; }
     .reveal-row td.hit { animation-name:cell-reveal-hit, cell-flash-hit; animation-duration:.34s,.62s; }
+    .reveal-row td.moved { animation-name:cell-reveal-moved, cell-flash-moved; animation-duration:.42s,.52s; }
     .reveal-row td.miss { animation-name:cell-reveal-miss, cell-flash-miss; animation-duration:.38s,.44s; }
     .reveal-row td:nth-child(1){animation-delay:0ms} .reveal-row td:nth-child(2){animation-delay:80ms} .reveal-row td:nth-child(3){animation-delay:160ms} .reveal-row td:nth-child(4){animation-delay:240ms} .reveal-row td:nth-child(5){animation-delay:320ms} .reveal-row td:nth-child(6){animation-delay:400ms} .reveal-row td:nth-child(7){animation-delay:480ms} .reveal-row td:nth-child(8){animation-delay:560ms} .reveal-row td:nth-child(9){animation-delay:640ms}
 
@@ -248,7 +254,7 @@
        덮어쓸 수 있어야 하기 때문 (미디어 쿼리는 JS로 뒤집을 수 없다).
        판정별 규칙(.reveal-row td.hit 등)이 특이도가 더 높아서 같은 선택자를
        모두 나열해줘야 실제로 먹는다. */
-    .reduce-motion .reveal-row td, .reduce-motion .reveal-row td.hit, .reduce-motion .reveal-row td.miss,
+    .reduce-motion .reveal-row td, .reduce-motion .reveal-row td.hit, .reduce-motion .reveal-row td.miss, .reduce-motion .reveal-row td.moved,
     .reduce-motion .db-slot.flip-in, .reduce-motion .db-slot.flip-in.judged-green,
     .reduce-motion .db-slot.flip-in.judged-yellow, .reduce-motion .db-slot.flip-in.judged-red,
     .reduce-motion .answer-reveal, .reduce-motion .answer-reveal .answer-info-card,
@@ -706,7 +712,7 @@
         </div>
         <button class="back-btn" id="backToHomeBtn">← 홈으로</button>
         <h1>인격 두들</h1>
-        <div class="sub">인격명만 검색해서 선택합니다. 정답은 수감자, 인격명, 성급, 키워드 3개를 비교하며, 키워드는 순서와 상관없이 판정합니다.</div>
+        <div class="sub">인격명만 검색해서 선택합니다. 정답은 수감자, 인격명, 성급, 키워드 3개를 비교합니다. 키워드는 같은 칸이면 '일치', 정답에 있지만 다른 칸이면 '순서 다름'입니다.</div>
         <div class="challenge-info" id="challengeInfo">
           <span class="challenge-no" id="challengeNo"></span>
           <span class="countdown" id="countdown"></span>
@@ -766,6 +772,7 @@
       <section class="panel table-wrap">
         <div class="legend">
           <span class="pill hit">일치</span>
+          <span class="pill moved">순서 다름 (키워드만)</span>
           <span class="pill miss">불일치</span>
           <span class="pill">취소선 테스트: 수감자와 키워드가 모두 빗나간 제출 인격</span>
         </div>
@@ -944,7 +951,7 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-    const APP_VERSION = 'v0.13.81';
+    const APP_VERSION = 'v0.13.82';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -1124,7 +1131,7 @@
         tries: guesses.length,
         maxTries: MAX_TRIES,
         success: won,
-        guesses: guesses.map(g => Object.fromEntries(FIELDS.map(f => [f, judgeCell(f, g, answer).cls === 'hit'])))
+        guesses: guesses.map(g => Object.fromEntries(FIELDS.map(f => [f, judgeCell(f, g, answer).cls])))
       };
       records.push(record);
       saveResultRecordsV2(records);
@@ -1235,15 +1242,24 @@
       dropdown.classList.remove('open');
     }
 
-    function keywordHitAtPosition(field, guess, ans) {
+    // 키워드는 3단계로 판정한다 (덱 퀴즈·워들과 같은 규칙):
+    //   일치      = 같은 칸에 같은 키워드
+    //   순서 다름 = 정답이 가진 키워드지만 다른 칸에 넣음
+    //   불일치    = 정답에 아예 없는 키워드
+    // 빈 칸끼리 맞물리면(둘 다 없음) 일치로 본다.
+    function judgeKeywordCell(field, guess, ans) {
       const gv = normalize(guess[field]);
-      const ansKeywords = keywordsOf(ans);
-      if (!gv && !ansKeywords[Number(field.replace('키워드','')) - 1]) return true;
-      return !!gv && ansKeywords.includes(gv);
+      const ansAt = normalize(ans[field]);
+      if (!gv) return ansAt ? 'miss' : 'hit';
+      if (gv === ansAt) return 'hit';
+      return keywordsOf(ans).includes(gv) ? 'moved' : 'miss';
     }
+    const JUDGE_LABEL = { hit: '일치', moved: '순서 다름', miss: '불일치' };
     function judgeCell(field, guess, ans) {
-      const hit = field.startsWith('키워드') ? keywordHitAtPosition(field, guess, ans) : normalize(guess[field]) === normalize(ans[field]);
-      return { cls: hit ? 'hit' : 'miss', label: hit ? '일치' : '불일치' };
+      const cls = field.startsWith('키워드')
+        ? judgeKeywordCell(field, guess, ans)
+        : (normalize(guess[field]) === normalize(ans[field]) ? 'hit' : 'miss');
+      return { cls, label: JUDGE_LABEL[cls] };
     }
 
     function sinnerDot(sinner) {
@@ -1632,13 +1648,20 @@
       const affilParts = [ans['소속1'], ans['소속2']].filter(Boolean);
       const kws = [ans['키워드1'], ans['키워드2'], ans['키워드3']].filter(Boolean);
       const modeLabel = record.mode === 'daily' ? `오늘의 인격 #${record.challengeNo ?? '?'}` : '랜덤 플레이';
+      // v0.13.82 이전 기록은 칸마다 불리언(일치 여부)만 저장했고, 이후 기록은
+      // 'hit' | 'moved' | 'miss' 문자열을 저장한다. 옛 기록도 그대로 열려야 하므로
+      // 두 형태를 모두 받아 정규화한다 (옛 기록엔 '순서 다름'이 존재하지 않는다).
+      const cellCls = v => v === true || v === 'hit' ? 'hit' : v === 'moved' ? 'moved' : 'miss';
+      const CELL_MARK = { hit: '✅', moved: '🟨', miss: '❌' };
       const guessRows = (record.guesses || []).map(g => {
-        return `<div class="card-grid-row">${FIELDS.map(f => `<span style="width:36px;text-align:center;flex-shrink:0">${g[f] ? '✅' : '❌'}</span>`).join('')}</div>`;
+        return `<div class="card-grid-row">${FIELDS.map(f => `<span style="width:36px;text-align:center;flex-shrink:0">${CELL_MARK[cellCls(g[f])]}</span>`).join('')}</div>`;
       }).join('');
       // 제출한 칸 중 몇 개를 일치시켰는지 (추리가 얼마나 좁혀졌는지 한눈에)
       const guessList = record.guesses || [];
       const cellTotal = guessList.length * FIELDS.length;
-      const cellHits = guessList.reduce((s, g) => s + FIELDS.filter(f => g[f]).length, 0);
+      const countCls = want => guessList.reduce((s, g) => s + FIELDS.filter(f => cellCls(g[f]) === want).length, 0);
+      const cellHits = countCls('hit');
+      const cellMoved = countCls('moved');
       const SHORT_LABELS = ['수감','인격','성급','소1','소2','K1','K2','K3'];
       const fieldLabels = FIELDS.map((f, i) => `<div style="font-size:13px;color:var(--muted);text-align:center;width:36px;overflow:hidden">${SHORT_LABELS[i]}</div>`).join('');
       return `
@@ -1669,11 +1692,12 @@
         ${cellTotal ? cardStatStrip([
           { label: '시도', value: `${record.tries ?? '?'}<span style="font-size:12px;color:#b8b0a3">/${record.maxTries ?? MAX_TRIES}</span>` },
           { label: '일치 칸', value: `${cellHits}<span style="font-size:12px;color:#b8b0a3">/${cellTotal}</span>` },
-          { label: '일치율', value: `${Math.round(cellHits / cellTotal * 100)}%` },
+          { label: cellMoved ? '순서 다름' : '일치율', value: cellMoved ? `${cellMoved}<span style="font-size:12px;color:#b8b0a3">칸</span>` : `${Math.round(cellHits / cellTotal * 100)}%` },
         ]) + cardMeter([
           { value: cellHits, color: CARD_STAT_GREEN },
-          { value: cellTotal - cellHits, color: CARD_STAT_GREY },
-        ], `제출 ${guessList.length}회 · 일치 ${cellHits}칸 / 전체 ${cellTotal}칸`) : ''}
+          { value: cellMoved, color: CARD_STAT_YELLOW },
+          { value: cellTotal - cellHits - cellMoved, color: CARD_STAT_GREY },
+        ], `제출 ${guessList.length}회 · 일치 ${cellHits}칸${cellMoved ? ` · 순서 다름 ${cellMoved}칸` : ''} / 전체 ${cellTotal}칸`) : ''}
         <div class="card-grid">
           <div style="display:flex;gap:5px;margin-left:0;margin-bottom:6px;padding-left:0">${fieldLabels}</div>
           ${guessRows || '<div style="color:var(--muted);font-size:13px">추측 기록 없음</div>'}
