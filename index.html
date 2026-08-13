@@ -239,15 +239,16 @@
     .answer-reveal .answer-info-card:nth-child(1){animation-delay:.38s} .answer-reveal .answer-info-card:nth-child(2){animation-delay:.45s} .answer-reveal .answer-info-card:nth-child(3){animation-delay:.52s} .answer-reveal .answer-info-card:nth-child(4){animation-delay:.59s} .answer-reveal .answer-info-card:nth-child(5){animation-delay:.66s}
     .answer-reveal .answer-img-area img { animation:answer-img-in .48s cubic-bezier(.34,1.56,.64,1) .5s both; }
 
-    /* 판정별 규칙(.reveal-row td.hit 등)이 특이도가 더 높아서, 여기서도 같은 선택자를
-       모두 나열해줘야 '동작 줄이기'가 실제로 먹는다. */
-    @media (prefers-reduced-motion:reduce) {
-      .reveal-row td, .reveal-row td.hit, .reveal-row td.miss,
-      .db-slot.flip-in, .db-slot.flip-in.judged-green,
-      .db-slot.flip-in.judged-yellow, .db-slot.flip-in.judged-red,
-      .answer-reveal, .answer-reveal .answer-info-card,
-      .answer-reveal .answer-img-area img { animation:none; }
-    }
+    /* 연출 끄기는 미디어 쿼리가 아니라 :root의 .reduce-motion 클래스로 건다.
+       OS의 '동작 줄이기'를 기본값으로 따르되, 사이트의 토글로 사용자가 직접
+       덮어쓸 수 있어야 하기 때문 (미디어 쿼리는 JS로 뒤집을 수 없다).
+       판정별 규칙(.reveal-row td.hit 등)이 특이도가 더 높아서 같은 선택자를
+       모두 나열해줘야 실제로 먹는다. */
+    .reduce-motion .reveal-row td, .reduce-motion .reveal-row td.hit, .reduce-motion .reveal-row td.miss,
+    .reduce-motion .db-slot.flip-in, .reduce-motion .db-slot.flip-in.judged-green,
+    .reduce-motion .db-slot.flip-in.judged-yellow, .reduce-motion .db-slot.flip-in.judged-red,
+    .reduce-motion .answer-reveal, .reduce-motion .answer-reveal .answer-info-card,
+    .reduce-motion .answer-reveal .answer-img-area img { animation:none; }
 
     /* ── 홈 화면 ─────────────────────────────────── */
     /* 6개 모드를 3×2 그리드로 배치. 900px 이하는 2열, 640px 이하는 1열로 줄어든다. */
@@ -613,6 +614,7 @@
       <header>
         <div class="top-actions">
           <span class="version-badge"></span>
+          <button class="changelog-btn motion-toggle-btn" type="button" title="연출 애니메이션을 켜거나 끕니다"></button>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -694,6 +696,7 @@
       <header>
         <div class="top-actions">
           <span class="version-badge"></span>
+          <button class="changelog-btn motion-toggle-btn" type="button" title="연출 애니메이션을 켜거나 끕니다"></button>
           <button class="changelog-btn" type="button">업데이트 기록 보기</button>
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
@@ -937,7 +940,7 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-    const APP_VERSION = 'v0.13.79';
+    const APP_VERSION = 'v0.13.80';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -1992,8 +1995,41 @@
     // 모든 연출은 "있으면 좋은 것"이다. CDN 로드 실패나 OS의 '동작 줄이기' 설정에서도
     // 게임 진행엔 지장이 없어야 하므로, 실패는 조용히 무시하고 최종 상태만 보장한다.
     const animMotionQuery = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+    // OS의 '동작 줄이기'(Windows: 설정 > 접근성 > 시각 효과 > 애니메이션 효과)를 기본값으로
+    // 따르되, 그걸 켜둔 채로 이 사이트의 연출만 보고 싶은 경우를 위해 토글로 덮어쓸 수 있게
+    // 한다. 저장값이 없으면(null) OS 설정을 그대로 따른다.
+    const MOTION_PREF_KEY = 'limbus_motion_pref';
+    function motionPref() {
+      try { const v = localStorage.getItem(MOTION_PREF_KEY); return v === 'on' || v === 'off' ? v : null; }
+      catch (e) { return null; }
+    }
+    function motionOn() {
+      const p = motionPref();
+      if (p) return p === 'on';
+      return !(animMotionQuery && animMotionQuery.matches);
+    }
+    // CSS(.reduce-motion)와 JS(animEnabled) 양쪽이 같은 판단을 쓰도록 루트 클래스로 반영
+    function applyMotionPref() {
+      document.documentElement.classList.toggle('reduce-motion', !motionOn());
+      const on = motionOn();
+      const auto = !motionPref();
+      document.querySelectorAll('.motion-toggle-btn').forEach(btn => {
+        btn.textContent = on ? '✨ 연출 켜짐' : '💤 연출 꺼짐';
+        btn.title = on
+          ? '판정 칸 뒤집기 등 연출이 재생됩니다. 눌러서 끄기' + (auto ? ' (현재 시스템 설정을 따르는 중)' : '')
+          : '연출이 꺼져 있습니다. 눌러서 켜기' + (auto ? ' (시스템의 \'동작 줄이기\' 설정을 따르는 중)' : '');
+      });
+    }
+    function toggleMotionPref() {
+      try { localStorage.setItem(MOTION_PREF_KEY, motionOn() ? 'off' : 'on'); } catch (e) {}
+      applyMotionPref();
+    }
+    // 토글로 덮어쓰지 않은 상태라면 OS 설정 변경을 즉시 따라간다
+    if (animMotionQuery && animMotionQuery.addEventListener) {
+      animMotionQuery.addEventListener('change', () => { if (!motionPref()) applyMotionPref(); });
+    }
     // CSS 키프레임 연출은 anime 로드 여부와 무관하게 돌아가므로 '동작 줄이기'만 본다.
-    function motionEnabled() { return !(animMotionQuery && animMotionQuery.matches); }
+    function motionEnabled() { return motionOn(); }
     function animEnabled() { return typeof anime !== 'undefined' && motionEnabled(); }
     function animEls(target) {
       if (!target) return [];
@@ -4542,7 +4578,10 @@
       document.getElementById('changelogModal').style.display = 'none';
       document.body.style.overflow = '';
     }
-    document.querySelectorAll('.changelog-btn').forEach(btn => btn.addEventListener('click', openChangelog));
+    // 연출 토글은 스타일만 changelog-btn을 빌려 쓰므로 업데이트 기록 열기에서 제외한다
+    document.querySelectorAll('.changelog-btn:not(.motion-toggle-btn)').forEach(btn => btn.addEventListener('click', openChangelog));
+    document.querySelectorAll('.motion-toggle-btn').forEach(btn => btn.addEventListener('click', toggleMotionPref));
+    applyMotionPref();
     document.getElementById('changelogCloseBtn').addEventListener('click', closeChangelog);
     document.getElementById('changelogBackdrop').addEventListener('click', closeChangelog);
 
