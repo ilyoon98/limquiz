@@ -421,6 +421,10 @@
     .qz-effect-text { font-size:20px; line-height:1.85; color:var(--text); }
     .qz-image-row { text-align:center; }
     .qz-image-row img { width:100%; max-width:420px; aspect-ratio:1; object-fit:contain; border-radius:16px; background:var(--panel2); display:block; margin:0 auto; }
+    /* EGO 원본은 1:1 캔버스 안의 원형 일러스트이며, 일부 파일은 원 밖의 빈 영역을
+       가장자리 픽셀로 채워 둬 정사각형 그대로 표시하면 세로로 뭉개진 띠가 보인다.
+       EGO 퀴즈에서만 원형 캔버스로 잘라 실제 일러스트 영역만 노출한다. */
+    #egoQuizScreen .qz-image-row img { border-radius:50%; clip-path:circle(50% at 50% 50%); }
     .qz-image-locked { display:inline-flex; align-items:center; justify-content:center; width:100%; max-width:420px; aspect-ratio:1; border-radius:16px; background:var(--panel2); border:1px dashed var(--border); font-size:72px; color:var(--muted); margin:0 auto; }
     /* qz-row-value 안에 들어가는 칩(죄악·키워드·자원·등급)들도 다른 화면(스킬 퀴즈
        등)과 공유하는 클래스라도 여기서만 크게 키운다. */
