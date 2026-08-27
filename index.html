@@ -45,12 +45,32 @@
     .changelog-date { font-size:14px; color:var(--muted); }
     .changelog-list { margin:0; padding-left:18px; color:var(--text); font-size:14px; line-height:1.7; }
     .changelog-notice-intro { padding:12px 14px; border:1px solid rgba(255,217,138,.42); border-radius:12px; background:rgba(255,217,138,.08); color:#ffe2a6; font-size:14px; line-height:1.55; }
-    .new-id-list { display:flex; flex-direction:column; gap:16px; }
-    .new-id-card { display:flex; gap:14px; padding:14px; background:var(--panel2); border:1px solid var(--border); border-radius:14px; }
-    .new-id-card img { width:88px; height:88px; object-fit:contain; border-radius:10px; background:var(--panel); flex-shrink:0; }
-    .new-id-card-body { flex:1; min-width:0; }
-    .new-id-card-name { font-weight:900; font-size:16px; margin-bottom:4px; }
-    .new-id-card-date { font-size:12px; color:#ffd98a; font-weight:700; margin-top:6px; }
+    .new-update-modal-box { max-width:960px; max-height:92vh; }
+    .new-update-body { padding:20px 24px 26px; }
+    .new-id-list { display:flex; flex-direction:column; gap:22px; }
+    .new-id-card { width:100%; overflow:hidden; background:var(--panel2); border:1px solid var(--border); border-radius:18px; box-shadow:0 16px 36px rgba(0,0,0,.25); }
+    .new-id-card.ego { max-width:520px; align-self:center; }
+    .new-id-media { width:100%; display:flex; align-items:center; justify-content:center; overflow:hidden; background:radial-gradient(circle at center,#302a24 0%,var(--panel) 68%); border-bottom:1px solid var(--border); }
+    .new-id-card.identity .new-id-media { aspect-ratio:16/9; }
+    .new-id-card.ego .new-id-media { aspect-ratio:1; }
+    .new-id-media > img { width:100%; height:100%; object-fit:contain; display:block; }
+    .new-id-card-body { min-width:0; padding:18px 20px 20px; }
+    .new-id-card-kicker { color:#ffd98a; font-size:12px; font-weight:900; letter-spacing:.08em; margin-bottom:7px; }
+    .new-id-card-name { font-weight:900; font-size:clamp(20px,3vw,28px); line-height:1.25; margin-bottom:10px; }
+    .new-id-card-meta { display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:16px; }
+    .new-id-card-date { font-size:13px; color:#ffd98a; font-weight:800; margin-top:10px; }
+    @keyframes new-update-backdrop-in { from{opacity:0} to{opacity:1} }
+    @keyframes new-update-modal-in { 0%{opacity:0;transform:translateY(34px) scale(.88)} 70%{opacity:1;transform:translateY(-4px) scale(1.015)} 100%{opacity:1;transform:none} }
+    @keyframes new-update-card-in { from{opacity:0;transform:translateY(22px) scale(.97)} to{opacity:1;transform:none} }
+    @keyframes new-update-backdrop-out { from{opacity:1} to{opacity:0} }
+    @keyframes new-update-modal-out { from{opacity:1;transform:none} to{opacity:0;transform:translateY(24px) scale(.92)} }
+    #newIdentityModal.is-opening .modal-backdrop { animation:new-update-backdrop-in .28s ease-out both; }
+    #newIdentityModal.is-opening .new-update-modal-box { animation:new-update-modal-in .48s cubic-bezier(.2,.9,.25,1.12) both; }
+    #newIdentityModal.is-opening .new-id-card { animation:new-update-card-in .42s ease-out both; animation-delay:calc(120ms + var(--update-card-i,0) * 90ms); }
+    #newIdentityModal.is-closing .modal-backdrop { animation:new-update-backdrop-out .22s ease-in both; }
+    #newIdentityModal.is-closing .new-update-modal-box { animation:new-update-modal-out .22s ease-in both; }
+    html.reduce-motion #newIdentityModal .modal-backdrop, html.reduce-motion #newIdentityModal .new-update-modal-box, html.reduce-motion #newIdentityModal .new-id-card { animation:none !important; }
+    @media (max-width:640px) { .new-update-modal-box{max-height:94vh} .new-update-body{padding:14px} .new-id-card-body{padding:15px 16px 17px} .new-id-card-name{font-size:20px} }
     .sub { color:var(--muted); line-height:1.55; }
     .challenge-info { margin-top:6px; font-size:14px; color:var(--muted); display:none; }
     .challenge-no { font-weight:800; color:#ffd98a; }
@@ -919,16 +939,16 @@
     </div>
   </div>
 
-  <!-- ══ 인격 이미지 업데이트 안내 팝업 ════════════════════════ -->
+  <!-- ══ 신규 콘텐츠 이미지 업데이트 안내 팝업 ════════════════ -->
   <div id="newIdentityModal" style="display:none">
     <div class="modal-overlay">
       <div class="modal-backdrop" id="newIdentityBackdrop"></div>
-      <div class="changelog-modal-box">
+      <div class="changelog-modal-box new-update-modal-box">
         <div class="changelog-header">
-          <div class="changelog-title">🎉 인격 업데이트!</div>
+          <div class="changelog-title">🎉 신규 콘텐츠 업데이트!</div>
           <button class="changelog-close secondary" id="newIdentityCloseBtn">닫기</button>
         </div>
-        <div class="changelog-body" id="newIdentityBody"></div>
+        <div class="changelog-body new-update-body" id="newIdentityBody"></div>
       </div>
     </div>
   </div>
@@ -3944,7 +3964,7 @@
     let eqInfoTiers = [], eqResourceParts = [], eqWrongGuesses = new Set();
     let eqSubmitCount = 0, eqHintsUsed = 0, eqLastRecord = null, eqResultSaved = false;
     let eqGuessHistory = [];
-    let EGO_LIST = [], EQ_EGO_NAMES = [];
+    let EGO_LIST = [], EQ_EGO_NAMES = [], egoDataLoadFinished = false;
     const EQ_RECENT_KEY = 'eq_recent_egos';
     const EQ_RECENT_MAX = 15;
     // 같은 EGO 이름이 서로 다른 수감자에게 재사용되는 경우가 있어(예: "4번째 성냥불"이
@@ -4641,46 +4661,82 @@
     document.getElementById('changelogCloseBtn').addEventListener('click', closeChangelog);
     document.getElementById('changelogBackdrop').addEventListener('click', closeChangelog);
 
-    // ── 인격 이미지 업데이트 안내 팝업 ──────────────────────
-    // 빌드에서 새로 추가된 images/identities 파일을 추적해 만든 identityUpdates.json을
+    // ── 신규 콘텐츠 이미지 업데이트 안내 팝업 ──────────────
+    // 빌드에서 새로 추가된 인격/EGO 이미지 파일을 추적해 만든 identityUpdates.json을
     // 사용한다. 이미지 묶음의 서명이 같으면 이 브라우저에서는 다시 띄우지 않는다.
     let IDENTITY_UPDATE_ITEMS = [];
     let identityUpdatesLoadFinished = false;
     const NEW_IDENTITY_SHOWN_KEY = 'new_identity_shown_images';
-    function getNewIdentities() {
-      const updatedIds = new Set(IDENTITY_UPDATE_ITEMS.map(item => String(item.id)));
-      return DATA.filter(entry => updatedIds.has(String(entry['ID'])));
+    function getUpdatedContents() {
+      return IDENTITY_UPDATE_ITEMS.map(item => {
+        const type = item.type || 'identity';
+        const data = type === 'ego'
+          ? EGO_LIST.find(entry => String(entry.ID) === String(item.id))
+          : DATA.find(entry => String(entry.ID) === String(item.id));
+        return data ? { type, data } : null;
+      }).filter(Boolean);
     }
     function getNewIdentityUpdateKey() {
       return IDENTITY_UPDATE_ITEMS.map(item => {
         const images = Array.isArray(item.images) ? [...item.images].sort() : [];
-        return `${item.id}:${images.join(',')}`;
+        return `${item.type || 'identity'}:${item.id}:${images.join(',')}`;
       }).sort().join('|');
     }
     function renderNewIdentityPopup(list) {
-      document.getElementById('newIdentityBody').innerHTML = `<div class="new-id-list">${list.map(id => `
-        <div class="new-id-card">
-          ${pickIdImg(id) ? `<img src="${escapeHtml(pickIdImg(id))}" alt="${escapeHtml(id['인격명'])}" onerror="this.style.display='none'">` : ''}
+      document.getElementById('newIdentityBody').innerHTML = `<div class="new-id-list">${list.map((content, index) => {
+        const isEgo = content.type === 'ego';
+        const item = content.data;
+        const name = isEgo ? item['이름'] : item['인격명'];
+        const image = isEgo ? item['아이콘'] : pickIdImg(item);
+        const grade = isEgo ? item['등급'] : item['성급'];
+        const gradeColor = isEgo ? (EQ_GRADE_COLOR[grade] || EQ_GRADE_COLOR.ZAYIN) : null;
+        const gradeHtml = isEgo
+          ? `<span class="eq-grade-chip" style="background:${gradeColor.bg};color:${gradeColor.text};border-color:${gradeColor.border}">${escapeHtml(grade)}</span>`
+          : gradeSpan(grade);
+        return `
+        <div class="new-id-card ${isEgo ? 'ego' : 'identity'}" style="--update-card-i:${index}">
+          <div class="new-id-media">${image ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(name)}" onerror="this.style.display='none'">` : ''}</div>
           <div class="new-id-card-body">
-            <div class="new-id-card-name">${escapeHtml(id['인격명'])}</div>
-            <div>${sinnerDot(id['수감자'])} · ${gradeSpan(id['성급'])}</div>
-            <div class="new-id-card-date">${id['출시일'] ? `출시일: ${escapeHtml(id['출시일'])}` : '새 이미지가 추가되었습니다.'}</div>
+            <div class="new-id-card-kicker">${isEgo ? 'NEW EGO' : 'NEW IDENTITY'}</div>
+            <div class="new-id-card-name">${escapeHtml(name)}</div>
+            <div class="new-id-card-meta">${sinnerDot(item['수감자'])}<span>·</span>${gradeHtml}</div>
+            <div class="new-id-card-date">${!isEgo && item['출시일'] ? `출시일: ${escapeHtml(item['출시일'])}` : `새 ${isEgo ? 'EGO' : '인격'} 이미지가 추가되었습니다.`}</div>
           </div>
-        </div>`).join('')}</div>`;
+        </div>`;
+      }).join('')}</div>`;
     }
+    let newIdentityAnimationTimer = 0;
     function openNewIdentityPopup() {
-      document.getElementById('newIdentityModal').style.display = '';
+      const modal = document.getElementById('newIdentityModal');
+      clearTimeout(newIdentityAnimationTimer);
+      modal.classList.remove('is-opening', 'is-closing');
+      modal.style.display = '';
       document.body.style.overflow = 'hidden';
+      if (!motionEnabled()) return;
+      void modal.offsetWidth;
+      modal.classList.add('is-opening');
+      newIdentityAnimationTimer = setTimeout(() => modal.classList.remove('is-opening'), 700);
     }
     function closeNewIdentityPopup() {
-      document.getElementById('newIdentityModal').style.display = 'none';
-      document.body.style.overflow = '';
+      const modal = document.getElementById('newIdentityModal');
+      if (modal.style.display === 'none' || modal.classList.contains('is-closing')) return;
+      clearTimeout(newIdentityAnimationTimer);
+      const finish = () => {
+        modal.classList.remove('is-opening', 'is-closing');
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+      };
+      if (!motionEnabled()) { finish(); return; }
+      modal.classList.remove('is-opening');
+      modal.classList.add('is-closing');
+      newIdentityAnimationTimer = setTimeout(finish, 240);
     }
     document.getElementById('newIdentityCloseBtn').addEventListener('click', closeNewIdentityPopup);
     document.getElementById('newIdentityBackdrop').addEventListener('click', closeNewIdentityPopup);
     function maybeShowNewIdentityPopup() {
       if (!identityUpdatesLoadFinished || !DATA.length) return;
-      const list = getNewIdentities();
+      if (IDENTITY_UPDATE_ITEMS.some(item => item.type === 'ego') && !egoDataLoadFinished) return;
+      const list = getUpdatedContents();
       if (!list.length) return;
       const key = getNewIdentityUpdateKey();
       if (!key) return;
@@ -4742,10 +4798,12 @@
       .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
       .then(json => {
         EGO_LIST = json;
+        egoDataLoadFinished = true;
         // 이름만으로는 답을 특정할 수 없는 경우가 있어(동명 EGO가 여러 수감자에게
         // 존재) "이름 (수감자)" 형식을 검색 후보로 삼는다.
         EQ_EGO_NAMES = EGO_LIST.filter(e => e['이름']).map(eqAnswerText).sort((a, b) => a.localeCompare(b, 'ko-KR'));
         updateEqCardState();
+        maybeShowNewIdentityPopup();
       })
       .catch(err => {
         console.error('EGO 데이터 로드 실패:', err);

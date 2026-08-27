@@ -5,6 +5,14 @@
       "images": [
         "./images/identities/10616_awaken.png",
         "./images/identities/10616_normal.png"
+      ],
+      "type": "identity"
+    },
+    {
+      "type": "ego",
+      "id": "127",
+      "images": [
+        "./images/ego/127.png"
       ]
     }
   ]
