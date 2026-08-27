@@ -8,4 +8,5 @@ deckKeywords.json
 egoData.json
 egoGiftData.json
 dev/changelog_dev.json
+outputs/
 .env*
