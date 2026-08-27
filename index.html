@@ -317,6 +317,14 @@
     .sq-type-btn.sel { border-color:var(--button); background:color-mix(in srgb,var(--button) 18%,var(--panel2)); color:var(--text); }
     .sq-type-btn.dim { opacity:.28; }
     .sq-s1-feedback { font-size:15px; min-height:18px; margin-top:10px; }
+    .sq-judge-results { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+    .sq-judge-item { display:flex; align-items:center; justify-content:space-between; gap:10px; min-width:0; padding:9px 12px; border:1px solid var(--border); border-radius:10px; background:var(--panel2); }
+    .sq-judge-item.ok { border-color:color-mix(in srgb,var(--green) 58%,var(--border)); background:color-mix(in srgb,var(--green) 10%,var(--panel2)); }
+    .sq-judge-item.miss { border-color:color-mix(in srgb,#ff6b73 58%,var(--border)); background:color-mix(in srgb,#ff6b73 10%,var(--panel2)); }
+    .sq-judge-label { color:var(--text); font-size:13px; font-weight:800; white-space:nowrap; }
+    .sq-judge-status { font-size:15px; font-weight:900; white-space:nowrap; }
+    .sq-judge-item.ok .sq-judge-status { color:#6ddb8a; }
+    .sq-judge-item.miss .sq-judge-status { color:#ff8888; }
     .sq-s1-action-btn { height:36px; padding:0 16px; border-radius:999px; font-size:14px; font-weight:800; background:var(--panel2); color:var(--text); border:1px solid var(--border); flex-shrink:0; }
     .sq-s1-action-btn:hover { border-color:var(--button); color:#ffd98a; }
     .sq-s1-action-btn:disabled { opacity:.5; cursor:not-allowed; }
@@ -348,7 +356,11 @@
     .sq-result-actions button { height:48px; padding:0 28px; font-size:16px; font-weight:800; border-radius:12px; }
     .sq-progress-stats { display:flex; gap:18px; flex-wrap:wrap; color:var(--muted); font-size:15px; font-weight:700; margin-top:12px; }
     .sq-progress-stats strong { color:#ffd98a; }
+    .sq-stage-progress { flex:1; min-width:210px; display:grid; grid-template-columns:auto minmax(90px,1fr) auto; align-items:center; gap:8px; }
+    .sq-stage-progress-label { color:var(--muted); font-size:13px; white-space:nowrap; }
+    .sq-stage-progress-count { min-width:34px; text-align:right; white-space:nowrap; }
     @media (max-width:640px) { .sq-img-wrap{min-height:320px} .sq-s2-row{grid-template-columns:80px 1fr 1fr} .sq-s2-icon,.sq-s2-icon-fb{width:80px;height:80px} }
+    @media (max-width:420px) { .sq-judge-results{grid-template-columns:1fr} .sq-stage-progress{grid-template-columns:1fr auto} .sq-stage-progress .prog-track{grid-column:1/-1;grid-row:2} .sq-stage-progress-count{grid-column:2;grid-row:1} }
 
     /* ── EGO 퀴즈 화면 (스킬 퀴즈의 .sq-* 클래스를 대부분 재사용) ── */
     .eq-grade-btn { height:42px; padding:0 16px; border-radius:999px; border:1px solid var(--border); background:var(--panel2); color:var(--muted); font:inherit; font-size:16px; font-weight:700; cursor:pointer; transition:all .12s; }
@@ -907,13 +919,13 @@
     </div>
   </div>
 
-  <!-- ══ 신규 인격 안내 팝업 ═══════════════════════════════════ -->
+  <!-- ══ 인격 이미지 업데이트 안내 팝업 ════════════════════════ -->
   <div id="newIdentityModal" style="display:none">
     <div class="modal-overlay">
       <div class="modal-backdrop" id="newIdentityBackdrop"></div>
       <div class="changelog-modal-box">
         <div class="changelog-header">
-          <div class="changelog-title">🎉 새로운 인격 등장!</div>
+          <div class="changelog-title">🎉 인격 업데이트!</div>
           <button class="changelog-close secondary" id="newIdentityCloseBtn">닫기</button>
         </div>
         <div class="changelog-body" id="newIdentityBody"></div>
@@ -2783,25 +2795,31 @@
       document.getElementById('sqSubmitBtn').disabled = !sqS1Sel.every(s => s.sin && s.type);
     }
 
-    // 지금 단계에서 얼마나 채웠는지 (스테이지1은 선택 완료, 스테이지2는 맞힌 스킬 기준)
-    function sqProgressRatio() {
-      if (!sqSkillCount) return 0;
+    // 상단 표시는 전체 퀴즈 달성도가 아니라 현재 단계의 상태다.
+    // 퍼센트만 보여주면 제출 전에도 100%가 되어 혼동되므로 단계명과 개수로 명시한다.
+    function sqProgressState() {
       const inStage2 = document.getElementById('sq-stage2')?.style.display !== 'none';
       const done = inStage2 ? sqS2Done.filter(Boolean).length : sqS1Sel.filter(s => s.sin && s.type).length;
-      return done / sqSkillCount;
+      return {
+        done,
+        total: sqSkillCount,
+        label: inStage2 ? '현재 단계 · 스킬명 정답' : '현재 단계 · 답안 선택',
+      };
     }
 
     // 제출/힌트 사용 횟수를 화면에 실시간으로 보여준다 (덱 퀴즈와 동일한 취지)
     function sqUpdateProgressStats(bump) {
       const el = document.getElementById('sqProgressStats');
       if (!el) return;
-      const pct = Math.round(sqProgressRatio() * 100);
+      const progress = sqProgressState();
+      const pct = progress.total ? Math.round(progress.done / progress.total * 100) : 0;
       el.innerHTML = `
         <span>🔁 제출 <strong id="sqSubmitStat">${sqSubmitCount}</strong>회</span>
         <span>💡 힌트 <strong id="sqHintStat">${sqHintsUsed}</strong>회</span>
-        <span style="flex:1;min-width:120px;display:flex;align-items:center;gap:8px">
-          <span class="prog-track" style="flex:1"><span class="prog-bar" style="width:${pct}%"></span></span>
-          <strong>${pct}%</strong>
+        <span class="sq-stage-progress" title="전체 퀴즈 진행도가 아닌 현재 단계의 상태입니다">
+          <span class="sq-stage-progress-label">${progress.label}</span>
+          <span class="prog-track" role="progressbar" aria-label="${progress.label}" aria-valuemin="0" aria-valuemax="${progress.total}" aria-valuenow="${progress.done}"><span class="prog-bar" style="width:${pct}%"></span></span>
+          <strong class="sq-stage-progress-count">${progress.done}/${progress.total}</strong>
         </span>`;
       if (bump) animBump(document.getElementById(bump === 'hint' ? 'sqHintStat' : 'sqSubmitStat'));
     }
@@ -2832,10 +2850,18 @@
         const fb = document.getElementById(`sq-s1-fb-${si}`);
         if (fb) {
           if (sinOk && typeOk) {
-            fb.innerHTML = '<span style="color:#6ddb8a;font-weight:800">✅ 정답!</span>';
+            fb.innerHTML = `
+              <div class="sq-judge-results" aria-label="스킬 ${n} 판정 결과">
+                <div class="sq-judge-item ok"><span class="sq-judge-label">죄악속성</span><span class="sq-judge-status">✓ 정답</span></div>
+                <div class="sq-judge-item ok"><span class="sq-judge-label">공격유형</span><span class="sq-judge-status">✓ 정답</span></div>
+              </div>`;
             animCorrectPop(fb);
           } else {
-            fb.innerHTML = `<span style="color:#ff8888">${sinOk ? '죄악속성 ✅' : '죄악속성 ❌'} · ${typeOk ? '공격유형 ✅' : '공격유형 ❌'}</span>`;
+            fb.innerHTML = `
+              <div class="sq-judge-results" aria-label="스킬 ${n} 판정 결과">
+                <div class="sq-judge-item ${sinOk ? 'ok' : 'miss'}"><span class="sq-judge-label">죄악속성</span><span class="sq-judge-status">${sinOk ? '✓ 정답' : '✕ 오답'}</span></div>
+                <div class="sq-judge-item ${typeOk ? 'ok' : 'miss'}"><span class="sq-judge-label">공격유형</span><span class="sq-judge-status">${typeOk ? '✓ 정답' : '✕ 오답'}</span></div>
+              </div>`;
             // 틀린 스킬 블록만 흔들어서 어디가 틀렸는지 바로 보이게 한다
             animShake(fb.closest('.sq-skill-block'));
           }
@@ -4584,9 +4610,6 @@
 
     // ── 업데이트 기록 ────────────────────────────────────────
     let CHANGELOG = [];
-    let changelogLoadFinished = false;
-    let updateNoticeOpenedThisLoad = false;
-    const UPDATE_NOTICE_SHOWN_KEY = 'update_notice_shown_version';
     function renderChangelog(entries = CHANGELOG, intro = '') {
       const body = document.getElementById('changelogBody');
       if (!entries.length) { body.innerHTML = '<div class="empty">업데이트 기록을 불러오지 못했습니다.</div>'; return; }
@@ -4600,10 +4623,9 @@
         </div>
       `).join('');
     }
-    function openChangelog({ latestOnly = false } = {}) {
-      const entries = latestOnly ? CHANGELOG.filter(entry => entry['버전'] === APP_VERSION) : CHANGELOG;
-      document.getElementById('changelogTitle').textContent = latestOnly ? `🎉 ${APP_VERSION} 업데이트` : '업데이트 기록';
-      renderChangelog(entries, latestOnly ? '<div class="changelog-notice-intro">새 버전에서 달라진 내용을 알려드려요. 이 안내는 이 브라우저에서 버전마다 한 번만 표시됩니다.</div>' : '');
+    function openChangelog() {
+      document.getElementById('changelogTitle').textContent = '업데이트 기록';
+      renderChangelog();
       document.getElementById('changelogModal').style.display = '';
       document.body.style.overflow = 'hidden';
     }
@@ -4611,37 +4633,29 @@
       document.getElementById('changelogModal').style.display = 'none';
       document.body.style.overflow = '';
     }
-    // 연출 토글은 스타일만 changelog-btn을 빌려 쓰므로 업데이트 기록 열기에서 제외한다
-    function maybeShowUpdateNotice() {
-      if (!CHANGELOG.some(entry => entry['버전'] === APP_VERSION)) return false;
-      try {
-        if (localStorage.getItem(UPDATE_NOTICE_SHOWN_KEY) === APP_VERSION) return false;
-        localStorage.setItem(UPDATE_NOTICE_SHOWN_KEY, APP_VERSION);
-      } catch (e) {}
-      updateNoticeOpenedThisLoad = true;
-      openChangelog({ latestOnly: true });
-      return true;
-    }
+    // 일반 업데이트 기록은 자동으로 띄우지 않고 사용자가 버튼을 눌렀을 때만 연다.
+    // 연출 토글은 스타일만 changelog-btn을 빌려 쓰므로 업데이트 기록 열기에서 제외한다.
     document.querySelectorAll('.changelog-btn:not(.motion-toggle-btn)').forEach(btn => btn.addEventListener('click', () => openChangelog()));
     document.querySelectorAll('.motion-toggle-btn').forEach(btn => btn.addEventListener('click', toggleMotionPref));
     applyMotionPref();
     document.getElementById('changelogCloseBtn').addEventListener('click', closeChangelog);
     document.getElementById('changelogBackdrop').addEventListener('click', closeChangelog);
 
-    // ── 신규 인격 안내 팝업 ──────────────────────────────────
-    // '출시일'이 오늘 기준 최근 7일 이내인 인격이 있으면 새 인격 묶음마다 한 번만
-    // 안내한다. 같은 로드에서 버전 업데이트 안내가 열렸다면 중복 팝업은 생략한다.
-    const NEW_IDENTITY_WINDOW_DAYS = 7;
-    const NEW_IDENTITY_SHOWN_KEY = 'new_identity_shown_release';
+    // ── 인격 이미지 업데이트 안내 팝업 ──────────────────────
+    // 빌드에서 새로 추가된 images/identities 파일을 추적해 만든 identityUpdates.json을
+    // 사용한다. 이미지 묶음의 서명이 같으면 이 브라우저에서는 다시 띄우지 않는다.
+    let IDENTITY_UPDATE_ITEMS = [];
+    let identityUpdatesLoadFinished = false;
+    const NEW_IDENTITY_SHOWN_KEY = 'new_identity_shown_images';
     function getNewIdentities() {
-      const now = new Date(); now.setHours(0, 0, 0, 0);
-      return DATA.filter(d => {
-        if (!d['출시일']) return false;
-        const rd = new Date(d['출시일'] + 'T00:00:00');
-        if (isNaN(rd)) return false;
-        const diffDays = Math.floor((now - rd) / 86400000);
-        return diffDays >= 0 && diffDays < NEW_IDENTITY_WINDOW_DAYS;
-      });
+      const updatedIds = new Set(IDENTITY_UPDATE_ITEMS.map(item => String(item.id)));
+      return DATA.filter(entry => updatedIds.has(String(entry['ID'])));
+    }
+    function getNewIdentityUpdateKey() {
+      return IDENTITY_UPDATE_ITEMS.map(item => {
+        const images = Array.isArray(item.images) ? [...item.images].sort() : [];
+        return `${item.id}:${images.join(',')}`;
+      }).sort().join('|');
     }
     function renderNewIdentityPopup(list) {
       document.getElementById('newIdentityBody').innerHTML = `<div class="new-id-list">${list.map(id => `
@@ -4650,7 +4664,7 @@
           <div class="new-id-card-body">
             <div class="new-id-card-name">${escapeHtml(id['인격명'])}</div>
             <div>${sinnerDot(id['수감자'])} · ${gradeSpan(id['성급'])}</div>
-            <div class="new-id-card-date">출시일: ${escapeHtml(id['출시일'])}</div>
+            <div class="new-id-card-date">${id['출시일'] ? `출시일: ${escapeHtml(id['출시일'])}` : '새 이미지가 추가되었습니다.'}</div>
           </div>
         </div>`).join('')}</div>`;
     }
@@ -4665,15 +4679,15 @@
     document.getElementById('newIdentityCloseBtn').addEventListener('click', closeNewIdentityPopup);
     document.getElementById('newIdentityBackdrop').addEventListener('click', closeNewIdentityPopup);
     function maybeShowNewIdentityPopup() {
-      if (!changelogLoadFinished) return;
+      if (!identityUpdatesLoadFinished || !DATA.length) return;
       const list = getNewIdentities();
       if (!list.length) return;
-      const key = list.map(id => `${id['ID']}:${id['출시일']}`).sort().join('|');
+      const key = getNewIdentityUpdateKey();
+      if (!key) return;
       try {
         if (localStorage.getItem(NEW_IDENTITY_SHOWN_KEY) === key) return;
         localStorage.setItem(NEW_IDENTITY_SHOWN_KEY, key);
       } catch (e) {}
-      if (updateNoticeOpenedThisLoad) return;
       renderNewIdentityPopup(list);
       openNewIdentityPopup();
     }
@@ -4683,14 +4697,20 @@
       .then(json => {
         CHANGELOG = json;
         renderChangelog();
-        changelogLoadFinished = true;
-        maybeShowUpdateNotice();
+      })
+      .catch(err => {
+        console.error('업데이트 기록 로드 실패:', err);
+      });
+    fetch('./identityUpdates.json')
+      .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+      .then(json => {
+        IDENTITY_UPDATE_ITEMS = Array.isArray(json?.items) ? json.items : [];
+        identityUpdatesLoadFinished = true;
         maybeShowNewIdentityPopup();
       })
       .catch(err => {
-        changelogLoadFinished = true;
-        console.error('업데이트 기록 로드 실패:', err);
-        maybeShowNewIdentityPopup();
+        identityUpdatesLoadFinished = true;
+        console.error('인격 업데이트 정보 로드 실패:', err);
       });
 
     // ── 데이터 로드 ──────────────────────────────────────────
