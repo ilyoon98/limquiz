@@ -1103,7 +1103,7 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-  const APP_VERSION = 'v0.15.2';
+  const APP_VERSION = 'v0.15.3';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -4432,8 +4432,8 @@
       resultEl.innerHTML = `<div class="panel">
         <div class="sq-result-banner">${success ? `🎉 ${daily ? '오늘의 EGO' : 'EGO'} 정답!` : eqNameGaveUp && eqSubmitCount < EQ_MAX_TRIES ? `${daily ? '오늘' : '이번'} 문제를 포기했습니다` : '기회를 모두 사용했습니다'}</div>
         <div class="sq-result-name">${escapeHtml(eqAnswerText(e))}</div>
-        <div class="eq-wordle-shell" style="margin-top:16px">${eqGuessBoardHTML(false)}</div>
         <div class="qz-panel" style="margin-top:18px">${rows}${e['아이콘'] ? `<div class="qz-image-row"><img src="${escapeHtml(e['아이콘'])}" alt="${escapeHtml(eqAnswerText(e))}" onerror="this.style.display='none'"></div>` : ''}</div>
+        <div class="eq-wordle-shell" style="margin-top:18px">${eqGuessBoardHTML(false)}</div>
         <div class="sq-result-stat">${eqSubmitCount}/${EQ_MAX_TRIES}회 추측 · ${daily ? '내일 새로운 EGO가 출제됩니다' : '다음 문제는 새로운 무작위 EGO입니다'}</div>
         <div class="sq-result-actions"><button class="secondary" onclick="eqShareResult()">📋 결과 공유</button>${daily ? '' : '<button onclick="eqNextRandom()">다음 랜덤 EGO</button>'}<button onclick="eqGoHome()">홈으로</button></div>
       </div>`;
@@ -5067,7 +5067,7 @@
         g['효과'] ? `<div><div class="qz-effect-label">효과</div><div class="qz-effect-text">${highlightEffectHTML(g['효과'])}</div></div>` : '',
       ].join('');
       const failText = gqNameGaveUp && gqSubmitCount < GQ_MAX_TRIES ? `${daily ? '오늘' : '이번'} 문제를 포기했습니다` : '기회를 모두 사용했습니다';
-      resultEl.innerHTML = `<div class="panel"><div class="sq-result-banner">${success ? `🎉 ${daily ? '오늘의 기프트' : '기프트'} 정답!` : failText}</div><div class="sq-result-name">${escapeHtml(g['이름'])}</div><div class="eq-wordle-shell" style="margin-top:16px">${gqGuessBoardHTML(false)}</div><div class="qz-panel" style="margin-top:18px">${rows}${g['아이콘'] ? `<div class="qz-image-row"><img src="${escapeHtml(g['아이콘'])}" alt="${escapeHtml(g['이름'])}" onerror="this.style.display='none'"></div>` : ''}</div>
+      resultEl.innerHTML = `<div class="panel"><div class="sq-result-banner">${success ? `🎉 ${daily ? '오늘의 기프트' : '기프트'} 정답!` : failText}</div><div class="sq-result-name">${escapeHtml(g['이름'])}</div><div class="qz-panel" style="margin-top:18px">${rows}${g['아이콘'] ? `<div class="qz-image-row"><img src="${escapeHtml(g['아이콘'])}" alt="${escapeHtml(g['이름'])}" onerror="this.style.display='none'"></div>` : ''}</div><div class="eq-wordle-shell" style="margin-top:18px">${gqGuessBoardHTML(false)}</div>
         <div class="sq-result-stat">${gqSubmitCount}/${GQ_MAX_TRIES}회 추측 · ${daily ? '내일 새로운 기프트가 출제됩니다' : '다음 문제는 새로운 무작위 기프트입니다'}</div><div class="sq-result-actions"><button class="secondary" onclick="gqShareResult()">📋 결과 공유</button>${daily ? '' : '<button onclick="gqNextRandom()">다음 랜덤 기프트</button>'}<button onclick="gqGoHome()">홈으로</button></div></div>`;
       updateGqCardState(); renderDailyActivityHome();
       animResultStagger(resultEl.querySelector('.panel')); animCorrectPop(resultEl.querySelector('.sq-result-banner')); animRiseIn(resultEl.querySelectorAll('.qz-panel > *'), 70, 160);
