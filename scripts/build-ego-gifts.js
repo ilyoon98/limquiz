@@ -4,10 +4,16 @@ const path = require('path');
 
 const XLSX_PATH = path.join(__dirname, '..', 'CharacterTable.xlsx');
 const OUT_PATH = path.join(__dirname, '..', 'egoGiftData.json');
+const ENHANCEABLE_PATH = path.join(__dirname, '..', 'egoGiftEnhanceable.json');
 const GIFT_SHEET_NAME = 'EGOGiftData';
 const GIFT_FIELDS = ['이름', '등급', '속성', '키워드', '효과', '아이콘'];
 const GIFT_SIN_ORDER = ['분노', '색욕', '나태', '탐식', '우울', '오만', '질투'];
 const KNOWN_SINS = new Set(GIFT_SIN_ORDER);
+const ENHANCEABLE_IDS = new Set(
+  fs.existsSync(ENHANCEABLE_PATH)
+    ? JSON.parse(fs.readFileSync(ENHANCEABLE_PATH, 'utf8')).map(String)
+    : []
+);
 
 const REPO_ROOT = path.join(__dirname, '..');
 function imageFileExists(relPath) {
@@ -59,6 +65,7 @@ const gifts = giftRows
     const entry = { ID: cleanVal(row['ID']) };
     for (const field of GIFT_FIELDS) entry[field] = cleanVal(row[field]);
     entry['조건속성'] = conditionalSinsOf(entry['효과']);
+    entry['강화가능'] = ENHANCEABLE_IDS.has(entry.ID);
 
     if (entry['속성'] && !KNOWN_SINS.has(entry['속성'])) {
       console.warn(`⚠ 알 수 없는 속성 값: "${entry['속성']}" (기프트: ${entry['이름'] || entry.ID})`);

@@ -10,6 +10,7 @@ const ROOT = path.join(__dirname, '..');
 const XLSX_PATH = path.join(ROOT, 'CharacterTable.xlsx');
 const EGO_IMG_DIR = path.join(ROOT, 'images', 'ego');
 const GIFT_IMG_DIR = path.join(ROOT, 'images', 'ego-gifts');
+const GIFT_ENHANCEABLE_PATH = path.join(ROOT, 'egoGiftEnhanceable.json');
 
 fs.mkdirSync(EGO_IMG_DIR, { recursive: true });
 fs.mkdirSync(GIFT_IMG_DIR, { recursive: true });
@@ -154,6 +155,7 @@ async function fetchGifts() {
       속성: ATTR_MAP[g.attrKeywordId] || '',
       // 원본의 "범용" 분류는 게임상 특정 키워드가 없는 기프트다.
       키워드: g.keywordName === '범용' ? '' : (g.keywordName || ''),
+      강화가능: g.enhanceYn === 'Y',
       효과: desc,
       아이콘: ok ? `./images/ego-gifts/${fname}` : '',
     };
@@ -170,10 +172,12 @@ async function fetchGifts() {
   console.log('EGO 기프트 데이터 수집 중... (441개, 상세 조회 포함이라 시간이 걸립니다)');
   const giftRows = await fetchGifts();
   console.log(`✓ EGO 기프트 ${giftRows.length}개 수집 완료`);
+  const enhanceableIds = giftRows.filter(gift => gift['강화가능']).map(gift => String(gift.ID));
+  fs.writeFileSync(GIFT_ENHANCEABLE_PATH, JSON.stringify(enhanceableIds, null, 2) + '\n', 'utf8');
 
   const wb = XLSX.readFile(XLSX_PATH);
   const EGO_HEADER = ['ID', '이름', '수감자', '등급', '속성', '자원', '아이콘'];
-  const GIFT_HEADER = ['ID', '이름', '등급', '속성', '키워드', '효과', '아이콘'];
+  const GIFT_HEADER = ['ID', '이름', '등급', '속성', '키워드', '강화가능', '효과', '아이콘'];
   wb.Sheets['EGOData'] = XLSX.utils.json_to_sheet(egoRows, { header: EGO_HEADER });
   wb.Sheets['EGOGiftData'] = XLSX.utils.json_to_sheet(giftRows, { header: GIFT_HEADER });
   XLSX.writeFile(wb, XLSX_PATH, { compression: true });
