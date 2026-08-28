@@ -152,6 +152,8 @@ async function fetchGifts() {
       이름: g.giftName,
       등급: TIER_MAP[g.giftTier] || g.giftTier,
       속성: ATTR_MAP[g.attrKeywordId] || '',
+      // 원본의 "범용" 분류는 게임상 특정 키워드가 없는 기프트다.
+      키워드: g.keywordName === '범용' ? '' : (g.keywordName || ''),
       효과: desc,
       아이콘: ok ? `./images/ego-gifts/${fname}` : '',
     };
@@ -171,9 +173,9 @@ async function fetchGifts() {
 
   const wb = XLSX.readFile(XLSX_PATH);
   const EGO_HEADER = ['ID', '이름', '수감자', '등급', '속성', '자원', '아이콘'];
-  const GIFT_HEADER = ['ID', '이름', '등급', '속성', '효과', '아이콘'];
+  const GIFT_HEADER = ['ID', '이름', '등급', '속성', '키워드', '효과', '아이콘'];
   wb.Sheets['EGOData'] = XLSX.utils.json_to_sheet(egoRows, { header: EGO_HEADER });
   wb.Sheets['EGOGiftData'] = XLSX.utils.json_to_sheet(giftRows, { header: GIFT_HEADER });
-  XLSX.writeFile(wb, XLSX_PATH);
+  XLSX.writeFile(wb, XLSX_PATH, { compression: true });
   console.log('✓ CharacterTable.xlsx 저장 완료 (EGOData, EGOGiftData 시트 갱신)');
 })();
