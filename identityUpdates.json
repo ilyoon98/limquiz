@@ -1,18 +1,11 @@
 {
+  "latestIdentityId": "10616",
   "items": [
     {
-      "id": "10616",
-      "images": [
-        "./images/identities/10616_awaken.png",
-        "./images/identities/10616_normal.png"
-      ],
-      "type": "identity"
-    },
-    {
       "type": "ego",
-      "id": "127",
+      "id": "119",
       "images": [
-        "./images/ego/127.png"
+        "./images/ego/119.png"
       ]
     }
   ]

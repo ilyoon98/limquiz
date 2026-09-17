@@ -69,7 +69,13 @@ if (!items.length) {
   items = [...preserved, ...items];
 }
 
-fs.writeFileSync(UPDATES_PATH, JSON.stringify({ items }, null, 2) + '\n', 'utf8');
+// 최신 인격 표시는 신규 EGO만 추가된 빌드에서도 유지되어야 한다. 팝업 대상(items)과
+// 별도로 마지막 인격 ID를 보존해 EGO 업데이트가 인격 상태 표시를 덮어쓰지 않게 한다.
+const previousIdentityItem = [...(Array.isArray(previousUpdates?.items) ? previousUpdates.items : [])]
+  .reverse().find(item => (item.type || 'identity') === 'identity');
+const latestIdentityId = String(identityItems.at(-1)?.id || previousUpdates?.latestIdentityId || previousIdentityItem?.id || '');
+
+fs.writeFileSync(UPDATES_PATH, JSON.stringify({ latestIdentityId, items }, null, 2) + '\n', 'utf8');
 fs.writeFileSync(IDENTITY_MANIFEST_PATH, JSON.stringify({ images: identityImagesNow }, null, 2) + '\n', 'utf8');
 fs.writeFileSync(EGO_MANIFEST_PATH, JSON.stringify({ images: egoImagesNow }, null, 2) + '\n', 'utf8');
 

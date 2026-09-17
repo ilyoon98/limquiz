@@ -1148,7 +1148,7 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-    const APP_VERSION = 'v0.16.2';
+    const APP_VERSION = 'v0.16.3';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -5345,6 +5345,7 @@
     // 빌드에서 새로 추가된 인격/EGO 이미지 파일을 추적해 만든 identityUpdates.json을
     // 사용한다. 이미지 묶음의 서명이 같으면 이 브라우저에서는 다시 띄우지 않는다.
     let IDENTITY_UPDATE_ITEMS = [];
+    let LATEST_IDENTITY_ID = '';
     let identityUpdatesLoadFinished = false;
     const NEW_IDENTITY_SHOWN_KEY = 'new_identity_shown_images';
     function getUpdatedContents() {
@@ -5430,8 +5431,7 @@
 
     function updateLatestIdentityStatus() {
       if (!latestIdentityNameEl || !latestIdentityMetaEl || !DATA.length || !identityUpdatesLoadFinished) return;
-      const latestUpdate = [...IDENTITY_UPDATE_ITEMS].reverse().find(item => (item.type || 'identity') === 'identity');
-      const latestIdentity = latestUpdate && DATA.find(row => String(row.ID) === String(latestUpdate.id));
+      const latestIdentity = DATA.find(row => String(row.ID) === String(LATEST_IDENTITY_ID));
       if (!latestIdentity) {
         latestIdentityNameEl.textContent = '최근 반영 인격을 확인할 수 없습니다';
         latestIdentityMetaEl.textContent = `총 ${DATA.length}명`;
@@ -5454,6 +5454,7 @@
       .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
       .then(json => {
         IDENTITY_UPDATE_ITEMS = Array.isArray(json?.items) ? json.items : [];
+        LATEST_IDENTITY_ID = String(json?.latestIdentityId || [...IDENTITY_UPDATE_ITEMS].reverse().find(item => (item.type || 'identity') === 'identity')?.id || '');
         identityUpdatesLoadFinished = true;
         updateLatestIdentityStatus();
         maybeShowNewIdentityPopup();
