@@ -524,6 +524,31 @@
     .eq-judge-sub { color:#e4d9ca; font-size:11px; line-height:1.25; }
     .eq-empty-row { height:48px; border:1px dashed var(--border); border-radius:12px; display:flex; align-items:center; justify-content:center; color:#70685f; font-size:13px; font-weight:800; }
     .eq-daily-complete { margin-bottom:14px; padding:12px 15px; border-radius:12px; border:1px solid color-mix(in srgb,var(--yellow) 48%,var(--border)); background:color-mix(in srgb,var(--yellow) 12%,var(--panel2)); color:#ffe0a0; font-weight:800; }
+    /* 관리자 정보 열람: 추측과 힌트가 같은 비용으로 기록되는 선택형 단서 콘솔. */
+    .quiz-intel-panel { margin:14px 0; overflow:hidden; border:1px solid #554a3b; border-radius:15px; background:#191816; box-shadow:inset 3px 0 0 #8f7345; }
+    .quiz-intel-head { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; padding:14px 17px 13px 19px; border-bottom:1px solid #39332b; }
+    .quiz-intel-kicker { color:#caae78; font-size:11px; font-weight:900; letter-spacing:.12em; text-transform:uppercase; }
+    .quiz-intel-title { margin-top:4px; color:#f1e7d8; font-size:16px; font-weight:900; }
+    .quiz-cost-ledger { flex:0 0 auto; min-width:156px; text-align:right; }
+    .quiz-cost-total { color:#ffe0a0; font-size:15px; font-weight:900; }
+    .quiz-cost-detail { margin-top:3px; color:#91887c; font-size:11px; }
+    .quiz-cost-projected { margin-top:5px; color:#caae78; font-size:12px; font-weight:800; }
+    .quiz-intel-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; padding:13px 16px 16px 19px; }
+    .quiz-hint-btn { min-height:76px; padding:11px 12px; border:1px solid #443e36; border-radius:11px; background:#22201d; color:var(--text); text-align:left; font:inherit; cursor:pointer; transition:border-color .15s,background .15s,transform .15s; }
+    .quiz-hint-btn:not(.revealed):hover { transform:translateY(-1px); border-color:#a68755; background:#29251f; }
+    .quiz-hint-btn:focus-visible { outline:2px solid #e2bd73; outline-offset:2px; }
+    .quiz-hint-btn.revealed { cursor:default; border-color:#6b5b40; background:#28241e; }
+    .quiz-hint-label { display:block; color:#a89f93; font-size:11px; font-weight:900; letter-spacing:.04em; }
+    .quiz-hint-cost { display:block; margin-top:8px; color:#e2bd73; font-size:13px; font-weight:900; }
+    .quiz-hint-value { display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-top:7px; color:#fff4df; font-size:15px; font-weight:900; line-height:1.35; }
+    .quiz-next-clue { display:inline-flex; align-items:center; justify-content:center; gap:8px; width:auto; min-height:36px; margin-top:9px; padding:0 13px; border:1px solid #6b5b40; border-radius:9px; background:#28241e; color:#f2ddaf; font:inherit; font-size:12px; font-weight:900; cursor:pointer; }
+    .quiz-next-clue:hover { border-color:#c49a58; background:#30291f; }
+    .quiz-next-clue span { color:#ad9370; font-size:11px; }
+    .manager-assessment { --assessment:#caae78; display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:14px; margin:17px 0 0; padding:15px 18px; border:1px solid color-mix(in srgb,var(--assessment) 55%,#403a32); border-left:5px solid var(--assessment); border-radius:13px; background:linear-gradient(100deg,color-mix(in srgb,var(--assessment) 12%,#1b1a18),#1b1a18 62%); }
+    .manager-assessment-kicker { color:#a89f93; font-size:10px; font-weight:900; letter-spacing:.13em; }
+    .manager-assessment-grade { margin-top:3px; color:var(--assessment); font-size:29px; line-height:1; font-weight:950; letter-spacing:.04em; }
+    .manager-assessment-cost { text-align:right; color:#f1e7d8; font-size:14px; font-weight:900; }
+    .manager-assessment-cost small { display:block; margin-top:4px; color:#91887c; font-size:11px; font-weight:700; }
     /* EGO 기프트 효과를 문서 형식의 점진 단서로 보여준다. 장식이 아니라 공개 순서와
        가려진 정보의 종류를 한눈에 읽게 하는 구조적 표현이다. */
     .gq-clue-panel { margin:0 0 14px; overflow:hidden; border:1px solid color-mix(in srgb,var(--button) 48%,var(--border)); border-radius:15px; background:linear-gradient(115deg,rgba(201,168,106,.13),rgba(25,24,22,.96) 42%); box-shadow:inset 4px 0 0 rgba(201,168,106,.62); }
@@ -557,6 +582,7 @@
       #egoGiftQuizScreen .eq-judge-cell:nth-last-child(2){border-bottom:1px solid var(--border)}
       #egoGiftQuizScreen .eq-judge-cell:last-child{grid-column:1/-1;border-right:0;border-bottom:0}
       .gq-clue-line{grid-template-columns:52px minmax(0,1fr);gap:8px}.gq-clue-text{font-size:15px}.gq-clue-head{padding-left:16px}.gq-clue-title{font-size:16px}.gq-clue-body,.gq-clue-foot{padding-left:16px}
+      .quiz-intel-head{display:block;padding-left:16px}.quiz-cost-ledger{margin-top:10px;text-align:left}.quiz-intel-grid{grid-template-columns:repeat(2,minmax(0,1fr));padding-left:16px}.quiz-hint-btn{min-height:72px}.manager-assessment{padding:14px 15px}.manager-assessment-grade{font-size:25px}
     }
 
     /* ── 신규 인격/이름 검색 드롭다운 공용 팩토리 (eq/gq) ── */
@@ -1103,7 +1129,7 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-  const APP_VERSION = 'v0.15.3';
+  const APP_VERSION = 'v0.16.0';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -1577,7 +1603,7 @@
           : r.mode === 'ego' ? (r.success ? '정답' : Array.isArray(r.judges) ? (r.gaveUp ? '포기' : '실패') : '포기')
           : r.mode === 'egogift' ? (r.success ? '정답' : Array.isArray(r.judges) ? (r.gaveUp ? '포기' : '실패') : '포기')
           : (r.success ? '성공' : '실패');
-        const triesCell = (r.mode === 'ego' || r.mode === 'egogift') && Array.isArray(r.judges) ? `${r.tries ?? r.submits ?? '-'}/${r.maxTries ?? EQ_MAX_TRIES}`
+        const triesCell = (r.mode === 'ego' || r.mode === 'egogift') && Array.isArray(r.judges) ? (r.cost != null ? `${r.managerGrade || managerGradeFor(r.cost, r.success)} · 비용 ${r.cost}` : `${r.tries ?? r.submits ?? '-'}/${r.maxTries ?? EQ_MAX_TRIES}`)
           : r.mode === 'deck' || r.mode === 'ego' || r.mode === 'egogift' ? `제출 ${r.submits ?? '-'}회 · 힌트 ${r.hints ?? 0}회`
           : r.mode === 'skill' ? `${r.solved ?? '-'}/${r.total ?? '-'} 맞힘`
           : `${r.tries ?? '-'}/${MAX_TRIES}`;
@@ -2006,6 +2032,10 @@
     function buildEgoCardHTML(record) {
       if (Array.isArray(record.judges)) {
         const isDaily = record.daily === true;
+        const tries = record.tries ?? record.submits ?? 0;
+        const hints = record.hints ?? 0;
+        const cost = record.cost ?? (tries + hints);
+        const assessment = record.managerGrade || managerGradeFor(cost, record.success);
         const cells = record.judges.map((row, i) => `<div class="deck-card-row"><span class="deck-card-row-num">${i + 1}</span>${[...row].map(ch => `<span class="deck-card-cell ${ch === 'g' ? 'g' : ch === 'y' ? 'y' : 'r'}"></span>`).join('')}</div>`).join('');
         return `
           <div class="card-header">
@@ -2014,11 +2044,11 @@
           </div>
           <div class="card-result-row">
             <span class="card-result-label ${record.success ? 'card-result-success' : 'card-result-fail'}">${record.success ? '정답! 🎉' : record.gaveUp ? '포기' : '실패'}</span>
-            <span class="card-tries-text">${record.tries ?? record.submits ?? '?'}/${record.maxTries ?? EQ_MAX_TRIES}회 추측</span>
+            <span class="card-tries-text">추측 ${tries} + 힌트 ${hints} = 비용 ${cost}</span>
           </div>
           ${cardStatStrip([
-            { label:'추측', value:`${record.tries ?? record.submits ?? '?'}<span style="font-size:12px;color:#b8b0a3">/${record.maxTries ?? EQ_MAX_TRIES}</span>` },
-            { label:'결과', value:record.success ? 'CLEAR' : 'FAILED' },
+            { label:'관리자 평가', value:`<span style="color:${managerGradeColor(assessment)}">${escapeHtml(assessment)}</span>` },
+            { label:'총 비용', value:`${cost}` },
             { label:'모드', value:isDaily ? 'DAILY' : 'RANDOM' },
           ])}
           <div class="deck-card-grid" style="padding:4px 0 20px">${cells || '<div style="color:var(--muted);font-size:13px">추측 없이 포기했습니다</div>'}</div>
@@ -2056,13 +2086,17 @@
     function buildEgoGiftCardHTML(record) {
       if (Array.isArray(record.judges)) {
         const isDaily = record.daily === true;
+        const tries = record.tries ?? record.submits ?? 0;
+        const hints = record.hints ?? 0;
+        const cost = record.cost ?? (tries + hints);
+        const assessment = record.managerGrade || managerGradeFor(cost, record.success);
         const cells = record.judges.map((row, i) => `<div class="deck-card-row"><span class="deck-card-row-num">${i + 1}</span>${[...row].map(ch => `<span class="deck-card-cell ${ch === 'g' ? 'g' : ch === 'y' ? 'y' : 'r'}"></span>`).join('')}</div>`).join('');
         return `
           <div class="card-header"><div class="card-title-text">림퀴즈 · ${isDaily ? '오늘의 EGO 기프트' : '기프트 랜덤 플레이'}</div><div class="card-subtitle-text">${isDaily ? `#${record.challengeNo ?? '?'} · ` : ''}${escapeHtml(record.date || '')}</div></div>
-          <div class="card-result-row"><span class="card-result-label ${record.success ? 'card-result-success' : 'card-result-fail'}">${record.success ? '정답! 🎉' : record.gaveUp ? '포기' : '실패'}</span><span class="card-tries-text">${record.tries ?? record.submits ?? '?'}/${record.maxTries ?? GQ_MAX_TRIES}회 추측</span></div>
+          <div class="card-result-row"><span class="card-result-label ${record.success ? 'card-result-success' : 'card-result-fail'}">${record.success ? '정답! 🎉' : record.gaveUp ? '포기' : '실패'}</span><span class="card-tries-text">추측 ${tries} + 힌트 ${hints} = 비용 ${cost}</span></div>
           ${cardStatStrip([
-            { label:'추측', value:`${record.tries ?? record.submits ?? '?'}<span style="font-size:12px;color:#b8b0a3">/${record.maxTries ?? GQ_MAX_TRIES}</span>` },
-            { label:'결과', value:record.success ? 'CLEAR' : 'FAILED' },
+            { label:'관리자 평가', value:`<span style="color:${managerGradeColor(assessment)}">${escapeHtml(assessment)}</span>` },
+            { label:'총 비용', value:`${cost}` },
             { label:'모드', value:isDaily ? 'DAILY' : 'RANDOM' },
           ])}
           <div class="deck-card-grid" style="padding:4px 0 20px">${cells || '<div style="color:var(--muted);font-size:13px">추측 없이 포기했습니다</div>'}</div>
@@ -4197,10 +4231,32 @@
     let eqEgo = null, eqNameDone = false, eqNameGaveUp = false;
     let eqSubmitCount = 0, eqLastRecord = null, eqResultSaved = false;
     let eqGuessHistory = [], eqWrongGuesses = new Set();
+    let eqOpenedHints = new Set();
     let EGO_LIST = [], EQ_EGO_NAMES = [], egoDataLoadFinished = false;
     const EQ_MAX_TRIES = 6;
     const EQ_DAILY_STORAGE_KEY = 'eq_daily_wordle_v1';
     const EQ_GRADE_ORDER = ['ZAYIN','TETH','HE','WAW','ALEPH'];
+
+    // 추측과 유료 힌트는 각각 비용 1. 정답을 맞힌 경우에만 관리자 평가를 부여한다.
+    const MANAGER_GRADE_STEPS = [
+      { max:2, grade:'ALEPH' }, { max:4, grade:'WAW' }, { max:6, grade:'HE' }, { max:8, grade:'TETH' },
+      { max:Infinity, grade:'ZAYIN' },
+    ];
+    function managerGradeFor(cost, success = true) {
+      if (!success) return '미획득';
+      return MANAGER_GRADE_STEPS.find(step => cost <= step.max)?.grade || 'ZAYIN';
+    }
+    function managerGradeColor(grade) {
+      return grade === '미획득' ? '#8f8579' : (EQ_GRADE_COLOR[grade]?.text || '#caae78');
+    }
+    function managerAssessmentHTML(grade, cost, tries, hints) {
+      return `<div class="manager-assessment" style="--assessment:${managerGradeColor(grade)}"><div><div class="manager-assessment-kicker">MANAGER ASSESSMENT · 관리자 평가</div><div class="manager-assessment-grade">${escapeHtml(grade)}</div></div><div class="manager-assessment-cost">총 비용 ${cost}<small>추측 ${tries} + 힌트 ${hints}</small></div></div>`;
+    }
+    function quizCostLedgerHTML(tries, hints) {
+      const cost = tries + hints;
+      const projectedCost = cost + 1;
+      return `<div class="quiz-cost-ledger"><div class="quiz-cost-total">현재 비용 ${cost}</div><div class="quiz-cost-detail">추측 ${tries} + 힌트 ${hints}</div><div class="quiz-cost-projected">다음 추측 정답 시 ${managerGradeFor(projectedCost)}</div></div>`;
+    }
 
     // 같은 이름의 EGO가 여러 수감자에게 존재하므로 이름과 수감자를 함께 답으로 취급한다.
     function eqAnswerText(e) { return `${e['이름']} (${e['수감자']})`; }
@@ -4215,6 +4271,43 @@
     function eqResourceMetrics(e) {
       const parts = (e?.['자원'] || '').split(',').map(s => s.trim().match(/^(.+?)\s*x(\d+)$/)).filter(Boolean);
       return { sins: parts.map(m => m[1]), types: parts.length, total: parts.reduce((sum, m) => sum + Number(m[2] || 0), 0) };
+    }
+    const EQ_HINT_DEFS = [
+      { key:'sinner', label:'수감자' }, { key:'grade', label:'EGO 등급' }, { key:'sin', label:'죄악 속성' },
+      { key:'resourceTypes', label:'자원 종류' }, { key:'resourceTotal', label:'총 자원 소모' }, { key:'resources', label:'자원 구성' },
+    ];
+    function eqHintValueHTML(key) {
+      const metrics = eqResourceMetrics(eqEgo);
+      if (key === 'sinner') return sinnerDot(eqEgo?.['수감자'] || '');
+      if (key === 'grade') {
+        const grade = eqEgo?.['등급'] || '-';
+        const color = EQ_GRADE_COLOR[grade] || {bg:'#1e1e1e',text:'#aaa',border:'#555'};
+        return `<span class="eq-grade-chip" style="background:${color.bg};color:${color.text};border-color:${color.border}">${escapeHtml(grade)}</span>`;
+      }
+      if (key === 'sin') return sinChipHTML(eqEgo?.['속성'] || '');
+      if (key === 'resourceTypes') return `${metrics.types}종`;
+      if (key === 'resourceTotal') return `${metrics.total}`;
+      if (key === 'resources') return resourceChipsHTML(eqEgo?.['자원'] || '');
+      return '-';
+    }
+    function eqHintPanelHTML() {
+      const hints = eqOpenedHints.size;
+      const buttons = EQ_HINT_DEFS.map(def => {
+        const opened = eqOpenedHints.has(def.key);
+        return `<button type="button" class="quiz-hint-btn${opened ? ' revealed' : ''}" ${opened ? 'disabled' : `onclick="eqOpenHint('${def.key}')"`}><span class="quiz-hint-label">${escapeHtml(def.label)}</span>${opened ? `<span class="quiz-hint-value">${eqHintValueHTML(def.key)}</span>` : '<span class="quiz-hint-cost">정보 열기 · +1 비용</span>'}</button>`;
+      }).join('');
+      return `<div class="quiz-intel-panel"><div class="quiz-intel-head"><div><div class="quiz-intel-kicker">EGO INTELLIGENCE</div><div class="quiz-intel-title">필요한 정보만 선택해서 열어보세요</div></div>${quizCostLedgerHTML(eqSubmitCount, hints)}</div><div class="quiz-intel-grid">${buttons}</div></div>`;
+    }
+    function eqRenderHintPanel() {
+      const el = document.getElementById('eq-hint-panel');
+      if (el) el.innerHTML = eqHintPanelHTML();
+    }
+    function eqOpenHint(key) {
+      if (eqNameDone || eqOpenedHints.has(key) || !EQ_HINT_DEFS.some(def => def.key === key)) return;
+      eqOpenedHints.add(key);
+      if (eqMode === 'daily') eqSaveDailyState(false);
+      eqRenderHintPanel();
+      animBump(document.querySelector(`#eq-hint-panel .quiz-hint-btn.revealed:nth-child(${EQ_HINT_DEFS.findIndex(def => def.key === key) + 1})`));
     }
     function eqDirection(guessValue, answerValue) {
       if (guessValue === answerValue) return '';
@@ -4245,6 +4338,7 @@
     function eqSaveDailyState(done = false) {
       localStorage.setItem(EQ_DAILY_STORAGE_KEY, JSON.stringify({
         date:getDailyDateKey(), answerId:String(eqEgo.ID), guessIds:eqGuessHistory.map(r => String(r.ego.ID)),
+        hintKeys:[...eqOpenedHints],
         done, success:eqNameDone && !eqNameGaveUp && eqGuessHistory.at(-1)?.ego === eqEgo, gaveUp:eqNameGaveUp,
       }));
     }
@@ -4263,8 +4357,8 @@
       no.textContent = `오늘의 EGO #${getDailyChallengeNo()}`;
       desc.textContent = ready ? '6번의 추측으로 오늘의 EGO를 맞혀보세요' : '데이터 준비 중입니다';
       const state = eqLoadDailyState();
-      if (!state?.done) { badge.textContent = state?.guessIds?.length ? `진행 중 ${state.guessIds.length}/${EQ_MAX_TRIES}` : '미참여'; badge.className = 'mode-card-badge badge-none'; }
-      else if (state.success) { badge.textContent = `성공 ${state.guessIds?.length || 0}/${EQ_MAX_TRIES}`; badge.className = 'mode-card-badge badge-success'; }
+      if (!state?.done) { badge.textContent = state?.guessIds?.length || state?.hintKeys?.length ? `진행 중 · 비용 ${(state.guessIds?.length || 0) + (state.hintKeys?.length || 0)}` : '미참여'; badge.className = 'mode-card-badge badge-none'; }
+      else if (state.success) { const cost = (state.guessIds?.length || 0) + (state.hintKeys?.length || 0); badge.textContent = `${managerGradeFor(cost)} · 비용 ${cost}`; badge.className = 'mode-card-badge badge-success'; }
       else { badge.textContent = `실패 X/${EQ_MAX_TRIES}`; badge.className = 'mode-card-badge badge-fail'; }
     }
     function eqGoToEgoQuiz(nextMode = 'daily') {
@@ -4296,10 +4390,11 @@
         eqEgo = pool[Math.floor(Math.random() * pool.length)];
       }
       eqNameDone = false; eqNameGaveUp = false; eqSubmitCount = 0; eqLastRecord = null; eqResultSaved = false;
-      eqGuessHistory = []; eqWrongGuesses = new Set();
+      eqGuessHistory = []; eqWrongGuesses = new Set(); eqOpenedHints = new Set();
       if (eqMode !== 'daily') return;
       const state = eqLoadDailyState();
       if (state && String(state.answerId) === String(eqEgo.ID)) {
+        eqOpenedHints = new Set((state.hintKeys || []).filter(key => EQ_HINT_DEFS.some(def => def.key === key)));
         (state.guessIds || []).forEach(id => {
           const ego = EGO_LIST.find(e => String(e.ID) === String(id));
           if (ego) { const row = { ego, judges:eqCompareGuess(ego) }; eqGuessHistory.push(row); eqWrongGuesses.add(sqNormName(eqAnswerText(ego))); }
@@ -4309,6 +4404,7 @@
       }
       const existing = eqFindTodayRecord();
       if (existing) {
+        if (!eqOpenedHints.size && Array.isArray(existing.hintKeys)) eqOpenedHints = new Set(existing.hintKeys);
         if (!eqGuessHistory.length && Array.isArray(existing.guessIds)) {
           existing.guessIds.forEach(id => {
             const ego = EGO_LIST.find(e => String(e.ID) === String(id));
@@ -4340,13 +4436,14 @@
       cardEl.style.display = '';
       const daily = eqMode === 'daily';
       cardEl.innerHTML = `<div class="eq-daily-head">
-        <div><div class="eq-daily-no">${daily ? `TODAY'S EGO · #${getDailyChallengeNo()}` : 'EGO TRAINING · RANDOM'}</div><div class="eq-daily-rule">↑↓는 정답의 방향입니다. 추측한 EGO의 정보를 비교해 6번 안에 맞혀보세요.</div></div>
+        <div><div class="eq-daily-no">${daily ? `TODAY'S EGO · #${getDailyChallengeNo()}` : 'EGO TRAINING · RANDOM'}</div><div class="eq-daily-rule">힌트와 추측은 각각 비용 1입니다. 필요한 정보만 열고 6번 안에 맞혀보세요.</div></div>
         <div class="eq-attempt-pips" id="eq-attempt-pips">${eqAttemptPipsHTML()}</div>
       </div><div class="eq-wordle-shell">
         <div class="eq-entry-panel"><div class="eq-entry-label">EGO 이름과 수감자를 검색해 추측</div><div class="eq-entry-row">
           <input class="sq-s2-inp" id="eq-name-inp" placeholder="예: 여우비 (이상)" autocomplete="off">
           <button class="sq-s2-btn" onclick="eqCheckName()">추측하기</button>
         </div><div class="eq-wordle-message" id="eq-name-hint">${eqSubmitCount ? `남은 기회 ${EQ_MAX_TRIES - eqSubmitCount}회` : '첫 번째 EGO를 골라보세요.'}</div></div>
+        <div id="eq-hint-panel">${eqHintPanelHTML()}</div>
         <div class="eq-wordle-legend"><span><i class="eq-legend-dot hit"></i>일치</span><span><i class="eq-legend-dot near"></i>일부 일치</span><span><i class="eq-legend-dot miss"></i>불일치·방향 확인</span></div>
         ${eqGuessBoardHTML(true)}
         <div class="sq-give-up"><button class="secondary" onclick="eqGiveUp()" style="height:44px;padding:0 24px;font-size:15px">${daily ? '오늘 문제 포기' : '이번 문제 포기'}</button></div>
@@ -4383,6 +4480,7 @@
       if (eqMode === 'daily') eqSaveDailyState(false);
       document.getElementById('eq-guess-board').outerHTML = eqGuessBoardHTML(true);
       document.getElementById('eq-attempt-pips').innerHTML = eqAttemptPipsHTML();
+      eqRenderHintPanel();
       hint.style.color = '#ffb8b2'; hint.textContent = `오답입니다. 비교 결과를 확인하세요 · 남은 기회 ${EQ_MAX_TRIES - eqSubmitCount}회`;
       inp.value = ''; inp.focus();
       animWordleGuess([...document.querySelectorAll('#eq-guess-board .eq-guess-row')].at(-1));
@@ -4410,6 +4508,9 @@
       const e = eqEgo;
       const daily = eqMode === 'daily';
       const success = eqResultSaved && eqLastRecord ? !!eqLastRecord.success : (!eqNameGaveUp && eqGuessHistory.at(-1)?.ego === e);
+      const hintsUsed = eqResultSaved && eqLastRecord ? (eqLastRecord.hints || 0) : eqOpenedHints.size;
+      const totalCost = eqResultSaved && eqLastRecord ? (eqLastRecord.cost ?? ((eqLastRecord.tries ?? eqLastRecord.submits ?? 0) + hintsUsed)) : eqSubmitCount + hintsUsed;
+      const managerGrade = eqResultSaved && eqLastRecord ? (eqLastRecord.managerGrade || managerGradeFor(totalCost, success)) : managerGradeFor(totalCost, success);
       if (success && !eqResultSaved) fireFanfare();
       if (!eqResultSaved) {
         eqResultSaved = true;
@@ -4417,7 +4518,7 @@
         const record = {
           mode:'ego', daily, date:todayKey(), ...(daily ? { challengeNo:getDailyChallengeNo() } : {}), answerName:eqAnswerText(e), egoId:e.ID,
           total:1, solved:success ? 1 : 0, success, tries:eqSubmitCount, maxTries:EQ_MAX_TRIES,
-          submits:eqSubmitCount, hints:0, gaveUp:eqNameGaveUp, judges:eqGuessHistory.map(eqJudgeCode), guessIds:eqGuessHistory.map(r => String(r.ego.ID)),
+          submits:eqSubmitCount, hints:hintsUsed, cost:totalCost, managerGrade, hintKeys:[...eqOpenedHints], gaveUp:eqNameGaveUp, judges:eqGuessHistory.map(eqJudgeCode), guessIds:eqGuessHistory.map(r => String(r.ego.ID)),
           grade:e['등급'], sin:e['속성'], sinner:e['수감자'], resource:e['자원'], img:e['아이콘'],
         };
         records.push(record); saveResultRecordsV2(records); eqLastRecord = record;
@@ -4432,9 +4533,10 @@
       resultEl.innerHTML = `<div class="panel">
         <div class="sq-result-banner">${success ? `🎉 ${daily ? '오늘의 EGO' : 'EGO'} 정답!` : eqNameGaveUp && eqSubmitCount < EQ_MAX_TRIES ? `${daily ? '오늘' : '이번'} 문제를 포기했습니다` : '기회를 모두 사용했습니다'}</div>
         <div class="sq-result-name">${escapeHtml(eqAnswerText(e))}</div>
+        ${managerAssessmentHTML(managerGrade, totalCost, eqSubmitCount, hintsUsed)}
         <div class="qz-panel" style="margin-top:18px">${rows}${e['아이콘'] ? `<div class="qz-image-row"><img src="${escapeHtml(e['아이콘'])}" alt="${escapeHtml(eqAnswerText(e))}" onerror="this.style.display='none'"></div>` : ''}</div>
         <div class="eq-wordle-shell" style="margin-top:18px">${eqGuessBoardHTML(false)}</div>
-        <div class="sq-result-stat">${eqSubmitCount}/${EQ_MAX_TRIES}회 추측 · ${daily ? '내일 새로운 EGO가 출제됩니다' : '다음 문제는 새로운 무작위 EGO입니다'}</div>
+        <div class="sq-result-stat">추측 ${eqSubmitCount}회 + 힌트 ${hintsUsed}개 = 비용 ${totalCost} · ${daily ? '내일 새로운 EGO가 출제됩니다' : '다음 문제는 새로운 무작위 EGO입니다'}</div>
         <div class="sq-result-actions"><button class="secondary" onclick="eqShareResult()">📋 결과 공유</button>${daily ? '' : '<button onclick="eqNextRandom()">다음 랜덤 EGO</button>'}<button onclick="eqGoHome()">홈으로</button></div>
       </div>`;
       updateEqCardState(); renderDailyActivityHome();
@@ -4454,6 +4556,7 @@
     let gqRevealedTiers = new Set(), gqLetterHintLevel = 0;
     let gqInfoTiers = [], gqKeywords = [], gqEffectLines = [], gqWrongGuesses = new Set();
     let gqSubmitCount = 0, gqHintsUsed = 0, gqLastRecord = null, gqResultSaved = false;
+    let gqOpenedHints = new Set(), gqEffectRevealCount = 0;
     let gqGuessHistory = [];
     let GQ_GIFT_NAMES = [];
     const GQ_RECENT_KEY = 'gq_recent_gifts';
@@ -4806,6 +4909,40 @@
       const enhanceable = gift?.['강화가능'] === true || gift?.['강화가능'] === 'Y';
       return { nameLength, keyword, affinities, enhanceable };
     }
+    const GQ_HINT_DEFS = [
+      { key:'grade', label:'기프트 등급' }, { key:'affinities', label:'조건 속성' },
+      { key:'nameLength', label:'이름 길이' }, { key:'enhanceable', label:'강화 가능' }, { key:'keyword', label:'키워드' },
+    ];
+    function gqTotalHints() { return gqOpenedHints.size + gqEffectRevealCount; }
+    function gqHintValueHTML(key) {
+      const metrics = gqGiftMetrics(gqGift);
+      if (key === 'grade') return `<span class="gq-badge">${escapeHtml(gqGift?.['등급'] || '-')}</span>`;
+      if (key === 'affinities') return metrics.affinities.length ? metrics.affinities.map(sinChipHTML).join(' ') : '<span class="empty">없음</span>';
+      if (key === 'nameLength') return `${metrics.nameLength}자`;
+      if (key === 'enhanceable') return metrics.enhanceable ? '가능' : '불가';
+      if (key === 'keyword') return metrics.keyword ? kwChip(metrics.keyword) : '<span class="empty">없음</span>';
+      return '-';
+    }
+    function gqHintPanelHTML() {
+      const hints = gqTotalHints();
+      const buttons = GQ_HINT_DEFS.map(def => {
+        const opened = gqOpenedHints.has(def.key);
+        return `<button type="button" class="quiz-hint-btn${opened ? ' revealed' : ''}" ${opened ? 'disabled' : `onclick="gqOpenHint('${def.key}')"`}><span class="quiz-hint-label">${escapeHtml(def.label)}</span>${opened ? `<span class="quiz-hint-value">${gqHintValueHTML(def.key)}</span>` : '<span class="quiz-hint-cost">정보 열기 · +1 비용</span>'}</button>`;
+      }).join('');
+      return `<div class="quiz-intel-panel"><div class="quiz-intel-head"><div><div class="quiz-intel-kicker">GIFT INTELLIGENCE</div><div class="quiz-intel-title">E.G.O 기프트 전용 정보만 선택해서 열어보세요</div></div>${quizCostLedgerHTML(gqSubmitCount, hints)}</div><div class="quiz-intel-grid">${buttons}</div></div>`;
+    }
+    function gqRenderHintPanel() {
+      gqHintsUsed = gqTotalHints();
+      const el = document.getElementById('gq-hint-panel');
+      if (el) el.innerHTML = gqHintPanelHTML();
+    }
+    function gqOpenHint(key) {
+      if (gqNameDone || gqOpenedHints.has(key) || !GQ_HINT_DEFS.some(def => def.key === key)) return;
+      gqOpenedHints.add(key); gqHintsUsed = gqTotalHints();
+      if (gqMode === 'daily') gqSaveDailyState(false);
+      gqRenderHintPanel();
+      if (key === 'keyword' || key === 'affinities') gqRenderEffectClue(gqEffectClueVisibleCount(), false);
+    }
     function gqCompareGuess(guess) {
       const gm = gqGiftMetrics(guess), am = gqGiftMetrics(gqGift);
       const gradeGuess = GQ_GRADE_ORDER.indexOf(guess['등급']);
@@ -4820,10 +4957,24 @@
         { label:'키워드', value:gm.keyword || '없음', cls:sameKeyword ? 'hit' : 'miss', sub:sameKeyword ? '정확히 일치' : '불일치' },
       ];
     }
-    function gqEffectClueChunks(effect) {
+    function gqGiftPackClue(gift) {
+      const packs = gift?.['전용팩'];
+      if (!Array.isArray(packs)) return '';
+      return packs.length
+        ? `특정 테마 팩 한정: ${packs.join(' · ')}`
+        : '특정 테마 팩 전용이 아닌 공용 기프트';
+    }
+    function gqEffectClueChunks(effect, gift = null) {
       const text = String(effect || '').replace(/\r/g, '').trim();
-      if (!text) return [];
-      const units = text.split(/\n+/).flatMap(line => line.match(/[^.!?]+(?:[.!?]+|$)/g) || []).map(s => s.trim()).filter(Boolean);
+      // E.G.O 같은 영문 약어와 3.5 같은 소수의 점은 문장 경계로 취급하지 않는다.
+      const protectedDot = '\uE000';
+      const units = (text ? text.split(/\n+/) : []).flatMap(line => {
+        const protectedLine = line
+          .replace(/\b(?:[A-Za-z]\.)+[A-Za-z]\b/g, abbreviation => abbreviation.replaceAll('.', protectedDot))
+          .replace(/(?<=\d)\.(?=\d)/g, protectedDot);
+        return (protectedLine.match(/[^.!?]+(?:[.!?]+|$)/g) || [])
+          .map(sentence => sentence.replaceAll(protectedDot, '.'));
+      }).map(s => s.trim()).filter(Boolean);
       const pieces = [];
       units.forEach(unit => {
         let rest = unit;
@@ -4837,6 +4988,8 @@
         }
         if (rest) pieces.push(rest);
       });
+      const packClue = gqGiftPackClue(gift);
+      if (packClue) pieces.push(packClue);
       if (pieces.length <= GQ_MAX_TRIES) return pieces;
       return Array.from({length:GQ_MAX_TRIES}, (_, i) => {
         const start = Math.floor(i * pieces.length / GQ_MAX_TRIES);
@@ -4845,16 +4998,16 @@
       }).filter(Boolean);
     }
     function gqEffectClueVisibleCount() {
-      const chunks = gqEffectClueChunks(gqGift?.['효과']);
-      return Math.min(chunks.length, 1 + gqGuessHistory.length);
+      const chunks = gqEffectClueChunks(gqGift?.['효과'], gqGift);
+      return Math.min(chunks.length, 1 + gqEffectRevealCount);
     }
     function gqEffectDiscoveries() {
       const answer = gqGiftMetrics(gqGift);
-      const keyword = !!answer.keyword && gqGuessHistory.some(row => gqGiftMetrics(row.gift).keyword === answer.keyword);
-      const affinityMatch = !!answer.affinities.length && gqGuessHistory.some(row => {
+      const keyword = gqOpenedHints.has('keyword') || (!!answer.keyword && gqGuessHistory.some(row => gqGiftMetrics(row.gift).keyword === answer.keyword));
+      const affinityMatch = gqOpenedHints.has('affinities') || (!!answer.affinities.length && gqGuessHistory.some(row => {
         const guessed = gqGiftMetrics(row.gift).affinities;
         return guessed.length === answer.affinities.length && guessed.every((sin, i) => sin === answer.affinities[i]);
-      });
+      }));
       const affinities = new Set(affinityMatch ? answer.affinities : []);
       return { keyword, affinities };
     }
@@ -4878,7 +5031,7 @@
       return html;
     }
     function gqEffectClueHTML() {
-      const chunks = gqEffectClueChunks(gqGift?.['효과']);
+      const chunks = gqEffectClueChunks(gqGift?.['효과'], gqGift);
       if (!chunks.length) return `<div class="gq-clue-panel"><div class="gq-clue-head"><div class="gq-clue-kicker">Effect record</div><div class="gq-clue-title">등록된 효과 정보가 없습니다</div></div></div>`;
       const visible = gqEffectClueVisibleCount();
       const lines = chunks.map((chunk, i) => i < visible
@@ -4886,17 +5039,28 @@
         : `<div class="gq-clue-line locked"><span class="gq-clue-index">CLUE ${String(i + 1).padStart(2, '0')}</span><span class="gq-clue-lock" aria-label="아직 공개되지 않은 효과 단서"></span></div>`
       ).join('');
       const foot = visible < chunks.length
-        ? '오답마다 다음 기록이 열립니다. 가려진 키워드와 속성은 판정이 맞으면 해금됩니다.'
-        : '효과 기록을 모두 공개했습니다. 가려진 정보는 판정이 맞으면 해금됩니다.';
-      return `<div class="gq-clue-panel"><div class="gq-clue-head"><div class="gq-clue-kicker">Effect record</div><span class="gq-clue-count">${visible}/${chunks.length} 공개</span><div class="gq-clue-title">효과를 읽고 기프트를 추리하세요</div></div><div class="gq-clue-body">${lines}</div><div class="gq-clue-foot">${foot}</div></div>`;
+        ? `<span>첫 기록은 무료입니다. 필요한 만큼 직접 열 수 있습니다.</span><button type="button" class="quiz-next-clue" onclick="gqRevealNextEffect()">다음 효과 기록 열기 <span>+1 비용</span></button>`
+        : '<span>효과 기록을 모두 공개했습니다. 키워드와 속성은 별도 힌트 또는 정확한 판정으로 해금됩니다.</span>';
+      return `<div class="gq-clue-panel"><div class="gq-clue-head"><div class="gq-clue-kicker">Effect record · 첫 기록 무료</div><span class="gq-clue-count">${visible}/${chunks.length} 공개</span><div class="gq-clue-title">효과를 읽고 기프트를 추리하세요</div></div><div class="gq-clue-body">${lines}</div><div class="gq-clue-foot">${foot}</div></div>`;
     }
-    function gqRenderEffectClue(previousVisible = 0) {
+    function gqRenderEffectClue(previousVisible = 0, animate = true) {
       const el = document.getElementById('gq-effect-clue');
       if (!el) return;
       el.innerHTML = gqEffectClueHTML();
+      if (!animate) return;
       const revealed = [...el.querySelectorAll('.gq-clue-line.revealed')].filter(line => Number(line.dataset.clueIndex) >= previousVisible);
       if (revealed.length) animRiseIn(revealed, 80, 0);
       else animBump(el.querySelector('.gq-clue-panel'));
+    }
+    function gqRevealNextEffect() {
+      if (gqNameDone) return;
+      const chunks = gqEffectClueChunks(gqGift?.['효과'], gqGift);
+      const previousVisible = gqEffectClueVisibleCount();
+      if (previousVisible >= chunks.length) return;
+      gqEffectRevealCount++; gqHintsUsed = gqTotalHints();
+      if (gqMode === 'daily') gqSaveDailyState(false);
+      gqRenderEffectClue(previousVisible);
+      gqRenderHintPanel();
     }
     function gqJudgeCode(row) { return row.judges.map(j => j.cls === 'hit' ? 'g' : j.cls === 'near' ? 'y' : 'r').join(''); }
     function gqLoadDailyState() {
@@ -4908,6 +5072,7 @@
     function gqSaveDailyState(done = false) {
       localStorage.setItem(GQ_DAILY_STORAGE_KEY, JSON.stringify({
         date:getDailyDateKey(), answerId:String(gqGift.ID), guessIds:gqGuessHistory.map(r => String(r.gift.ID)),
+        hintKeys:[...gqOpenedHints], effectRevealCount:gqEffectRevealCount,
         done, success:gqNameDone && !gqNameGaveUp && gqGuessHistory.at(-1)?.gift === gqGift, gaveUp:gqNameGaveUp,
       }));
     }
@@ -4927,8 +5092,11 @@
       if (desc) desc.textContent = ready ? '6번의 추측으로 오늘의 기프트를 맞혀보세요' : '데이터 준비 중입니다';
       if (!badge) return;
       const state = gqLoadDailyState();
-      if (!state?.done) { badge.textContent = state?.guessIds?.length ? `진행 중 ${state.guessIds.length}/${GQ_MAX_TRIES}` : '미참여'; badge.className = 'mode-card-badge badge-none'; }
-      else if (state.success) { badge.textContent = `성공 ${state.guessIds?.length || 0}/${GQ_MAX_TRIES}`; badge.className = 'mode-card-badge badge-success'; }
+      const tries = state?.guessIds?.length || 0;
+      const hints = (state?.hintKeys?.length || 0) + (state?.effectRevealCount || 0);
+      const cost = tries + hints;
+      if (!state?.done) { badge.textContent = cost ? `진행 중 · 비용 ${cost}` : '미참여'; badge.className = 'mode-card-badge badge-none'; }
+      else if (state.success) { badge.textContent = `${managerGradeFor(cost)} · 비용 ${cost}`; badge.className = 'mode-card-badge badge-success'; }
       else { badge.textContent = `실패 X/${GQ_MAX_TRIES}`; badge.className = 'mode-card-badge badge-fail'; }
     }
     function gqGoToEgoGiftQuiz(nextMode = 'daily') {
@@ -4955,6 +5123,7 @@
         gqGift = pool[Math.floor(Math.random() * pool.length)];
       }
       gqNameDone = false; gqNameGaveUp = false; gqSubmitCount = 0; gqHintsUsed = 0; gqLastRecord = null; gqResultSaved = false;
+      gqOpenedHints = new Set(); gqEffectRevealCount = 0;
       gqGuessHistory = []; gqWrongGuesses = new Set();
       if (gqMode !== 'daily') return;
       const state = gqLoadDailyState();
@@ -4963,7 +5132,9 @@
           const gift = EGO_GIFTS.find(g => String(g.ID) === String(id));
           if (gift) { gqGuessHistory.push({ gift, judges:gqCompareGuess(gift) }); gqWrongGuesses.add(sqNormName(gift['이름'])); }
         });
-        gqSubmitCount = gqGuessHistory.length; gqNameDone = !!state.done; gqNameGaveUp = !!state.gaveUp;
+        gqOpenedHints = new Set((state.hintKeys || []).filter(key => GQ_HINT_DEFS.some(def => def.key === key)));
+        gqEffectRevealCount = Math.max(0, Number(state.effectRevealCount) || 0);
+        gqSubmitCount = gqGuessHistory.length; gqHintsUsed = gqTotalHints(); gqNameDone = !!state.done; gqNameGaveUp = !!state.gaveUp;
       }
       const existing = gqFindTodayRecord();
       if (existing) {
@@ -4972,6 +5143,9 @@
           if (gift) gqGuessHistory.push({ gift, judges:gqCompareGuess(gift) });
         });
         gqSubmitCount = existing.tries ?? existing.submits ?? gqGuessHistory.length;
+        gqOpenedHints = new Set((existing.hintKeys || []).filter(key => GQ_HINT_DEFS.some(def => def.key === key)));
+        gqEffectRevealCount = Math.max(0, Number(existing.effectRevealCount) || 0);
+        gqHintsUsed = existing.hints ?? gqTotalHints();
         gqResultSaved = true; gqLastRecord = existing; gqNameDone = true; gqNameGaveUp = !!existing.gaveUp;
       }
     }
@@ -4992,9 +5166,9 @@
       const cardEl = document.getElementById('gq-card');
       const daily = gqMode === 'daily';
       cardEl.style.display = '';
-      cardEl.innerHTML = `<div class="eq-daily-head"><div><div class="eq-daily-no">${daily ? `TODAY'S GIFT · #${getDailyChallengeNo()}` : 'GIFT TRAINING · RANDOM'}</div><div class="eq-daily-rule">효과 기록을 읽고, 비교 결과를 단서 삼아 6번 안에 맞혀보세요.</div></div><div class="eq-attempt-pips" id="gq-attempt-pips">${gqAttemptPipsHTML()}</div></div>
+      cardEl.innerHTML = `<div class="eq-daily-head"><div><div class="eq-daily-no">${daily ? `TODAY'S GIFT · #${getDailyChallengeNo()}` : 'GIFT TRAINING · RANDOM'}</div><div class="eq-daily-rule">첫 효과 기록은 무료, 추가 힌트와 추측은 각각 비용 1입니다.</div></div><div class="eq-attempt-pips" id="gq-attempt-pips">${gqAttemptPipsHTML()}</div></div>
         <div class="eq-wordle-shell"><div class="eq-entry-panel"><div class="eq-entry-label">EGO 기프트 이름을 검색해 추측</div><div class="eq-entry-row"><input class="sq-s2-inp" id="gq-name-inp" placeholder="예: 먼지에서 먼지로" autocomplete="off"><button class="sq-s2-btn" onclick="gqCheckName()">추측하기</button></div><div class="eq-wordle-message" id="gq-name-hint">${gqSubmitCount ? `남은 기회 ${GQ_MAX_TRIES - gqSubmitCount}회` : '첫 번째 기프트를 골라보세요.'}</div></div>
-        <div id="gq-effect-clue">${gqEffectClueHTML()}</div><div class="eq-wordle-legend"><span><i class="eq-legend-dot hit"></i>정확히 일치</span><span><i class="eq-legend-dot miss"></i>불일치·방향 확인</span></div>${gqGuessBoardHTML(true)}
+        <div id="gq-hint-panel">${gqHintPanelHTML()}</div><div id="gq-effect-clue">${gqEffectClueHTML()}</div><div class="eq-wordle-legend"><span><i class="eq-legend-dot hit"></i>정확히 일치</span><span><i class="eq-legend-dot miss"></i>불일치·방향 확인</span></div>${gqGuessBoardHTML(true)}
         <div class="sq-give-up"><button class="secondary" onclick="gqGiveUp()" style="height:44px;padding:0 24px;font-size:15px">${daily ? '오늘 문제 포기' : '이번 문제 포기'}</button></div></div>`;
       const inp = document.getElementById('gq-name-inp');
       inp.addEventListener('input', () => gqNameDropdown.open(inp, () => GQ_GIFT_NAMES, gqIsEliminated));
@@ -5015,7 +5189,6 @@
         inp.style.borderColor = 'var(--red)'; hint.style.color = '#ff8888'; hint.textContent = '검색 결과에 있는 EGO 기프트만 제출할 수 있습니다.';
         setTimeout(() => { inp.style.borderColor = ''; }, 700); return;
       }
-      const previousClueVisible = gqEffectClueVisibleCount();
       gqGuessHistory.push({ gift:guessedGift, judges:gqCompareGuess(guessedGift) });
       gqWrongGuesses.add(normed); gqSubmitCount = gqGuessHistory.length;
       const correct = guessedGift === gqGift;
@@ -5027,7 +5200,8 @@
       if (gqMode === 'daily') gqSaveDailyState(false);
       document.getElementById('gq-guess-board').outerHTML = gqGuessBoardHTML(true);
       document.getElementById('gq-attempt-pips').innerHTML = gqAttemptPipsHTML();
-      gqRenderEffectClue(previousClueVisible);
+      gqRenderHintPanel();
+      gqRenderEffectClue(gqEffectClueVisibleCount(), false);
       hint.style.color = '#ffb8b2'; hint.textContent = `오답입니다. 비교 결과를 확인하세요 · 남은 기회 ${GQ_MAX_TRIES - gqSubmitCount}회`;
       inp.value = ''; inp.focus(); updateGqCardState();
       animWordleGuess([...document.querySelectorAll('#gq-guess-board .eq-guess-row')].at(-1));
@@ -5047,13 +5221,17 @@
       const resultEl = document.getElementById('gq-result'), g = gqGift, daily = gqMode === 'daily';
       resultEl.style.display = '';
       const success = gqResultSaved && gqLastRecord ? !!gqLastRecord.success : (!gqNameGaveUp && gqGuessHistory.at(-1)?.gift === g);
+      const hintsUsed = gqResultSaved && gqLastRecord ? (gqLastRecord.hints || 0) : gqTotalHints();
+      const totalCost = gqResultSaved && gqLastRecord ? (gqLastRecord.cost ?? ((gqLastRecord.tries ?? gqLastRecord.submits ?? 0) + hintsUsed)) : gqSubmitCount + hintsUsed;
+      const managerGrade = gqResultSaved && gqLastRecord ? (gqLastRecord.managerGrade || managerGradeFor(totalCost, success)) : managerGradeFor(totalCost, success);
       if (success && !gqResultSaved) fireFanfare();
       if (!gqResultSaved) {
         gqResultSaved = true;
         const records = loadResultRecordsV2();
         const record = {
           mode:'egogift', daily, date:todayKey(), ...(daily ? { challengeNo:getDailyChallengeNo() } : {}), answerName:g['이름'], giftId:g.ID,
-          total:1, solved:success ? 1 : 0, success, tries:gqSubmitCount, maxTries:GQ_MAX_TRIES, submits:gqSubmitCount, hints:0,
+          total:1, solved:success ? 1 : 0, success, tries:gqSubmitCount, maxTries:GQ_MAX_TRIES, submits:gqSubmitCount,
+          hints:hintsUsed, cost:totalCost, managerGrade, hintKeys:[...gqOpenedHints], effectRevealCount:gqEffectRevealCount,
           gaveUp:gqNameGaveUp, judges:gqGuessHistory.map(gqJudgeCode), guessIds:gqGuessHistory.map(r => String(r.gift.ID)), grade:g['등급'], sin:gqGiftMetrics(g).affinities.join(', '), img:g['아이콘'],
         };
         records.push(record); saveResultRecordsV2(records); gqLastRecord = record;
@@ -5067,8 +5245,8 @@
         g['효과'] ? `<div><div class="qz-effect-label">효과</div><div class="qz-effect-text">${highlightEffectHTML(g['효과'])}</div></div>` : '',
       ].join('');
       const failText = gqNameGaveUp && gqSubmitCount < GQ_MAX_TRIES ? `${daily ? '오늘' : '이번'} 문제를 포기했습니다` : '기회를 모두 사용했습니다';
-      resultEl.innerHTML = `<div class="panel"><div class="sq-result-banner">${success ? `🎉 ${daily ? '오늘의 기프트' : '기프트'} 정답!` : failText}</div><div class="sq-result-name">${escapeHtml(g['이름'])}</div><div class="qz-panel" style="margin-top:18px">${rows}${g['아이콘'] ? `<div class="qz-image-row"><img src="${escapeHtml(g['아이콘'])}" alt="${escapeHtml(g['이름'])}" onerror="this.style.display='none'"></div>` : ''}</div><div class="eq-wordle-shell" style="margin-top:18px">${gqGuessBoardHTML(false)}</div>
-        <div class="sq-result-stat">${gqSubmitCount}/${GQ_MAX_TRIES}회 추측 · ${daily ? '내일 새로운 기프트가 출제됩니다' : '다음 문제는 새로운 무작위 기프트입니다'}</div><div class="sq-result-actions"><button class="secondary" onclick="gqShareResult()">📋 결과 공유</button>${daily ? '' : '<button onclick="gqNextRandom()">다음 랜덤 기프트</button>'}<button onclick="gqGoHome()">홈으로</button></div></div>`;
+      resultEl.innerHTML = `<div class="panel"><div class="sq-result-banner">${success ? `🎉 ${daily ? '오늘의 기프트' : '기프트'} 정답!` : failText}</div><div class="sq-result-name">${escapeHtml(g['이름'])}</div>${managerAssessmentHTML(managerGrade, totalCost, gqSubmitCount, hintsUsed)}<div class="qz-panel" style="margin-top:18px">${rows}${g['아이콘'] ? `<div class="qz-image-row"><img src="${escapeHtml(g['아이콘'])}" alt="${escapeHtml(g['이름'])}" onerror="this.style.display='none'"></div>` : ''}</div><div class="eq-wordle-shell" style="margin-top:18px">${gqGuessBoardHTML(false)}</div>
+        <div class="sq-result-stat">추측 ${gqSubmitCount}회 + 힌트 ${hintsUsed}개 = 비용 ${totalCost} · ${daily ? '내일 새로운 기프트가 출제됩니다' : '다음 문제는 새로운 무작위 기프트입니다'}</div><div class="sq-result-actions"><button class="secondary" onclick="gqShareResult()">📋 결과 공유</button>${daily ? '' : '<button onclick="gqNextRandom()">다음 랜덤 기프트</button>'}<button onclick="gqGoHome()">홈으로</button></div></div>`;
       updateGqCardState(); renderDailyActivityHome();
       animResultStagger(resultEl.querySelector('.panel')); animCorrectPop(resultEl.querySelector('.sq-result-banner')); animRiseIn(resultEl.querySelectorAll('.qz-panel > *'), 70, 160);
       window.scrollTo({ top:0, behavior:'smooth' });
