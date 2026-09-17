@@ -285,8 +285,11 @@
     /* 홈의 모드를 사용 목적별 지령 묶음으로 나눈다. 카드 수보다 먼저 "오늘 할 일 / 반복
        훈련 / 전술 시험"이 읽히도록 그룹의 세로 상태선과 터미널형 라벨을 기준점으로 둔다. */
     .home-modes { display:flex; flex-direction:column; gap:16px; margin-bottom:20px; }
-    .latest-identity-status { display:flex; align-items:center; gap:14px; margin:-2px 0 18px; padding:12px 16px; border:1px solid color-mix(in srgb,var(--button) 42%,var(--border)); border-left:4px solid var(--button); border-radius:12px; background:linear-gradient(100deg,color-mix(in srgb,var(--button) 10%,var(--panel)),rgba(31,31,31,.72)); box-shadow:0 10px 26px rgba(0,0,0,.16); }
-    .latest-identity-status::before { content:""; width:8px; height:8px; flex:0 0 auto; border-radius:50%; background:#ffd98a; box-shadow:0 0 12px rgba(255,217,138,.58); }
+    .latest-identity-status { margin:-2px 0 18px; border:1px solid color-mix(in srgb,var(--button) 42%,var(--border)); border-left:4px solid var(--button); border-radius:12px; background:linear-gradient(100deg,color-mix(in srgb,var(--button) 10%,var(--panel)),rgba(31,31,31,.72)); box-shadow:0 10px 26px rgba(0,0,0,.16); overflow:hidden; }
+    .latest-content-row { display:grid; grid-template-columns:8px 110px minmax(0,1fr) auto; align-items:center; gap:14px; padding:11px 16px; }
+    .latest-content-row + .latest-content-row { border-top:1px solid color-mix(in srgb,var(--button) 22%,var(--border)); }
+    .latest-content-row::before { content:""; width:8px; height:8px; border-radius:50%; background:#ffd98a; box-shadow:0 0 12px rgba(255,217,138,.58); }
+    .latest-content-row.ego::before { background:#c8a7ff; box-shadow:0 0 12px rgba(200,167,255,.58); }
     .latest-identity-label { flex:0 0 auto; color:var(--muted); font-size:12px; font-weight:900; letter-spacing:.08em; }
     .latest-identity-name { min-width:0; color:var(--text); font-size:15px; font-weight:900; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
     .latest-identity-meta { margin-left:auto; flex:0 0 auto; color:#ffd98a; font-size:12px; font-weight:800; white-space:nowrap; }
@@ -302,10 +305,10 @@
     .home-mode-group.exams .home-mode-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
     @media (max-width:900px) { .home-mode-grid,.home-mode-group.exams .home-mode-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
     @media (max-width:640px) {
-      .latest-identity-status { align-items:flex-start; gap:9px 10px; padding:12px 13px; flex-wrap:wrap; }
-      .latest-identity-label { width:calc(100% - 18px); }
-      .latest-identity-name { padding-left:18px; flex:1 1 100%; white-space:normal; }
-      .latest-identity-meta { margin-left:18px; }
+      .latest-content-row { grid-template-columns:8px minmax(0,1fr); gap:6px 10px; padding:11px 13px; }
+      .latest-identity-label,.latest-identity-name,.latest-identity-meta { grid-column:2; }
+      .latest-identity-name { white-space:normal; }
+      .latest-identity-meta { margin-left:0; }
       .home-mode-group { padding:16px 14px 16px 19px; }
       .home-mode-group-head { display:block; }
       .home-mode-summary { margin-top:7px; max-width:none; text-align:left; }
@@ -816,9 +819,16 @@
       </header>
 
       <div class="latest-identity-status" id="latestIdentityStatus" aria-live="polite" title="신규 콘텐츠 업데이트 목록을 기준으로 표시합니다.">
-        <span class="latest-identity-label">최신 반영 인격</span>
-        <strong class="latest-identity-name" id="latestIdentityName">데이터 확인 중…</strong>
-        <span class="latest-identity-meta" id="latestIdentityMeta"></span>
+        <div class="latest-content-row identity">
+          <span class="latest-identity-label">최신 반영 인격</span>
+          <strong class="latest-identity-name" id="latestIdentityName">데이터 확인 중…</strong>
+          <span class="latest-identity-meta" id="latestIdentityMeta"></span>
+        </div>
+        <div class="latest-content-row ego">
+          <span class="latest-identity-label">최신 반영 EGO</span>
+          <strong class="latest-identity-name" id="latestEgoName">데이터 확인 중…</strong>
+          <span class="latest-identity-meta" id="latestEgoMeta"></span>
+        </div>
       </div>
 
       <div class="home-modes">
@@ -1148,7 +1158,7 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-    const APP_VERSION = 'v0.16.3';
+    const APP_VERSION = 'v0.16.4';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -1248,6 +1258,8 @@
     const countEl = document.getElementById('count');
     const latestIdentityNameEl = document.getElementById('latestIdentityName');
     const latestIdentityMetaEl = document.getElementById('latestIdentityMeta');
+    const latestEgoNameEl = document.getElementById('latestEgoName');
+    const latestEgoMetaEl = document.getElementById('latestEgoMeta');
     const filteredCountEl = document.getElementById('filteredCount');
     const messageEl = document.getElementById('message');
     const historyEl = document.getElementById('history');
@@ -5346,6 +5358,7 @@
     // 사용한다. 이미지 묶음의 서명이 같으면 이 브라우저에서는 다시 띄우지 않는다.
     let IDENTITY_UPDATE_ITEMS = [];
     let LATEST_IDENTITY_ID = '';
+    let LATEST_EGO_ID = '';
     let identityUpdatesLoadFinished = false;
     const NEW_IDENTITY_SHOWN_KEY = 'new_identity_shown_images';
     function getUpdatedContents() {
@@ -5429,16 +5442,20 @@
       openNewIdentityPopup();
     }
 
-    function updateLatestIdentityStatus() {
-      if (!latestIdentityNameEl || !latestIdentityMetaEl || !DATA.length || !identityUpdatesLoadFinished) return;
-      const latestIdentity = DATA.find(row => String(row.ID) === String(LATEST_IDENTITY_ID));
-      if (!latestIdentity) {
-        latestIdentityNameEl.textContent = '최근 반영 인격을 확인할 수 없습니다';
-        latestIdentityMetaEl.textContent = `총 ${DATA.length}명`;
-        return;
+    function updateLatestContentStatus() {
+      if (!identityUpdatesLoadFinished) return;
+      if (latestIdentityNameEl && latestIdentityMetaEl && DATA.length) {
+        const latestIdentity = DATA.find(row => String(row.ID) === String(LATEST_IDENTITY_ID));
+        latestIdentityNameEl.textContent = latestIdentity ? latestIdentity['인격명'] : '최근 반영 인격을 확인할 수 없습니다';
+        latestIdentityMetaEl.textContent = latestIdentity ? `ID ${latestIdentity.ID} · 총 ${DATA.length}명` : `총 ${DATA.length}명`;
       }
-      latestIdentityNameEl.textContent = latestIdentity['인격명'];
-      latestIdentityMetaEl.textContent = `ID ${latestIdentity.ID} · 총 ${DATA.length}명`;
+      if (latestEgoNameEl && latestEgoMetaEl && egoDataLoadFinished) {
+        const latestEgo = EGO_LIST.find(row => String(row.ID) === String(LATEST_EGO_ID));
+        latestEgoNameEl.textContent = latestEgo ? latestEgo['이름'] : '최근 반영 EGO를 확인할 수 없습니다';
+        latestEgoMetaEl.textContent = latestEgo
+          ? `${latestEgo['수감자']} · ${latestEgo['등급']} · ID ${latestEgo.ID} · 총 ${EGO_LIST.length}개`
+          : `총 ${EGO_LIST.length}개`;
+      }
     }
 
     fetch('./changelog.json')
@@ -5455,13 +5472,14 @@
       .then(json => {
         IDENTITY_UPDATE_ITEMS = Array.isArray(json?.items) ? json.items : [];
         LATEST_IDENTITY_ID = String(json?.latestIdentityId || [...IDENTITY_UPDATE_ITEMS].reverse().find(item => (item.type || 'identity') === 'identity')?.id || '');
+        LATEST_EGO_ID = String(json?.latestEgoId || [...IDENTITY_UPDATE_ITEMS].reverse().find(item => item.type === 'ego')?.id || '');
         identityUpdatesLoadFinished = true;
-        updateLatestIdentityStatus();
+        updateLatestContentStatus();
         maybeShowNewIdentityPopup();
       })
       .catch(err => {
         identityUpdatesLoadFinished = true;
-        updateLatestIdentityStatus();
+        updateLatestContentStatus();
         console.error('인격 업데이트 정보 로드 실패:', err);
       });
 
@@ -5481,7 +5499,7 @@
         DATA.forEach(row => [1, 2, 3].forEach(n => { const v = row[`스킬${n}명`]; if (v) skillNameSet.add(v); }));
         SQ_SKILL_NAMES = [...skillNameSet].sort((a, b) => a.localeCompare(b, 'ko-KR'));
         countEl.textContent = DATA.length;
-        updateLatestIdentityStatus();
+        updateLatestContentStatus();
         updateHomeDailyStatus();
         if (gameScreen.style.display !== 'none') { switchMode(mode, true); }
         if (skillQuizScreen.style.display !== 'none' && !sqIdentity) { sqInit(); }
@@ -5499,6 +5517,7 @@
         // 이름만으로는 답을 특정할 수 없는 경우가 있어(동명 EGO가 여러 수감자에게
         // 존재) "이름 (수감자)" 형식을 검색 후보로 삼는다.
         EQ_EGO_NAMES = EGO_LIST.filter(e => e['이름']).map(eqAnswerText).sort((a, b) => a.localeCompare(b, 'ko-KR'));
+        updateLatestContentStatus();
         updateEqCardState();
         maybeShowNewIdentityPopup();
       })

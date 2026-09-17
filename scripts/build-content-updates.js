@@ -74,8 +74,12 @@ if (!items.length) {
 const previousIdentityItem = [...(Array.isArray(previousUpdates?.items) ? previousUpdates.items : [])]
   .reverse().find(item => (item.type || 'identity') === 'identity');
 const latestIdentityId = String(identityItems.at(-1)?.id || previousUpdates?.latestIdentityId || previousIdentityItem?.id || '');
+const previousEgoItem = [...(Array.isArray(previousUpdates?.items) ? previousUpdates.items : [])]
+  .reverse().find(item => item.type === 'ego');
+const latestEgoItem = egoItems.reduce((latest, item) => !latest || Number(item.id) > Number(latest.id) ? item : latest, null);
+const latestEgoId = String(latestEgoItem?.id || previousUpdates?.latestEgoId || previousEgoItem?.id || '');
 
-fs.writeFileSync(UPDATES_PATH, JSON.stringify({ latestIdentityId, items }, null, 2) + '\n', 'utf8');
+fs.writeFileSync(UPDATES_PATH, JSON.stringify({ latestIdentityId, latestEgoId, items }, null, 2) + '\n', 'utf8');
 fs.writeFileSync(IDENTITY_MANIFEST_PATH, JSON.stringify({ images: identityImagesNow }, null, 2) + '\n', 'utf8');
 fs.writeFileSync(EGO_MANIFEST_PATH, JSON.stringify({ images: egoImagesNow }, null, 2) + '\n', 'utf8');
 
