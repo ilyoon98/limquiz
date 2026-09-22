@@ -1,6 +1,7 @@
 const XLSX = require('xlsx');
 const fs = require('fs');
 const path = require('path');
+const { preferWebp } = require('./lib/webp-path');
 
 const XLSX_PATH = path.join(__dirname, '..', 'CharacterTable.xlsx');
 const OUT_PATH = path.join(__dirname, '..', 'egoData.json');
@@ -36,6 +37,8 @@ const egos = egoRows
   .map(row => {
     const entry = { ID: cleanVal(row['ID']) };
     for (const field of EGO_FIELDS) entry[field] = cleanVal(row[field]);
+
+    entry['아이콘'] = preferWebp(REPO_ROOT, entry['아이콘']);
 
     if (entry['아이콘'] && !imageFileExists(entry['아이콘'])) {
       console.warn(`⚠ EGO 아이콘 파일 없음, 제외 처리: ${entry['이름'] || entry.ID} (${entry['아이콘']})`);

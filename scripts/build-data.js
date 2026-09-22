@@ -1,6 +1,7 @@
 const XLSX = require('xlsx');
 const fs = require('fs');
 const path = require('path');
+const { preferWebp } = require('./lib/webp-path');
 
 const XLSX_PATH = path.join(__dirname, '..', 'CharacterTable.xlsx');
 const OUT_PATH = path.join(__dirname, '..', 'data.json');
@@ -19,6 +20,7 @@ const SKILL_FIELDS = [
   '스킬2명', '스킬2속성', '스킬2유형', '스킬2아이콘',
   '스킬3명', '스킬3속성', '스킬3유형', '스킬3아이콘',
 ];
+const SKILL_ICON_FIELDS = ['스킬1아이콘', '스킬2아이콘', '스킬3아이콘'];
 
 const slugMap = JSON.parse(fs.readFileSync(SLUG_MAP_PATH, 'utf8'));
 
@@ -93,8 +95,12 @@ const data = charRows.map(row => {
 
   const skillRow = skillById.get(row['ID']) || {};
   for (const field of SKILL_FIELDS) entry[field] = cleanVal(skillRow[field]);
+  for (const field of SKILL_ICON_FIELDS) entry[field] = preferWebp(REPO_ROOT, entry[field]);
 
   entry['출시일'] = formatReleaseDate(row['출시일']);
+
+  entry['이미지(일반)'] = preferWebp(REPO_ROOT, entry['이미지(일반)']);
+  entry['이미지(각성)'] = preferWebp(REPO_ROOT, entry['이미지(각성)']);
 
   if (entry['이미지(각성)'] && !imageFileExists(entry['이미지(각성)'])) {
     console.warn(`⚠ 각성 이미지 파일 없음, 제외 처리: ${entry['인격명']} (${entry['이미지(각성)']})`);

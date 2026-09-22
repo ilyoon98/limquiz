@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "build": "node scripts/build-data.js && node scripts/build-changelog.js && node scripts/build-decks.js && node scripts/build-egos.js && node scripts/build-content-updates.js && node scripts/build-ego-gifts.js",
-    "update:ego-gift-packs": "node scripts/update-ego-gift-limited-packs.js"
+    "update:ego-gift-packs": "node scripts/update-ego-gift-limited-packs.js",
+    "images:webp": "node scripts/convert-images-to-webp.js"
   },
   "devDependencies": {
+    "sharp": "^0.35.4",
     "xlsx": "^0.18.5"
   }
 }

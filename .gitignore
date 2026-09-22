@@ -10,3 +10,4 @@ egoGiftData.json
 dev/changelog_dev.json
 outputs/
 .env*
+.codex-tmp/

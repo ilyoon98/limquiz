@@ -1,6 +1,7 @@
 const XLSX = require('xlsx');
 const fs = require('fs');
 const path = require('path');
+const { preferWebp } = require('./lib/webp-path');
 
 const XLSX_PATH = path.join(__dirname, '..', 'CharacterTable.xlsx');
 const OUT_PATH = path.join(__dirname, '..', 'egoGiftData.json');
@@ -71,6 +72,7 @@ const gifts = giftRows
     entry['조건속성'] = conditionalSinsOf(entry['효과']);
     entry['강화가능'] = ENHANCEABLE_IDS.has(entry.ID);
     entry['전용팩'] = Array.isArray(LIMITED_PACKS[entry.ID]) ? LIMITED_PACKS[entry.ID] : [];
+    entry['아이콘'] = preferWebp(REPO_ROOT, entry['아이콘']);
 
     if (entry['속성'] && !KNOWN_SINS.has(entry['속성'])) {
       console.warn(`⚠ 알 수 없는 속성 값: "${entry['속성']}" (기프트: ${entry['이름'] || entry.ID})`);

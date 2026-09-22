@@ -286,10 +286,12 @@
        훈련 / 전술 시험"이 읽히도록 그룹의 세로 상태선과 터미널형 라벨을 기준점으로 둔다. */
     .home-modes { display:flex; flex-direction:column; gap:16px; margin-bottom:20px; }
     .latest-identity-status { margin:-2px 0 18px; border:1px solid color-mix(in srgb,var(--button) 42%,var(--border)); border-left:4px solid var(--button); border-radius:12px; background:linear-gradient(100deg,color-mix(in srgb,var(--button) 10%,var(--panel)),rgba(31,31,31,.72)); box-shadow:0 10px 26px rgba(0,0,0,.16); overflow:hidden; }
-    .latest-content-row { display:grid; grid-template-columns:8px 110px minmax(0,1fr) auto; align-items:center; gap:14px; padding:11px 16px; }
+    .latest-content-row { display:grid; grid-template-columns:8px 110px minmax(0,1fr) auto; align-items:center; gap:14px; padding:11px 16px; cursor:pointer; transition:background .15s,box-shadow .15s; }
     .latest-content-row + .latest-content-row { border-top:1px solid color-mix(in srgb,var(--button) 22%,var(--border)); }
     .latest-content-row::before { content:""; width:8px; height:8px; border-radius:50%; background:#ffd98a; box-shadow:0 0 12px rgba(255,217,138,.58); }
     .latest-content-row.ego::before { background:#c8a7ff; box-shadow:0 0 12px rgba(200,167,255,.58); }
+    .latest-content-row:hover { background:color-mix(in srgb,var(--button) 9%,transparent); }
+    .latest-content-row:focus-visible { outline:none; background:color-mix(in srgb,var(--button) 12%,transparent); box-shadow:inset 0 0 0 2px #ffd98a; }
     .latest-identity-label { flex:0 0 auto; color:var(--muted); font-size:12px; font-weight:900; letter-spacing:.08em; }
     .latest-identity-name { min-width:0; color:var(--text); font-size:15px; font-weight:900; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
     .latest-identity-meta { margin-left:auto; flex:0 0 auto; color:#ffd98a; font-size:12px; font-weight:800; white-space:nowrap; }
@@ -818,13 +820,13 @@
         <div class="sub">림버스 컴퍼니 퀴즈 모음집. 인격 두들, 스킬, 덱, EGO, EGO 기프트까지 원하는 모드를 골라 플레이하세요.</div>
       </header>
 
-      <div class="latest-identity-status" id="latestIdentityStatus" aria-live="polite" title="신규 콘텐츠 업데이트 목록을 기준으로 표시합니다.">
-        <div class="latest-content-row identity">
+      <div class="latest-identity-status" id="latestIdentityStatus" aria-live="polite" title="각 항목을 누르면 최신 추가 소식을 볼 수 있습니다.">
+        <div class="latest-content-row identity" id="latestIdentityRow" role="button" tabindex="0" aria-label="최신 반영 인격 추가 소식 보기">
           <span class="latest-identity-label">최신 반영 인격</span>
           <strong class="latest-identity-name" id="latestIdentityName">데이터 확인 중…</strong>
           <span class="latest-identity-meta" id="latestIdentityMeta"></span>
         </div>
-        <div class="latest-content-row ego">
+        <div class="latest-content-row ego" id="latestEgoRow" role="button" tabindex="0" aria-label="최신 반영 EGO 추가 소식 보기">
           <span class="latest-identity-label">최신 반영 EGO</span>
           <strong class="latest-identity-name" id="latestEgoName">데이터 확인 중…</strong>
           <span class="latest-identity-meta" id="latestEgoMeta"></span>
@@ -1158,7 +1160,7 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-    const APP_VERSION = 'v0.16.4';
+    const APP_VERSION = 'v0.16.5';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -1177,17 +1179,17 @@
     };
     // 수감자 문장(엠블럼)·죄악속성 아이콘 (게임 리소스에서 추출, images/ 하위에 커밋됨)
     const SINNER_ICON = {
-      '이상':'./images/sinners/yisang.png','파우스트':'./images/sinners/faust.png',
-      '돈키호테':'./images/sinners/donquixote.png','료슈':'./images/sinners/ryoshu.png',
-      '뫼르소':'./images/sinners/meursault.png','홍루':'./images/sinners/honglu.png',
-      '히스클리프':'./images/sinners/heathcliff.png','이스마엘':'./images/sinners/ishmael.png',
-      '로쟈':'./images/sinners/rodion.png','싱클레어':'./images/sinners/sinclair.png',
-      '오티스':'./images/sinners/outis.png','그레고르':'./images/sinners/gregor.png',
+      '이상':'./images/sinners/yisang.webp','파우스트':'./images/sinners/faust.webp',
+      '돈키호테':'./images/sinners/donquixote.webp','료슈':'./images/sinners/ryoshu.webp',
+      '뫼르소':'./images/sinners/meursault.webp','홍루':'./images/sinners/honglu.webp',
+      '히스클리프':'./images/sinners/heathcliff.webp','이스마엘':'./images/sinners/ishmael.webp',
+      '로쟈':'./images/sinners/rodion.webp','싱클레어':'./images/sinners/sinclair.webp',
+      '오티스':'./images/sinners/outis.webp','그레고르':'./images/sinners/gregor.webp',
     };
     const SIN_ICON = {
-      '분노':'./images/sins/wrath.png','색욕':'./images/sins/lust.png','나태':'./images/sins/sloth.png',
-      '탐식':'./images/sins/gluttony.png','우울':'./images/sins/gloom.png','오만':'./images/sins/pride.png',
-      '질투':'./images/sins/envy.png',
+      '분노':'./images/sins/wrath.webp','색욕':'./images/sins/lust.webp','나태':'./images/sins/sloth.webp',
+      '탐식':'./images/sins/gluttony.webp','우울':'./images/sins/gloom.webp','오만':'./images/sins/pride.webp',
+      '질투':'./images/sins/envy.webp',
     };
     const GRADE_CLASS = {'★':'grade-1','★★':'grade-2','★★★':'grade-3'};
     const MAX_TRIES = 7;
@@ -1260,6 +1262,8 @@
     const latestIdentityMetaEl = document.getElementById('latestIdentityMeta');
     const latestEgoNameEl = document.getElementById('latestEgoName');
     const latestEgoMetaEl = document.getElementById('latestEgoMeta');
+    const latestIdentityRowEl = document.getElementById('latestIdentityRow');
+    const latestEgoRowEl = document.getElementById('latestEgoRow');
     const filteredCountEl = document.getElementById('filteredCount');
     const messageEl = document.getElementById('message');
     const historyEl = document.getElementById('history');
@@ -5442,18 +5446,38 @@
       openNewIdentityPopup();
     }
 
+    function openLatestContentPopup(type) {
+      const data = type === 'ego'
+        ? EGO_LIST.find(row => String(row.ID) === String(LATEST_EGO_ID))
+        : DATA.find(row => String(row.ID) === String(LATEST_IDENTITY_ID));
+      if (!data) return;
+      renderNewIdentityPopup([{ type, data }]);
+      openNewIdentityPopup();
+    }
+    function bindLatestContentRow(element, type) {
+      if (!element) return;
+      element.addEventListener('click', () => openLatestContentPopup(type));
+      element.addEventListener('keydown', event => {
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+        event.preventDefault();
+        openLatestContentPopup(type);
+      });
+    }
+    bindLatestContentRow(latestIdentityRowEl, 'identity');
+    bindLatestContentRow(latestEgoRowEl, 'ego');
+
     function updateLatestContentStatus() {
       if (!identityUpdatesLoadFinished) return;
       if (latestIdentityNameEl && latestIdentityMetaEl && DATA.length) {
         const latestIdentity = DATA.find(row => String(row.ID) === String(LATEST_IDENTITY_ID));
         latestIdentityNameEl.textContent = latestIdentity ? latestIdentity['인격명'] : '최근 반영 인격을 확인할 수 없습니다';
-        latestIdentityMetaEl.textContent = latestIdentity ? `ID ${latestIdentity.ID} · 총 ${DATA.length}명` : `총 ${DATA.length}명`;
+        latestIdentityMetaEl.textContent = `총 ${DATA.length}명`;
       }
       if (latestEgoNameEl && latestEgoMetaEl && egoDataLoadFinished) {
         const latestEgo = EGO_LIST.find(row => String(row.ID) === String(LATEST_EGO_ID));
         latestEgoNameEl.textContent = latestEgo ? latestEgo['이름'] : '최근 반영 EGO를 확인할 수 없습니다';
         latestEgoMetaEl.textContent = latestEgo
-          ? `${latestEgo['수감자']} · ${latestEgo['등급']} · ID ${latestEgo.ID} · 총 ${EGO_LIST.length}개`
+          ? `${latestEgo['수감자']} · ${latestEgo['등급']} · 총 ${EGO_LIST.length}개`
           : `총 ${EGO_LIST.length}개`;
       }
     }
