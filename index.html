@@ -4985,6 +4985,10 @@
       { key:'grade', label:'기프트 등급' }, { key:'affinities', label:'조건 속성' },
       { key:'nameLength', label:'이름 길이' }, { key:'enhanceable', label:'강화 가능' }, { key:'keyword', label:'키워드' },
     ];
+    // 랜덤 모드에서는 전용 팩 정보를 효과 기록에 섞지 않고 별도 힌트로 연다.
+    const GQ_PACK_HINT_DEF = { key:'packs', label:'전용 팩' };
+    function gqIsRandomMode() { return gqMode === 'random'; }
+    function gqHintDefs() { return gqIsRandomMode() ? [...GQ_HINT_DEFS, GQ_PACK_HINT_DEF] : GQ_HINT_DEFS; }
     function gqTotalHints() { return gqOpenedHints.size + gqEffectRevealCount; }
     function gqHintValueHTML(key) {
       const metrics = gqGiftMetrics(gqGift);
@@ -4993,11 +4997,15 @@
       if (key === 'nameLength') return `${metrics.nameLength}자`;
       if (key === 'enhanceable') return metrics.enhanceable ? '가능' : '불가';
       if (key === 'keyword') return metrics.keyword ? kwChip(metrics.keyword) : '<span class="empty">없음</span>';
+      if (key === 'packs') {
+        const packs = Array.isArray(gqGift?.['전용팩']) ? gqGift['전용팩'] : [];
+        return packs.length ? packs.map(p => `<span class="gq-badge">${escapeHtml(p)}</span>`).join(' ') : '<span class="empty">공용 기프트</span>';
+      }
       return '-';
     }
     function gqHintPanelHTML() {
       const hints = gqTotalHints();
-      const buttons = GQ_HINT_DEFS.map(def => {
+      const buttons = gqHintDefs().map(def => {
         const opened = gqOpenedHints.has(def.key);
         return `<button type="button" class="quiz-hint-btn${opened ? ' revealed' : ''}" ${opened ? 'disabled' : `onclick="gqOpenHint('${def.key}')"`}><span class="quiz-hint-label">${escapeHtml(def.label)}</span>${opened ? `<span class="quiz-hint-value">${gqHintValueHTML(def.key)}</span>` : '<span class="quiz-hint-cost">정보 열기 · +1 비용</span>'}</button>`;
       }).join('');
@@ -5009,7 +5017,7 @@
       if (el) el.innerHTML = gqHintPanelHTML();
     }
     function gqOpenHint(key) {
-      if (gqNameDone || gqOpenedHints.has(key) || !GQ_HINT_DEFS.some(def => def.key === key)) return;
+      if (gqNameDone || gqOpenedHints.has(key) || !gqHintDefs().some(def => def.key === key)) return;
       gqOpenedHints.add(key); gqHintsUsed = gqTotalHints();
       if (gqMode === 'daily') gqSaveDailyState(false);
       gqRenderHintPanel();
@@ -5060,7 +5068,7 @@
         }
         if (rest) pieces.push(rest);
       });
-      const packClue = gqGiftPackClue(gift);
+      const packClue = gqIsRandomMode() ? '' : gqGiftPackClue(gift);
       if (packClue) pieces.push(packClue);
       if (pieces.length <= GQ_MAX_TRIES) return pieces;
       return Array.from({length:GQ_MAX_TRIES}, (_, i) => {
@@ -5075,8 +5083,9 @@
     }
     function gqEffectDiscoveries() {
       const answer = gqGiftMetrics(gqGift);
-      const keyword = gqOpenedHints.has('keyword') || (!!answer.keyword && gqGuessHistory.some(row => gqGiftMetrics(row.gift).keyword === answer.keyword));
-      const affinityMatch = gqOpenedHints.has('affinities') || (!!answer.affinities.length && gqGuessHistory.some(row => {
+      const guessFeedback = !gqIsRandomMode();
+      const keyword = gqOpenedHints.has('keyword') || (guessFeedback && !!answer.keyword && gqGuessHistory.some(row => gqGiftMetrics(row.gift).keyword === answer.keyword));
+      const affinityMatch = gqOpenedHints.has('affinities') || (guessFeedback && !!answer.affinities.length && gqGuessHistory.some(row => {
         const guessed = gqGiftMetrics(row.gift).affinities;
         return guessed.length === answer.affinities.length && guessed.every((sin, i) => sin === answer.affinities[i]);
       }));
@@ -5112,7 +5121,7 @@
       ).join('');
       const foot = visible < chunks.length
         ? `<span>${visible ? '필요한 만큼 다음 기록을 직접 열 수 있습니다.' : '아직 공개한 효과 기록이 없습니다.'}</span><button type="button" class="quiz-next-clue" onclick="gqRevealNextEffect()">${visible ? '다음' : '첫'} 효과 기록 열기 <span>+1 비용</span></button>`
-        : '<span>효과 기록을 모두 공개했습니다. 키워드와 속성은 별도 힌트 또는 정확한 판정으로 해금됩니다.</span>';
+        : `<span>효과 기록을 모두 공개했습니다. 키워드와 속성은 ${gqIsRandomMode() ? '별도 힌트로' : '별도 힌트 또는 정확한 판정으로'} 해금됩니다.</span>`;
       return `<div class="gq-clue-panel"><div class="gq-clue-head"><div class="gq-clue-kicker">Effect record · 선택 공개</div><span class="gq-clue-count">${visible}/${chunks.length} 공개</span><div class="gq-clue-title">효과 기록도 힌트로 열어보세요</div></div><div class="gq-clue-body">${lines}</div><div class="gq-clue-foot">${foot}</div></div>`;
     }
     function gqRenderEffectClue(previousVisible = 0, animate = true) {
@@ -5226,7 +5235,10 @@
       return Array.from({length:GQ_MAX_TRIES}, (_,i) => `<span class="eq-attempt-pip${i < gqSubmitCount ? (won ? ' won' : ' used') : ''}"></span>`).join('');
     }
     function gqGuessRowHTML(row, i) {
-      return `<div class="eq-guess-row"><div class="eq-guess-title"><span class="eq-guess-name">${escapeHtml(row.gift['이름'])}</span><span class="eq-guess-index">TRY ${i + 1}</span></div><div class="eq-judge-grid" style="--judge-columns:${row.judges.length}">${row.judges.map(j => `<div class="eq-judge-cell ${j.cls}"><span class="eq-judge-label">${escapeHtml(j.label)}</span><span class="eq-judge-value">${escapeHtml(j.value)}</span><span class="eq-judge-sub">${escapeHtml(j.sub)}</span></div>`).join('')}</div></div>`;
+      const title = `<div class="eq-guess-title"><span class="eq-guess-name">${escapeHtml(row.gift['이름'])}</span><span class="eq-guess-index">TRY ${i + 1}</span></div>`;
+      // 랜덤 모드는 추측한 기프트 이름만 남기고 항목별 일치/불일치 판정은 보여주지 않는다.
+      if (gqIsRandomMode()) return `<div class="eq-guess-row">${title}</div>`;
+      return `<div class="eq-guess-row">${title}<div class="eq-judge-grid" style="--judge-columns:${row.judges.length}">${row.judges.map(j => `<div class="eq-judge-cell ${j.cls}"><span class="eq-judge-label">${escapeHtml(j.label)}</span><span class="eq-judge-value">${escapeHtml(j.value)}</span><span class="eq-judge-sub">${escapeHtml(j.sub)}</span></div>`).join('')}</div></div>`;
     }
     function gqGuessBoardHTML(includeEmpty = true) {
       const rows = gqGuessHistory.map(gqGuessRowHTML).join('');
@@ -5240,7 +5252,7 @@
       cardEl.style.display = '';
       cardEl.innerHTML = `<div class="eq-daily-head"><div><div class="eq-daily-no">${daily ? `TODAY'S GIFT · #${getDailyChallengeNo()}` : 'GIFT TRAINING · RANDOM'}</div><div class="eq-daily-rule">효과 기록과 정보 힌트, 추측은 각각 비용 1입니다.</div></div><div class="eq-attempt-pips" id="gq-attempt-pips">${gqAttemptPipsHTML()}</div></div>
         <div class="eq-wordle-shell"><div class="eq-entry-panel"><div class="eq-entry-label">EGO 기프트 이름을 검색해 추측</div><div class="eq-entry-row"><input class="sq-s2-inp" id="gq-name-inp" placeholder="예: 먼지에서 먼지로" autocomplete="off"><button class="sq-s2-btn" onclick="gqCheckName()">추측하기</button></div><div class="eq-wordle-message" id="gq-name-hint">${gqSubmitCount ? `남은 기회 ${GQ_MAX_TRIES - gqSubmitCount}회` : '첫 번째 기프트를 골라보세요.'}</div></div>
-        <div id="gq-hint-panel">${gqHintPanelHTML()}</div><div id="gq-effect-clue">${gqEffectClueHTML()}</div><div class="eq-wordle-legend"><span><i class="eq-legend-dot hit"></i>정확히 일치</span><span><i class="eq-legend-dot miss"></i>불일치·방향 확인</span></div>${gqGuessBoardHTML(true)}
+        <div id="gq-hint-panel">${gqHintPanelHTML()}</div><div id="gq-effect-clue">${gqEffectClueHTML()}</div>${daily ? '<div class="eq-wordle-legend"><span><i class="eq-legend-dot hit"></i>정확히 일치</span><span><i class="eq-legend-dot miss"></i>불일치·방향 확인</span></div>' : ''}${gqGuessBoardHTML(true)}
         <div class="sq-give-up"><button class="secondary" onclick="gqGiveUp()" style="height:44px;padding:0 24px;font-size:15px">${daily ? '오늘 문제 포기' : '이번 문제 포기'}</button></div></div>`;
       const inp = document.getElementById('gq-name-inp');
       inp.addEventListener('input', () => gqNameDropdown.open(inp, () => GQ_GIFT_NAMES, gqIsEliminated));
@@ -5274,7 +5286,7 @@
       document.getElementById('gq-attempt-pips').innerHTML = gqAttemptPipsHTML();
       gqRenderHintPanel();
       gqRenderEffectClue(gqEffectClueVisibleCount(), false);
-      hint.style.color = '#ffb8b2'; hint.textContent = `오답입니다. 비교 결과를 확인하세요 · 남은 기회 ${GQ_MAX_TRIES - gqSubmitCount}회`;
+      hint.style.color = '#ffb8b2'; hint.textContent = gqIsRandomMode() ? `오답입니다 · 남은 기회 ${GQ_MAX_TRIES - gqSubmitCount}회` : `오답입니다. 비교 결과를 확인하세요 · 남은 기회 ${GQ_MAX_TRIES - gqSubmitCount}회`;
       inp.value = ''; inp.focus(); updateGqCardState();
       animWordleGuess([...document.querySelectorAll('#gq-guess-board .eq-guess-row')].at(-1));
     }
