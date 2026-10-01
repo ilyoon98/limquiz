@@ -11,7 +11,7 @@ const SKILL_SHEET_NAME = 'SkillData';
 
 const CHAR_FIELDS = [
   'ID',
-  '수감자', '인격명', '성급', '소속1', '소속2',
+  '수감자', '인격명', '성급', '소속1', '소속2', '소속3',
   '키워드1', '키워드2', '키워드3',
   '이미지(일반)', '이미지(각성)',
 ];
@@ -69,16 +69,14 @@ function imageFileExists(relPath) {
   return fs.existsSync(path.join(REPO_ROOT, relPath.replace(/^\.\//, '')));
 }
 
-// 엑셀 날짜 셀은 cellDates:true 옵션으로 Date 객체로 파싱된다(UTC 자정 기준).
-// 로컬 getter를 쓰면 타임존에 따라 하루 밀릴 수 있으므로 UTC getter를 사용한다.
+// 엑셀 날짜 셀은 cellDates:true 옵션으로 Date 객체로 파싱된다.
+// JS getter는 실행 환경의 시간대에 따라 전날로 밀릴 수 있으므로 SheetJS의
+// 날짜 포맷터로 셀의 달력 날짜를 그대로 보존한다.
 // 이미 'YYYY-MM-DD' 형식의 문자열이 들어있으면 그대로 인정하고, 그 외 형식은
 // 오기입으로 보고 경고 후 빈 값 처리한다(신규 인격 팝업 오작동 방지).
 function formatReleaseDate(val) {
   if (val instanceof Date && !isNaN(val)) {
-    const y = val.getUTCFullYear();
-    const m = String(val.getUTCMonth() + 1).padStart(2, '0');
-    const d = String(val.getUTCDate()).padStart(2, '0');
-    return `${y}-${m}-${d}`;
+    return XLSX.SSF.format('yyyy-mm-dd', val);
   }
   const str = cleanVal(val);
   if (!str) return '';
