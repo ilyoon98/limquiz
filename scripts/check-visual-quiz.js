@@ -48,7 +48,10 @@ for (const mode of modes) {
   }
   assert.notEqual(core.nextId(rows, bag, prev).id, prev, 'Immediate repeat at cycle boundary');
   const state = { id: sample.id, chapter: 99, roundId: 'test', status: 'playing', guesses: [wrong.name], hints: 0, bag: [wrong.id] };
-  assert.deepEqual(core.restore(state, rows), { ...state, locationHint: false });
+  assert.deepEqual(core.restore(state, rows), { ...state, locationHint: false, nameHint: 0 });
+  assert.equal(core.restore({ ...state, nameHint: 2 }, rows).nameHint, 2);
+  assert.equal(core.restore({ ...state, nameHint: -1 }, rows), null);
+  assert.equal(core.restore({ ...state, nameHint: 1000 }, rows), null);
   const migrated = core.restore({ ...state, chapter: 1 }, rows);
   assert.equal(migrated.chapter, 99);
   assert.equal(migrated.id, state.id);
@@ -61,6 +64,13 @@ for (const mode of modes) {
   assert.equal(core.nextId([sample], [], sample.id).id, sample.id);
 }
 const variants = [{ name: '개화 E.G.O::마름', aliases: ['마름'], id: 'a' }];
+assert.equal(core.nameClue('이스마엘', 1).text, '4글자 · 공백·기호 제외');
+assert.equal(core.nameClue('이스마엘', 2).text, '이●●●');
+assert.equal(core.nameClue('이스마엘', 3).text, '이스●●');
+assert.equal(core.nameClue('이스마엘', 5).text, '이스마엘');
+assert.equal(core.nameClue('A B-가', 2).text, 'A ●-●');
+assert.equal(core.nameClue('가', 2).text, '가');
+assert.equal(core.hintCount({hints: 0, locationHint: false, nameHint: 3}), 3);
 assert(core.accepts(variants[0], '개화 ego 마름'));
 assert(core.accepts(variants[0], '마름'));
 for (const file of ['visual-quiz.js','visual-quiz-core.js','visualQuizData.js']) new vm.Script(fs.readFileSync(file,'utf8'));

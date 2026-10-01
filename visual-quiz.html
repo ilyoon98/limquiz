@@ -30,23 +30,23 @@
           <div class="question-label" id="questionLabel"></div>
           <h2 id="questionTitle" tabindex="-1">이름을 맞혀보세요</h2>
           <form id="answerForm" class="entry-panel" autocomplete="off">
-            <label for="answer">이름을 검색해 추측</label>
-            <div class="answer-row"><div class="search-wrap"><input id="answer" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="answerNames" placeholder="이름 검색 또는 입력" maxlength="100" aria-describedby="feedback" disabled><ul id="answerNames" role="listbox" aria-label="이름 검색 결과" hidden></ul></div><button id="submit" disabled>추측하기</button></div>
+            <label for="answer">이름 입력 · 제출 기회 1회</label>
+            <div class="answer-row"><div class="answer-input-wrap"><input id="answer" type="text" autocomplete="off" spellcheck="false" placeholder="이름 또는 별명 입력" maxlength="100" aria-describedby="feedback" disabled></div><button id="submit" disabled>제출하기</button></div>
             <p id="feedback" role="status" aria-live="polite"></p>
           </form>
-          <div class="quiz-intel-panel">
-            <div class="quiz-intel-head"><div><div class="quiz-intel-kicker">OBSERVATION RECORD</div><div class="quiz-intel-title">필요한 정보만 열람하세요</div></div><div class="quiz-cost-ledger"><strong id="cost"></strong><span id="attempts"></span></div></div>
-            <div class="quiz-intel-grid"><button id="locationHint" class="quiz-hint-btn" disabled><span class="quiz-hint-label">등장 위치</span><span id="locationText" class="quiz-hint-value"></span></button></div>
-            <div id="hintArea" class="clue-panel" hidden><div class="clue-head"><strong>정신 상태 관찰 기록</strong><button id="hint" class="secondary">효과 열람 +1</button></div><div id="hints" aria-live="polite"></div></div>
-          </div>
-          <div id="historyTitle" class="history-title">추측 기록 <span id="guessCount">0</span></div>
-          <ul id="guesses" class="guesses" aria-label="추측 기록"></ul>
-          <div id="playingActions" class="actions"><button id="reveal" class="text-button" disabled>정답 보기</button><button id="retryImage" class="secondary" hidden>이미지 다시 불러오기</button><button id="skipImage" class="secondary" hidden>다른 문제</button></div>
+          <div id="playingActions" class="actions"><button id="giveUp" type="button" class="text-button" disabled>포기하기 · 정답 확인</button><button id="retryImage" class="secondary" hidden>이미지 다시 불러오기</button><button id="skipImage" class="secondary" hidden>다른 문제</button></div>
           <div id="result" role="status" hidden><div id="resultBadge" class="result-badge"></div><p id="resultName"></p><p id="resultDetail" class="muted"></p><button id="next">다음 문제 →</button></div>
         </div>
       </div>
     </section>
-    <section class="session-stats" aria-label="이 모드의 누적 기록"><div><strong id="played">0</strong><span>풀어본 문제</span></div><div><strong id="solved">0</strong><span>맞힌 문제</span></div><div><strong id="unassisted">0</strong><span>힌트 없이 정답</span></div><a href="./index.html">전체 기록 보기 →</a></section>
+    <section class="panel session-history" aria-labelledby="sessionHistoryTitle">
+      <div class="session-history-head"><h2 id="sessionHistoryTitle">이번 세션 기록</h2><span id="sessionHistoryCount" class="muted" aria-live="polite">0문제</span></div>
+      <p class="muted">완료한 문제의 정답과 정답·오답 여부를 보여줍니다. 홈 플레이 기록에는 이 목록을 한 세션으로 묶어 저장합니다. 새로고침해도 유지되며 탭을 닫으면 다음 세션이 시작됩니다.</p>
+      <p id="sessionHistoryEmpty" class="history-empty">문제를 완료하면 정답과 정답·오답 표시가 여기에 쌓입니다.</p>
+      <div id="sessionHistoryList"></div>
+      <p id="sessionHistoryNotice" class="muted" hidden>세션 기록을 저장할 수 없어 페이지를 떠나면 이 목록은 초기화됩니다.</p>
+    </section>
+    <section class="session-stats" aria-label="이 모드의 누적 기록"><div><strong id="played">0</strong><span>풀어본 문제</span></div><div><strong id="solved">0</strong><span>맞힌 문제</span></div><div><strong id="missed">0</strong><span>틀린 문제</span></div><a href="./index.html">전체 기록 보기 →</a></section>
     <footer>기록은 이 브라우저에 저장됩니다. <a href="https://drive.google.com/drive/folders/1DkcKQWgYLf9Kzk3JdsLHKxr1iei7XmrV" target="_blank" rel="noopener noreferrer">이미지 출처</a> · <a href="https://github.com/x1bViolet/Limbus-Localization-Files/tree/Korean" target="_blank" rel="noopener noreferrer">이름·효과 자료</a></footer>
     <noscript><p class="notice">퀴즈를 플레이하려면 브라우저에서 JavaScript를 켜주세요.</p></noscript>
   </main>

@@ -82,10 +82,8 @@
     .already-played { display:none; padding:12px 16px; border-radius:12px; background:color-mix(in srgb, var(--yellow) 15%, var(--panel2)); border:1px solid color-mix(in srgb, var(--yellow) 40%, transparent); color:#ffd98a; font-weight:700; margin-bottom:14px; }
     .filter-block { display:flex; flex-direction:column; gap:12px; margin-bottom:14px; }
     .filter-title { display:flex; align-items:center; gap:8px; color:#ffd98a; font-weight:900; font-size:15px; }
-    .filter-row { display:flex; flex-wrap:wrap; align-items:end; gap:0 20px; row-gap:16px; }
-    .filter-group { display:flex; flex-wrap:wrap; gap:10px; align-items:end; padding-left:20px; border-left:1px solid var(--border); }
-    .filter-group:first-child { padding-left:0; border-left:0; }
-    .filter-group .field { flex:0 1 130px; min-width:110px; }
+    .filter-row { display:grid; grid-template-columns:repeat(8,minmax(0,1fr)); align-items:end; gap:10px; }
+    .filter-row .field { min-width:0; }
     .field label { display:flex; align-items:center; gap:6px; color:#ffd98a; font-size:15px; font-weight:800; margin:0 0 8px; }
     input, button { height:44px; border-radius:12px; border:1px solid var(--border); font:inherit; }
     input { width:100%; background:#131313; color:var(--text); padding:0 12px; }
@@ -117,6 +115,12 @@
     .option:hover, .option.active { background:var(--panel2); }
     .option-name { font-weight:750; }
     .option-meta { color:var(--muted); font-size:14px; white-space:nowrap; }
+    .identity-option { display:grid; grid-template-columns:minmax(140px,1fr) 340px; align-items:center; }
+    .identity-option .option-name { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .identity-option .option-meta { display:grid; grid-template-columns:104px 48px minmax(164px,1fr); align-items:center; gap:8px; width:340px; }
+    .identity-option-sinner, .identity-option-grade { white-space:nowrap; }
+    .identity-option-grade { text-align:center; }
+    .identity-option-keywords { display:flex; justify-content:flex-end; gap:6px; min-width:0; }
     .option.eliminated .option-name { text-decoration: line-through; opacity:.48; }
     .option.eliminated .option-meta { opacity:.45; }
     .status { display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap; margin-top:14px; color:var(--muted); }
@@ -944,7 +948,8 @@
     .modal-actions { display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; }
     .modal-actions button { flex:1; min-width:110px; height:46px; border-radius:12px; font-size:15px; font-weight:800; }
 
-    @media (max-width:800px) { body{padding:14px} .guess-row{grid-template-columns:1fr} .filter-group{border-left:0;padding-left:0;flex-basis:100%;padding-top:12px;border-top:1px solid var(--border)} .filter-group:first-child{padding-top:0;border-top:0} button{width:100%} .dropdown{position:static;margin-top:8px} }
+    @media (max-width:1000px) { .filter-row{grid-template-columns:repeat(4,minmax(0,1fr))} }
+    @media (max-width:800px) { body{padding:14px} .guess-row{grid-template-columns:1fr} .filter-row{grid-template-columns:repeat(2,minmax(0,1fr))} button{width:100%} .dropdown{position:static;margin-top:8px} .identity-option{grid-template-columns:minmax(0,1fr)} .identity-option .option-meta{grid-template-columns:100px 44px minmax(0,1fr);gap:4px;width:100%;margin-top:5px} .identity-option-keywords{flex-wrap:wrap;gap:4px} .identity-option-keywords .kw-chip{padding-left:6px;padding-right:6px} }
     @media (max-width:640px) { header{padding-right:0} .top-actions{position:static;margin-top:12px;width:100%;display:grid;grid-template-columns:auto 1fr;justify-content:stretch} .top-actions .version-badge{grid-row:1}.top-actions .motion-toggle-btn{grid-row:1;width:100%}.top-actions .changelog-btn:not(.motion-toggle-btn),.top-actions .contact-btn{width:100%;min-width:0}.contact-btn{flex:initial}.sq-header .back-btn,.db-header .back-btn{width:auto} }
   </style>
 </head>
@@ -1092,20 +1097,14 @@
         <div class="filter-block">
           <div class="filter-title">🔍 필터</div>
           <div class="filter-row">
-            <div class="filter-group">
-              <div class="field"><label for="includeSinner">🔒 수감자</label><input id="includeSinner" placeholder="예: 료슈" /></div>
-              <div class="field"><label for="includeGrade">⭐ 성급</label><input id="includeGrade" placeholder="예: ★★★ 또는 3" /></div>
-            </div>
-            <div class="filter-group">
-              <div class="field"><label for="includeK1">🏷️ 키워드 A</label><input id="includeK1" placeholder="예: 출혈 (순서 무관)" /></div>
-              <div class="field"><label for="includeK2">🏷️ 키워드 B</label><input id="includeK2" placeholder="예: 호흡 (순서 무관)" /></div>
-              <div class="field"><label for="includeK3">🏷️ 키워드 C</label><input id="includeK3" placeholder="예: 파열 (순서 무관)" /></div>
-            </div>
-            <div class="filter-group">
-              <div class="field"><label for="includeAffil1">🏛️ 소속 1</label><input id="includeAffil1" placeholder="예: 거미집" /></div>
-              <div class="field"><label for="includeAffil2">🏛️ 소속 2</label><input id="includeAffil2" placeholder="예: 엄지" /></div>
-              <div class="field"><label for="includeAffil3">🏛️ 소속 3</label><input id="includeAffil3" placeholder="예: H사" /></div>
-            </div>
+            <div class="field"><label for="includeSinner">🔒 수감자</label><input id="includeSinner" placeholder="료슈" /></div>
+            <div class="field"><label for="includeGrade">⭐ 성급</label><input id="includeGrade" placeholder="3 또는 ★★★" /></div>
+            <div class="field"><label for="includeK1">🏷️ 키워드 A</label><input id="includeK1" placeholder="출혈" /></div>
+            <div class="field"><label for="includeK2">🏷️ 키워드 B</label><input id="includeK2" placeholder="호흡" /></div>
+            <div class="field"><label for="includeK3">🏷️ 키워드 C</label><input id="includeK3" placeholder="파열" /></div>
+            <div class="field"><label for="includeAffil1">🏛️ 소속 1</label><input id="includeAffil1" placeholder="거미집" /></div>
+            <div class="field"><label for="includeAffil2">🏛️ 소속 2</label><input id="includeAffil2" placeholder="엄지" /></div>
+            <div class="field"><label for="includeAffil3">🏛️ 소속 3</label><input id="includeAffil3" placeholder="H사" /></div>
           </div>
           <div class="mode-box" aria-label="포함 필터 방식">
             <label><input type="radio" name="includeMode" value="and" checked />AND</label>
@@ -1631,9 +1630,9 @@
       filteredCountEl.textContent = rows.length;
       highlightedOption = Math.min(highlightedOption, rows.length - 1);
       dropdown.innerHTML = rows.length ? rows.map((row, i) => `
-        <div class="option ${isEliminatedCandidate(row) ? 'eliminated' : ''} ${i === highlightedOption ? 'active' : ''}" data-idx="${row.__idx}" role="option">
+        <div class="option identity-option ${isEliminatedCandidate(row) ? 'eliminated' : ''} ${i === highlightedOption ? 'active' : ''}" data-idx="${row.__idx}" role="option">
           <span class="option-name">${escapeHtml(row['인격명'])}</span>
-          <span class="option-meta">${sinnerDot(row['수감자'])} · ${gradeSpan(row['성급'])} · ${keywordsOf(row).map(k => kwChip(k)).join(' ') || '키워드 없음'}</span>
+          <span class="option-meta"><span class="identity-option-sinner">${sinnerDot(row['수감자'])}</span><span class="identity-option-grade">${gradeSpan(row['성급'])}</span><span class="identity-option-keywords">${keywordsOf(row).map(k => kwChip(k)).join('') || '키워드 없음'}</span></span>
         </div>
       `).join('') : '<div class="option"><span class="option-name">검색 결과가 없습니다</span></div>';
       dropdown.classList.toggle('open', open && !finished);
@@ -1895,12 +1894,12 @@
           : r.mode === 'skill' ? '스킬'
           : r.mode === 'ego' ? (r.daily && r.challengeNo ? `EGO #${r.challengeNo}` : Array.isArray(r.judges) ? 'EGO 랜덤' : 'EGO')
           : r.mode === 'egogift' ? (r.daily && r.challengeNo ? `기프트 #${r.challengeNo}` : Array.isArray(r.judges) ? '기프트 랜덤' : '기프트') : escapeHtml(r.mode || '-');
-        const resultLabel = isVisual ? (r.success ? '정답' : '정답 공개') : r.mode === 'deck' ? (r.success ? '클리어' : '포기')
+        const resultLabel = isVisual ? (r.recordType === 'visual-session' ? `정답 ${Number(r.solved) || 0} / ${Number(r.total) || 0}` : (r.success ? '정답' : '오답')) : r.mode === 'deck' ? (r.success ? '클리어' : '포기')
           : r.mode === 'skill' ? (r.success ? '완벽!' : '일부 포기')
           : r.mode === 'ego' ? (r.success ? '정답' : Array.isArray(r.judges) ? (r.gaveUp ? '포기' : '실패') : '포기')
           : r.mode === 'egogift' ? (r.success ? '정답' : Array.isArray(r.judges) ? (r.gaveUp ? '포기' : '실패') : '포기')
           : (r.success ? '성공' : '실패');
-        const triesCell = isVisual ? `추측 ${Number(r.tries) || 0}회 · 힌트 ${Number(r.hints) || 0}개` : (r.mode === 'ego' || r.mode === 'egogift') && (Array.isArray(r.judges) || Array.isArray(r.guessIds)) ? (r.cost != null ? `${managerGradeFor(r.cost, r.success, r.mode)} · 엔케팔린 ${enkephalinEarned(r.mode, r.cost, r.success)} 획득` : `${r.tries ?? r.submits ?? '-'}/${r.maxTries ?? EQ_MAX_TRIES}`)
+        const triesCell = isVisual ? (r.recordType === 'visual-session' ? `정답률 ${Math.round((Number(r.solved) || 0) / (Number(r.total) || 1) * 100)}%` : `제출 ${Number(r.tries) || 0}회`) : (r.mode === 'ego' || r.mode === 'egogift') && (Array.isArray(r.judges) || Array.isArray(r.guessIds)) ? (r.cost != null ? `${managerGradeFor(r.cost, r.success, r.mode)} · 엔케팔린 ${enkephalinEarned(r.mode, r.cost, r.success)} 획득` : `${r.tries ?? r.submits ?? '-'}/${r.maxTries ?? EQ_MAX_TRIES}`)
           : r.mode === 'deck' || r.mode === 'ego' || r.mode === 'egogift' ? `제출 ${r.submits ?? '-'}회 · 힌트 ${r.hints ?? 0}회`
           : r.mode === 'skill' ? `${r.solved ?? '-'}/${r.total ?? '-'} 맞힘`
           : r.mode === 'daily' ? `${managerGradeFor(r.tries, r.success, 'daily')} · ${r.tries ?? '-'}/${MAX_TRIES}회 · 엔케팔린 ${recordEnkephalin(r)} 획득` : `${r.tries ?? '-'}/${MAX_TRIES}`;
@@ -2123,7 +2122,9 @@
             ${statTile('🏆', '정답', `<span data-count-to="${egogiftWins}">0</span>`)}`)}` : empty),
         ...Object.entries(VISUAL_MODE_LABELS).map(([mode, label]) => {
           const list = records.filter(r => r.mode === mode);
-          return section(label, list.length ? modeRow(statRatio(list.filter(r => r.success).length, list.length), '정답률', '#c9a86a', `${statTile('🎮', '플레이', list.length)}${statTile('🏆', '정답', list.filter(r => r.success).length)}${statTile('💡', '평균 힌트', `${avg(list, r => r.hints)}개`)}`) : empty);
+          const total = list.reduce((sum, r) => sum + (r.recordType === 'visual-session' ? Number(r.total) || 0 : 1), 0);
+          const solved = list.reduce((sum, r) => sum + (r.recordType === 'visual-session' ? Number(r.solved) || 0 : Number(!!r.success)), 0);
+          return section(label, list.length ? modeRow(statRatio(solved, total), '정답률', '#c9a86a', `${statTile('🎮', '푼 문제', total)}${statTile('🏆', '정답', solved)}${statTile('✕', '오답', total - solved)}`) : empty);
         }),
         ].join('');
     }
