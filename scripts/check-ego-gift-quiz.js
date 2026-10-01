@@ -50,7 +50,7 @@ let gqNameDone=false,gqNameGaveUp=false,gqMode='random',gqSubmitCount=6;
 const ENKEPHALIN_ALLOCATION={egogift:15},gqTotalHints=()=>0;
 const gqGift={ID:99},wrongGift={ID:7},gqWrongGuesses=new Set(),gqGuessHistory=Array.from({length:6},()=>({gift:{}}));
 const input={value:'다른 기프트',focus:()=>{}},hint={style:{}};
-const document={getElementById:id=>id==='gq-name-inp'?input:id==='gq-name-hint'?hint:{},querySelectorAll:()=>[]};
+const document={getElementById:id=>id==='gq-name-inp'?input:id==='gq-name-hint'?hint:{},querySelector:()=>null,querySelectorAll:()=>[]};
 const sqNormName=s=>s,gqFindGiftByName=()=>wrongGift,gqGuessBoardHTML=()=>'',gqRenderHintPanel=()=>{},gqRenderEffectClue=()=>{},gqEffectClueVisibleCount=()=>0,updateGqCardState=()=>{},animSlideIn=()=>{};
 ${extract('gqCheckName')}
 gqCheckName();assert.equal(gqSubmitCount,7);assert.equal(gqNameDone,false);
@@ -168,3 +168,19 @@ eqCheckName();
 assert.equal(eqSubmitCount,25);assert.equal(eqNameDone,true);assert.equal(eqNameGaveUp,false);assert.equal(rendered,true);
 `,{assert});
 console.log('PASS: final wrong EGO guess exhausts the allocation and ends the mission');
+
+for (const [historyName, rowName, boardName] of [
+  ['eqGuessHistory', 'eqGuessRowHTML', 'eqGuessBoardHTML'],
+  ['gqGuessHistory', 'gqGuessRowHTML', 'gqGuessBoardHTML'],
+]) {
+  const context = { result: '' };
+  vm.runInNewContext(`
+    const ${historyName} = [{ value:1 }, { value:2 }, { value:3 }];
+    const ${rowName} = (row, index) => \`<span>TRY \${index + 1}:\${row.value}</span>\`;
+    ${extract(boardName)}
+    result = ${boardName}(false);
+  `, context);
+  assert(context.result.indexOf('TRY 3:3') < context.result.indexOf('TRY 2:2'));
+  assert(context.result.indexOf('TRY 2:2') < context.result.indexOf('TRY 1:1'));
+}
+console.log('PASS: EGO and gift boards show newest TRY first while preserving submit numbers');

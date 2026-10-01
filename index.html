@@ -1347,7 +1347,7 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-    const APP_VERSION = 'v0.16.8';
+    const APP_VERSION = 'v0.16.9';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -4828,7 +4828,7 @@
       return `<div class="eq-guess-row eq-try-card${correct ? ' is-correct' : ''}"><div class="eq-try-portrait">${icon}</div><div class="eq-try-details"><div class="eq-guess-title"><span class="eq-guess-name">${escapeHtml(eqAnswerText(e))}</span><span class="eq-guess-index">TRY ${i + 1}${correct ? '<span class="eq-try-correct-label">✓ 정답</span>' : ''}</span></div><div class="eq-judge-grid" style="--judge-columns:4">${info.map(item => `<div class="eq-judge-cell"><span class="eq-judge-label">${escapeHtml(item.label)}</span><span class="eq-judge-value">${escapeHtml(item.value)}</span></div>`).join('')}</div></div></div>`;
     }
     function eqGuessBoardHTML(includeEmpty = true) {
-      const rows = eqGuessHistory.map(eqGuessRowHTML).join('');
+      const rows = eqGuessHistory.map(eqGuessRowHTML).reverse().join('');
       return `<div class="eq-guess-board" id="eq-guess-board">${rows}${includeEmpty && !eqGuessHistory.length ? '<div class="eq-empty-row">추측한 EGO가 여기에 표시됩니다</div>' : ''}</div>`;
     }
     function eqRenderCard() {
@@ -4878,7 +4878,7 @@
       eqRenderHintPanel();
       hint.style.color = '#ffb8b2'; hint.textContent = ``;
       inp.value = ''; inp.focus();
-      animWordleGuess([...document.querySelectorAll('#eq-guess-board .eq-guess-row')].at(-1));
+      animWordleGuess(document.querySelector('#eq-guess-board .eq-guess-row'));
     }
     function eqGiveUp() {
       if (eqNameDone) return;
@@ -5593,7 +5593,7 @@
       </div>`;
     }
     function gqGuessBoardHTML(includeEmpty = true) {
-      const rows = gqGuessHistory.map(gqGuessRowHTML).join('');
+      const rows = gqGuessHistory.map(gqGuessRowHTML).reverse().join('');
       const empty = includeEmpty && !gqGuessHistory.length ? '<div class="eq-empty-row">추측한 기프트가 여기에 표시됩니다</div>' : '';
       return `<div class="eq-guess-board" id="gq-guess-board">${rows}${empty}</div>`;
     }
@@ -5651,7 +5651,7 @@
       gqRenderEffectClue(gqEffectClueVisibleCount(), false);
       hint.style.color = '#ffb8b2'; hint.textContent = `오답입니다 · 지금까지 ${gqSubmitCount}회 추측`;
       inp.value = ''; inp.focus(); updateGqCardState();
-      animSlideIn([...document.querySelectorAll('#gq-guess-board .eq-guess-row')].at(-1));
+      animSlideIn(document.querySelector('#gq-guess-board .eq-guess-row'));
     }
     function gqGiveUp() {
       if (gqNameDone) return;
