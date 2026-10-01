@@ -319,7 +319,16 @@
     .mode-card { position:relative; background:var(--panel); border:2px solid var(--border); border-radius:18px; padding:24px; cursor:pointer; transition:transform .15s, border-color .15s, box-shadow .15s; box-shadow:0 8px 24px rgba(0,0,0,.28); display:flex; flex-direction:column; }
     .mode-card:hover { transform:translateY(-3px); border-color:var(--button); box-shadow:0 14px 36px rgba(0,0,0,.4); }
     .mode-card-title { font-size:20px; font-weight:900; margin-bottom:10px; }
+    .mode-card-status { display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
+    .mode-card-status .mode-card-badge { margin-bottom:0; }
     .mode-card-badge { display:inline-flex; align-items:center; padding:4px 12px; border-radius:999px; font-size:14px; font-weight:800; margin-bottom:8px; border:1px solid transparent; }
+    .mode-card-badge.grade-image-badge { min-width:62px; justify-content:center; padding:0 3px; border-color:transparent; background:transparent; }
+    .grade-emblem { display:block; width:64px; height:44px; object-fit:contain; }
+    .grade-emblem-card { width:58px; height:40px; }
+    .directive-meter { position:relative; height:20px; margin-top:3px; overflow:hidden; border:1px solid rgba(53,255,154,.26); border-radius:6px; background:#111a16; box-shadow:inset 0 1px 5px rgba(0,0,0,.55); }
+    .directive-meter-fill { position:absolute; inset:0 auto 0 0; width:0; background:linear-gradient(90deg,#078454,#35ff9a 72%,#8affc3); box-shadow:0 0 12px rgba(53,255,154,.48); transition:width .65s cubic-bezier(.2,.75,.25,1),opacity .25s; }
+    .directive-meter.is-projected .directive-meter-fill { opacity:.66; }
+    .directive-meter-label { position:absolute; z-index:1; inset:0; display:flex; align-items:center; justify-content:center; color:#e6fff1; font-size:11px; line-height:1; font-weight:950; font-variant-numeric:tabular-nums; text-shadow:0 1px 3px #07110c; }
     .badge-none { background:var(--panel2); color:var(--muted); border-color:var(--border); }
     .badge-success { background:color-mix(in srgb, var(--green) 25%, var(--panel2)); color:#bdf0c8; border-color:color-mix(in srgb, var(--green) 50%, transparent); }
     .badge-fail { background:color-mix(in srgb, var(--red) 25%, var(--panel2)); color:#ffb8b2; border-color:color-mix(in srgb, var(--red) 50%, transparent); }
@@ -330,6 +339,9 @@
     .mode-card-cta { align-self:flex-start; display:inline-flex; align-items:center; gap:6px; margin-top:16px; padding:8px 18px; border-radius:999px; background:var(--button); color:var(--buttonText); font-size:13px; font-weight:800; transition:filter .15s; }
     .mode-card:hover .mode-card-cta { filter:brightness(1.08); }
     .mode-card.mode-card-disabled .mode-card-cta { background:var(--panel2); color:var(--muted); }
+    .visual-mode-link { text-decoration:none; color:var(--text); }
+    .visual-mode-link:focus-visible { outline:2px solid var(--button); outline-offset:4px; }
+    .visual-mode-link small { font-size:12px; color:var(--muted); }
     .home-records-table { min-width:640px; }
     .copy-btn { height:30px; padding:0 10px; font-size:14px; background:var(--panel2); color:var(--text); border:1px solid var(--border); border-radius:8px; cursor:pointer; }
     .copy-btn:hover { border-color:var(--button); color:#ffd98a; }
@@ -340,26 +352,54 @@
     /* 데이터가 아직 채워지지 않은 퀴즈 모드(EGO/EGO 기프트)는 "준비 중"으로 비활성 표시 */
     .mode-card.mode-card-disabled { cursor:not-allowed; opacity:.55; }
     .mode-card.mode-card-disabled:hover { transform:none; border-color:var(--border); box-shadow:0 8px 24px rgba(0,0,0,.28); }
-    .daily-activity { display:grid; grid-template-columns:minmax(210px,.7fr) minmax(320px,1.3fr); gap:20px; align-items:center; }
+    .daily-activity { --enk:#35ff9a; --enk-deep:#087a53; --enk-dim:#163d32; display:grid; grid-template-columns:minmax(220px,.62fr) minmax(420px,1.38fr); gap:24px; align-items:center; border-color:color-mix(in srgb,var(--enk) 28%,var(--border)); background:radial-gradient(circle at 82% 38%,rgba(53,255,154,.075),transparent 38%),var(--panel); }
     .daily-activity-copy { min-width:0; }
-    .daily-activity-kicker { color:#ffd98a; font-size:12px; font-weight:900; letter-spacing:.1em; text-transform:uppercase; margin-bottom:7px; }
-    .daily-activity-title { font-size:20px; font-weight:900; margin-bottom:6px; }
+    .daily-activity-kicker { color:var(--enk); font-size:12px; font-weight:900; letter-spacing:.14em; text-transform:uppercase; margin-bottom:7px; text-shadow:0 0 12px rgba(53,255,154,.35); }
+    .daily-activity-title { font-size:22px; font-weight:950; margin-bottom:6px; }
     .daily-activity-desc { color:var(--muted); font-size:14px; line-height:1.55; }
-    .daily-activity-stats { display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; }
-    .daily-activity-stat { min-width:96px; padding:9px 12px; border-radius:11px; border:1px solid var(--border); background:var(--panel2); }
-    .daily-activity-stat strong { display:block; color:#ffd98a; font-size:18px; }
-    .daily-activity-stat span { color:var(--muted); font-size:12px; font-weight:800; }
-    .activity-board { min-width:0; }
-    .activity-grid { display:grid; grid-template-columns:repeat(7,minmax(24px,1fr)); gap:7px; }
-    .activity-cell { aspect-ratio:1; min-height:26px; border-radius:6px; border:1px solid #3a352f; background:#24211e; position:relative; }
-    .activity-cell.level-1 { background:#66552e; border-color:#8b7440; }
-    .activity-cell.level-2 { background:#9a7630; border-color:#c49a43; }
-    .activity-cell.level-3 { background:#bc9445; border-color:#e0b85c; }
-    .activity-cell.perfect { background:#d2ad5d; border-color:#ffe0a0; box-shadow:0 0 10px rgba(210,173,93,.25); }
-    .activity-cell.today { outline:2px solid #f4f1ea; outline-offset:2px; }
-    .activity-legend { display:flex; align-items:center; justify-content:flex-end; gap:7px; margin-top:10px; color:var(--muted); font-size:12px; font-weight:700; }
-    .activity-legend .activity-cell { width:18px; min-height:18px; flex:0 0 18px; }
-    @media (max-width:700px) { .daily-activity{grid-template-columns:1fr}.activity-grid{gap:6px}.daily-activity-stats{display:grid;grid-template-columns:repeat(2,1fr)} }
+    .daily-activity-stats { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; margin-top:14px; }
+    .daily-activity-stat { min-width:0; min-height:66px; display:flex; flex-direction:column; justify-content:center; padding:10px 12px; border-radius:11px; border:1px solid color-mix(in srgb,var(--enk) 18%,var(--border)); background:linear-gradient(135deg,rgba(53,255,154,.06),var(--panel2)); }
+    .daily-activity-stat strong { display:block; color:var(--enk); font-size:18px; line-height:1.1; font-variant-numeric:tabular-nums; text-shadow:0 0 12px rgba(53,255,154,.28); }
+    .daily-activity-stat span { margin-top:5px; color:var(--muted); font-size:12px; line-height:1.25; font-weight:800; }
+    .daily-activity-stat.today-grade-stat { position:relative; padding-right:72px; overflow:hidden; }
+    .daily-grade-mark { position:absolute; top:50%; right:8px; transform:translateY(-50%); display:flex; align-items:center; justify-content:center; width:58px; min-height:40px; color:#9d9488; font-size:11px; font-weight:900; }
+    .daily-grade-mark span { margin:0; }
+    .daily-grade-mark .grade-emblem { width:58px; height:40px; }
+    .activity-board { --wave-size:420px; --wave-top:-390px; --wave-offset:-210px; min-width:0; overflow-x:auto; padding:4px 2px 8px; scrollbar-color:var(--enk-deep) transparent; }
+    .activity-chart { --chart-height:288px; --tank-height:209px; --grade-height:56px; min-width:430px; display:grid; grid-template-columns:30px 1fr; gap:10px; }
+    .activity-axis { height:var(--chart-height); display:flex; flex-direction:column; justify-content:space-between; padding:var(--grade-height) 0 23px; color:#76bda0; font-size:10px; font-weight:900; text-align:right; }
+    .activity-grid { height:var(--chart-height); display:grid; grid-template-columns:repeat(7,minmax(42px,1fr)); gap:10px; align-items:stretch; background:linear-gradient(to bottom,transparent 55px,rgba(53,255,154,.09) 55px 56px,transparent 56px 160px,rgba(53,255,154,.09) 160px 161px,transparent 161px 264px,rgba(53,255,154,.28) 264px 265px,transparent 265px); }
+    .activity-column { min-width:0; display:grid; grid-template-rows:var(--grade-height) var(--tank-height) 23px; align-items:end; text-align:center; }
+    .activity-value { min-width:0; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; color:#72ffb1; font-weight:950; line-height:1; opacity:1; text-shadow:0 0 12px rgba(53,255,154,.55); }
+    .activity-value .grade-emblem { width:44px; height:30px; margin-bottom:-1px; }
+    .activity-value-number { min-height:19px; font-size:18px; }
+    .activity-grade-none { height:30px; display:flex; align-items:center; color:#657f75; font-size:9px; font-weight:850; text-shadow:none; }
+    .activity-cell { position:relative; align-self:stretch; overflow:hidden; border:1px solid rgba(91,211,151,.25); border-bottom:0; border-radius:10px 10px 3px 3px; background:linear-gradient(90deg,#18241f,#111a16); box-shadow:inset 0 0 14px rgba(0,0,0,.5); }
+    .activity-cell::before { content:""; position:absolute; z-index:3; inset:0 auto 0 5px; width:2px; background:linear-gradient(transparent 12%,rgba(255,255,255,.22) 35%,transparent 78%); pointer-events:none; }
+    .activity-liquid { position:absolute; inset:auto 0 0; height:var(--fill); min-height:0; background:linear-gradient(90deg,#079d62 0%,#35ff9a 48%,#0ab873 100%); box-shadow:0 -2px 15px rgba(53,255,154,.82),inset 5px 0 8px rgba(255,255,255,.16); transition:filter .35s; animation:enk-fill .85s cubic-bezier(.2,.75,.25,1) both; animation-delay:var(--delay); }
+    .activity-wave-window { position:absolute; z-index:2; top:-18px; left:0; right:0; height:40px; overflow:hidden; pointer-events:none; }
+    .activity-wave { position:absolute; top:var(--wave-top); left:50%; width:var(--wave-size); height:var(--wave-size); margin-left:var(--wave-offset); border-radius:48% 49% 47% 50%; transform-origin:50% 50%; transition:border-radius .7s ease; background:#17231e; animation:enk-wave-spin 5s linear infinite; }
+    .activity-wave.wave-two { --wave-size:360px; --wave-top:-330px; --wave-offset:-180px; border-radius:47% 49% 48% 46%; background:rgba(17,49,36,.58); animation-duration:7.5s; animation-direction:reverse; }
+    .activity-bubbles { position:absolute; z-index:1; inset:8px 4px 0; opacity:.72; background:radial-gradient(circle at 20% 86%,rgba(214,255,235,.9) 0 2px,transparent 3px),radial-gradient(circle at 72% 72%,rgba(214,255,235,.7) 0 1.5px,transparent 2.5px),radial-gradient(circle at 48% 96%,rgba(214,255,235,.75) 0 1px,transparent 2px); background-size:29px 38px,37px 51px,23px 43px; animation:enk-bubbles 3.2s linear infinite; }
+    .activity-board.is-agitated .activity-liquid { filter:brightness(1.2) saturate(1.18); }
+    .activity-board.is-agitated .activity-wave { transition-duration:.16s; }
+    .activity-board.is-agitated .activity-wave.wave-one { border-radius:27% 49% 29% 46%; animation-duration:2.5s; }
+    .activity-board.is-agitated .activity-wave.wave-two { border-radius:47% 28% 49% 27%; animation-duration:3.4s; }
+    .activity-board.is-agitated .activity-bubbles { animation-duration:.62s; opacity:1; }
+    .activity-board.is-settling .activity-liquid { transition-duration:.82s; filter:brightness(1.08) saturate(1.08); }
+    .activity-board.is-settling .activity-wave { transition-duration:.8s; }
+    .activity-board.is-settling .activity-wave.wave-one { border-radius:43% 47% 41% 48%; animation-duration:1.8s; }
+    .activity-board.is-settling .activity-wave.wave-two { border-radius:46% 41% 47% 42%; animation-duration:2.4s; }
+    .activity-board.is-settling .activity-bubbles { animation-duration:1.55s; opacity:.84; }
+    .activity-column.today .activity-cell { border-color:var(--enk); box-shadow:0 0 0 1px var(--enk),0 0 16px rgba(53,255,154,.32),inset 0 0 9px rgba(0,0,0,.42); }
+    .activity-date { color:#657f75; font-size:10px; font-weight:850; white-space:nowrap; align-self:center; }
+    .activity-column.today .activity-date { color:var(--enk); }
+    .activity-legend { display:flex; align-items:center; justify-content:flex-end; gap:10px; margin-top:10px; color:#76bda0; font-size:11px; font-weight:800; }
+    .activity-legend-swatch { width:28px; height:7px; border-radius:999px; background:linear-gradient(90deg,#0bac6d,#35ff9a); box-shadow:0 0 10px rgba(53,255,154,.45); }
+    @keyframes enk-fill { from { height:0; } to { height:var(--fill); } }
+    @keyframes enk-wave-spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+    @keyframes enk-bubbles { from { transform:translateY(20px); } to { transform:translateY(-46px); } }
+    @media (max-width:700px) { .daily-activity{grid-template-columns:1fr}.activity-board{margin:0 -4px} }
 
     /* ── 스킬 퀴즈 화면 ─────────────────────────── */
     .sq-wrap { max-width:860px; margin:0 auto; }
@@ -658,13 +698,15 @@
     .quiz-next-clue span { color:#ad9370; font-size:11px; }
     .manager-assessment { --assessment:#caae78; display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:14px; margin:17px 0 0; padding:15px 18px; border:1px solid color-mix(in srgb,var(--assessment) 55%,#403a32); border-left:5px solid var(--assessment); border-radius:13px; background:linear-gradient(100deg,color-mix(in srgb,var(--assessment) 12%,#1b1a18),#1b1a18 62%); }
     .manager-assessment-kicker { color:#a89f93; font-size:10px; font-weight:900; letter-spacing:.13em; }
-    .manager-assessment-grade { margin-top:3px; color:var(--assessment); font-size:29px; line-height:1; font-weight:950; letter-spacing:.04em; }
+    .manager-assessment-grade { min-height:50px; margin-top:3px; display:flex; align-items:center; color:var(--assessment); font-size:29px; line-height:1; font-weight:950; letter-spacing:.04em; }
+    .manager-assessment-grade .grade-emblem { width:74px; height:51px; }
     .manager-assessment-cost { text-align:right; color:#f1e7d8; font-size:14px; font-weight:900; }
     .manager-assessment-cost small { display:block; margin-top:4px; color:#91887c; font-size:11px; font-weight:700; }
     .gq-grade-table { width:100%; table-layout:fixed; border-collapse:collapse; margin-top:14px; text-align:center; }
     .gq-grade-table caption { text-align:left; color:#bdb3a5; font-size:12px; padding-bottom:9px; }
     .gq-grade-table th,.gq-grade-table td { border:1px solid var(--border); padding:10px 3px; }
     .gq-grade-table th { color:#bdb3a5; font-size:12px; letter-spacing:.02em; }
+    .gq-grade-table th .grade-emblem { width:52px; height:36px; margin:auto; }
     .gq-grade-table td { color:#a89f93; font-size:11px; vertical-align:top; }
     .gq-grade-table .is-current { background:color-mix(in srgb,var(--assessment) 16%,var(--panel2)); border-color:var(--assessment); color:#fff9ef; }
     .gq-grade-table th.is-current { color:var(--assessment); }
@@ -919,7 +961,7 @@
           <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfcpjEbCSsfHtbdQ80O_1E81G9XoUNBjvfNviAzJqvgjjjF4A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
         <h1>림퀴즈</h1>
-        <div class="sub">림버스 컴퍼니 퀴즈 모음집. 인격 두들, 스킬, 덱, EGO, EGO 기프트까지 원하는 모드를 골라 플레이하세요.</div>
+        <div class="sub">림버스 컴퍼니 퀴즈 모음집. 인격·스킬·덱·EGO·기프트부터 인물·보스·패닉까지 원하는 모드를 골라 플레이하세요.</div>
       </header>
 
       <div class="latest-identity-status" id="latestIdentityStatus" aria-live="polite" title="각 항목을 누르면 최신 추가 소식을 볼 수 있습니다.">
@@ -935,18 +977,30 @@
         </div>
       </div>
 
+      <section class="panel daily-activity" aria-labelledby="dailyActivityTitle">
+        <div class="daily-activity-copy">
+          <div class="daily-activity-kicker">ENKEPHALIN RECOVERY LOG</div>
+          <div class="daily-activity-title" id="dailyActivityTitle">일일 엔케팔린 획득량</div>
+          <div class="daily-activity-desc">최근 7일 동안 일일 지령에서 회수한 엔케팔린입니다.</div>
+          <div class="daily-activity-stats" id="dailyActivityStats"></div>
+        </div>
+        <div class="activity-board">
+          <div class="activity-chart"><div class="activity-axis" aria-hidden="true"><span>50</span><span>25</span><span>0</span></div><div class="activity-grid" id="dailyActivityGrid" aria-label="최근 7일 일일 엔케팔린 획득량"></div></div>
+        </div>
+      </section>
+
       <div class="home-modes">
         <section class="home-mode-group daily" aria-labelledby="homeDailyGroupTitle">
           <div class="home-mode-group-head"><div><div class="home-mode-kicker">TODAY'S DIRECTIVES</div><div class="home-mode-title" id="homeDailyGroupTitle">오늘의 지령</div></div><div class="home-mode-summary">매일 모두에게 같은 문제가 출제됩니다. 세 지령의 활동 기록을 남겨보세요.</div></div>
           <div class="home-mode-grid">
             <div class="mode-card" id="homeDailyCard">
-              <div class="mode-card-no" id="homeDailyNo"></div><div class="mode-card-title">오늘의 인격</div><span class="mode-card-badge badge-none" id="homeDailyBadge">미참여</span><div class="mode-card-desc">하루에 한 번, 모두가 같은 인격을 맞춥니다</div><span class="mode-card-cta">▶ 지령 수행</span>
+              <div class="mode-card-no" id="homeDailyNo"></div><div class="mode-card-title">오늘의 인격</div><div class="mode-card-status"><span class="mode-card-badge badge-none" id="homeDailyGrade">등급 미산정</span><span class="mode-card-badge badge-none" id="homeDailyBadge">엔케팔린 미획득</span></div><div class="directive-meter" id="homeDailyMeter" role="progressbar" aria-label="오늘의 인격 엔케팔린 획득량" aria-valuemin="0" aria-valuenow="0" aria-valuemax="10"><span class="directive-meter-fill"></span><span class="directive-meter-label">0 / 10</span></div><span class="mode-card-cta">▶ 지령 수행</span>
             </div>
             <div class="mode-card" id="homeEgoQuizCard">
-              <div class="mode-card-no" id="homeEgoNo"></div><div class="mode-card-title">오늘의 EGO</div><span class="mode-card-badge badge-none" id="homeEgoBadge">미참여</span><div class="mode-card-desc" id="homeEgoQuizDesc">6번의 추측으로 오늘의 EGO를 맞혀보세요</div><span class="mode-card-cta">▶ 지령 수행</span>
+              <div class="mode-card-no" id="homeEgoNo"></div><div class="mode-card-title">오늘의 EGO</div><div class="mode-card-status"><span class="mode-card-badge badge-none" id="homeEgoGrade">등급 미산정</span><span class="mode-card-badge badge-none" id="homeEgoBadge">엔케팔린 미획득</span></div><div class="directive-meter" id="homeEgoMeter" role="progressbar" aria-label="오늘의 EGO 엔케팔린 획득량" aria-valuemin="0" aria-valuenow="0" aria-valuemax="25"><span class="directive-meter-fill"></span><span class="directive-meter-label">0 / 25</span></div><span class="mode-card-cta">▶ 지령 수행</span>
             </div>
             <div class="mode-card" id="homeEgoGiftQuizCard">
-              <span class="mode-card-new-badge">NEW</span><div class="mode-card-no" id="homeEgoGiftNo"></div><div class="mode-card-title">오늘의 EGO 기프트</div><span class="mode-card-badge badge-none" id="homeEgoGiftBadge">미참여</span><div class="mode-card-desc" id="homeEgoGiftQuizDesc">힌트를 열고 오늘의 기프트를 맞혀보세요</div><span class="mode-card-cta">▶ 지령 수행</span>
+              <span class="mode-card-new-badge">NEW</span><div class="mode-card-no" id="homeEgoGiftNo"></div><div class="mode-card-title">오늘의 EGO 기프트</div><div class="mode-card-status"><span class="mode-card-badge badge-none" id="homeEgoGiftGrade">등급 미산정</span><span class="mode-card-badge badge-none" id="homeEgoGiftBadge">엔케팔린 미획득</span></div><div class="directive-meter" id="homeEgoGiftMeter" role="progressbar" aria-label="오늘의 EGO 기프트 엔케팔린 획득량" aria-valuemin="0" aria-valuenow="0" aria-valuemax="15"><span class="directive-meter-fill"></span><span class="directive-meter-label">0 / 15</span></div><span class="mode-card-cta">▶ 지령 수행</span>
             </div>
           </div>
         </section>
@@ -967,19 +1021,14 @@
         </section>
       </div>
 
-      <section class="panel daily-activity" aria-labelledby="dailyActivityTitle">
-        <div class="daily-activity-copy">
-          <div class="daily-activity-kicker">MANAGER ACTIVITY LOG</div>
-          <div class="daily-activity-title" id="dailyActivityTitle">최근 28일 일일 활동</div>
-          <div class="daily-activity-desc">오늘의 인격·EGO·EGO 기프트 참여 기록입니다. 세 지령을 모두 해결하면 가장 밝게 표시됩니다.</div>
-          <div class="daily-activity-stats" id="dailyActivityStats"></div>
-        </div>
-        <div class="activity-board">
-          <div class="activity-grid" id="dailyActivityGrid" aria-label="최근 28일 일일 퀴즈 참여 기록"></div>
-          <div class="activity-legend"><span>미참여</span><i class="activity-cell"></i><i class="activity-cell level-1"></i><i class="activity-cell level-2"></i><i class="activity-cell level-3"></i><i class="activity-cell perfect"></i><span>모두 성공</span></div>
+      <section class="home-mode-group exams" aria-labelledby="homeVisualTitle" style="margin-bottom:20px">
+        <div class="home-mode-group-head"><div><div class="home-mode-kicker">LCB · MANAGER TRAINING</div><div class="home-mode-title" id="homeVisualTitle">관리자 식별 교육</div></div><div class="home-mode-summary">관리자님, 기록 속 대상을 식별해 주십시오. 필요하다면 등장 위치를 열람할 수 있습니다.</div></div>
+        <div class="home-mode-grid">
+          <a class="mode-card visual-mode-link" href="./visual-quiz.html?mode=character"><div class="mode-card-title">인물 퀴즈</div><div class="mode-card-desc">초상화 속 인물의 이름을 맞혀보세요</div><span class="mode-card-cta">▶ 시험 시작</span></a>
+          <a class="mode-card visual-mode-link" href="./visual-quiz.html?mode=boss"><div class="mode-card-title">보스 아이콘 퀴즈</div><div class="mode-card-desc">문양을 보고 보스·환상체를 맞혀보세요</div><span class="mode-card-cta">▶ 시험 시작</span></a>
+          <a class="mode-card visual-mode-link" href="./visual-quiz.html?mode=panic"><div class="mode-card-title">패닉 유형 퀴즈 <small>고난도</small></div><div class="mode-card-desc">아이콘과 효과 힌트로 패닉 이름을 맞혀보세요</div><span class="mode-card-cta">▶ 시험 시작</span></a>
         </div>
       </section>
-
       <section class="panel table-wrap">
         <div class="record-head">
           <div>
@@ -1002,6 +1051,9 @@
           <button class="rec-tab" id="recTabSkill">스킬 퀴즈</button>
           <button class="rec-tab" id="recTabEgo">EGO 퀴즈</button>
           <button class="rec-tab" id="recTabEgoGift">기프트 퀴즈</button>
+          <button class="rec-tab" id="recTabCharacter">인물 퀴즈</button>
+          <button class="rec-tab" id="recTabBoss">보스 퀴즈</button>
+          <button class="rec-tab" id="recTabPanic">패닉 퀴즈</button>
         </div>
         <table class="home-records-table">
           <thead><tr><th>모드</th><th>날짜</th><th>결과</th><th>시도</th><th>정답</th><th>카드</th></tr></thead>
@@ -1209,19 +1261,19 @@
 
   <dialog id="eqHelpDialog" aria-labelledby="eqHelpTitle">
     <div class="gq-help-heading"><h2 id="eqHelpTitle">EGO 도움말</h2><form method="dialog"><button class="secondary" aria-label="도움말 닫기" autofocus>닫기</button></form></div>
-    <section><h3>이름과 수감자를 검색하세요</h3><p>예: 여우비 (이상). 오늘의 EGO는 매일 바뀌고 랜덤은 계속 새 문제를 풀 수 있습니다. 횟수 제한 없이 정답을 맞히거나 포기할 때까지 진행합니다.</p></section>
-    <section><h3>필요한 힌트만 열어보세요</h3><p>추측과 힌트는 각각 비용 1입니다. 죄악 자원을 한 번 누르면 사용 여부, 다시 누르면 소모 개수가 공개됩니다. 미사용 자원은 추가로 누를 수 없습니다.</p><p>이미지는 최후의 힌트입니다. 다음 추측에 바로 맞혀도 ZAYIN인 시점(현재 비용 14 이상)부터 열 수 있습니다.</p></section>
+    <section><h3>이름과 수감자를 검색하세요</h3><p>예: 여우비 (이상). 오늘의 EGO는 매일 바뀌고 랜덤은 계속 새 문제를 풀 수 있습니다. 엔케팔린 25를 배정받으며, 전부 소모하면 지령이 종료됩니다.</p></section>
+    <section><h3>필요한 힌트만 열어보세요</h3><p>추측과 힌트마다 엔케팔린을 1 소모합니다. 죄악 자원을 한 번 누르면 사용 여부, 다시 누르면 소모 개수가 공개됩니다. 미사용 자원은 추가로 누를 수 없습니다.</p><p>이미지는 최후의 힌트입니다. 다음 추측에 바로 맞혀도 ZAYIN인 시점(14 이상 소모)부터 열 수 있습니다. 마지막 엔케팔린 1은 추측용으로 남겨둡니다.</p></section>
     <section><h3>TRY는 제출한 EGO의 기록</h3><p>제출한 EGO의 이미지·수감자·등급·속성·자원 정보를 보여줍니다. 정답과의 일치 여부나 방향은 알려주지 않습니다.</p></section>
-    <section><h3>적은 비용으로 맞힐수록 높은 등급</h3><div id="eqHelpGrades"></div><p>예를 들어 추측 3회와 힌트 3개로 맞히면 비용 6, WAW입니다. 포기하면 등급을 받지 않습니다.</p></section>
+    <section><h3>엔케팔린 회수량에 따른 등급</h3><div id="eqHelpGrades"></div><p>예를 들어 추측 3회와 힌트 3개로 맞히면 19를 획득해 WAW입니다. 포기하거나 엔케팔린 소진 후 오답이면 획득하지 못합니다.</p></section>
   </dialog>
 
   <dialog id="gqHelpDialog" aria-labelledby="gqHelpTitle">
     <div class="gq-help-heading"><h2 id="gqHelpTitle">EGO 기프트 도움말</h2><form method="dialog"><button class="secondary" aria-label="도움말 닫기" autofocus>닫기</button></form></div>
-    <section><h3>이름을 검색하고 추측하세요</h3><p>오늘의 기프트는 매일 바뀌며, 랜덤은 새 문제를 계속 풀 수 있습니다. 추측 횟수에는 제한이 없습니다. 정답을 맞히거나 포기하면 종료됩니다.</p></section>
-    <section><h3>필요한 힌트만 열어보세요</h3><p>추측 한 번, 정보 힌트 하나, 효과 기록 한 번을 열 때마다 비용이 1씩 쌓입니다. 전용 팩은 별도 힌트이며, 효과에 가려진 키워드와 조건 속성도 해당 힌트로 공개합니다.</p><p>이미지는 최후의 힌트입니다. 다음 추측에 바로 맞혀도 ZAYIN인 시점부터 열 수 있습니다.</p></section>
+    <section><h3>이름을 검색하고 추측하세요</h3><p>오늘의 기프트는 매일 바뀌며, 랜덤은 새 문제를 계속 풀 수 있습니다. 엔케팔린 15를 배정받으며, 전부 소모하면 지령이 종료됩니다.</p></section>
+    <section><h3>필요한 힌트만 열어보세요</h3><p>추측 한 번, 정보 힌트 하나, 효과 기록 한 번마다 엔케팔린을 1 소모합니다. 전용 팩은 별도 힌트이며, 효과에 가려진 키워드와 조건 속성도 해당 힌트로 공개합니다.</p><p>이미지는 최후의 힌트입니다. 다음 추측에 바로 맞혀도 ZAYIN인 시점부터 열 수 있습니다. 마지막 엔케팔린 1은 추측용으로 남겨둡니다.</p></section>
     <figure><img src="images/help/ego-gift-guide.svg" alt="키워드 힌트만 열어 출혈이 보이는 예시와, 정답 판정 없이 다섯 가지 정보를 보여주는 TRY 기록 예시"><figcaption>설명을 위한 예시입니다. 실제 TRY 기록에는 기프트 이미지도 표시됩니다.</figcaption></figure>
     <section><h3>TRY는 내가 제출한 기프트의 기록</h3><p>기프트 이미지와 등급·키워드·강화 가능·이름 길이·조건 속성을 확인할 수 있습니다. 각 정보가 정답과 일치하는지는 알려주지 않습니다.</p></section>
-    <section><h3>적은 비용으로 맞힐수록 높은 등급</h3><div id="gqHelpGrades"></div><p>예를 들어 추측 3회와 힌트 3개로 맞히면 비용 6, HE입니다. 포기하면 등급을 받지 않습니다.</p></section>
+    <section><h3>엔케팔린 회수량에 따른 등급</h3><div id="gqHelpGrades"></div><p>예를 들어 추측 3회와 힌트 3개로 맞히면 9를 획득해 HE입니다. 포기하거나 엔케팔린 소진 후 오답이면 획득하지 못합니다.</p></section>
   </dialog>
 
   <!-- ══ 업데이트 기록 모달 ═══════════════════════════════════ -->
@@ -1283,7 +1335,7 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-    const APP_VERSION = 'v0.16.7';
+    const APP_VERSION = 'v0.16.8';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -1316,6 +1368,16 @@
     };
     const GRADE_CLASS = {'★':'grade-1','★★':'grade-2','★★★':'grade-3'};
     const MAX_TRIES = 7;
+    const ENKEPHALIN_ALLOCATION = { daily:10, ego:25, egogift:15 };
+    function enkephalinEarned(mode, spent, success) {
+      return success ? Math.max(0, ENKEPHALIN_ALLOCATION[mode] - Math.max(0, Number(spent) || 0)) : 0;
+    }
+    function recordEnkephalin(record) {
+      if (!record || !ENKEPHALIN_ALLOCATION[record.mode] || !record.success) return 0;
+      if (record.mode !== 'daily' && record.daily !== true) return 0;
+      const spent = record.mode === 'daily' ? record.tries : (record.cost ?? ((record.tries ?? record.submits ?? 0) + (record.hints ?? 0)));
+      return enkephalinEarned(record.mode, spent, true);
+    }
     const RESULT_STORAGE_KEY_V2 = 'limbus_results_v2';
     const DAILY_PLAYED_KEY = 'daily_played_date';
     const DAILY_RESULT_KEY = 'daily_result';
@@ -1400,6 +1462,7 @@
     const tabRandom = document.getElementById('tabRandom');
     const homeDailyCard = document.getElementById('homeDailyCard');
     const homeRandomCard = document.getElementById('homeRandomCard');
+    const homeDailyGrade = document.getElementById('homeDailyGrade');
     const homeDailyBadge = document.getElementById('homeDailyBadge');
     const homeDailyNo = document.getElementById('homeDailyNo');
     const backToHomeBtn = document.getElementById('backToHomeBtn');
@@ -1469,6 +1532,7 @@
         tries: guesses.length,
         maxTries: MAX_TRIES,
         success: won,
+        enkephalinEarned: mode === 'daily' ? enkephalinEarned('daily', guesses.length, won) : 0,
         guesses: guesses.map(g => Object.fromEntries(FIELDS.map(f => [f, judgeCell(f, g, answer).cls])))
       };
       records.push(record);
@@ -1667,23 +1731,48 @@
     }
 
     // ── 홈 화면 ─────────────────────────────────────────────
+    function updateDirectiveMeter(id, earned, allocation, projected = false) {
+      const meter = document.getElementById(id);
+      if (!meter) return;
+      const value = Math.max(0, Math.min(allocation, Number(earned) || 0));
+      const fill = meter.querySelector('.directive-meter-fill');
+      const label = meter.querySelector('.directive-meter-label');
+      if (fill) fill.style.width = `${value / allocation * 100}%`;
+      if (label) label.textContent = `${value} / ${allocation}`;
+      meter.classList.toggle('is-projected', projected);
+      meter.setAttribute('aria-valuenow', String(value));
+      meter.setAttribute('aria-valuetext', `${projected ? '예상 회수량' : '획득량'} ${value} / ${allocation}`);
+    }
     function updateHomeDailyStatus() {
       const no = getDailyChallengeNo();
       homeDailyNo.textContent = `오늘의 인격 #${no}`;
       const saved = loadDailyResult();
       if (!saved) {
-        homeDailyBadge.textContent = '미참여';
+        homeDailyGrade.textContent = '등급 미산정';
+        homeDailyGrade.className = 'mode-card-badge badge-none';
+        homeDailyBadge.textContent = '엔케팔린 미획득';
         homeDailyBadge.className = 'mode-card-badge badge-none';
+        updateDirectiveMeter('homeDailyMeter', 0, ENKEPHALIN_ALLOCATION.daily);
       } else if (saved.won) {
-        homeDailyBadge.textContent = `성공 ${saved.attempts}/${MAX_TRIES}`;
+        const attempts = Number(saved.attempts) || saved.guesses?.length || 1;
+        const grade = managerGradeFor(attempts, true, 'daily');
+        const earned = enkephalinEarned('daily', attempts, true);
+        homeDailyGrade.innerHTML = managerGradeImageHTML(grade, 'grade-emblem-card');
+        homeDailyGrade.className = 'mode-card-badge badge-success grade-image-badge';
+        homeDailyBadge.textContent = `엔케팔린 ${earned} 획득`;
         homeDailyBadge.className = 'mode-card-badge badge-success';
+        updateDirectiveMeter('homeDailyMeter', earned, ENKEPHALIN_ALLOCATION.daily);
       } else {
-        homeDailyBadge.textContent = `실패 X/${MAX_TRIES}`;
+        homeDailyGrade.textContent = '등급 미획득';
+        homeDailyGrade.className = 'mode-card-badge badge-fail';
+        homeDailyBadge.textContent = '엔케팔린 0 획득';
         homeDailyBadge.className = 'mode-card-badge badge-fail';
+        updateDirectiveMeter('homeDailyMeter', 0, ENKEPHALIN_ALLOCATION.daily);
       }
     }
 
     let recordFilter = 'all';
+    const VISUAL_MODE_LABELS = { character: '인물 퀴즈', boss: '보스 퀴즈', panic: '패닉 퀴즈' };
 
     function localDateKey(date) {
       return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
@@ -1695,10 +1784,10 @@
         const isEgo = r.mode === 'ego' && r.daily === true;
         const isGift = r.mode === 'egogift' && r.daily === true;
         if ((!isIdentity && !isEgo && !isGift) || !r.date) return;
-        const day = map.get(r.date) || { identity:false, identityWin:false, ego:false, egoWin:false, gift:false, giftWin:false };
-        if (isIdentity) { day.identity = true; day.identityWin ||= !!r.success; }
-        if (isEgo) { day.ego = true; day.egoWin ||= !!r.success; }
-        if (isGift) { day.gift = true; day.giftWin ||= !!r.success; }
+        const day = map.get(r.date) || { identity:false, identityWin:false, identityEnkephalin:0, ego:false, egoWin:false, egoEnkephalin:0, gift:false, giftWin:false, giftEnkephalin:0 };
+        if (isIdentity) { day.identity = true; day.identityWin ||= !!r.success; day.identityEnkephalin = Math.max(day.identityEnkephalin, recordEnkephalin(r)); }
+        if (isEgo) { day.ego = true; day.egoWin ||= !!r.success; day.egoEnkephalin = Math.max(day.egoEnkephalin, recordEnkephalin(r)); }
+        if (isGift) { day.gift = true; day.giftWin ||= !!r.success; day.giftEnkephalin = Math.max(day.giftEnkephalin, recordEnkephalin(r)); }
         map.set(r.date, day);
       });
       return map;
@@ -1717,6 +1806,15 @@
       if (prev && Math.round((today - prev) / 86400000) <= 1) current = run;
       return { current, max };
     }
+    function dailyEnkephalinGrade(total) {
+      const value = Math.max(0, Number(total) || 0);
+      if (value >= 40) return 'ALEPH';
+      if (value >= 30) return 'WAW';
+      if (value >= 20) return 'HE';
+      if (value >= 10) return 'TETH';
+      if (value >= 1) return 'ZAYIN';
+      return '미획득';
+    }
     function renderDailyActivityHome() {
       const grid = document.getElementById('dailyActivityGrid');
       const stats = document.getElementById('dailyActivityStats');
@@ -1726,20 +1824,55 @@
       const today = new Date(); today.setHours(0,0,0,0);
       const todayEntry = activity.get(localDateKey(today)) || {};
       const todayCount = Number(!!todayEntry.identity) + Number(!!todayEntry.ego) + Number(!!todayEntry.gift);
-      stats.innerHTML = `<div class="daily-activity-stat"><strong>${todayCount}/3</strong><span>오늘 참여</span></div><div class="daily-activity-stat"><strong>${streak.current}일</strong><span>연속 참여</span></div><div class="daily-activity-stat"><strong>${streak.max}일</strong><span>최고 연속</span></div>`;
+      const todayEnkephalin = (todayEntry.identityEnkephalin || 0) + (todayEntry.egoEnkephalin || 0) + (todayEntry.giftEnkephalin || 0);
+      const last7Start = new Date(today); last7Start.setDate(today.getDate() - 6);
+      const last7Enkephalin = [...activity].reduce((sum, [key, entry]) => key >= localDateKey(last7Start) && key <= localDateKey(today) ? sum + entry.identityEnkephalin + entry.egoEnkephalin + entry.giftEnkephalin : sum, 0);
+      const totalEnkephalin = [...activity.values()].reduce((sum, entry) => sum + entry.identityEnkephalin + entry.egoEnkephalin + entry.giftEnkephalin, 0);
+      const todayGrade = dailyEnkephalinGrade(todayEnkephalin);
+      const todayGradeMark = todayGrade === '미획득' ? '<span>미획득</span>' : managerGradeImageHTML(todayGrade);
+      stats.innerHTML = `<div class="daily-activity-stat today-grade-stat"><strong>${todayEnkephalin}</strong><span>오늘 획득 엔케팔린</span><div class="daily-grade-mark" title="오늘의 종합 등급: ${escapeHtml(todayGrade)}">${todayGradeMark}</div></div><div class="daily-activity-stat"><strong>${last7Enkephalin}</strong><span>7일 획득 엔케팔린</span></div><div class="daily-activity-stat"><strong>${totalEnkephalin}</strong><span>총합 획득 엔케팔린</span></div><div class="daily-activity-stat"><strong>${todayCount}/3</strong><span>오늘 참여</span></div><div class="daily-activity-stat"><strong>${streak.current}일</strong><span>연속 참여</span></div><div class="daily-activity-stat"><strong>${streak.max}일</strong><span>최고 연속</span></div>`;
       const cells = [];
-      for (let i = 27; i >= 0; i--) {
+      for (let i = 6; i >= 0; i--) {
         const d = new Date(today); d.setDate(today.getDate() - i);
         const key = localDateKey(d), entry = activity.get(key) || {};
         const count = Number(!!entry.identity) + Number(!!entry.ego) + Number(!!entry.gift);
-        const perfect = entry.identityWin && entry.egoWin && entry.giftWin;
-        const cls = perfect ? 'perfect' : count === 3 ? 'level-3' : count === 2 ? 'level-2' : count === 1 ? 'level-1' : '';
         const details = [entry.identity ? `인격 ${entry.identityWin ? '성공' : '실패'}` : '', entry.ego ? `EGO ${entry.egoWin ? '성공' : '실패'}` : '', entry.gift ? `기프트 ${entry.giftWin ? '성공' : '실패'}` : ''].filter(Boolean);
-        const detail = details.length ? details.join(' · ') : '미참여';
-        cells.push(`<span class="activity-cell ${cls}${i === 0 ? ' today' : ''}" title="${escapeHtml(`${key} · ${detail}`)}" aria-label="${escapeHtml(`${key} ${detail}`)}"></span>`);
+        const earned = (entry.identityEnkephalin || 0) + (entry.egoEnkephalin || 0) + (entry.giftEnkephalin || 0);
+        const grade = dailyEnkephalinGrade(earned);
+        const detail = details.length ? `${details.join(' · ')} · 엔케팔린 ${earned} 획득 · 종합 등급 ${grade}` : '미참여 · 종합 등급 미획득';
+        const fill = Math.min(100, earned / 50 * 100);
+        const gradeMark = grade === '미획득' ? '<span class="activity-grade-none">미획득</span>' : managerGradeImageHTML(grade);
+        cells.push(`<span class="activity-column${i === 0 ? ' today' : ''}" title="${escapeHtml(`${key} · ${detail}`)}" aria-label="${escapeHtml(`${key} ${detail}`)}"><span class="activity-value" aria-hidden="true">${gradeMark}<strong class="activity-value-number">${earned || ''}</strong></span><span class="activity-cell"><span class="activity-liquid" style="--fill:${fill}%;--delay:${(6-i)*70}ms"><i class="activity-wave-window" aria-hidden="true"><i class="activity-wave wave-one"></i><i class="activity-wave wave-two"></i></i><i class="activity-bubbles" aria-hidden="true"></i></span></span><span class="activity-date" aria-hidden="true">${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}</span></span>`);
       }
       grid.innerHTML = cells.join('');
     }
+
+    // 스크롤하는 동안 저장조의 수면과 기포가 잠시 크게 출렁인다.
+    let activityScrollY = window.scrollY;
+    let activityScrollFrame = 0;
+    let activitySettleTimer = 0;
+    let activityRestTimer = 0;
+    window.addEventListener('scroll', () => {
+      if (activityScrollFrame) return;
+      activityScrollFrame = requestAnimationFrame(() => {
+        const nextY = window.scrollY;
+        const delta = nextY - activityScrollY;
+        activityScrollY = nextY;
+        activityScrollFrame = 0;
+        if (Math.abs(delta) < 2) return;
+        const board = document.querySelector('.activity-board');
+        if (!board) return;
+        clearTimeout(activitySettleTimer);
+        clearTimeout(activityRestTimer);
+        board.classList.remove('is-settling');
+        board.classList.add('is-agitated');
+        activitySettleTimer = setTimeout(() => {
+          board.classList.remove('is-agitated');
+          board.classList.add('is-settling');
+          activityRestTimer = setTimeout(() => board.classList.remove('is-settling'), 900);
+        }, 220);
+      });
+    }, { passive:true });
 
     function renderRecordsHome() {
       const records = loadResultRecordsV2();
@@ -1752,22 +1885,23 @@
       homeResultRecordsEl.innerHTML = [...filtered].reverse().map((r, i) => {
         const idx = records.indexOf(filtered[filtered.length - 1 - i]);
         // 모드별 표시 (인격 두들 daily/random, 덱 퀴즈 deck, 스킬 퀴즈 skill, EGO 퀴즈 ego, EGO 기프트 퀴즈 egogift)
-        const modeLabel = r.mode === 'daily' ? (r.challengeNo ? `#${r.challengeNo}` : '일일')
+        const isVisual = Object.hasOwn(VISUAL_MODE_LABELS, r.mode);
+        const modeLabel = isVisual ? VISUAL_MODE_LABELS[r.mode] : r.mode === 'daily' ? (r.challengeNo ? `#${r.challengeNo}` : '일일')
           : r.mode === 'random' ? '랜덤'
           : r.mode === 'deck' ? '덱'
           : r.mode === 'skill' ? '스킬'
           : r.mode === 'ego' ? (r.daily && r.challengeNo ? `EGO #${r.challengeNo}` : Array.isArray(r.judges) ? 'EGO 랜덤' : 'EGO')
           : r.mode === 'egogift' ? (r.daily && r.challengeNo ? `기프트 #${r.challengeNo}` : Array.isArray(r.judges) ? '기프트 랜덤' : '기프트') : escapeHtml(r.mode || '-');
-        const resultLabel = r.mode === 'deck' ? (r.success ? '클리어' : '포기')
+        const resultLabel = isVisual ? (r.success ? '정답' : '정답 공개') : r.mode === 'deck' ? (r.success ? '클리어' : '포기')
           : r.mode === 'skill' ? (r.success ? '완벽!' : '일부 포기')
           : r.mode === 'ego' ? (r.success ? '정답' : Array.isArray(r.judges) ? (r.gaveUp ? '포기' : '실패') : '포기')
           : r.mode === 'egogift' ? (r.success ? '정답' : Array.isArray(r.judges) ? (r.gaveUp ? '포기' : '실패') : '포기')
           : (r.success ? '성공' : '실패');
-        const triesCell = isVisual ? `추측 ${Number(r.tries) || 0}회 · 힌트 ${Number(r.hints) || 0}개` : (r.mode === 'ego' || r.mode === 'egogift') && (Array.isArray(r.judges) || Array.isArray(r.guessIds)) ? (r.cost != null ? `${r.managerGrade || managerGradeFor(r.cost, r.success, r.scoringVersion === 2 ? r.mode : '')} · 비용 ${r.cost}` : `${r.tries ?? r.submits ?? '-'}/${r.maxTries ?? EQ_MAX_TRIES}`)
+        const triesCell = isVisual ? `추측 ${Number(r.tries) || 0}회 · 힌트 ${Number(r.hints) || 0}개` : (r.mode === 'ego' || r.mode === 'egogift') && (Array.isArray(r.judges) || Array.isArray(r.guessIds)) ? (r.cost != null ? `${managerGradeFor(r.cost, r.success, r.mode)} · 엔케팔린 ${enkephalinEarned(r.mode, r.cost, r.success)} 획득` : `${r.tries ?? r.submits ?? '-'}/${r.maxTries ?? EQ_MAX_TRIES}`)
           : r.mode === 'deck' || r.mode === 'ego' || r.mode === 'egogift' ? `제출 ${r.submits ?? '-'}회 · 힌트 ${r.hints ?? 0}회`
           : r.mode === 'skill' ? `${r.solved ?? '-'}/${r.total ?? '-'} 맞힘`
-          : `${r.tries ?? '-'}/${MAX_TRIES}`;
-        const answerCell = r.mode === 'deck' ? escapeHtml(r.deckName || '-')
+          : r.mode === 'daily' ? `${managerGradeFor(r.tries, r.success, 'daily')} · ${r.tries ?? '-'}/${MAX_TRIES}회 · 엔케팔린 ${recordEnkephalin(r)} 획득` : `${r.tries ?? '-'}/${MAX_TRIES}`;
+        const answerCell = isVisual ? escapeHtml(r.answerName || '-') : r.mode === 'deck' ? escapeHtml(r.deckName || '-')
           : r.mode === 'skill' || r.mode === 'ego' || r.mode === 'egogift' ? escapeHtml(r.answerName || '-')
           : escapeHtml(r.answer?.['인격명'] || '-');
         const cardBtn = (r.mode === 'daily' || r.mode === 'random' || r.mode === 'deck' || r.mode === 'skill' || r.mode === 'ego' || r.mode === 'egogift') ? `<button class="copy-btn" data-ridx="${idx}" title="결과 카드 보기">📋</button> ` : '';
@@ -1942,6 +2076,7 @@
           { label: '스킬 퀴즈', value: skill.length, color: '#4090c8' },
           { label: 'EGO', value: ego.length, color: '#c07858' },
           { label: 'EGO 기프트', value: egogift.length, color: '#9060c0' },
+          ...Object.entries(VISUAL_MODE_LABELS).map(([mode, label], i) => ({ label, value: records.filter(r => r.mode === mode).length, color: ['#c9a86a','#8096aa','#b881a6'][i] })),
         ])}
         <div class="stats-chart-title">최근 14일 플레이</div>
         ${chartActivity(statRecentDays(records, 14))}` : empty;
@@ -1983,7 +2118,11 @@
           ${modeRow(statRatio(egogiftWins, egogift.length), '정답률', '#9060c0', `
             ${statTile('🎮', '플레이', `<span data-count-to="${egogift.length}">0</span>`)}
             ${statTile('🏆', '정답', `<span data-count-to="${egogiftWins}">0</span>`)}`)}` : empty),
-      ].join('');
+        ...Object.entries(VISUAL_MODE_LABELS).map(([mode, label]) => {
+          const list = records.filter(r => r.mode === mode);
+          return section(label, list.length ? modeRow(statRatio(list.filter(r => r.success).length, list.length), '정답률', '#c9a86a', `${statTile('🎮', '플레이', list.length)}${statTile('🏆', '정답', list.filter(r => r.success).length)}${statTile('💡', '평균 힌트', `${avg(list, r => r.hints)}개`)}`) : empty);
+        }),
+        ].join('');
     }
     function openStats() {
       const body = document.getElementById('statsBody');
@@ -2086,7 +2225,7 @@
         </div>
         <div class="card-result-row">
           <span class="card-result-label ${record.success ? 'card-result-success' : 'card-result-fail'}">${record.success ? '성공! 🎉' : '실패'}</span>
-          <span class="card-tries-text">${record.tries ?? '?'}/${record.maxTries ?? MAX_TRIES}회 시도</span>
+          <span class="card-tries-text">${record.tries ?? '?'}/${record.maxTries ?? MAX_TRIES}회 시도${record.mode === 'daily' ? ` · ${managerGradeFor(record.tries, record.success, 'daily')} · 엔케팔린 ${recordEnkephalin(record)} 획득` : ''}</span>
         </div>
         ${cellTotal ? cardStatStrip([
           { label: '시도', value: `${record.tries ?? '?'}<span style="font-size:12px;color:#b8b0a3">/${record.maxTries ?? MAX_TRIES}</span>` },
@@ -2195,7 +2334,7 @@
         const tries = record.tries ?? record.submits ?? 0;
         const hints = record.hints ?? 0;
         const cost = record.cost ?? (tries + hints);
-        const assessment = record.managerGrade || managerGradeFor(cost, record.success, record.scoringVersion === 2 ? record.mode : '');
+        const assessment = managerGradeFor(cost, record.success, 'ego');
         const cells = (record.judges || []).map((row, i) => `<div class="deck-card-row"><span class="deck-card-row-num">${i + 1}</span>${[...row].map(ch => `<span class="deck-card-cell ${ch === 'g' ? 'g' : ch === 'y' ? 'y' : 'r'}"></span>`).join('')}</div>`).join('');
         return `
           <div class="card-header">
@@ -2204,11 +2343,11 @@
           </div>
           <div class="card-result-row">
             <span class="card-result-label ${record.success ? 'card-result-success' : 'card-result-fail'}">${record.success ? '정답! 🎉' : record.gaveUp ? '포기' : '실패'}</span>
-            <span class="card-tries-text">추측 ${tries} + 힌트 ${hints} = 비용 ${cost}</span>
+            <span class="card-tries-text">추측 ${tries} + 힌트 ${hints} · 엔케팔린 ${cost} 소모</span>
           </div>
           ${cardStatStrip([
-            { label:'관리자 평가', value:`<span style="color:${managerGradeColor(assessment)}">${escapeHtml(assessment)}</span>` },
-            { label:'총 비용', value:`${cost}` },
+            { label:'회수 등급', value:`<span style="color:${managerGradeColor(assessment)}">${escapeHtml(assessment)}</span>` },
+            { label:'엔케팔린 획득', value:`${enkephalinEarned('ego', cost, record.success)}` },
             { label:'모드', value:isDaily ? 'DAILY' : 'RANDOM' },
           ])}
           <div class="deck-card-grid" style="padding:4px 0 20px">${cells || `<div style="color:var(--muted);font-size:13px">추측 ${tries}회</div>`}</div>
@@ -2249,13 +2388,13 @@
         const tries = record.tries ?? record.submits ?? 0;
         const hints = record.hints ?? 0;
         const cost = record.cost ?? (tries + hints);
-        const assessment = record.managerGrade || managerGradeFor(cost, record.success, record.scoringVersion === 2 ? record.mode : '');
+        const assessment = managerGradeFor(cost, record.success, 'egogift');
         return `
           <div class="card-header"><div class="card-title-text">림퀴즈 · ${isDaily ? '오늘의 EGO 기프트' : '기프트 랜덤 플레이'}</div><div class="card-subtitle-text">${isDaily ? `#${record.challengeNo ?? '?'} · ` : ''}${escapeHtml(record.date || '')}</div></div>
-          <div class="card-result-row"><span class="card-result-label ${record.success ? 'card-result-success' : 'card-result-fail'}">${record.success ? '정답! 🎉' : record.gaveUp ? '포기' : '실패'}</span><span class="card-tries-text">추측 ${tries} + 힌트 ${hints} = 비용 ${cost}</span></div>
+          <div class="card-result-row"><span class="card-result-label ${record.success ? 'card-result-success' : 'card-result-fail'}">${record.success ? '정답! 🎉' : record.gaveUp ? '포기' : '실패'}</span><span class="card-tries-text">추측 ${tries} + 힌트 ${hints} · 엔케팔린 ${cost} 소모</span></div>
           ${cardStatStrip([
-            { label:'관리자 평가', value:`<span style="color:${managerGradeColor(assessment)}">${escapeHtml(assessment)}</span>` },
-            { label:'총 비용', value:`${cost}` },
+            { label:'회수 등급', value:`<span style="color:${managerGradeColor(assessment)}">${escapeHtml(assessment)}</span>` },
+            { label:'엔케팔린 획득', value:`${enkephalinEarned('egogift', cost, record.success)}` },
             { label:'모드', value:isDaily ? 'DAILY' : 'RANDOM' },
           ])}
           <div style="padding:0 22px 20px;text-align:center;color:var(--muted);font-size:13px">효과 기록과 정보 힌트를 선택해 정답을 찾는 기프트 퀴즈</div>
@@ -2725,7 +2864,8 @@
       guessBtn.disabled = true;
       dropdown.classList.remove('open');
       lastGameRecord = saveGameResultV2(won);
-      messageEl.innerHTML = buildEndMessage(won);
+      const dailyAssessment = mode === 'daily' ? managerAssessmentHTML(managerGradeFor(guesses.length, won, 'daily'), guesses.length, guesses.length, 0, 'daily') : '';
+      messageEl.innerHTML = buildEndMessage(won) + dailyAssessment;
       updateImgPrefButtons();
       scrollAnswerRevealIntoCenter();
       // 정답 공개 등장(패널 페이드 → 정보 카드 스태거 → 이미지 팝)은 .answer-reveal
@@ -2841,7 +2981,8 @@
           triesLeft = Math.max(0, MAX_TRIES - guesses.length);
           triesEl.textContent = triesLeft;
           updateTriesMeter();
-          messageEl.innerHTML = buildEndMessage(saved.won);
+          const savedAttempts = Number(saved.attempts) || guesses.length;
+          messageEl.innerHTML = buildEndMessage(saved.won) + managerAssessmentHTML(managerGradeFor(savedAttempts, saved.won, 'daily'), savedAttempts, savedAttempts, 0, 'daily');
           updateImgPrefButtons();
           if (saved.won) {
             const records = loadResultRecordsV2();
@@ -2892,7 +3033,7 @@
     document.getElementById('gqBackBtn').addEventListener('click', gqGoHome);
     // 기록 초기화는 현재 선택된 탭의 기록만 지운다 (전체 탭이면 전부)
     function recordFilterLabel() {
-      return recordFilter === 'daily' ? '오늘의 인격' : recordFilter === 'random' ? '랜덤'
+      return Object.hasOwn(VISUAL_MODE_LABELS, recordFilter) ? VISUAL_MODE_LABELS[recordFilter] : recordFilter === 'daily' ? '오늘의 인격' : recordFilter === 'random' ? '랜덤'
         : recordFilter === 'deck' ? '덱 퀴즈' : recordFilter === 'skill' ? '스킬 퀴즈'
         : recordFilter === 'ego' ? 'EGO 퀴즈' : recordFilter === 'egogift' ? 'EGO 기프트 퀴즈' : '';
     }
@@ -2900,9 +3041,9 @@
       const label = recordFilterLabel();
       clearRecordsBtn.textContent = label ? `${label} 기록 초기화` : '기록 초기화';
     }
-    ['recTabAll','recTabDaily','recTabRandom','recTabDeck','recTabSkill','recTabEgo','recTabEgoGift'].forEach(id => {
+    ['recTabAll','recTabDaily','recTabRandom','recTabDeck','recTabSkill','recTabEgo','recTabEgoGift','recTabCharacter','recTabBoss','recTabPanic'].forEach(id => {
       document.getElementById(id).addEventListener('click', e => {
-        recordFilter = id === 'recTabAll' ? 'all' : id === 'recTabDaily' ? 'daily'
+        recordFilter = id === 'recTabCharacter' ? 'character' : id === 'recTabBoss' ? 'boss' : id === 'recTabPanic' ? 'panic' : id === 'recTabAll' ? 'all' : id === 'recTabDaily' ? 'daily'
           : id === 'recTabRandom' ? 'random' : id === 'recTabDeck' ? 'deck'
           : id === 'recTabSkill' ? 'skill' : id === 'recTabEgo' ? 'ego' : 'egogift';
         document.querySelectorAll('.rec-tab').forEach(t => t.classList.remove('active'));
@@ -4395,7 +4536,11 @@
     const EQ_DAILY_STORAGE_KEY = 'eq_daily_wordle_v1';
     const EQ_GRADE_ORDER = ['ZAYIN','TETH','HE','WAW','ALEPH'];
 
-    // 추측과 유료 힌트는 각각 비용 1. 정답을 맞힌 경우에만 관리자 평가를 부여한다.
+    // 추측과 힌트마다 배정 엔케팔린을 1 소모한다. 정답일 때 남은 양을 획득한다.
+    const DAILY_MANAGER_GRADE_STEPS = [
+      { max:1, grade:'ALEPH' }, { max:2, grade:'WAW' }, { max:4, grade:'HE' }, { max:6, grade:'TETH' },
+      { max:Infinity, grade:'ZAYIN' },
+    ];
     const MANAGER_GRADE_STEPS = [
       { max:2, grade:'ALEPH' }, { max:4, grade:'WAW' }, { max:6, grade:'HE' }, { max:8, grade:'TETH' },
       { max:Infinity, grade:'ZAYIN' },
@@ -4406,29 +4551,48 @@
     ];
     function managerGradeFor(cost, success = true, mode = '') {
       if (!success) return '미획득';
-      return (mode === 'ego' ? EQ_MANAGER_GRADE_STEPS : MANAGER_GRADE_STEPS).find(step => cost <= step.max)?.grade || 'ZAYIN';
+      const key = mode === 'daily' ? 'daily' : (mode === 'ego' ? 'ego' : 'egogift');
+      const allocation = ENKEPHALIN_ALLOCATION[key];
+      const earned = enkephalinEarned(key, cost, true);
+      const steps = mode === 'daily' ? DAILY_MANAGER_GRADE_STEPS : (mode === 'ego' ? EQ_MANAGER_GRADE_STEPS : MANAGER_GRADE_STEPS);
+      return steps.find(step => earned >= Math.max(0, allocation - step.max))?.grade || 'ZAYIN';
     }
     function managerGradeColor(grade) {
       return grade === '미획득' ? '#8f8579' : (EQ_GRADE_COLOR[grade]?.text || '#caae78');
     }
-    function managerAssessmentHTML(grade, cost, tries, hints) {
-      return `<div class="manager-assessment" style="--assessment:${managerGradeColor(grade)}"><div><div class="manager-assessment-kicker">MANAGER ASSESSMENT · 관리자 평가</div><div class="manager-assessment-grade">${escapeHtml(grade)}</div></div><div class="manager-assessment-cost">총 비용 ${cost}<small>추측 ${tries} + 힌트 ${hints}</small></div></div>`;
+    const MANAGER_GRADE_IMAGE = {
+      ZAYIN:'./images/grades/zayin.webp', TETH:'./images/grades/teth.webp', HE:'./images/grades/he.webp',
+      WAW:'./images/grades/waw.webp', ALEPH:'./images/grades/aleph.webp',
+    };
+    function managerGradeImageHTML(grade, className = '') {
+      const src = MANAGER_GRADE_IMAGE[grade];
+      return src ? `<img class="grade-emblem${className ? ` ${className}` : ''}" src="${src}" alt="${escapeHtml(grade)} 등급">` : escapeHtml(grade);
     }
-    function gqGradeTableHTML(grade, steps = MANAGER_GRADE_STEPS) {
+    function managerAssessmentHTML(grade, cost, tries, hints, mode) {
+      const allocation = ENKEPHALIN_ALLOCATION[mode];
+      const earned = enkephalinEarned(mode, cost, grade !== '미획득');
+      return `<div class="manager-assessment" style="--assessment:${managerGradeColor(grade)}"><div><div class="manager-assessment-kicker">ENKEPHALIN RECOVERY · 엔케팔린 회수</div><div class="manager-assessment-grade">${managerGradeImageHTML(grade)}</div></div><div class="manager-assessment-cost">${earned} 획득 / ${allocation} 배정<small>추측 ${tries} + 힌트 ${hints} · ${cost} 소모</small></div></div>`;
+    }
+    function gqGradeTableHTML(grade, mode = 'egogift') {
+      const steps = mode === 'ego' ? EQ_MANAGER_GRADE_STEPS : MANAGER_GRADE_STEPS;
+      const allocation = ENKEPHALIN_ALLOCATION[mode];
       const hasGrade = steps.some(step => step.grade === grade);
-      const headings = steps.map(step => `<th scope="col"${step.grade === grade ? ' class="is-current"' : ''}>${escapeHtml(step.grade)}</th>`).join('');
+      const headings = steps.map(step => `<th scope="col"${step.grade === grade ? ' class="is-current"' : ''}>${managerGradeImageHTML(step.grade)}</th>`).join('');
       const ranges = steps.map((step, i) => {
-        const min = i ? steps[i - 1].max + 1 : 1;
-        const range = Number.isFinite(step.max) ? `${min}–${step.max}` : `${min} 이상`;
+        const high = allocation - (i ? steps[i - 1].max + 1 : 1);
+        const low = Number.isFinite(step.max) ? allocation - step.max : 0;
+        const range = Number.isFinite(step.max) ? `${low}–${high}` : `${high} 이하`;
         const current = step.grade === grade;
-        return `<td${current ? ' class="is-current"' : ''}>비용 ${range}${current ? '<strong class="gq-grade-marker">▲ 내 등급</strong>' : ''}</td>`;
+        return `<td${current ? ' class="is-current"' : ''}>획득 ${range}${current ? '<strong class="gq-grade-marker">▲ 내 등급</strong>' : ''}</td>`;
       }).join('');
-      return `<table class="gq-grade-table" style="--assessment:${managerGradeColor(grade)}"><caption>${hasGrade ? '등급 기준 · 적은 비용으로 맞힐수록 높은 등급' : '등급 미획득 · 정답을 맞히면 등급이 부여됩니다'}</caption><thead><tr>${headings}</tr></thead><tbody><tr>${ranges}</tr></tbody></table>`;
+      return `<table class="gq-grade-table" style="--assessment:${managerGradeColor(grade)}"><caption>${hasGrade ? '획득 엔케팔린 기준 등급' : '정답을 맞혀야 엔케팔린과 등급을 획득합니다'}</caption><thead><tr>${headings}</tr></thead><tbody><tr>${ranges}</tr></tbody></table>`;
     }
     function quizCostLedgerHTML(tries, hints, mode = '') {
       const cost = tries + hints;
       const projectedCost = cost + 1;
-      return `<div class="quiz-cost-ledger"><div class="quiz-cost-total">현재 비용 ${cost}</div><div class="quiz-cost-detail">추측 ${tries} + 힌트 ${hints}</div><div class="quiz-cost-projected">다음 추측 정답 시 ${managerGradeFor(projectedCost, true, mode)}</div></div>`;
+      const key = mode === 'ego' ? 'ego' : 'egogift';
+      const remaining = enkephalinEarned(key, cost, true);
+      return `<div class="quiz-cost-ledger"><div class="quiz-cost-total">엔케팔린 ${remaining}/${ENKEPHALIN_ALLOCATION[key]}</div><div class="quiz-cost-detail">추측 ${tries} + 힌트 ${hints} · ${cost} 소모</div><div class="quiz-cost-projected">다음 추측 정답 시 ${enkephalinEarned(key, projectedCost, true)} 획득 · ${managerGradeFor(projectedCost, true, mode)}</div></div>`;
     }
 
     // 같은 이름의 EGO가 여러 수감자에게 존재하므로 이름과 수감자를 함께 답으로 취급한다.
@@ -4488,7 +4652,7 @@
       return new Set(keys.filter(key => key !== 'resources')).size + resourceCount;
     }
     function eqOpenHelp() {
-      document.getElementById('eqHelpGrades').innerHTML = gqGradeTableHTML('', EQ_MANAGER_GRADE_STEPS).replace('등급 미획득 · 정답을 맞히면 등급이 부여됩니다', '정답을 맞혔을 때의 총 비용 기준');
+      document.getElementById('eqHelpGrades').innerHTML = gqGradeTableHTML('', 'ego');
       document.getElementById('eqHelpDialog').showModal();
     }
     function eqCanOpenImageHint() { return managerGradeFor(eqSubmitCount + eqTotalHints() + 1, true, 'ego') === 'ZAYIN'; }
@@ -4496,8 +4660,9 @@
       const hints = eqTotalHints();
       const buttons = EQ_HINT_DEFS.map(def => {
         const opened = eqOpenedHints.has(def.key);
-        const locked = def.key === 'image' && !opened && (!eqCanOpenImageHint() || !eqEgo?.['아이콘']);
-        return `<button type="button" data-hint-key="${def.key}" class="quiz-hint-btn${opened ? ' revealed' : ''}" ${opened || locked ? 'disabled' : `onclick="eqOpenHint('${def.key}')"`}><span class="quiz-hint-label">${escapeHtml(def.label)}</span>${locked ? '<span class="gq-image-lock">ZAYIN 확정 시</span>' : ''}${opened ? `<span class="quiz-hint-value">${eqHintValueHTML(def.key)}</span>` : ''}</button>`;
+        const reserveGuess = eqSubmitCount + hints >= ENKEPHALIN_ALLOCATION.ego - 1;
+        const locked = reserveGuess || (def.key === 'image' && !opened && (!eqCanOpenImageHint() || !eqEgo?.['아이콘']));
+        return `<button type="button" data-hint-key="${def.key}" class="quiz-hint-btn${opened ? ' revealed' : ''}" ${opened || locked ? 'disabled' : `onclick="eqOpenHint('${def.key}')"`}><span class="quiz-hint-label">${escapeHtml(def.label)}</span>${locked && !opened ? `<span class="gq-image-lock">${reserveGuess ? '추측 1회분 보존' : 'ZAYIN 확정 시'}</span>` : ''}${opened ? `<span class="quiz-hint-value">${eqHintValueHTML(def.key)}</span>` : ''}</button>`;
       }).join('');
       const resourceButtons = SQ_SINS.map((sin, index) => {
         const stage = eqResourceHints[sin] || 0;
@@ -4506,7 +4671,7 @@
         const stateClass = !stage ? '' : amount === 0 ? ' eq-resource-unused' : complete ? ' eq-resource-complete' : ' eq-resource-next';
         const stateLabel = !stage ? `${sin} 사용 여부 공개` : amount === 0 ? `${sin} 미사용, 공개 완료` : complete ? `${sin} ${amount}개, 공개 완료` : `${sin} 사용, 한 번 더 눌러 소모 개수 공개`;
         const value = stage ? `<span class="quiz-hint-value">${amount === 0 ? '미사용' : stage === 1 ? '사용 <span class="eq-resource-state-mark" aria-hidden="true">⌄</span>' : `${amount}개 <span class="eq-resource-state-mark" aria-hidden="true">✓</span>`}</span>` : '';
-        return `<button type="button" data-hint-key="resource-${index}" aria-label="${escapeHtml(stateLabel)}" title="${escapeHtml(stateLabel)}" class="quiz-hint-btn${stage ? ' revealed' : ''}${stage && !complete ? ' partial' : ''}${stateClass}" style="--sin-color:${SQ_SIN_COLOR[sin]?.text || 'var(--text)'}" ${complete ? 'disabled' : `onclick="eqOpenHint('resource-${index}')"`}><img class="eq-resource-icon" src="${SIN_ICON[sin]}" alt=""><span class="quiz-hint-label">${escapeHtml(sin)}</span>${value}</button>`;
+        return `<button type="button" data-hint-key="resource-${index}" aria-label="${escapeHtml(stateLabel)}" title="${escapeHtml(stateLabel)}" class="quiz-hint-btn${stage ? ' revealed' : ''}${stage && !complete ? ' partial' : ''}${stateClass}" style="--sin-color:${SQ_SIN_COLOR[sin]?.text || 'var(--text)'}" ${complete || eqSubmitCount + hints >= ENKEPHALIN_ALLOCATION.ego - 1 ? 'disabled' : `onclick="eqOpenHint('resource-${index}')"`}><img class="eq-resource-icon" src="${SIN_ICON[sin]}" alt=""><span class="quiz-hint-label">${escapeHtml(sin)}</span>${value}</button>`;
       }).join('');
       return `<div class="quiz-intel-panel"><div class="quiz-intel-head"><div><div class="quiz-intel-title">필요한 정보만 선택해서 열어보세요</div></div>${quizCostLedgerHTML(eqSubmitCount, hints, 'ego')}</div><div class="quiz-intel-grid eq-info-hints">${buttons}</div><div class="quiz-intel-grid eq-resource-hints">${resourceButtons}</div></div>`;
     }
@@ -4515,7 +4680,7 @@
       if (el) el.innerHTML = eqHintPanelHTML();
     }
     function eqOpenHint(key) {
-      if (eqNameDone || !eqEgo) return;
+      if (eqNameDone || !eqEgo || eqSubmitCount + eqTotalHints() >= ENKEPHALIN_ALLOCATION.ego - 1) return;
       if (key === 'image' && (!eqCanOpenImageHint() || !eqEgo['아이콘'])) return;
       const sin = SQ_SINS.find((_, index) => key === `resource-${index}`);
       if (sin) {
@@ -4550,18 +4715,32 @@
       const card = document.getElementById('homeEgoQuizCard');
       const randomCard = document.getElementById('homeEgoRandomCard');
       const desc = document.getElementById('homeEgoQuizDesc');
+      const gradeBadge = document.getElementById('homeEgoGrade');
       const badge = document.getElementById('homeEgoBadge');
       const no = document.getElementById('homeEgoNo');
       const ready = EGO_LIST.length > 0;
       card.classList.toggle('mode-card-disabled', !ready);
       randomCard.classList.toggle('mode-card-disabled', !ready);
       no.textContent = `오늘의 EGO #${getDailyChallengeNo()}`;
-      desc.textContent = ready ? '힌트를 선택하고 오늘의 EGO를 맞혀보세요' : '데이터 준비 중입니다';
+      if (desc) desc.textContent = ready ? '힌트를 선택하고 오늘의 EGO를 맞혀보세요' : '데이터 준비 중입니다';
       const state = eqLoadDailyState();
       const cost = (state?.guessIds?.length || 0) + (state ? eqSavedHintCount(state) : 0);
-      if (!state?.done) { badge.textContent = cost ? `진행 중 · 비용 ${cost}` : '미참여'; badge.className = 'mode-card-badge badge-none'; }
-      else if (state.success) { badge.textContent = `${eqFindTodayRecord()?.managerGrade || managerGradeFor(cost, true, state.scoringVersion === 2 ? 'ego' : '')} · 비용 ${cost}`; badge.className = 'mode-card-badge badge-success'; }
-      else { badge.textContent = '포기'; badge.className = 'mode-card-badge badge-fail'; }
+      if (!state?.done) {
+        gradeBadge.textContent = '등급 미산정'; gradeBadge.className = 'mode-card-badge badge-none';
+        const projected = cost ? enkephalinEarned('ego', cost, true) : 0;
+        badge.textContent = cost ? `엔케팔린 ${projected} 획득 예정` : '엔케팔린 미획득'; badge.className = 'mode-card-badge badge-none';
+        updateDirectiveMeter('homeEgoMeter', projected, ENKEPHALIN_ALLOCATION.ego, cost > 0);
+      } else if (state.success) {
+        const grade = managerGradeFor(cost, true, 'ego');
+        const earned = enkephalinEarned('ego', cost, true);
+        gradeBadge.innerHTML = managerGradeImageHTML(grade, 'grade-emblem-card'); gradeBadge.className = 'mode-card-badge badge-success grade-image-badge';
+        badge.textContent = `엔케팔린 ${earned} 획득`; badge.className = 'mode-card-badge badge-success';
+        updateDirectiveMeter('homeEgoMeter', earned, ENKEPHALIN_ALLOCATION.ego);
+      } else {
+        gradeBadge.textContent = '등급 미획득'; gradeBadge.className = 'mode-card-badge badge-fail';
+        badge.textContent = '엔케팔린 0 획득'; badge.className = 'mode-card-badge badge-fail';
+        updateDirectiveMeter('homeEgoMeter', 0, ENKEPHALIN_ALLOCATION.ego);
+      }
     }
     function eqGoToEgoQuiz(nextMode = 'daily') {
       if (!EGO_LIST.length) return;
@@ -4618,7 +4797,10 @@
           });
         }
         eqSubmitCount = existing.tries ?? existing.submits ?? eqGuessHistory.length;
-        eqResultSaved = true; eqLastRecord = existing; eqNameDone = true; eqNameGaveUp = !existing.success;
+        eqResultSaved = true; eqLastRecord = existing; eqNameDone = true; eqNameGaveUp = !!existing.gaveUp;
+      }
+      if (!eqNameDone && eqSubmitCount + eqTotalHints() >= ENKEPHALIN_ALLOCATION.ego) {
+        eqNameDone = true; eqNameGaveUp = false; eqSaveDailyState(true);
       }
     }
     function eqGuessRowHTML(row, i) {
@@ -4647,7 +4829,7 @@
       animWordleRound(cardEl);
     }
     function eqCheckName() {
-      if (eqNameDone) return;
+      if (eqNameDone || eqSubmitCount + eqTotalHints() >= ENKEPHALIN_ALLOCATION.ego) return;
       const inp = document.getElementById('eq-name-inp');
       const hint = document.getElementById('eq-name-hint');
       if (!inp) return;
@@ -4666,6 +4848,12 @@
         eqNameDone = true; eqNameGaveUp = !correct;
         if (eqMode === 'daily') eqSaveDailyState(true);
         setTimeout(eqRenderResult, correct ? 550 : 350);
+        return;
+      }
+      if (eqSubmitCount + eqTotalHints() >= ENKEPHALIN_ALLOCATION.ego) {
+        eqNameDone = true; eqNameGaveUp = false;
+        if (eqMode === 'daily') eqSaveDailyState(true);
+        setTimeout(eqRenderResult, 350);
         return;
       }
       if (eqMode === 'daily') eqSaveDailyState(false);
@@ -4701,7 +4889,7 @@
       const success = eqResultSaved && eqLastRecord ? !!eqLastRecord.success : (!eqNameGaveUp && eqGuessHistory.at(-1)?.ego === e);
       const hintsUsed = eqResultSaved && eqLastRecord ? (eqLastRecord.hints || 0) : eqTotalHints();
       const totalCost = eqResultSaved && eqLastRecord ? (eqLastRecord.cost ?? ((eqLastRecord.tries ?? eqLastRecord.submits ?? 0) + hintsUsed)) : eqSubmitCount + hintsUsed;
-      const managerGrade = eqResultSaved && eqLastRecord ? (eqLastRecord.managerGrade || managerGradeFor(totalCost, success, eqLastRecord.scoringVersion === 2 ? 'ego' : '')) : managerGradeFor(totalCost, success, 'ego');
+      const managerGrade = managerGradeFor(totalCost, success, 'ego');
       if (success && !eqResultSaved) fireFanfare();
       if (!eqResultSaved) {
         eqResultSaved = true;
@@ -4709,7 +4897,7 @@
         const record = {
           mode:'ego', daily, date:todayKey(), ...(daily ? { challengeNo:getDailyChallengeNo() } : {}), answerName:eqAnswerText(e), egoId:e.ID,
           total:1, solved:success ? 1 : 0, success, tries:eqSubmitCount,
-          submits:eqSubmitCount, hints:hintsUsed, cost:totalCost, managerGrade, hintKeys:[...eqOpenedHints], resourceHints:{...eqResourceHints}, legacyHintCost:eqLegacyHintCost, scoringVersion:2, gaveUp:eqNameGaveUp, guessIds:eqGuessHistory.map(r => String(r.ego.ID)),
+          submits:eqSubmitCount, hints:hintsUsed, cost:totalCost, managerGrade, enkephalinEarned:enkephalinEarned('ego', totalCost, success), hintKeys:[...eqOpenedHints], resourceHints:{...eqResourceHints}, legacyHintCost:eqLegacyHintCost, scoringVersion:2, gaveUp:eqNameGaveUp, guessIds:eqGuessHistory.map(r => String(r.ego.ID)),
           grade:e['등급'], sin:e['속성'], sinner:e['수감자'], resource:e['자원'], img:e['아이콘'],
         };
         records.push(record); saveResultRecordsV2(records); eqLastRecord = record;
@@ -4722,9 +4910,9 @@
         e['자원'] ? statBadgeHTML('자원', true, resourceChipsHTML(e['자원'])) : '',
       ].join('');
       resultEl.innerHTML = `<div class="panel">
-        <div class="sq-result-banner">${success ? `🎉 ${daily ? '오늘의 EGO' : 'EGO'} 정답!` : `${daily ? '오늘' : '이번'} 문제를 포기했습니다`}</div>
+        <div class="sq-result-banner">${success ? `🎉 ${daily ? '오늘의 EGO' : 'EGO'} 정답!` : eqNameGaveUp ? `${daily ? '오늘' : '이번'} 문제를 포기했습니다` : '엔케팔린 소진 · 지령 실패'}</div>
         <div class="sq-result-name">${escapeHtml(eqAnswerText(e))}</div>
-        ${managerAssessmentHTML(managerGrade, totalCost, eqSubmitCount, hintsUsed)}${gqGradeTableHTML(managerGrade, eqLastRecord?.scoringVersion === 2 ? EQ_MANAGER_GRADE_STEPS : MANAGER_GRADE_STEPS)}
+        ${managerAssessmentHTML(managerGrade, totalCost, eqSubmitCount, hintsUsed, 'ego')}${gqGradeTableHTML(managerGrade, 'ego')}
         <div class="qz-panel" style="margin-top:18px">${rows}${e['아이콘'] ? `<div class="qz-image-row"><img src="${escapeHtml(e['아이콘'])}" alt="${escapeHtml(eqAnswerText(e))}" onerror="this.style.display='none'"></div>` : ''}</div>
         <div class="eq-wordle-shell" style="margin-top:18px">${eqGuessBoardHTML(false)}</div>
         <div class="sq-result-stat">${daily ? '내일 새로운 EGO가 출제됩니다' : '다음 문제는 새로운 무작위 EGO입니다'}</div>
@@ -5127,7 +5315,7 @@
       return '-';
     }
     function gqOpenHelp() {
-      document.getElementById('gqHelpGrades').innerHTML = gqGradeTableHTML('').replace('등급 미획득 · 정답을 맞히면 등급이 부여됩니다', '정답을 맞혔을 때의 총 비용 기준');
+      document.getElementById('gqHelpGrades').innerHTML = gqGradeTableHTML('');
       document.getElementById('gqHelpDialog').showModal();
     }
     function gqCanOpenImageHint() {
@@ -5137,8 +5325,9 @@
       const hints = gqTotalHints();
       const buttons = gqHintDefs().map(def => {
         const opened = gqOpenedHints.has(def.key);
-        const locked = def.key === 'image' && !opened && !gqCanOpenImageHint();
-        return `<button type="button" data-hint-key="${def.key}" class="quiz-hint-btn${opened ? ' revealed' : ''}" ${opened || locked ? 'disabled' : `onclick="gqOpenHint('${def.key}')"`}><span class="quiz-hint-label">${escapeHtml(def.label)}</span>${locked ? '<span class="gq-image-lock">ZAYIN 확정 시</span>' : ''}${opened ? `<span class="quiz-hint-value">${gqHintValueHTML(def.key)}</span>` : ''}</button>`;
+        const reserveGuess = gqSubmitCount + hints >= ENKEPHALIN_ALLOCATION.egogift - 1;
+        const locked = reserveGuess || (def.key === 'image' && !opened && !gqCanOpenImageHint());
+        return `<button type="button" data-hint-key="${def.key}" class="quiz-hint-btn${opened ? ' revealed' : ''}" ${opened || locked ? 'disabled' : `onclick="gqOpenHint('${def.key}')"`}><span class="quiz-hint-label">${escapeHtml(def.label)}</span>${locked && !opened ? `<span class="gq-image-lock">${reserveGuess ? '추측 1회분 보존' : 'ZAYIN 확정 시'}</span>` : ''}${opened ? `<span class="quiz-hint-value">${gqHintValueHTML(def.key)}</span>` : ''}</button>`;
       }).join('');
       return `<div class="quiz-intel-panel"><div class="quiz-intel-head"><div><div class="quiz-intel-kicker">GIFT INTELLIGENCE</div><div class="quiz-intel-title">E.G.O 기프트 전용 정보만 선택해서 열어보세요</div></div>${quizCostLedgerHTML(gqSubmitCount, hints)}</div><div class="quiz-intel-grid">${buttons}</div></div>`;
     }
@@ -5160,12 +5349,13 @@
       });
     }
     function gqOpenHint(key) {
-      if (gqNameDone || gqOpenedHints.has(key) || !gqHintDefs().some(def => def.key === key)) return;
+      if (gqNameDone || gqSubmitCount + gqTotalHints() >= ENKEPHALIN_ALLOCATION.egogift - 1 || gqOpenedHints.has(key) || !gqHintDefs().some(def => def.key === key)) return;
       if (key === 'image' && !gqCanOpenImageHint()) return;
       gqOpenedHints.add(key); gqHintsUsed = gqTotalHints();
       if (gqMode === 'daily') gqSaveDailyState(false);
       gqRenderHintPanel();
       gqAnimateHintReveal(key);
+      gqRenderEffectClue(gqEffectClueVisibleCount(), false);
       if (key === 'keyword' || key === 'affinities') gqRenderEffectClue(gqEffectClueVisibleCount(), false);
     }
     function gqGuessInfo(gift) {
@@ -5247,7 +5437,7 @@
         ? `<div class="gq-clue-line revealed" data-clue-index="${i}"><span class="gq-clue-index">CLUE ${String(i + 1).padStart(2, '0')}</span><div class="gq-clue-text">${gqMaskedEffectHTML(chunk)}</div></div>`
         : `<div class="gq-clue-line locked"><span class="gq-clue-index">CLUE ${String(i + 1).padStart(2, '0')}</span><span class="gq-clue-lock" aria-label="아직 공개되지 않은 효과 단서"></span></div>`
       ).join('');
-      const action = `<button type="button" class="quiz-next-clue" ${visible >= chunks.length ? 'disabled' : 'onclick="gqRevealNextEffect()"'}>${visible >= chunks.length ? '모두 공개됨' : '효과 기록 열기'}</button>`;
+      const action = `<button type="button" class="quiz-next-clue" ${visible >= chunks.length || gqSubmitCount + gqTotalHints() >= ENKEPHALIN_ALLOCATION.egogift - 1 ? 'disabled' : 'onclick="gqRevealNextEffect()"'}>${visible >= chunks.length ? '모두 공개됨' : '효과 기록 열기'}</button>`;
       return `<div class="gq-clue-panel"><div class="gq-clue-head"><div class="gq-clue-title">효과 기록 <span class="gq-clue-count">${visible}/${chunks.length}</span></div>${action}</div><div class="gq-clue-body">${lines}</div></div>`;
 
     }
@@ -5261,7 +5451,7 @@
       else animBump(el.querySelector('.gq-clue-panel'));
     }
     function gqRevealNextEffect() {
-      if (gqNameDone) return;
+      if (gqNameDone || gqSubmitCount + gqTotalHints() >= ENKEPHALIN_ALLOCATION.egogift - 1) return;
       const chunks = gqEffectClueChunks(gqGift?.['효과'], gqGift);
       const previousVisible = gqEffectClueVisibleCount();
       if (previousVisible >= chunks.length) return;
@@ -5290,6 +5480,7 @@
       const card = document.getElementById('homeEgoGiftQuizCard');
       const randomCard = document.getElementById('homeEgoGiftRandomCard');
       const desc = document.getElementById('homeEgoGiftQuizDesc');
+      const gradeBadge = document.getElementById('homeEgoGiftGrade');
       const badge = document.getElementById('homeEgoGiftBadge');
       const no = document.getElementById('homeEgoGiftNo');
       const ready = EGO_GIFTS.length > 0;
@@ -5302,9 +5493,22 @@
       const tries = state?.guessIds?.length || 0;
       const hints = (state?.hintKeys?.length || 0) + (state?.effectRevealCount || 0);
       const cost = tries + hints;
-      if (!state?.done) { badge.textContent = cost ? `진행 중 · 비용 ${cost}` : '미참여'; badge.className = 'mode-card-badge badge-none'; }
-      else if (state.success) { badge.textContent = `${managerGradeFor(cost)} · 비용 ${cost}`; badge.className = 'mode-card-badge badge-success'; }
-      else { badge.textContent = state.gaveUp ? '포기' : '실패'; badge.className = 'mode-card-badge badge-fail'; }
+      if (!state?.done) {
+        gradeBadge.textContent = '등급 미산정'; gradeBadge.className = 'mode-card-badge badge-none';
+        const projected = cost ? enkephalinEarned('egogift', cost, true) : 0;
+        badge.textContent = cost ? `엔케팔린 ${projected} 획득 예정` : '엔케팔린 미획득'; badge.className = 'mode-card-badge badge-none';
+        updateDirectiveMeter('homeEgoGiftMeter', projected, ENKEPHALIN_ALLOCATION.egogift, cost > 0);
+      } else if (state.success) {
+        const grade = managerGradeFor(cost);
+        const earned = enkephalinEarned('egogift', cost, true);
+        gradeBadge.innerHTML = managerGradeImageHTML(grade, 'grade-emblem-card'); gradeBadge.className = 'mode-card-badge badge-success grade-image-badge';
+        badge.textContent = `엔케팔린 ${earned} 획득`; badge.className = 'mode-card-badge badge-success';
+        updateDirectiveMeter('homeEgoGiftMeter', earned, ENKEPHALIN_ALLOCATION.egogift);
+      } else {
+        gradeBadge.textContent = '등급 미획득'; gradeBadge.className = 'mode-card-badge badge-fail';
+        badge.textContent = '엔케팔린 0 획득'; badge.className = 'mode-card-badge badge-fail';
+        updateDirectiveMeter('homeEgoGiftMeter', 0, ENKEPHALIN_ALLOCATION.egogift);
+      }
     }
     function gqGoToEgoGiftQuiz(nextMode = 'daily') {
       if (!EGO_GIFTS.length) return;
@@ -5355,6 +5559,9 @@
         gqHintsUsed = existing.hints ?? gqTotalHints();
         gqResultSaved = true; gqLastRecord = existing; gqNameDone = true; gqNameGaveUp = !!existing.gaveUp;
       }
+      if (!gqNameDone && gqSubmitCount + gqTotalHints() >= ENKEPHALIN_ALLOCATION.egogift) {
+        gqNameDone = true; gqNameGaveUp = false; gqSaveDailyState(true);
+      }
     }
     function gqGuessRowHTML(row, i) {
       const gift = row.gift, info = gqGuessInfo(gift);
@@ -5390,7 +5597,7 @@
       animWordleRound(cardEl);
     }
     function gqCheckName() {
-      if (gqNameDone) return;
+      if (gqNameDone || gqSubmitCount + gqTotalHints() >= ENKEPHALIN_ALLOCATION.egogift) return;
       const inp = document.getElementById('gq-name-inp'), hint = document.getElementById('gq-name-hint');
       if (!inp) return;
       const normed = sqNormName(inp.value);
@@ -5415,6 +5622,11 @@
         animCorrectPop(hint);
         if (gqMode === 'daily') gqSaveDailyState(true);
         setTimeout(gqRenderResult, motionEnabled() ? 520 : 0); return;
+      }
+      if (gqSubmitCount + gqTotalHints() >= ENKEPHALIN_ALLOCATION.egogift) {
+        gqNameDone = true; gqNameGaveUp = false;
+        if (gqMode === 'daily') gqSaveDailyState(true);
+        setTimeout(gqRenderResult, 350); return;
       }
       if (gqMode === 'daily') gqSaveDailyState(false);
       document.getElementById('gq-guess-board').outerHTML = gqGuessBoardHTML(true);
@@ -5442,7 +5654,7 @@
       const success = gqResultSaved && gqLastRecord ? !!gqLastRecord.success : (!gqNameGaveUp && gqGuessHistory.at(-1)?.gift === g);
       const hintsUsed = gqResultSaved && gqLastRecord ? (gqLastRecord.hints || 0) : gqTotalHints();
       const totalCost = gqResultSaved && gqLastRecord ? (gqLastRecord.cost ?? ((gqLastRecord.tries ?? gqLastRecord.submits ?? 0) + hintsUsed)) : gqSubmitCount + hintsUsed;
-      const managerGrade = gqResultSaved && gqLastRecord ? (gqLastRecord.managerGrade || managerGradeFor(totalCost, success)) : managerGradeFor(totalCost, success);
+      const managerGrade = managerGradeFor(totalCost, success);
       const celebrate = success && !gqResultSaved;
       if (celebrate) fireFanfare();
       if (!gqResultSaved) {
@@ -5451,7 +5663,7 @@
         const record = {
           mode:'egogift', daily, date:todayKey(), ...(daily ? { challengeNo:getDailyChallengeNo() } : {}), answerName:g['이름'], giftId:g.ID,
           total:1, solved:success ? 1 : 0, success, tries:gqSubmitCount, submits:gqSubmitCount,
-          hints:hintsUsed, cost:totalCost, managerGrade, hintKeys:[...gqOpenedHints], effectRevealCount:gqEffectRevealCount,
+          hints:hintsUsed, cost:totalCost, managerGrade, enkephalinEarned:enkephalinEarned('egogift', totalCost, success), hintKeys:[...gqOpenedHints], effectRevealCount:gqEffectRevealCount,
           gaveUp:gqNameGaveUp, guessIds:gqGuessHistory.map(r => String(r.gift.ID)), grade:g['등급'], sin:gqGiftMetrics(g).affinities.join(', '), img:g['아이콘'],
         };
         records.push(record); saveResultRecordsV2(records); gqLastRecord = record;
@@ -5464,8 +5676,8 @@
         statBadgeHTML('키워드', true, metrics.keyword ? kwChip(metrics.keyword) : '<span class="empty">없음</span>'),
         g['효과'] ? `<div><div class="qz-effect-label">효과</div><div class="qz-effect-text">${highlightEffectHTML(g['효과'])}</div></div>` : '',
       ].join('');
-      const failText = gqNameGaveUp ? `${daily ? '오늘' : '이번'} 문제를 포기했습니다` : '이전 규칙으로 종료된 문제입니다';
-      resultEl.innerHTML = `<div class="panel"><div class="sq-result-banner">${success ? `🎉 ${daily ? '오늘의 기프트' : '기프트'} 정답!` : failText}</div><div class="sq-result-name">${escapeHtml(g['이름'])}</div>${managerAssessmentHTML(managerGrade, totalCost, gqSubmitCount, hintsUsed)}${gqGradeTableHTML(managerGrade)}<div class="qz-panel" style="margin-top:18px">${rows}${g['아이콘'] ? `<div class="qz-image-row"><img src="${escapeHtml(g['아이콘'])}" alt="${escapeHtml(g['이름'])}" onerror="this.style.display='none'"></div>` : ''}</div><div class="eq-wordle-shell" style="margin-top:18px">${gqGuessBoardHTML(false)}</div>
+      const failText = gqNameGaveUp ? `${daily ? '오늘' : '이번'} 문제를 포기했습니다` : '엔케팔린 소진 · 지령 실패';
+      resultEl.innerHTML = `<div class="panel"><div class="sq-result-banner">${success ? `🎉 ${daily ? '오늘의 기프트' : '기프트'} 정답!` : failText}</div><div class="sq-result-name">${escapeHtml(g['이름'])}</div>${managerAssessmentHTML(managerGrade, totalCost, gqSubmitCount, hintsUsed, 'egogift')}${gqGradeTableHTML(managerGrade)}<div class="qz-panel" style="margin-top:18px">${rows}${g['아이콘'] ? `<div class="qz-image-row"><img src="${escapeHtml(g['아이콘'])}" alt="${escapeHtml(g['이름'])}" onerror="this.style.display='none'"></div>` : ''}</div><div class="eq-wordle-shell" style="margin-top:18px">${gqGuessBoardHTML(false)}</div>
         <div class="sq-result-actions"><button class="secondary" onclick="gqShareResult()">📋 결과 공유</button>${daily ? '' : '<button onclick="gqNextRandom()">다음 랜덤 기프트</button>'}<button onclick="gqGoHome()">홈으로</button></div></div>`;
       updateGqCardState(); renderDailyActivityHome();
       animResultStagger(resultEl.querySelector('.panel'));

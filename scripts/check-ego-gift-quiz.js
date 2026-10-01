@@ -17,6 +17,7 @@ const defsEnd = source.indexOf('    function gqIsRandomMode', defsStart);
 vm.runInNewContext(`
 ${source.slice(defsStart, defsEnd)}
 const GQ_MAX_EFFECT_CLUES=6, GQ_DAILY_STORAGE_KEY='test';
+const ENKEPHALIN_ALLOCATION={egogift:15};
 let gqMode='daily',gqGift={ID:1,'이름':'기프트','등급':'IV','키워드':'출혈','조건속성':['분노'],'아이콘':'images/test.webp','효과':'출혈 효과.','전용팩':['한정 팩']};
 const EGO_GIFTS=[gqGift];
 let gqOpenedHints=new Set(),gqEffectRevealCount=0,gqGuessHistory=[{gift:gqGift}],gqNameDone=false,gqNameGaveUp=false,gqSubmitCount=0,gqHintsUsed=0,gqLastRecord=null,gqResultSaved=false,gqWrongGuesses=new Set();
@@ -46,6 +47,7 @@ assert(!extract('gqRenderResult').includes('gqJudgeCode'));
 assert(!extract('buildEgoGiftCardHTML').includes('deck-card-cell'));
 vm.runInNewContext(`
 let gqNameDone=false,gqNameGaveUp=false,gqMode='random',gqSubmitCount=6;
+const ENKEPHALIN_ALLOCATION={egogift:15},gqTotalHints=()=>0;
 const gqGift={ID:99},wrongGift={ID:7},gqWrongGuesses=new Set(),gqGuessHistory=Array.from({length:6},()=>({gift:{}}));
 const input={value:'다른 기프트',focus:()=>{}},hint={style:{}};
 const document={getElementById:id=>id==='gq-name-inp'?input:id==='gq-name-hint'?hint:{},querySelectorAll:()=>[]};
@@ -55,6 +57,7 @@ gqCheckName();assert.equal(gqSubmitCount,7);assert.equal(gqNameDone,false);
 `,{assert});
 vm.runInNewContext(`
 let gqSubmitCount=7,gqNameDone=false,gqMode='random',gqHintsUsed=0;
+const ENKEPHALIN_ALLOCATION={egogift:15},gqEffectClueVisibleCount=()=>0,gqRenderEffectClue=()=>{};
 const gqOpenedHints=new Set(),gqTotalHints=()=>gqOpenedHints.size,gqHintDefs=()=>[{key:'image'}],managerGradeFor=cost=>cost>=9?'ZAYIN':'TETH',gqRenderHintPanel=()=>{},gqAnimateHintReveal=()=>{},document={querySelector:()=>null};
 ${extract('gqCanOpenImageHint')}
 ${extract('gqOpenHint')}
@@ -67,7 +70,7 @@ assert(!effectUI.includes('아직 공개한 효과 기록'));
 assert(!effectUI.includes('필요한 만큼 다음 기록'));
 assert(!extract('gqRenderCard').includes('GIFT TRAINING'));
 assert(!extract('gqRenderCard').includes('횟수 제한'));
-assert(!extract('gqCheckName').includes('gqSubmitCount >='));
+assert(extract('gqCheckName').includes('ENKEPHALIN_ALLOCATION.egogift'));
 assert(!extract('gqRenderCard').includes('남은 기회'));
 assert(!extract('gqGuessBoardHTML').includes('남은 추측'));
 assert(extract('gqHintValueHTML').includes('gq-hint-image'));
@@ -78,6 +81,7 @@ vm.runInNewContext(`
 let gqMode='daily',gqSubmitCount=8,gqOpenedHints=new Set(),gqEffectRevealCount=0;
 const gqGift={'이름':'예시','아이콘':'test.webp','효과':'첫 효과. 다음 효과.','키워드':'출혈','조건속성':[]};
 const GQ_MAX_EFFECT_CLUES=6;
+const ENKEPHALIN_ALLOCATION={egogift:15};
 ${source.slice(defsStart, defsEnd)}
 const managerGradeFor=c=>c>=9?'ZAYIN':'TETH',escapeHtml=s=>String(s),kwChip=s=>s,sinChipHTML=s=>s,quizCostLedgerHTML=(tries,hints)=>tries+':'+hints,gqMaskedEffectHTML=s=>s;
 ${['gqGiftMetrics','gqHintDefs','gqTotalHints','gqCanOpenImageHint','gqHintValueHTML','gqHintPanelHTML','gqEffectClueChunks','gqEffectClueVisibleCount','gqEffectClueHTML'].map(extract).join('\n')}
@@ -114,3 +118,53 @@ assert(gqGuessRowHTML({gift:{ID:'1','이름':'정답'}},0).includes('gq-try-corr
 assert(!gqGuessRowHTML({gift:{ID:2,'이름':'오답'}},1).includes('gq-try-correct'));
 `,{assert});
 console.log('PASS: correct TRY highlighted, incorrect TRY neutral, restored string IDs supported');
+
+vm.runInNewContext(`
+const ENKEPHALIN_ALLOCATION={daily:10,ego:25,egogift:15};
+const DAILY_MANAGER_GRADE_STEPS=[{max:1,grade:'ALEPH'},{max:2,grade:'WAW'},{max:4,grade:'HE'},{max:6,grade:'TETH'},{max:Infinity,grade:'ZAYIN'}];
+const MANAGER_GRADE_STEPS=[{max:2,grade:'ALEPH'},{max:4,grade:'WAW'},{max:6,grade:'HE'},{max:8,grade:'TETH'},{max:Infinity,grade:'ZAYIN'}];
+const EQ_MANAGER_GRADE_STEPS=[{max:3,grade:'ALEPH'},{max:6,grade:'WAW'},{max:10,grade:'HE'},{max:14,grade:'TETH'},{max:Infinity,grade:'ZAYIN'}];
+${extract('enkephalinEarned')}
+${extract('recordEnkephalin')}
+${extract('managerGradeFor')}
+assert.equal(enkephalinEarned('ego',10,true),15);
+assert.equal(enkephalinEarned('egogift',5,true),10);
+assert.equal(enkephalinEarned('daily',3,true),7);
+assert.equal(enkephalinEarned('ego',10,false),0);
+assert.equal(managerGradeFor(10,true,'ego'),'HE');
+assert.equal(managerGradeFor(5,true,'egogift'),'HE');
+assert.equal(managerGradeFor(1,true,'daily'),'ALEPH');
+assert.equal(managerGradeFor(2,true,'daily'),'WAW');
+assert.equal(managerGradeFor(3,true,'daily'),'HE');
+assert.equal(managerGradeFor(5,true,'daily'),'TETH');
+assert.equal(managerGradeFor(7,true,'daily'),'ZAYIN');
+assert.equal(recordEnkephalin({mode:'ego',daily:true,success:true,cost:10}),15);
+assert.equal(recordEnkephalin({mode:'egogift',daily:true,success:true,cost:5}),10);
+assert.equal(recordEnkephalin({mode:'daily',success:true,tries:3}),7);
+assert.equal(recordEnkephalin({mode:'ego',daily:false,success:true,cost:10}),0);
+`,{assert});
+console.log('PASS: enkephalin allocation, earned amounts, grade boundaries, daily-only activity');
+
+vm.runInNewContext(`
+const ENKEPHALIN_ALLOCATION={egogift:15};
+let gqNameDone=false,gqNameGaveUp=false,gqMode='random',gqSubmitCount=14,gqGuessHistory=Array.from({length:14},()=>({gift:{}})),gqWrongGuesses=new Set(),rendered=false;
+const wrongGift={ID:7},gqGift={ID:99},input={value:'오답'},hint={style:{}};
+const document={getElementById:id=>id==='gq-name-inp'?input:hint};
+const sqNormName=s=>s,gqFindGiftByName=()=>wrongGift,gqTotalHints=()=>0,gqRenderResult=()=>{rendered=true},setTimeout=fn=>fn();
+${extract('gqCheckName')}
+gqCheckName();
+assert.equal(gqSubmitCount,15);assert.equal(gqNameDone,true);assert.equal(gqNameGaveUp,false);assert.equal(rendered,true);
+`,{assert});
+console.log('PASS: final wrong gift guess exhausts the allocation and ends the mission');
+
+vm.runInNewContext(`
+const ENKEPHALIN_ALLOCATION={ego:25};
+let eqNameDone=false,eqNameGaveUp=false,eqMode='random',eqSubmitCount=24,eqGuessHistory=Array.from({length:24},()=>({ego:{}})),eqWrongGuesses=new Set(),rendered=false;
+const wrongEgo={ID:7},eqEgo={ID:99},input={value:'오답'},hint={style:{}};
+const document={getElementById:id=>id==='eq-name-inp'?input:hint};
+const sqNormName=s=>s,eqFindEgoByName=()=>wrongEgo,eqTotalHints=()=>0,eqRenderResult=()=>{rendered=true},setTimeout=fn=>fn();
+${extract('eqCheckName')}
+eqCheckName();
+assert.equal(eqSubmitCount,25);assert.equal(eqNameDone,true);assert.equal(eqNameGaveUp,false);assert.equal(rendered,true);
+`,{assert});
+console.log('PASS: final wrong EGO guess exhausts the allocation and ends the mission');

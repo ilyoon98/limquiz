@@ -1,0 +1,5012 @@
+[
+  {
+    "id": "1hjW7RBhUcn16dDzhiKrMKeEevu0MNlQA",
+    "file": "StoryLog_Bosal.png",
+    "name": "보살",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo I"
+  },
+  {
+    "id": "19GAvG1Odkxk_cMOWETnS0zsVqplmW_T-",
+    "file": "StoryLog_Chicken1.png",
+    "name": "닭 인간 (1)",
+    "excluded": false,
+    "aliases": [
+      "닭 인간"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo I"
+  },
+  {
+    "id": "1CNterkQkMErby9Ksw1nYKzSQXpLTa7FB",
+    "file": "StoryLog_Chicken2.png",
+    "name": "닭 인간 (2)",
+    "excluded": false,
+    "aliases": [
+      "닭 인간"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo I"
+  },
+  {
+    "id": "1_WgxuXWOjgpWq1JZq5NUjJr-uMR8YLpx",
+    "file": "StoryLog_ChickenBoy.png",
+    "name": "닭 소년",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo I"
+  },
+  {
+    "id": "1uI1zFNYRC5Td__u6rSI1ei1zie6eGyrI",
+    "file": "StoryLog_ChickenGirl.png",
+    "name": "닭 소녀",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo I"
+  },
+  {
+    "id": "1KGG2fVYB82UyaemiLbGCH2jryF8eqX0t",
+    "file": "StoryLog_ChickenKing.png",
+    "name": "봉이아빠",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo I"
+  },
+  {
+    "id": "1IlhjMd9EiRQlpKemrmTatGcn4m5FSuc3",
+    "file": "StoryLog_Eunbong.png",
+    "name": "봉이아빠",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo I"
+  },
+  {
+    "id": "142MfAuZQjWYMULzQCPVvF65YDHiwZVTx",
+    "file": "StoryLog_Gregor_cook.png",
+    "name": "그레고르 (요리)",
+    "excluded": false,
+    "aliases": [
+      "그레고르"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo I"
+  },
+  {
+    "id": "1yca-F6aRNN4TIr5tIPvCiXraMl99R-0M",
+    "file": "StoryLog_Heathcliff_cook.png",
+    "name": "히스클리프 (요리)",
+    "excluded": false,
+    "aliases": [
+      "히스클리프"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo I"
+  },
+  {
+    "id": "1MMJoSFdOKvuijL0rFjB2iVHSTGI2EgH_",
+    "file": "StoryLog_K_Chicken.png",
+    "name": "K사 닭",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo I"
+  },
+  {
+    "id": "1x_xwnXHuQZgX6vm9mx4FpG7gNVkl5zfq",
+    "file": "StoryLog_Meursault_cook.png",
+    "name": "뫼르소 (요리)",
+    "excluded": false,
+    "aliases": [
+      "뫼르소"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo I"
+  },
+  {
+    "id": "1cxxJypDmAX-d2HM1a4Q4ufbUePiQMXFx",
+    "file": "StoryLog_Outis_cook.png",
+    "name": "오티스 (요리)",
+    "excluded": false,
+    "aliases": [
+      "오티스"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo I"
+  },
+  {
+    "id": "1He2qPi4Upp8ImgduLTZj9vOVRWjtjJy7",
+    "file": "StoryLog_Ryoshu_cook.png",
+    "name": "료슈 (요리)",
+    "excluded": false,
+    "aliases": [
+      "료슈"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo I"
+  },
+  {
+    "id": "1SooZBMeNdFwTa8GCngy27obMmTzXdZO3",
+    "file": "StoryLog_Samjo.png",
+    "name": "삼조",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo I"
+  },
+  {
+    "id": "1R4FFXh0CjHBpcVFYybxCw9uCQyG2q-Qp",
+    "file": "StoryLog_Mika.png",
+    "name": "미카",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo II"
+  },
+  {
+    "id": "12_mvvUtNxvEy5FlNqLlh4HCWBFyEgvKO",
+    "file": "StoryLog_Olga.png",
+    "name": "올가",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo II"
+  },
+  {
+    "id": "1uoKccdXWXOdjfXxrJaBGbYl6sn8YZaVV",
+    "file": "StoryLog_OlgaSuit_Helmet.png",
+    "name": "올가",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo II"
+  },
+  {
+    "id": "1NtxR8Vzet1_f6oRh3PgFEWmvFtkpxD6l",
+    "file": "StoryLog_OlgaSuit.png",
+    "name": "올가",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo II"
+  },
+  {
+    "id": "1MGIZZSSKC9yOVl4IHwEVt9j9B4JEpVZ_",
+    "file": "StoryLog_Rain.png",
+    "name": "레인",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo II"
+  },
+  {
+    "id": "19h4i4ceVI92L-ZuNZJRaZ_zWFBXnX4Pw",
+    "file": "StoryLog_Crayon.png",
+    "name": "크레용",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo III"
+  },
+  {
+    "id": "1QkkvlX5MXCa-LOAbmhvD5bFxj2FnQKXv",
+    "file": "StoryLog_Dodoru.png",
+    "name": "도도루",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo III"
+  },
+  {
+    "id": "1ixctqSLkeRXxEDySv363xLiOb9bwvkXm",
+    "file": "StoryLog_Domino.png",
+    "name": "도미노",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo III"
+  },
+  {
+    "id": "1eOQQhUh77Llux8gJT8kvEWeEghD45xz8",
+    "file": "StoryLog_GnomeBlack.png",
+    "name": "노움",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo III"
+  },
+  {
+    "id": "1QCjMMPiTmxEte0GtAIkQ9JieSEsi_vVU",
+    "file": "StoryLog_GnomeGreen.png",
+    "name": "노움",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo III"
+  },
+  {
+    "id": "1UCcqAAkUpR44hWN7QBxUiW6zHU81flbl",
+    "file": "StoryLog_GnomeRed.png",
+    "name": "노움",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo III"
+  },
+  {
+    "id": "1L5K68szDpZcy0AmEAjDyzcMH-WWNu_GR",
+    "file": "StoryLog_Santata.png",
+    "name": "산타타",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo III"
+  },
+  {
+    "id": "1op9TJGXqJTP9cz8zDYivy6iQ6hqqzO1O",
+    "file": "StoryLog_Angry_KSG.png",
+    "name": "김삿갓",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo III-2"
+  },
+  {
+    "id": "19fqw2Jn-LdbZSO9H08YeRRum9ld0Qmhn",
+    "file": "StoryLog_Blade_A.png",
+    "name": "x",
+    "excluded": true,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo III-2"
+  },
+  {
+    "id": "1q9PHOQSwNpJq-hs4F-2jsbg3GQBm08sX",
+    "file": "StoryLog_Blade_Cherry.png",
+    "name": "김앵두",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo III-2"
+  },
+  {
+    "id": "1TCiN1tIkdfR0U0nuAqYdkttREder2hR1",
+    "file": "StoryLog_Kuro_A.png",
+    "name": "x",
+    "excluded": true,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo III-2"
+  },
+  {
+    "id": "1WmhZZJUEoADSFuW2ZYz9H27EXvOBpKWy",
+    "file": "StoryLog_Kuro_B.png",
+    "name": "x",
+    "excluded": true,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo III-2"
+  },
+  {
+    "id": "1mAoy43K2f7-NRUwOtrwHS6b6cZR0FzGW",
+    "file": "StoryLog_Kuro_Jyun_Clock.png",
+    "name": "x",
+    "excluded": true,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo III-2"
+  },
+  {
+    "id": "1IxO-29QXCAt72r_2AOcggbXXSBF6Yp47",
+    "file": "StoryLog_Kuro_Jyun.png",
+    "name": "쥰",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo III-2"
+  },
+  {
+    "id": "1l-XtF8xvkT2Xkbtiry81gxkpAB-5azx5",
+    "file": "StoryLog_LCA_SOT.png",
+    "name": "x",
+    "excluded": true,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo III-2"
+  },
+  {
+    "id": "1eMMkZurP80ZU1JmmJgn1fe94EURrXE2U",
+    "file": "StoryLog_LCCA_Caiman.png",
+    "name": "카이만",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo III-2"
+  },
+  {
+    "id": "1A4Ee_YdDzY6qyFw_i8bXcPIMst_28Skt",
+    "file": "StoryLog_normal_KSG.png",
+    "name": "김삿갓 (일반)",
+    "excluded": false,
+    "aliases": [
+      "김삿갓"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo III-2"
+  },
+  {
+    "id": "1mdl5QIBpSDaO7_cUUq4eshReWb6YOkzI",
+    "file": "StoryLog_bumble.png",
+    "name": "범블",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo IV-1"
+  },
+  {
+    "id": "1l6kdwqZdToPGISopdPPiam2ZGHo5xdmn",
+    "file": "StoryLog_HongLu_detect.png",
+    "name": "홍루 (탐정)",
+    "excluded": false,
+    "aliases": [
+      "홍루"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo IV-1"
+  },
+  {
+    "id": "1S7QVmOXdIdnThXmlduxCQPYHIJ4IPHQc",
+    "file": "StoryLog_RipperBro.png",
+    "name": "시간살인마의 형제",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo IV-1"
+  },
+  {
+    "id": "1faVJO0jH0-eLTlVnqapFOPFJ2yQL5fes",
+    "file": "StoryLog_Rodion_detect.png",
+    "name": "로쟈 (탐정)",
+    "excluded": false,
+    "aliases": [
+      "로쟈"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo IV-1"
+  },
+  {
+    "id": "12V2xviVLACGpxYTsKGYBNLFg2ml4WpFg",
+    "file": "StoryLog_Ryoshu_detect.png",
+    "name": "료슈 (탐정)",
+    "excluded": false,
+    "aliases": [
+      "료슈"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo IV-1"
+  },
+  {
+    "id": "10E44v5FvS5B3USi6oB8udjbAJItTDOxK",
+    "file": "StoryLog_T_assistant.png",
+    "name": "T사 조수",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo IV-1"
+  },
+  {
+    "id": "1m-gSgy-mghbXpN-IAbc71LjEthI6NMnq",
+    "file": "StoryLog_T_DP.png",
+    "name": "T사 인물 (DP)",
+    "excluded": false,
+    "aliases": [
+      "T사 인물"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo IV-1"
+  },
+  {
+    "id": "14Z38N4LcLUnda4lJVBnp05eMmlofgbFI",
+    "file": "StoryLog_T_grade2.png",
+    "name": "T사 2급 징수직",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo IV-1"
+  },
+  {
+    "id": "1AJ1_2HmfXzTfiTIIc4rQ15Tcdm48Xqw-",
+    "file": "StoryLog_T_grade3.png",
+    "name": "T사 3급 징수직",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo IV-1"
+  },
+  {
+    "id": "1AqSdiGfjcj0ccWkh_6mUSeAIT2X7vvD1",
+    "file": "StoryLog_T_newbie.png",
+    "name": "T사 신입",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo IV-1"
+  },
+  {
+    "id": "1GV3erDpqWIVHbmkzje11c9Cjw4jBe08n",
+    "file": "StoryLog_T_officer.png",
+    "name": "T사 징수직",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo IV-1"
+  },
+  {
+    "id": "1t01DplSIEreruezA-Azg_ki413jDj01i",
+    "file": "StoryLog_TimeRipper_normal.png",
+    "name": "시간살인마 (일반)",
+    "excluded": false,
+    "aliases": [
+      "시간살인마"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo IV-1"
+  },
+  {
+    "id": "1Rm9Sm9qiKcrAc3pmzLx2gAEQ_5oLHr_K",
+    "file": "StoryLog_TimeRipper_trans.png",
+    "name": "시간살인마 (변형)",
+    "excluded": false,
+    "aliases": [
+      "시간살인마"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo IV-1"
+  },
+  {
+    "id": "15l0z7uGfzYh3Sl1be7djUBYD5R2JYEzh",
+    "file": "StoryLog_Yurodivy_1.png",
+    "name": "유로지비 조직원 (1)",
+    "excluded": false,
+    "aliases": [
+      "유로지비 조직원"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo IV-1"
+  },
+  {
+    "id": "1oH5AaT-S-7IRjEJSHm4diVazKdwf_Mep",
+    "file": "StoryLog_Yurodivy_2.png",
+    "name": "유로지비 조직원 (2)",
+    "excluded": false,
+    "aliases": [
+      "유로지비 조직원"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo IV-1"
+  },
+  {
+    "id": "1nQhPWURgDzzNnEjAZHLJ4ev0UhEdxroG",
+    "file": "StoryLog_Yurodivy_Leader.png",
+    "name": "유로지비 지도자",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo IV-1"
+  },
+  {
+    "id": "1yaJMBc9rugsDwbngVNRgGZl_OxkQjq5n",
+    "file": "StoryLog_Cassetti.png",
+    "name": "카세티",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo IV-2"
+  },
+  {
+    "id": "1efJ4DxG0I1I1uyfOmz-BxTpXWY4mIQwa",
+    "file": "StoryLog_CassettiBF.png",
+    "name": "카세티 (혈귀)",
+    "excluded": false,
+    "aliases": [
+      "카세티"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo IV-2"
+  },
+  {
+    "id": "1jI3SYA3gE_JgPs2GXutI8HHLKjNVcnN5",
+    "file": "StoryLog_NorthernFixer1.png",
+    "name": "북부 해결사 (1)",
+    "excluded": false,
+    "aliases": [
+      "북부 해결사"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo IV-2"
+  },
+  {
+    "id": "1k4Mxw0e2ai2nc3eQdtcRBGF3Rza7sM8n",
+    "file": "StoryLog_NorthernFixer2.png",
+    "name": "북부 해결사 (2)",
+    "excluded": false,
+    "aliases": [
+      "북부 해결사"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo IV-2"
+  },
+  {
+    "id": "10uucRFBGS9bGL1mT4UD80n7P446CelYI",
+    "file": "StoryLog_NorthernFixerB.png",
+    "name": "북부 해결사 (B)",
+    "excluded": false,
+    "aliases": [
+      "북부 해결사"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo IV-2"
+  },
+  {
+    "id": "159_hjg9ECdHN7wEV6lvhlaP37iKhHWU9",
+    "file": "StoryLog_SilhouetteDonQuixote2.png",
+    "name": "돈키호테 (실루엣) (2)",
+    "excluded": false,
+    "aliases": [
+      "돈키호테"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo IV-2"
+  },
+  {
+    "id": "1zAsZAhbF3vJqLzVCmxEaXW6aezeu_XDm",
+    "file": "StoryLog_Trainkid.png",
+    "name": "열차의 아이",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo IV-2"
+  },
+  {
+    "id": "1upEw9Gr_FynOIqrTZGheNgNuMxp7Q73a",
+    "file": "StoryLog_WCleanup1.png",
+    "name": "W사 정리 요원 (1)",
+    "excluded": false,
+    "aliases": [
+      "W사 정리 요원"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo IV-2"
+  },
+  {
+    "id": "1aKyTCAFO4KB-lUHQ3NHVdUGXn2Balbuc",
+    "file": "StoryLog_WCleanup2.png",
+    "name": "W사 정리 요원 (2)",
+    "excluded": false,
+    "aliases": [
+      "W사 정리 요원"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo IV-2"
+  },
+  {
+    "id": "1umzU44KSlgqfd_7Ksym_Gdbpxv6lJyTV",
+    "file": "StoryLog_Hohenheim_distortion.png",
+    "name": "호엔하임 (뒤틀림)",
+    "excluded": false,
+    "aliases": [
+      "호엔하임"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo V-1"
+  },
+  {
+    "id": "18DOLUFTwUIburMIvPkRpvmDlzqvMK4CK",
+    "file": "StoryLog_Hohenheim_past.png",
+    "name": "호엔하임 (과거)",
+    "excluded": false,
+    "aliases": [
+      "호엔하임"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo V-1"
+  },
+  {
+    "id": "1ejDk2QW6c6as4tuQmuVr6FhLvCknLmbe",
+    "file": "StoryLog_Hohenheim.png",
+    "name": "호엔하임",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo V-1"
+  },
+  {
+    "id": "1CyoM2LXKPWFRbTnl1vsyVYQU8PLpzyKv",
+    "file": "StoryLog_LCE_1.png",
+    "name": "LCE 직원 (1)",
+    "excluded": false,
+    "aliases": [
+      "LCE 직원"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo V-1"
+  },
+  {
+    "id": "1dFk8d4HEsE0uf6Pq2ME-4MyJPs6pWPPQ",
+    "file": "StoryLog_LCE_2.png",
+    "name": "LCE 직원 (2)",
+    "excluded": false,
+    "aliases": [
+      "LCE 직원"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo V-1"
+  },
+  {
+    "id": "13xjkW_FKVLREKlRPRKvEpTUGRql4za1K",
+    "file": "StoryLog_Lobotomy_delete.png",
+    "name": "로보토미 직원",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo V-1"
+  },
+  {
+    "id": "1YKwHq89TsBfKwCLedjVaR1kMJn6GIR8e",
+    "file": "StoryLog_Noname.png",
+    "name": "이름 없는 인물",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo V-1"
+  },
+  {
+    "id": "17keRs08KGMLhBmaqc8hLU_XHyRGRQZrZ",
+    "file": "StoryLog_Noname2.png",
+    "name": "이름 없는 인물 (2)",
+    "excluded": false,
+    "aliases": [
+      "이름 없는 인물"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo V-1"
+  },
+  {
+    "id": "1P9Tha69fwW_3GSf0dpIneKTk7DvEbTc2",
+    "file": "StoryLog_None_Extra.png",
+    "name": "이름 없는 엑스트라",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo V-1"
+  },
+  {
+    "id": "1GJR8N3tgjDTIdeVENY29_1A5b-BTWxj-",
+    "file": "StoryLog_Black_Hare.png",
+    "name": "검은 토끼",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo V-2"
+  },
+  {
+    "id": "1MonK02E026BRRLDNjsBnkXXLWdBJnOM9",
+    "file": "StoryLog_Kyongdo.png",
+    "name": "경도",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo V-2"
+  },
+  {
+    "id": "1xFGg0q4HuuLT5uehJ8zR2mNAZmieZlD9",
+    "file": "StoryLog_NewPilot.png",
+    "name": "파일럿",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo V-2"
+  },
+  {
+    "id": "1yKfLK018JZ1Hj8ZXJ4Qi_iD2hfVVA2nO",
+    "file": "StoryLog_NewSode.png",
+    "name": "소드",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo V-2"
+  },
+  {
+    "id": "1Gaq05Y_BWP_IbEM7PhF1QoucA7MyPSv2",
+    "file": "StoryLog_Qiu.png",
+    "name": "가 치우",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo V-2"
+  },
+  {
+    "id": "1bpugU35gESMtJWVuoXw6-DNInHJ__N21",
+    "file": "StoryLog_Sa_ewha.png",
+    "name": "사애화",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo V-2"
+  },
+  {
+    "id": "1kD3pz5oSl8efoieguAEg6-aofgpA6wHi",
+    "file": "StoryLog_Samsam.png",
+    "name": "삼삼",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo V-2"
+  },
+  {
+    "id": "1E083xMfrAreWAAB3w1-vS3gd1FSbpE11",
+    "file": "StoryLog_Sweeper_A.png",
+    "name": "청소부 (A)",
+    "excluded": false,
+    "aliases": [
+      "청소부"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo V-2"
+  },
+  {
+    "id": "1hCtJ39NN133dmO0h20GGDYkcTcIJb6pO",
+    "file": "StoryLog_Sweeper_C.png",
+    "name": "청소부 (C)",
+    "excluded": false,
+    "aliases": [
+      "청소부"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo V-2"
+  },
+  {
+    "id": "17LvuNfOUUN1toAwB4UNkv92JSKw-ySzw",
+    "file": "StoryLog_Werner.png",
+    "name": "베르너",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo V-2"
+  },
+  {
+    "id": "1Y9INap3EFEiXT1KCl1g9tUuBGtpRTuFf",
+    "file": "StoryLog_ZiGong.png",
+    "name": "자공",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo V-2"
+  },
+  {
+    "id": "1TAUTCz3UugTnpQhP1nsWVMu72_KEqsI2",
+    "file": "StoryLog_Zilu.png",
+    "name": "자로",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo V-2"
+  },
+  {
+    "id": "1VuuvDLpyT5VVH60rP7oafAE-4IVt-i_D",
+    "file": "StoryLog_Animal_Snake.png",
+    "name": "뱀",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo VI-1"
+  },
+  {
+    "id": "1Kp6xFSK0B4W3xdzX7DV5-wZte7-vYshp",
+    "file": "StoryLog_Chungsan_N.png",
+    "name": "청산 (N)",
+    "excluded": false,
+    "aliases": [
+      "청산"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo VI-1"
+  },
+  {
+    "id": "1y968DGtdiZsH_t1So0w0EMn1nBfu8RPI",
+    "file": "StoryLog_H_admin.png",
+    "name": "H사 관리자",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo VI-1"
+  },
+  {
+    "id": "1Jrgb2fj3nFLAGx7S-o6xngYLPeB1ej7D",
+    "file": "StoryLog_H_merchant.png",
+    "name": "H사 상인",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo VI-1"
+  },
+  {
+    "id": "1IDS0oqg97TEaig2aW5cg3N087YivKWuB",
+    "file": "StoryLog_Heathcliff_P.png",
+    "name": "히스클리프 (P)",
+    "excluded": false,
+    "aliases": [
+      "히스클리프"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo VI-1"
+  },
+  {
+    "id": "1A19_fU3WBc6czDSrFZb4VSnv6lMS_6Mj",
+    "file": "StoryLog_WangChild.png",
+    "name": "왕가 아이",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo VI-1"
+  },
+  {
+    "id": "1_OZ7lN9GhN4WyDW0u2Kq8FdkhL4gMzdm",
+    "file": "StoryLog_Wey_R.png",
+    "name": "웨이 (R)",
+    "excluded": false,
+    "aliases": [
+      "웨이"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo VI-1"
+  },
+  {
+    "id": "1LbA-m5exIQ5tF_nt5GxqaZPRKotdCBye",
+    "file": "StoryLog_Xichun_final.png",
+    "name": "시춘 (최종 모습)",
+    "excluded": false,
+    "aliases": [
+      "시춘"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo VI-1"
+  },
+  {
+    "id": "1rHCFOIympYhMtubt3BNEGyFmqmTgdV-P",
+    "file": "StoryLog_Zilu_Off.png",
+    "name": "자로 (비번)",
+    "excluded": false,
+    "aliases": [
+      "자로"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo VI-1"
+  },
+  {
+    "id": "1_VXGx_-Cp_WbtGZA8VLigkH3upRdvHTa",
+    "file": "StoryLog_Amiya_AK.png",
+    "name": "아미야 (명일방주)",
+    "excluded": false,
+    "aliases": [
+      "아미야"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo VI-EX"
+  },
+  {
+    "id": "1fMlR9bz0OgDBgQtEjD3Y7wSfx7gk-8tm",
+    "file": "StoryLog_Deep_Devotee.png",
+    "name": "심해의 신도",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo VI-EX"
+  },
+  {
+    "id": "1ulHPDLXDBOyOge1xO-kwVptKZj-EAEry",
+    "file": "StoryLog_Dr_Doctor.png",
+    "name": "닥터",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo VI-EX"
+  },
+  {
+    "id": "1XjKFTnN8h8ATsbjQ_HxB4Gb_p36yKRcb",
+    "file": "StoryLog_Fabius.png",
+    "name": "파비우스",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo VI-EX"
+  },
+  {
+    "id": "1Rjh9FdpiMM7OdZvtPI95BXUSi1J9-M_S",
+    "file": "StoryLog_Iberia_People.png",
+    "name": "이베리아 주민",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo VI-EX"
+  },
+  {
+    "id": "1xGehnKdjZrts7CT9bCB97z267xXNUyQg",
+    "file": "StoryLog_Iberia_People2.png",
+    "name": "이베리아 주민 (2)",
+    "excluded": false,
+    "aliases": [
+      "이베리아 주민"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo VI-EX"
+  },
+  {
+    "id": "1N_hbqRgYpDYYIqsEJ9NPkmWgPLdtWts3",
+    "file": "StoryLog_Irene_AK.png",
+    "name": "아이린 (명일방주)",
+    "excluded": false,
+    "aliases": [
+      "아이린"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo VI-EX"
+  },
+  {
+    "id": "12MebyuxDCxLtMoAOX84WSoAN4JqNRRkn",
+    "file": "StoryLog_Kaltsit_AK.png",
+    "name": "켈시 (명일방주)",
+    "excluded": false,
+    "aliases": [
+      "켈시"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo VI-EX"
+  },
+  {
+    "id": "1SyU7faHE-oQu_Y0tqjnV67y0ni3FIZqu",
+    "file": "StoryLog_Last_Knight.png",
+    "name": "마지막 기사",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo VI-EX"
+  },
+  {
+    "id": "1G-rXMgKHRKLqCyhBa-w74IdwiI1oFz4g",
+    "file": "StoryLog_Mayors_B.png",
+    "name": "메이어스 (B)",
+    "excluded": false,
+    "aliases": [
+      "메이어스"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo VI-EX"
+  },
+  {
+    "id": "1mMTBzRIQhKr6cMKxo23QufhThctxlqgX",
+    "file": "StoryLog_Mayors_D.png",
+    "name": "메이어스 (D)",
+    "excluded": false,
+    "aliases": [
+      "메이어스"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo VI-EX"
+  },
+  {
+    "id": "1K1CtBJRm9nOHdtwBxsONLUHlPr5QOqxH",
+    "file": "StoryLog_Mayors_P.png",
+    "name": "메이어스 (P)",
+    "excluded": false,
+    "aliases": [
+      "메이어스"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo VI-EX"
+  },
+  {
+    "id": "13CBuXdfIrhbIo__bsVGHSJbFT0bv_sMm",
+    "file": "StoryLog_Mayors.png",
+    "name": "메이어스",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo VI-EX"
+  },
+  {
+    "id": "1xC_AHHlYdwWlNrX1e4MqtuZsKHXr0lQ6",
+    "file": "StoryLog_Sea_Terror.png",
+    "name": "바다의 공포",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo VI-EX"
+  },
+  {
+    "id": "14H10rzgRS06SzeDXMNsxDmkq2nTUU_Wv",
+    "file": "StoryLog_Skadi_AK.png",
+    "name": "스카디 (명일방주)",
+    "excluded": false,
+    "aliases": [
+      "스카디"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo VI-EX"
+  },
+  {
+    "id": "1ejKi1fsJW82BKjYZH_55M0OKCToo7btu",
+    "file": "StoryLog_Alan2.png",
+    "name": "앨런 (2)",
+    "excluded": false,
+    "aliases": [
+      "앨런"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo VII-1"
+  },
+  {
+    "id": "1MTPPwB2K-up5KABDmlKrqFy_qvH6CU8C",
+    "file": "StoryLog_BujangT.png",
+    "name": "T사 부장",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo VII-1"
+  },
+  {
+    "id": "1CH6MR_WF0nXJ_nLx9Fzc6k-Nuu1bFBMV",
+    "file": "StoryLog_Fauvi1.png",
+    "name": "야수파 조직원 (1)",
+    "excluded": false,
+    "aliases": [
+      "야수파 조직원"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo VII-1"
+  },
+  {
+    "id": "1D25AqCQfe882xgW8K8p5wCg5NNu1CV4f",
+    "file": "StoryLog_Fauvi2.png",
+    "name": "야수파 조직원 (2)",
+    "excluded": false,
+    "aliases": [
+      "야수파 조직원"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo VII-1"
+  },
+  {
+    "id": "1j_8fc0-omjqeIPBV23Mh5IkGDhHHnKuU",
+    "file": "StoryLog_FauvismDocent.png",
+    "name": "야수파 도슨트",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo VII-1"
+  },
+  {
+    "id": "1KLhSj87H5MdFrnQwlc01bFKCAFfrrN3c",
+    "file": "StoryLog_FauvismDocent2.png",
+    "name": "야수파 도슨트 (2)",
+    "excluded": false,
+    "aliases": [
+      "야수파 도슨트"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo VII-1"
+  },
+  {
+    "id": "1aI3j5EloCVqYgt06bjUl2RVqPp7rVWXd",
+    "file": "StoryLog_FauvismMaestro.png",
+    "name": "야수파 마에스트로",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo VII-1"
+  },
+  {
+    "id": "1JjgNI8ZTb6-UfwpcdnS0zkkCPw3vQB4g",
+    "file": "StoryLog_Index1.png",
+    "name": "검지 조직원 (1)",
+    "excluded": false,
+    "aliases": [
+      "검지 조직원"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo VII-1"
+  },
+  {
+    "id": "1H5l5Sfcg46mwdzyUedvNNButBjtF1GqW",
+    "file": "StoryLog_NewKira.png",
+    "name": "키라",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo VII-1"
+  },
+  {
+    "id": "16vpMIy-gzMTwKpIc9L2qRCqJ_8plxDdX",
+    "file": "StoryLog_Ringko1.png",
+    "name": "약지 조직원 (1)",
+    "excluded": false,
+    "aliases": [
+      "약지 조직원"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo VII-1"
+  },
+  {
+    "id": "17erz26wERnJDS8HW-wiy7hFSYkuguQn-",
+    "file": "StoryLog_Ringko2.png",
+    "name": "약지 조직원 (2)",
+    "excluded": false,
+    "aliases": [
+      "약지 조직원"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo VII-1"
+  },
+  {
+    "id": "1QlowWhwlwlGg6F_UpJ27rWLNisuTZolg",
+    "file": "StoryLog_BladeDistortion_A.png",
+    "name": "검계 (뒤틀림) (A)",
+    "excluded": false,
+    "aliases": [
+      "검계"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo VII-2"
+  },
+  {
+    "id": "1MkD8sGQt8oRHuTIsBH9mlO_v8rbX37Gx",
+    "file": "StoryLog_BladeDistortion_B.png",
+    "name": "검계 (뒤틀림) (B)",
+    "excluded": false,
+    "aliases": [
+      "검계"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo VII-2"
+  },
+  {
+    "id": "1uQjjfSx_d9568x70IIvlRCz65fUx8BKk",
+    "file": "StoryLog_BreadShop.png",
+    "name": "빵집 주인",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo VII-2"
+  },
+  {
+    "id": "1m709J-NJl2Q72yPdBMVrRHGPymok1Ljc",
+    "file": "StoryLog_Cherry_LCD_New.png",
+    "name": "앵두 (LCD, 새 모습)",
+    "excluded": false,
+    "aliases": [
+      "앵두"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo VII-2"
+  },
+  {
+    "id": "1wvC-wIcOlsOS14nEoE53GGP25cKI2a7c",
+    "file": "StoryLog_ChunoDistortion_A.png",
+    "name": "추노꾼 (뒤틀림) (A)",
+    "excluded": false,
+    "aliases": [
+      "추노꾼"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo VII-2"
+  },
+  {
+    "id": "1q6p1ms-REcoLwaD8gt93RdEsDclEt-kI",
+    "file": "StoryLog_ChunoDistortion_B.png",
+    "name": "추노꾼 (뒤틀림) (B)",
+    "excluded": false,
+    "aliases": [
+      "추노꾼"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo VII-2"
+  },
+  {
+    "id": "1LOkF_9lP9jQMWe0UWlKZPTSewhUG_XHw",
+    "file": "StoryLog_Gyeongeop_Distortion.png",
+    "name": "경업 (뒤틀림)",
+    "excluded": false,
+    "aliases": [
+      "경업"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo VII-2"
+  },
+  {
+    "id": "1tsnKBGBnfHzjGRKc2Po98JN-Kc3TDa1c",
+    "file": "StoryLog_Gyeongeop_Past.png",
+    "name": "경업 (과거)",
+    "excluded": false,
+    "aliases": [
+      "경업"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo VII-2"
+  },
+  {
+    "id": "1nLL1ZH00HbueTPZMj2aYfnWo6Z9zxCJc",
+    "file": "StoryLog_Gyeongeop.png",
+    "name": "경업",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo VII-2"
+  },
+  {
+    "id": "1YbM9gU25Ec-ZamF1LL7WUyf7pYj-dTEG",
+    "file": "StoryLog_KSG_NEW.png",
+    "name": "김삿갓 (새 모습)",
+    "excluded": false,
+    "aliases": [
+      "김삿갓"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo VII-2"
+  },
+  {
+    "id": "1YI3dx5LzO4CEYbfs7SXid4zHMa_CVhpV",
+    "file": "StoryLog_KSG_Past.png",
+    "name": "김삿갓 (과거)",
+    "excluded": false,
+    "aliases": [
+      "김삿갓"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo VII-2"
+  },
+  {
+    "id": "1_0-q4TwjMJlPT1ducGM-wC-gw2FtykFJ",
+    "file": "StoryLog_KSG_Prison.png",
+    "name": "김삿갓 (감옥)",
+    "excluded": false,
+    "aliases": [
+      "김삿갓"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo VII-2"
+  },
+  {
+    "id": "1B0clhRTvD09PzUNRPe8yeKD3Dw7qMZ3e",
+    "file": "StoryLog_N_Fixer_A.png",
+    "name": "N사 해결사 (A)",
+    "excluded": false,
+    "aliases": [
+      "N사 해결사"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo VII-2"
+  },
+  {
+    "id": "1e5LMU3JEo-DqzcEpH6lGDnm640GvvCsO",
+    "file": "StoryLog_N_Fixer_B.png",
+    "name": "N사 해결사 (B)",
+    "excluded": false,
+    "aliases": [
+      "N사 해결사"
+    ],
+    "chapter": 11,
+    "location": "외전 · Intervallo VII-2"
+  },
+  {
+    "id": "1Dm3qygN6tQ_WpkQcxnAv4hODWlvf2jfB",
+    "file": "StoryLog_N_Shutter.png",
+    "name": "N사 셔터",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · Intervallo VII-2"
+  },
+  {
+    "id": "1IOjTdm00MMCW7i-JSWaVxCVHyzGO6X8I",
+    "file": "StoryLog_MagicalGirl.png",
+    "name": "마법소녀",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 11,
+    "location": "외전 · The 6th Walpurgis Night"
+  },
+  {
+    "id": "11nT8wA1rNiuAaLKVXbYaQT5qLKthpyFG",
+    "file": "400025_normal_profile.png",
+    "name": "확인 필요: 400025",
+    "excluded": true,
+    "aliases": [],
+    "chapter": 11,
+    "location": "이벤트 · A Midspring Night's Dream 3"
+  },
+  {
+    "id": "14MaYZI4L7SF_7Uk7wZM-Wm3hewCb9T92",
+    "file": "400026_normal_profile.png",
+    "name": "확인 필요: 400026",
+    "excluded": true,
+    "aliases": [],
+    "chapter": 11,
+    "location": "이벤트 · A Midspring Night's Dream 3"
+  },
+  {
+    "id": "13gxU3hLeyBaJZSc2C6-4jZbSRzxMQSAQ",
+    "file": "400027_normal_profile.png",
+    "name": "확인 필요: 400027",
+    "excluded": true,
+    "aliases": [],
+    "chapter": 11,
+    "location": "이벤트 · A Midspring Night's Dream 3"
+  },
+  {
+    "id": "1-9FrQAdzMC1vh3phtwqUlLGsH0d4TAJj",
+    "file": "400028_normal_profile.png",
+    "name": "확인 필요: 400028",
+    "excluded": true,
+    "aliases": [],
+    "chapter": 11,
+    "location": "이벤트 · A Midspring Night's Dream 3"
+  },
+  {
+    "id": "1-oEUk1kDS5uHQPkDxrxVkTm8wUKjypzk",
+    "file": "400029_normal_profile.png",
+    "name": "확인 필요: 400029",
+    "excluded": true,
+    "aliases": [],
+    "chapter": 11,
+    "location": "이벤트 · A Midspring Night's Dream 3"
+  },
+  {
+    "id": "1GpA5gpTJgfrC75dxf5xf0o4lzhTDKBPD",
+    "file": "400030_normal_profile.png",
+    "name": "확인 필요: 400030",
+    "excluded": true,
+    "aliases": [],
+    "chapter": 11,
+    "location": "이벤트 · A Midspring Night's Dream 3"
+  },
+  {
+    "id": "10f4t1BrdQs909rYk2a_Jg6z4GLSwWPfS",
+    "file": "400031_normal_profile.png",
+    "name": "확인 필요: 400031",
+    "excluded": true,
+    "aliases": [],
+    "chapter": 11,
+    "location": "이벤트 · A Midspring Night's Dream 3"
+  },
+  {
+    "id": "1pSXgSG4gqOvkqWGMTNRf24okhsyCmQ2w",
+    "file": "400032_normal_profile.png",
+    "name": "확인 필요: 400032",
+    "excluded": true,
+    "aliases": [],
+    "chapter": 11,
+    "location": "이벤트 · A Midspring Night's Dream 3"
+  },
+  {
+    "id": "1F583wpqV4_Dt_PiiOcBASQig7WckQiih",
+    "file": "400033_normal_profile.png",
+    "name": "확인 필요: 400033",
+    "excluded": true,
+    "aliases": [],
+    "chapter": 11,
+    "location": "이벤트 · A Midspring Night's Dream 3"
+  },
+  {
+    "id": "18G907Md3ahGTTpNufhkNBc4o658ZV5D8",
+    "file": "400034_normal_profile.png",
+    "name": "확인 필요: 400034",
+    "excluded": true,
+    "aliases": [],
+    "chapter": 11,
+    "location": "이벤트 · A Midspring Night's Dream 3"
+  },
+  {
+    "id": "119Rlzfkam-vcSfh2vgnxs1ImX4jfv7yv",
+    "file": "400035_normal_profile.png",
+    "name": "확인 필요: 400035",
+    "excluded": true,
+    "aliases": [],
+    "chapter": 11,
+    "location": "이벤트 · A Midspring Night's Dream 3"
+  },
+  {
+    "id": "1sYjfp6peQ4ISil3eUKhC9yF9A5RBLVbi",
+    "file": "400036_normal_profile.png",
+    "name": "확인 필요: 400036",
+    "excluded": true,
+    "aliases": [],
+    "chapter": 11,
+    "location": "이벤트 · A Midspring Night's Dream 3"
+  },
+  {
+    "id": "1W7iU84PZHpTODqzFWgsxShs0dbwKMZtC",
+    "file": "StoryLog_DonQuixoteAF.png",
+    "name": "돈키호테 (만우절)",
+    "excluded": false,
+    "aliases": [
+      "돈키호테"
+    ],
+    "chapter": 11,
+    "location": "이벤트 · A Midspring Night's Dream 3"
+  },
+  {
+    "id": "1AMMU7j0Pg8WsksfQqy2pcmk1A4drklGL",
+    "file": "StoryLog_FaustAF.png",
+    "name": "파우스트 (만우절)",
+    "excluded": false,
+    "aliases": [
+      "파우스트"
+    ],
+    "chapter": 11,
+    "location": "이벤트 · A Midspring Night's Dream 3"
+  },
+  {
+    "id": "1Jj4B1SiDlz0yrPn2R3yhtYhaJIjJXDPD",
+    "file": "StoryLog_GregorAF.png",
+    "name": "그레고르 (만우절)",
+    "excluded": false,
+    "aliases": [
+      "그레고르"
+    ],
+    "chapter": 11,
+    "location": "이벤트 · A Midspring Night's Dream 3"
+  },
+  {
+    "id": "1GiVlFkSw8AwRSxenmBtllCRyQXY2VQPl",
+    "file": "StoryLog_HeathcliffAF.png",
+    "name": "히스클리프 (만우절)",
+    "excluded": false,
+    "aliases": [
+      "히스클리프"
+    ],
+    "chapter": 11,
+    "location": "이벤트 · A Midspring Night's Dream 3"
+  },
+  {
+    "id": "1DRv5fBxpBY2N6Q6ROVjauYO6sWNJUF9i",
+    "file": "StoryLog_HongLuAF.png",
+    "name": "홍루 (만우절)",
+    "excluded": false,
+    "aliases": [
+      "홍루"
+    ],
+    "chapter": 11,
+    "location": "이벤트 · A Midspring Night's Dream 3"
+  },
+  {
+    "id": "1XVFd_DT02ojUgykqHuMcif1-TrNIaWRP",
+    "file": "StoryLog_IshmaelAF.png",
+    "name": "이스마엘 (만우절)",
+    "excluded": false,
+    "aliases": [
+      "이스마엘"
+    ],
+    "chapter": 11,
+    "location": "이벤트 · A Midspring Night's Dream 3"
+  },
+  {
+    "id": "1za_7QQcul6vUxbXnQUa97DVbUGzX8Zmp",
+    "file": "StoryLog_MeursaultAF.png",
+    "name": "뫼르소 (만우절)",
+    "excluded": false,
+    "aliases": [
+      "뫼르소"
+    ],
+    "chapter": 11,
+    "location": "이벤트 · A Midspring Night's Dream 3"
+  },
+  {
+    "id": "1zQQ0VnP2i1s2n5PpkfSjl-NmOMOjQ66g",
+    "file": "StoryLog_OutisAF.png",
+    "name": "오티스 (만우절)",
+    "excluded": false,
+    "aliases": [
+      "오티스"
+    ],
+    "chapter": 11,
+    "location": "이벤트 · A Midspring Night's Dream 3"
+  },
+  {
+    "id": "14ePPYz8FSndoZ5lQRU5igYWe_4tASQhJ",
+    "file": "StoryLog_RodionAF.png",
+    "name": "로쟈 (만우절)",
+    "excluded": false,
+    "aliases": [
+      "로쟈"
+    ],
+    "chapter": 11,
+    "location": "이벤트 · A Midspring Night's Dream 3"
+  },
+  {
+    "id": "1CaAHliFd_r4VOt-41uq-6GfunjJY7nE_",
+    "file": "StoryLog_RyoshuAF.png",
+    "name": "료슈 (만우절)",
+    "excluded": false,
+    "aliases": [
+      "료슈"
+    ],
+    "chapter": 11,
+    "location": "이벤트 · A Midspring Night's Dream 3"
+  },
+  {
+    "id": "14zUdvguJE03y5W6hXninzVxXt5qaWs4J",
+    "file": "StoryLog_SinclairAF.png",
+    "name": "싱클레어 (만우절)",
+    "excluded": false,
+    "aliases": [
+      "싱클레어"
+    ],
+    "chapter": 11,
+    "location": "이벤트 · A Midspring Night's Dream 3"
+  },
+  {
+    "id": "1SlUlAJScgoZbEAAabze21PNzUZiF8Jdh",
+    "file": "StoryLog_VergiliusAF.png",
+    "name": "베르길리우스 (만우절)",
+    "excluded": false,
+    "aliases": [
+      "베르길리우스"
+    ],
+    "chapter": 11,
+    "location": "이벤트 · A Midspring Night's Dream 3"
+  },
+  {
+    "id": "1_-Da5EzvTFvJCavefsqPjJV5lzS8LKyc",
+    "file": "StoryLog_YiSangAF.png",
+    "name": "이상 (만우절)",
+    "excluded": false,
+    "aliases": [
+      "이상"
+    ],
+    "chapter": 11,
+    "location": "이벤트 · A Midspring Night's Dream 3"
+  },
+  {
+    "id": "1nVYcihosJ8MEuO7PdhQDqvVrjmQY4kAL",
+    "file": "StoryLog_Abnormality_apple.png",
+    "name": "거짓 사과",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 1,
+    "location": "메인 스토리 · 제1장"
+  },
+  {
+    "id": "1u3eQlnwBAaSXrXY1vvsnqb4Jut-qoydO",
+    "file": "StoryLog_aya.png",
+    "name": "아야",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 1,
+    "location": "메인 스토리 · 제1장"
+  },
+  {
+    "id": "10xPyvsnWotbFsdys_3E9sn5TqQnlCPkn",
+    "file": "StoryLog_Gahwan.png",
+    "name": "가환",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 1,
+    "location": "메인 스토리 · 제1장"
+  },
+  {
+    "id": "1KkMaR-FwdmjCxv2bRBwLl__gp4BcUUbg",
+    "file": "StoryLog_Gubo.png",
+    "name": "구보",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 1,
+    "location": "메인 스토리 · 제1장"
+  },
+  {
+    "id": "1G2BgNXMz_P8B5wTDR2d72VBAM_-m49Eq",
+    "file": "StoryLog_Hermann.png",
+    "name": "헤르만",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 1,
+    "location": "메인 스토리 · 제1장"
+  },
+  {
+    "id": "1HS3IKlBamBBp2D_D57-bCA4MVYdbZxC9",
+    "file": "StoryLog_hopkins.png",
+    "name": "홉킨스",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 1,
+    "location": "메인 스토리 · 제1장"
+  },
+  {
+    "id": "1Ncmpn0iVAoj2HL_X2p18VoskFz6G71kn",
+    "file": "StoryLog_InsectMan.png",
+    "name": "벌레 인간",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 1,
+    "location": "메인 스토리 · 제1장"
+  },
+  {
+    "id": "1YBbuShxbSTUpm9RJ08xypT7h7tUOgLX0",
+    "file": "StoryLog_InsectMan2.png",
+    "name": "벌레 인간 (2)",
+    "excluded": false,
+    "aliases": [
+      "벌레 인간"
+    ],
+    "chapter": 1,
+    "location": "메인 스토리 · 제1장"
+  },
+  {
+    "id": "1EG-bso1TipMfXkitYqTwQoIVO-ku17qu",
+    "file": "StoryLog_InsectMan3.png",
+    "name": "벌레 인간 (3)",
+    "excluded": false,
+    "aliases": [
+      "벌레 인간"
+    ],
+    "chapter": 1,
+    "location": "메인 스토리 · 제1장"
+  },
+  {
+    "id": "1C5gwza9rQIRfuo44VK2-DybO2SP9sCA4",
+    "file": "StoryLog_LobotomyFriend.png",
+    "name": "로보토미 직원",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 1,
+    "location": "메인 스토리 · 제1장"
+  },
+  {
+    "id": "1JNJTX8eSbO0xh_-GcA3maLC-olOJEpU3",
+    "file": "StoryLog_yuri.png",
+    "name": "유리",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 1,
+    "location": "메인 스토리 · 제1장"
+  },
+  {
+    "id": "1uqW0jA4PLvUJk0ZTPU4sEv6D39HDkmOH",
+    "file": "StoryLog_Bodyguard.png",
+    "name": "경호원",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 2,
+    "location": "메인 스토리 · 제2장"
+  },
+  {
+    "id": "1k5EdJ47dMjSGHqJpwsMlrC4z8_A-fPBm",
+    "file": "StoryLog_Bodyguard2.png",
+    "name": "경호원 (2)",
+    "excluded": false,
+    "aliases": [
+      "경호원"
+    ],
+    "chapter": 2,
+    "location": "메인 스토리 · 제2장"
+  },
+  {
+    "id": "19FqILHS6kU75xMiPU65PGuogPf8enjCW",
+    "file": "StoryLog_Cong1.png",
+    "name": "콩콩이파 조직원 (1)",
+    "excluded": false,
+    "aliases": [
+      "콩콩이파 조직원"
+    ],
+    "chapter": 2,
+    "location": "메인 스토리 · 제2장"
+  },
+  {
+    "id": "1T_e5TuLgq-Gx5WJxo5bVMWKrakZ-Jeyw",
+    "file": "StoryLog_Cong2.png",
+    "name": "콩콩이파 조직원 (2)",
+    "excluded": false,
+    "aliases": [
+      "콩콩이파 조직원"
+    ],
+    "chapter": 2,
+    "location": "메인 스토리 · 제2장"
+  },
+  {
+    "id": "1JBbCuj5OVJQ0O6k5UtsV7yH0T39Bz07S",
+    "file": "StoryLog_Cong3.png",
+    "name": "콩콩이파 조직원 (3)",
+    "excluded": false,
+    "aliases": [
+      "콩콩이파 조직원"
+    ],
+    "chapter": 2,
+    "location": "메인 스토리 · 제2장"
+  },
+  {
+    "id": "1JhJosdVcjX9_odIO2q6l0dgJJoD0M_Ab",
+    "file": "StoryLog_CongBoss.png",
+    "name": "콩콩이파 두목",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 2,
+    "location": "메인 스토리 · 제2장"
+  },
+  {
+    "id": "1U6bgWAxNsLZAOunOSZGhruoc8Lrs_Dke",
+    "file": "StoryLog_Epi.png",
+    "name": "에피",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 2,
+    "location": "메인 스토리 · 제2장"
+  },
+  {
+    "id": "1u0oSdpe2L-f1Wkvek2eFUy87XVSplxkE",
+    "file": "StoryLog_Iron1.png",
+    "name": "철공회 조직원 (1)",
+    "excluded": false,
+    "aliases": [
+      "철공회 조직원"
+    ],
+    "chapter": 2,
+    "location": "메인 스토리 · 제2장"
+  },
+  {
+    "id": "1yaHMBnNZVnPOCPPdTYKllc2cJJ08mV1A",
+    "file": "StoryLog_Iron2.png",
+    "name": "철공회 조직원 (2)",
+    "excluded": false,
+    "aliases": [
+      "철공회 조직원"
+    ],
+    "chapter": 2,
+    "location": "메인 스토리 · 제2장"
+  },
+  {
+    "id": "11GKt_2U-c3q26XCQRQt4zA1fbE-uPO1H",
+    "file": "StoryLog_IronBoss.png",
+    "name": "철공회 두목",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 2,
+    "location": "메인 스토리 · 제2장"
+  },
+  {
+    "id": "1kLO3jJDwNg1eKCipVYl4byGMPdkKfVdV",
+    "file": "StoryLog_Mariachi1.png",
+    "name": "마리아치 조직원 (1)",
+    "excluded": false,
+    "aliases": [
+      "마리아치 조직원"
+    ],
+    "chapter": 2,
+    "location": "메인 스토리 · 제2장"
+  },
+  {
+    "id": "1suvpAzu6HdEukYFMej0Esc3-0triNWdc",
+    "file": "StoryLog_Mariachi2.png",
+    "name": "마리아치 조직원 (2)",
+    "excluded": false,
+    "aliases": [
+      "마리아치 조직원"
+    ],
+    "chapter": 2,
+    "location": "메인 스토리 · 제2장"
+  },
+  {
+    "id": "110sVPuQO5ixhKwSBiz7N3WnPxf8XbKjc",
+    "file": "StoryLog_MariachiBoss.png",
+    "name": "마리아치 두목",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 2,
+    "location": "메인 스토리 · 제2장"
+  },
+  {
+    "id": "1sHyY-LeWri9c0vrW9tKN0V3XQG6pg6rR",
+    "file": "StoryLog_PawnMan.png",
+    "name": "전당포 주인",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 2,
+    "location": "메인 스토리 · 제2장"
+  },
+  {
+    "id": "13C5HPRVXfLhVwnomr7sZnN4P3th7Y51L",
+    "file": "StoryLog_Powerman.png",
+    "name": "괴력의 남자",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 2,
+    "location": "메인 스토리 · 제2장"
+  },
+  {
+    "id": "1VzOlYFFSnR0kYFNigtuIl505R35m9xMf",
+    "file": "StoryLog_Slave.png",
+    "name": "노예",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 2,
+    "location": "메인 스토리 · 제2장"
+  },
+  {
+    "id": "138QEn5im9F9bnJN5twGKuexGwnuIkH8X",
+    "file": "StoryLog_Sode.png",
+    "name": "소드",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 2,
+    "location": "메인 스토리 · 제2장"
+  },
+  {
+    "id": "1t3Z6KmYjfESabUFKwlbl__aVx08pwi9C",
+    "file": "StoryLog_Sonya.png",
+    "name": "소냐",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 2,
+    "location": "메인 스토리 · 제2장"
+  },
+  {
+    "id": "1acaFODv0EF-Roxy5ZpLm0TAxX6dRR3xf",
+    "file": "StoryLog_Abnormality_Employee.png",
+    "name": "환상체 직원",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 3,
+    "location": "메인 스토리 · 제3장"
+  },
+  {
+    "id": "1brs741lzz_E_h9NFn-DbK1HZ21Pb8T5B",
+    "file": "StoryLog_Cromer.png",
+    "name": "크로머",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 3,
+    "location": "메인 스토리 · 제3장"
+  },
+  {
+    "id": "1V-D4ra9Suzx6gQhVCyom1O49ORSLhZgp",
+    "file": "StoryLog_CromerMonster.png",
+    "name": "크로머 (괴물)",
+    "excluded": false,
+    "aliases": [
+      "크로머"
+    ],
+    "chapter": 3,
+    "location": "메인 스토리 · 제3장"
+  },
+  {
+    "id": "1dr6TMe9AQDeElL_4HZnfGCCIt4u40aEU",
+    "file": "StoryLog_Demian_School.png",
+    "name": "데미안 (학교)",
+    "excluded": false,
+    "aliases": [
+      "데미안"
+    ],
+    "chapter": 3,
+    "location": "메인 스토리 · 제3장"
+  },
+  {
+    "id": "1zJnchCz9OXFY6Z4dQ1yBE0lNM311mzFx",
+    "file": "StoryLog_Demian.png",
+    "name": "데미안",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 3,
+    "location": "메인 스토리 · 제3장"
+  },
+  {
+    "id": "13QzdmR5WRHPrIgA3f4Kylx5tH2FzxBoP",
+    "file": "StoryLog_Demian2.png",
+    "name": "데미안 (2)",
+    "excluded": false,
+    "aliases": [
+      "데미안"
+    ],
+    "chapter": 3,
+    "location": "메인 스토리 · 제3장"
+  },
+  {
+    "id": "1bNpVFgzzLF3tUOu4hOUjMiZ1wzoMOEZo",
+    "file": "StoryLog_EpiLCC.png",
+    "name": "에피 (LCC)",
+    "excluded": false,
+    "aliases": [
+      "에피"
+    ],
+    "chapter": 3,
+    "location": "메인 스토리 · 제3장"
+  },
+  {
+    "id": "1EwJOvkmKfRySVA2DDJgey77K9Fw1UiBv",
+    "file": "StoryLog_Guido.png",
+    "name": "귀도",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 3,
+    "location": "메인 스토리 · 제3장"
+  },
+  {
+    "id": "1uq7tiGzypC9rwRFnJ_o8g4PLUv-HDPJ8",
+    "file": "StoryLog_K_Employee.png",
+    "name": "K사 직원",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 3,
+    "location": "메인 스토리 · 제3장"
+  },
+  {
+    "id": "1vBYAOxAE8pdVAUnabmnAUDHFrl_AzkXS",
+    "file": "StoryLog_N_Employee1.png",
+    "name": "N사 직원 (1)",
+    "excluded": false,
+    "aliases": [
+      "N사 직원"
+    ],
+    "chapter": 3,
+    "location": "메인 스토리 · 제3장"
+  },
+  {
+    "id": "1tmbqdxh0hWjgnYvb4i5ZtlbSgqyFtzc_",
+    "file": "StoryLog_N_Employee2.png",
+    "name": "N사 직원 (2)",
+    "excluded": false,
+    "aliases": [
+      "N사 직원"
+    ],
+    "chapter": 3,
+    "location": "메인 스토리 · 제3장"
+  },
+  {
+    "id": "1e_Eq7V2JJgXUbxMa5XZz2LqcPKcx8qjj",
+    "file": "StoryLog_N_Employee3.png",
+    "name": "N사 직원 (3)",
+    "excluded": false,
+    "aliases": [
+      "N사 직원"
+    ],
+    "chapter": 3,
+    "location": "메인 스토리 · 제3장"
+  },
+  {
+    "id": "1co1uczuNncnMpjXa3mBxUdOd4rGukIn0",
+    "file": "StoryLog_OldCromer.png",
+    "name": "크로머 (과거)",
+    "excluded": false,
+    "aliases": [
+      "크로머"
+    ],
+    "chapter": 3,
+    "location": "메인 스토리 · 제3장"
+  },
+  {
+    "id": "18XsPlQEawh0av2i0e7pXR3DRuAU32sX-",
+    "file": "StoryLog_Siegfried.png",
+    "name": "지크프리트",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 3,
+    "location": "메인 스토리 · 제3장"
+  },
+  {
+    "id": "1HtxbXwFRdOjZhHnTy5sNQOvryhDhr71O",
+    "file": "StoryLog_SodeLCC.png",
+    "name": "소드 (LCC)",
+    "excluded": false,
+    "aliases": [
+      "소드"
+    ],
+    "chapter": 3,
+    "location": "메인 스토리 · 제3장"
+  },
+  {
+    "id": "1FAUd2x9iOILJR5th_RHqNBhhd3yTEsUy",
+    "file": "StoryLog_Alfonso.png",
+    "name": "알폰소",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 4,
+    "location": "메인 스토리 · 제4장"
+  },
+  {
+    "id": "1wbHu39lEpx8IQu2scifF-uwYdHQlLIrV",
+    "file": "StoryLog_Dongback_EGO.png",
+    "name": "동백 (E.G.O)",
+    "excluded": false,
+    "aliases": [
+      "동백"
+    ],
+    "chapter": 4,
+    "location": "메인 스토리 · 제4장"
+  },
+  {
+    "id": "1yHEN2KZBcMfaTOFGWzZThxCe-Cq8fsf4",
+    "file": "StoryLog_Dongback_fox1.png",
+    "name": "동백 (fox1)",
+    "excluded": false,
+    "aliases": [
+      "동백"
+    ],
+    "chapter": 4,
+    "location": "메인 스토리 · 제4장"
+  },
+  {
+    "id": "1F8YKlznPMEGQ8AMkWs-vm6eoWNVlC4mG",
+    "file": "StoryLog_Dongback_past.png",
+    "name": "동백 (과거)",
+    "excluded": false,
+    "aliases": [
+      "동백"
+    ],
+    "chapter": 4,
+    "location": "메인 스토리 · 제4장"
+  },
+  {
+    "id": "1ePKyHDRstEWrlz5tKdi2dcZv4IcxXOib",
+    "file": "StoryLog_Dongback.png",
+    "name": "동백",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 4,
+    "location": "메인 스토리 · 제4장"
+  },
+  {
+    "id": "1WUqQSsKoqsgG1PEaiBoQ6GbuGx4fOnky",
+    "file": "StoryLog_Dongrang_EGO.png",
+    "name": "동랑 (E.G.O)",
+    "excluded": false,
+    "aliases": [
+      "동랑"
+    ],
+    "chapter": 4,
+    "location": "메인 스토리 · 제4장"
+  },
+  {
+    "id": "1GVRramCx8S7VMQwml_4ck5u-10Lmq8A-",
+    "file": "StoryLog_Dongrang.png",
+    "name": "동랑",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 4,
+    "location": "메인 스토리 · 제4장"
+  },
+  {
+    "id": "1uzPwPzW4Gd6rsfgVSc9T3f6V2be2VTZc",
+    "file": "StoryLog_FauSam.png",
+    "name": "파우스트·삼조",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 4,
+    "location": "메인 스토리 · 제4장"
+  },
+  {
+    "id": "13F7uzHtUQ_KOA5M4w-B0r6O33kIGJWXr",
+    "file": "StoryLog_K_3_Soldier.png",
+    "name": "K사 3등급 적출직",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 4,
+    "location": "메인 스토리 · 제4장"
+  },
+  {
+    "id": "1m_vLBCfNGnOzbECyjJ75FjeajM7Q52iW",
+    "file": "StoryLog_K_Machine1.png",
+    "name": "K사 기계 (1)",
+    "excluded": false,
+    "aliases": [
+      "K사 기계"
+    ],
+    "chapter": 4,
+    "location": "메인 스토리 · 제4장"
+  },
+  {
+    "id": "1-V4jf9OSDpN__Us5K3aUpei-Mkk5RSj7",
+    "file": "StoryLog_K_machine2.png",
+    "name": "K사 기계 (2)",
+    "excluded": false,
+    "aliases": [
+      "K사 기계"
+    ],
+    "chapter": 4,
+    "location": "메인 스토리 · 제4장"
+  },
+  {
+    "id": "1BzBgvqkSeSH8Z4C7uoa68pRfEYFBO9DN",
+    "file": "StoryLog_K_Machine3.png",
+    "name": "K사 기계 (3)",
+    "excluded": false,
+    "aliases": [
+      "K사 기계"
+    ],
+    "chapter": 4,
+    "location": "메인 스토리 · 제4장"
+  },
+  {
+    "id": "1EERafrf2NoSqXLxEf-pbfqG6txuwMhbE",
+    "file": "StoryLog_K_people.png",
+    "name": "K사 주민",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 4,
+    "location": "메인 스토리 · 제4장"
+  },
+  {
+    "id": "1N3KtOYrxR2FGfVaZJLASH6MCPDAsZamp",
+    "file": "StoryLog_K_Researcher.png",
+    "name": "K사 연구원",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 4,
+    "location": "메인 스토리 · 제4장"
+  },
+  {
+    "id": "1gNzME_A1tklusbnP9EWXwupR_ARZbVUZ",
+    "file": "StoryLog_K_Researcher2.png",
+    "name": "K사 연구원 (2)",
+    "excluded": false,
+    "aliases": [
+      "K사 연구원"
+    ],
+    "chapter": 4,
+    "location": "메인 스토리 · 제4장"
+  },
+  {
+    "id": "1RH1u08W0w3ioImaL8sMNHy3cXxOPKCuY",
+    "file": "StoryLog_Liberation_EGO.png",
+    "name": "기술해방연합 조직원 (E.G.O)",
+    "excluded": false,
+    "aliases": [
+      "기술해방연합 조직원"
+    ],
+    "chapter": 4,
+    "location": "메인 스토리 · 제4장"
+  },
+  {
+    "id": "1CcMYfZw9E0z5_EHKxCGdBZ6i9pdlLP1j",
+    "file": "StoryLog_Liberation_Tear.png",
+    "name": "기술해방연합 조직원 (Tear)",
+    "excluded": false,
+    "aliases": [
+      "기술해방연합 조직원"
+    ],
+    "chapter": 4,
+    "location": "메인 스토리 · 제4장"
+  },
+  {
+    "id": "1ZkiCJstY785kqCylGPvSErWEIw9vWV8h",
+    "file": "StoryLog_Liberation1.png",
+    "name": "기술해방연합 조직원 (1)",
+    "excluded": false,
+    "aliases": [
+      "기술해방연합 조직원"
+    ],
+    "chapter": 4,
+    "location": "메인 스토리 · 제4장"
+  },
+  {
+    "id": "15BdFpinfwrcTZgHcjDryYHKxV-9y96JF",
+    "file": "StoryLog_LobotomyMachine.png",
+    "name": "로보토미 기계",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 4,
+    "location": "메인 스토리 · 제4장"
+  },
+  {
+    "id": "1KXPBuVz9t5xI7ONMqTkFiMs_QLBIaz2A",
+    "file": "StoryLog_LobotomyMachine2.png",
+    "name": "로보토미 기계 (2)",
+    "excluded": false,
+    "aliases": [
+      "로보토미 기계"
+    ],
+    "chapter": 4,
+    "location": "메인 스토리 · 제4장"
+  },
+  {
+    "id": "14ExmTPC5q42uXftZGnPmTGJHjoBZ2oOF",
+    "file": "StoryLog_Marie.png",
+    "name": "마리",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 4,
+    "location": "메인 스토리 · 제4장"
+  },
+  {
+    "id": "1HjdNkAyxsU3Pu7YjF1mPUGfherqudqnr",
+    "file": "StoryLog_Niko.png",
+    "name": "니코",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 4,
+    "location": "메인 스토리 · 제4장"
+  },
+  {
+    "id": "1-igTUgHuK0ldqMCpP5-_hdqqELTZEA1Z",
+    "file": "StoryLog_Ran.png",
+    "name": "란",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 4,
+    "location": "메인 스토리 · 제4장"
+  },
+  {
+    "id": "1MTyzvB1aZfOq4WgIL_oSwElSJQx44BVV",
+    "file": "StoryLog_Rose2.png",
+    "name": "장미스패너 공방 해결사 (2)",
+    "excluded": false,
+    "aliases": [
+      "장미스패너 공방 해결사"
+    ],
+    "chapter": 4,
+    "location": "메인 스토리 · 제4장"
+  },
+  {
+    "id": "1DSA-XxImXr6zj4vI8_9t1cuuiIgB6JOc",
+    "file": "StoryLog_Surenne.png",
+    "name": "슈렌느",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 4,
+    "location": "메인 스토리 · 제4장"
+  },
+  {
+    "id": "1fr5yqXU6JOUl3NUOFF0ptl03izwkpI6R",
+    "file": "StoryLog_T_Employee1.png",
+    "name": "T사 직원 (1)",
+    "excluded": false,
+    "aliases": [
+      "T사 직원"
+    ],
+    "chapter": 4,
+    "location": "메인 스토리 · 제4장"
+  },
+  {
+    "id": "1-rBK5nQn30uYH9dza-H5ap2PfOwArmWZ",
+    "file": "StoryLog_T_Employee2.png",
+    "name": "T사 직원 (2)",
+    "excluded": false,
+    "aliases": [
+      "T사 직원"
+    ],
+    "chapter": 4,
+    "location": "메인 스토리 · 제4장"
+  },
+  {
+    "id": "1idZvGpdQdDb6hEgAm4jp3bViiCFM2tjV",
+    "file": "StoryLog_Araya_2.png",
+    "name": "아뢰야 (2)",
+    "excluded": false,
+    "aliases": [
+      "아뢰야"
+    ],
+    "chapter": 9,
+    "location": "메인 스토리 · 제9장"
+  },
+  {
+    "id": "1N14mZVWu3d_Vpp8ZypRwyelsVga5Hnb1",
+    "file": "StoryLog_Araya_Suit.png",
+    "name": "아뢰야 (정장)",
+    "excluded": false,
+    "aliases": [
+      "아뢰야"
+    ],
+    "chapter": 9,
+    "location": "메인 스토리 · 제9장"
+  },
+  {
+    "id": "1DG_eX3g7ST6Qw5Hdi173RIPJhdsyJ_85",
+    "file": "StoryLog_Araya_Suit2.png",
+    "name": "아뢰야 (정장 2)",
+    "excluded": false,
+    "aliases": [
+      "아뢰야"
+    ],
+    "chapter": 9,
+    "location": "메인 스토리 · 제9장"
+  },
+  {
+    "id": "19YlFA6p0i_bs_TG5UNHDFv6t0FzkVmrM",
+    "file": "StoryLog_Araya_Teen.png",
+    "name": "아뢰야 (10대)",
+    "excluded": false,
+    "aliases": [
+      "아뢰야"
+    ],
+    "chapter": 9,
+    "location": "메인 스토리 · 제9장"
+  },
+  {
+    "id": "1QlYbQk0op-dM-OuGVH_-0oqx6e0QAL70",
+    "file": "StoryLog_Araya_Twenties.png",
+    "name": "아뢰야 (20대)",
+    "excluded": false,
+    "aliases": [
+      "아뢰야"
+    ],
+    "chapter": 9,
+    "location": "메인 스토리 · 제9장"
+  },
+  {
+    "id": "1U9Ugvibhr8P4y-r_hxwjQuaXmUi-iwGN",
+    "file": "StoryLog_Araya.png",
+    "name": "아뢰야",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 9,
+    "location": "메인 스토리 · 제9장"
+  },
+  {
+    "id": "1JJ_Aepv_-L-bZkm_GwNHuJLnJ4orfh7w",
+    "file": "StoryLog_Cherry_LCD.png",
+    "name": "앵두 (LCD)",
+    "excluded": false,
+    "aliases": [
+      "앵두"
+    ],
+    "chapter": 9,
+    "location": "메인 스토리 · 제9장"
+  },
+  {
+    "id": "1lpptlpHy1RjWG4MNS-Z7DK2X6GRluOZP",
+    "file": "StoryLog_Ezra.png",
+    "name": "에즈라",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 9,
+    "location": "메인 스토리 · 제9장"
+  },
+  {
+    "id": "10sHIUEJCD-tE3Fl8mPlqBOgF_OBwGpuZ",
+    "file": "StoryLog_Gregor_King.png",
+    "name": "그레고르 (왕)",
+    "excluded": false,
+    "aliases": [
+      "그레고르"
+    ],
+    "chapter": 9,
+    "location": "메인 스토리 · 제9장"
+  },
+  {
+    "id": "1E95KrJblZhXZks5I6To806rtgpIUCQ1b",
+    "file": "StoryLog_Hohenheim2.png",
+    "name": "호엔하임 (2)",
+    "excluded": false,
+    "aliases": [
+      "호엔하임"
+    ],
+    "chapter": 9,
+    "location": "메인 스토리 · 제9장"
+  },
+  {
+    "id": "1tZoCW9xskB6XhqoPml1WpBc1gphuM7M9",
+    "file": "StoryLog_IndexAgent.png",
+    "name": "검지 수행자",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 9,
+    "location": "메인 스토리 · 제9장"
+  },
+  {
+    "id": "1S1pYuSTfZWmz6-p0CrG27QrOn4GLDtd0",
+    "file": "StoryLog_IndexChild.png",
+    "name": "검지 아이",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 9,
+    "location": "메인 스토리 · 제9장"
+  },
+  {
+    "id": "1s4wA_mU7rVcRZw8U6zdd-EAZzKyUcH4x",
+    "file": "StoryLog_IndexChild2.png",
+    "name": "검지 아이 (2)",
+    "excluded": false,
+    "aliases": [
+      "검지 아이"
+    ],
+    "chapter": 9,
+    "location": "메인 스토리 · 제9장"
+  },
+  {
+    "id": "15lvH1Fddby9op1XMG080M0z5ktpj53H_",
+    "file": "StoryLog_IndexFather.png",
+    "name": "검지 아버지",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 9,
+    "location": "메인 스토리 · 제9장"
+  },
+  {
+    "id": "1L_epuUCkXT7-CYvHeNEBkqUPAsqRF2m0",
+    "file": "StoryLog_IndexFather2.png",
+    "name": "검지 아버지 (2)",
+    "excluded": false,
+    "aliases": [
+      "검지 아버지"
+    ],
+    "chapter": 9,
+    "location": "메인 스토리 · 제9장"
+  },
+  {
+    "id": "1pit5WM6TEgLi42Q3EAKzMhJQZFKzsg5K",
+    "file": "StoryLog_LittleDoll_1.png",
+    "name": "작은 인형 (1)",
+    "excluded": false,
+    "aliases": [
+      "작은 인형"
+    ],
+    "chapter": 9,
+    "location": "메인 스토리 · 제9장"
+  },
+  {
+    "id": "1fEm0iUwsgirez0IbSNxJhvUHmH8iNOxc",
+    "file": "StoryLog_LittleDoll_2.png",
+    "name": "작은 인형 (2)",
+    "excluded": false,
+    "aliases": [
+      "작은 인형"
+    ],
+    "chapter": 9,
+    "location": "메인 스토리 · 제9장"
+  },
+  {
+    "id": "1RVjQOtLukx19hnjWws2vnPp1--sy5kCP",
+    "file": "StoryLog_MiddleChild.png",
+    "name": "중지 아이",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 9,
+    "location": "메인 스토리 · 제9장"
+  },
+  {
+    "id": "1UlDx7pKsFJp3QceobwpE3mbvr7J75-PG",
+    "file": "StoryLog_MiddleFather.png",
+    "name": "중지 아버지",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 9,
+    "location": "메인 스토리 · 제9장"
+  },
+  {
+    "id": "18efuZew0FZR1RX_79OuAYrxCHdq_Pem3",
+    "file": "StoryLog_Moses_Smoke.png",
+    "name": "모제스 (연기)",
+    "excluded": false,
+    "aliases": [
+      "모제스"
+    ],
+    "chapter": 9,
+    "location": "메인 스토리 · 제9장"
+  },
+  {
+    "id": "1dtTLPI9UhaA6xWJUlgGhICRkEmaHpqhR",
+    "file": "StoryLog_Nellie2.png",
+    "name": "넬리 (2)",
+    "excluded": false,
+    "aliases": [
+      "넬리"
+    ],
+    "chapter": 9,
+    "location": "메인 스토리 · 제9장"
+  },
+  {
+    "id": "1iG2Kt9xlliZoP4LcMqZTQy3Sd3Cp7W9M",
+    "file": "StoryLog_PinkyChild.png",
+    "name": "소지 아이",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 9,
+    "location": "메인 스토리 · 제9장"
+  },
+  {
+    "id": "1U3Dr5BIzoIxIOt8T5zyKt_hBsbkOeOUD",
+    "file": "StoryLog_PinkyFather.png",
+    "name": "소지 아버지",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 9,
+    "location": "메인 스토리 · 제9장"
+  },
+  {
+    "id": "1RG3x7U5d742drwMcHS7eVymTGHrBqG-_",
+    "file": "StoryLog_Ravi.png",
+    "name": "라비",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 9,
+    "location": "메인 스토리 · 제9장"
+  },
+  {
+    "id": "1mU_hMxfLDPoWyJzD-Hw15CbaAXT3ll5p",
+    "file": "StoryLog_RingChild_1.png",
+    "name": "약지 아이 (1)",
+    "excluded": false,
+    "aliases": [
+      "약지 아이"
+    ],
+    "chapter": 9,
+    "location": "메인 스토리 · 제9장"
+  },
+  {
+    "id": "1em9gYMWWsAXZnjtPNKCYFS8DVYr5MaaD",
+    "file": "StoryLog_RingChild_2.png",
+    "name": "약지 아이 (2)",
+    "excluded": false,
+    "aliases": [
+      "약지 아이"
+    ],
+    "chapter": 9,
+    "location": "메인 스토리 · 제9장"
+  },
+  {
+    "id": "1NDRa5A1Y9wi5fLsm8cNsoZWKYH2pe6el",
+    "file": "StoryLog_RingFather.png",
+    "name": "약지 아버지",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 9,
+    "location": "메인 스토리 · 제9장"
+  },
+  {
+    "id": "1DY34t_SEZ7ItPbKuYlJkuKxWDVTeVtWj",
+    "file": "StoryLog_RyoshuB.png",
+    "name": "료슈",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 9,
+    "location": "메인 스토리 · 제9장"
+  },
+  {
+    "id": "1eO7yPsUxncUF4KjiR9AG_MMZ6p08_av5",
+    "file": "StoryLog_Sinclair_War1.png",
+    "name": "싱클레어 (전쟁 1)",
+    "excluded": false,
+    "aliases": [
+      "싱클레어"
+    ],
+    "chapter": 9,
+    "location": "메인 스토리 · 제9장"
+  },
+  {
+    "id": "13hgdsK-h6M-nccJBEMub2vDAvt-j3uEM",
+    "file": "StoryLog_ThumbChild.png",
+    "name": "엄지 아이",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 9,
+    "location": "메인 스토리 · 제9장"
+  },
+  {
+    "id": "1S4ofS6fyaSA6x5vLXgnmM-xGeYoMTi-Q",
+    "file": "StoryLog_ThumbFather.png",
+    "name": "엄지 아버지",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 9,
+    "location": "메인 스토리 · 제9장"
+  },
+  {
+    "id": "14LxRz97RvSGKUc3LSlNWhskmoWhRNbXy",
+    "file": "StoryLog_Vespa.png",
+    "name": "베스파",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 9,
+    "location": "메인 스토리 · 제9장"
+  },
+  {
+    "id": "1WcyiyXPQYWerI_fuI9iaONjMI2cgoo9d",
+    "file": "StoryLog_Wadjet_Elite.png",
+    "name": "와제트 (정예)",
+    "excluded": false,
+    "aliases": [
+      "와제트"
+    ],
+    "chapter": 9,
+    "location": "메인 스토리 · 제9장"
+  },
+  {
+    "id": "1kjwKlMaGXkC420oJsBGGSjiJwlsxAkxW",
+    "file": "StoryLog_Wadjet_Soldier.png",
+    "name": "와제트 (병사)",
+    "excluded": false,
+    "aliases": [
+      "와제트"
+    ],
+    "chapter": 9,
+    "location": "메인 스토리 · 제9장"
+  },
+  {
+    "id": "1eacj2yTgDPzg15v583mWSJggvYCaArlY",
+    "file": "StoryLog_Yoshihide.png",
+    "name": "요시히데",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 9,
+    "location": "메인 스토리 · 제9장"
+  },
+  {
+    "id": "1srt9ZmgQi6JaUSeaoaw2Cp2Iop3utdP-",
+    "file": "StoryLog_Yoshihide2.png",
+    "name": "요시히데 (2)",
+    "excluded": false,
+    "aliases": [
+      "요시히데"
+    ],
+    "chapter": 9,
+    "location": "메인 스토리 · 제9장"
+  },
+  {
+    "id": "1W6ot-eCXZrF9lQJqqlfzyl_LYeq4qWg5",
+    "file": "StoryLog_Ahab_EGO.png",
+    "name": "에이해브 (E.G.O)",
+    "excluded": false,
+    "aliases": [
+      "에이해브"
+    ],
+    "chapter": 5,
+    "location": "메인 스토리 · 제5장"
+  },
+  {
+    "id": "1PrWDDx5ekFqR4mZp5XSVBEbhNgcGH02R",
+    "file": "StoryLog_Ahab_Past.png",
+    "name": "에이해브 (과거)",
+    "excluded": false,
+    "aliases": [
+      "에이해브"
+    ],
+    "chapter": 5,
+    "location": "메인 스토리 · 제5장"
+  },
+  {
+    "id": "1b1x141uZ1SVeZypn1VjgYKSO-KLWg5MI",
+    "file": "StoryLog_Ahab.png",
+    "name": "에이해브",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 5,
+    "location": "메인 스토리 · 제5장"
+  },
+  {
+    "id": "1sAcJ-O4llQV5SaTexD5dO57A5kn6Y6V2",
+    "file": "StoryLog_BigBrother_Glass.png",
+    "name": "중지 큰 형님 (안경)",
+    "excluded": false,
+    "aliases": [
+      "중지 큰 형님"
+    ],
+    "chapter": 5,
+    "location": "메인 스토리 · 제5장"
+  },
+  {
+    "id": "15DCtt_cLrQ7kbAoK75mpqs4B8Sr05Nb6",
+    "file": "StoryLog_BigBrother_Glow.png",
+    "name": "중지 큰 형님 (발광)",
+    "excluded": false,
+    "aliases": [
+      "중지 큰 형님"
+    ],
+    "chapter": 5,
+    "location": "메인 스토리 · 제5장"
+  },
+  {
+    "id": "14T3Ha7RrIH4qPO2Wa_OQD7IR2-9bbdct",
+    "file": "StoryLog_BigBrother_Hurt.png",
+    "name": "중지 큰 형님 (부상)",
+    "excluded": false,
+    "aliases": [
+      "중지 큰 형님"
+    ],
+    "chapter": 5,
+    "location": "메인 스토리 · 제5장"
+  },
+  {
+    "id": "13YlWtEBhVIpFLdstZCF-GR9myRNaqeVw",
+    "file": "StoryLog_BigBrother_NoGlass.png",
+    "name": "중지 큰 형님 (안경 없음)",
+    "excluded": false,
+    "aliases": [
+      "중지 큰 형님"
+    ],
+    "chapter": 5,
+    "location": "메인 스토리 · 제5장"
+  },
+  {
+    "id": "1Kp2tRRBttCY5G1NQDADiLg0G77tnA8eP",
+    "file": "StoryLog_Club_People.png",
+    "name": "클럽 사람",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 5,
+    "location": "메인 스토리 · 제5장"
+  },
+  {
+    "id": "1r1x9Lib6ET9utumV56OJ2CsNJ_0hxvTz",
+    "file": "StoryLog_HookPirate_1.png",
+    "name": "갈고리 사무소 해적 (1)",
+    "excluded": false,
+    "aliases": [
+      "갈고리 사무소 해적"
+    ],
+    "chapter": 5,
+    "location": "메인 스토리 · 제5장"
+  },
+  {
+    "id": "1rHlbIDiufuB4KFpR8vFcRYbXzVKPTL1i",
+    "file": "StoryLog_HookPirate_2.png",
+    "name": "갈고리 사무소 해적 (2)",
+    "excluded": false,
+    "aliases": [
+      "갈고리 사무소 해적"
+    ],
+    "chapter": 5,
+    "location": "메인 스토리 · 제5장"
+  },
+  {
+    "id": "1rvSi25nL3AxKLTj790zapdCTdPmTb1i2",
+    "file": "StoryLog_HookPirate_3.png",
+    "name": "갈고리 사무소 해적 (3)",
+    "excluded": false,
+    "aliases": [
+      "갈고리 사무소 해적"
+    ],
+    "chapter": 5,
+    "location": "메인 스토리 · 제5장"
+  },
+  {
+    "id": "15VWds-E_Uczp5G1pO-RzQOznnXaqBeTF",
+    "file": "StoryLog_HookPirate_4.png",
+    "name": "갈고리 사무소 해적 (4)",
+    "excluded": false,
+    "aliases": [
+      "갈고리 사무소 해적"
+    ],
+    "chapter": 5,
+    "location": "메인 스토리 · 제5장"
+  },
+  {
+    "id": "1UGwky30chivJaRNgwzO9pKJBhPtH2L2S",
+    "file": "StoryLog_HookPirate_5.png",
+    "name": "갈고리 사무소 해적 (5)",
+    "excluded": false,
+    "aliases": [
+      "갈고리 사무소 해적"
+    ],
+    "chapter": 5,
+    "location": "메인 스토리 · 제5장"
+  },
+  {
+    "id": "1jGsxfi2AcQcSM4KiRCshbGxYhGZ7hKim",
+    "file": "StoryLog_Hurt_Smee.png",
+    "name": "스미 (부상)",
+    "excluded": false,
+    "aliases": [
+      "스미"
+    ],
+    "chapter": 5,
+    "location": "메인 스토리 · 제5장"
+  },
+  {
+    "id": "1Ka-XqS0eCgkxqqZAAFA1UOsBR-8jKW5F",
+    "file": "StoryLog_IndigoMan_Hood.png",
+    "name": "남색의 노인 (후드)",
+    "excluded": false,
+    "aliases": [
+      "남색의 노인"
+    ],
+    "chapter": 5,
+    "location": "메인 스토리 · 제5장"
+  },
+  {
+    "id": "1ofF9_aDiIiqtGu1Ia6wKTPnDjMZRqNKK",
+    "file": "StoryLog_IndigoMan_Weapon.png",
+    "name": "남색의 노인 (무기)",
+    "excluded": false,
+    "aliases": [
+      "남색의 노인"
+    ],
+    "chapter": 5,
+    "location": "메인 스토리 · 제5장"
+  },
+  {
+    "id": "1GYb2fJ0c0C5-IWCA0WI1_iWVlXoCzl9k",
+    "file": "StoryLog_IndigoMan.png",
+    "name": "남색의 노인",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 5,
+    "location": "메인 스토리 · 제5장"
+  },
+  {
+    "id": "19UEAAk9oUJPOTVDkSy77n9mPTg996fcf",
+    "file": "StoryLog_Ishmael_Past.png",
+    "name": "이스마엘 (과거)",
+    "excluded": false,
+    "aliases": [
+      "이스마엘"
+    ],
+    "chapter": 5,
+    "location": "메인 스토리 · 제5장"
+  },
+  {
+    "id": "1rAbxI5wdLZSXeUst6qM03lIVGkYsvXsO",
+    "file": "StoryLog_LCCB_White1.png",
+    "name": "LCCB 직원 (1)",
+    "excluded": false,
+    "aliases": [
+      "LCCB 직원"
+    ],
+    "chapter": 5,
+    "location": "메인 스토리 · 제5장"
+  },
+  {
+    "id": "15DFDv9rKbwmDPNlbGlML-Haw46lzZSCr",
+    "file": "StoryLog_Lim.png",
+    "name": "림",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 5,
+    "location": "메인 스토리 · 제5장"
+  },
+  {
+    "id": "1tvfnb20SPmGbqs-xzGEVdBBzeAulh_JF",
+    "file": "StoryLog_LittleBrother.png",
+    "name": "중지 작은 아우",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 5,
+    "location": "메인 스토리 · 제5장"
+  },
+  {
+    "id": "1b1nwMlMt8RvhZr1AqzSbxmNJNUZcI1Ob",
+    "file": "StoryLog_PequodTown_People1.png",
+    "name": "피쿼드 마을 주민 (1)",
+    "excluded": false,
+    "aliases": [
+      "피쿼드 마을 주민"
+    ],
+    "chapter": 5,
+    "location": "메인 스토리 · 제5장"
+  },
+  {
+    "id": "15NSRKleNyYirHz0Al-d3X4rygrC9wbcy",
+    "file": "StoryLog_PequodTown_People2.png",
+    "name": "피쿼드 마을 주민 (2)",
+    "excluded": false,
+    "aliases": [
+      "피쿼드 마을 주민"
+    ],
+    "chapter": 5,
+    "location": "메인 스토리 · 제5장"
+  },
+  {
+    "id": "1XLUTXs-elzomyzmURCHiJkR_1ERIBhJk",
+    "file": "StoryLog_Pilot.png",
+    "name": "파일럿",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 5,
+    "location": "메인 스토리 · 제5장"
+  },
+  {
+    "id": "1mvdfajfxMLEUVN28gt_CF7RpZ9noqFbZ",
+    "file": "StoryLog_Pip_Past.png",
+    "name": "핍 (과거)",
+    "excluded": false,
+    "aliases": [
+      "핍"
+    ],
+    "chapter": 5,
+    "location": "메인 스토리 · 제5장"
+  },
+  {
+    "id": "1I2AkAqPzWuZMKhR-I9X0rSI8ZKdYoVHP",
+    "file": "StoryLog_Pip.png",
+    "name": "핍",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 5,
+    "location": "메인 스토리 · 제5장"
+  },
+  {
+    "id": "1Z3Rpt78smdpIvif_4yoe0Jq8GYWEKWnH",
+    "file": "StoryLog_Queequeg_Mask.png",
+    "name": "퀴케그 (가면)",
+    "excluded": false,
+    "aliases": [
+      "퀴케그"
+    ],
+    "chapter": 5,
+    "location": "메인 스토리 · 제5장"
+  },
+  {
+    "id": "1OppGDeA5tj2glZLpk_Vt7dsL2XkQjk5r",
+    "file": "StoryLog_Queequeg.png",
+    "name": "퀴케그",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 5,
+    "location": "메인 스토리 · 제5장"
+  },
+  {
+    "id": "1PQYKSgrutkBrQ1TryX8r5YKSuJjPxmz7",
+    "file": "StoryLog_Smee.png",
+    "name": "스미",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 5,
+    "location": "메인 스토리 · 제5장"
+  },
+  {
+    "id": "1q5JGnfKBz1hVuZePEMb3EdjjkdOAwmmH",
+    "file": "StoryLog_Starbuck_Past.png",
+    "name": "스타벅 (과거)",
+    "excluded": false,
+    "aliases": [
+      "스타벅"
+    ],
+    "chapter": 5,
+    "location": "메인 스토리 · 제5장"
+  },
+  {
+    "id": "12W51d-CU6ll2D_WzAglMpXCASjPsFP6I",
+    "file": "StoryLog_Starbuck.png",
+    "name": "스타벅",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 5,
+    "location": "메인 스토리 · 제5장"
+  },
+  {
+    "id": "10xS6LDtTYPRzjStpkHUz8eDrdS3PlAg8",
+    "file": "StoryLog_Stubb.png",
+    "name": "스터브",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 5,
+    "location": "메인 스토리 · 제5장"
+  },
+  {
+    "id": "1Na7bKhGwSsyyHwaYV1PhoOceDJaUonRN",
+    "file": "StoryLog_Asia.png",
+    "name": "아세아",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 6,
+    "location": "메인 스토리 · 제6장"
+  },
+  {
+    "id": "1Fu7AvANutxuqDPh1BpGOD1X5GQ4f95Bd",
+    "file": "StoryLog_Catherine_Baby.png",
+    "name": "캐서린 (어린 시절)",
+    "excluded": false,
+    "aliases": [
+      "캐서린"
+    ],
+    "chapter": 6,
+    "location": "메인 스토리 · 제6장"
+  },
+  {
+    "id": "1P8i-XnnU-fG8HhLvILX_vcyIbk1ZqFZ3",
+    "file": "StoryLog_Catherine.png",
+    "name": "캐서린",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 6,
+    "location": "메인 스토리 · 제6장"
+  },
+  {
+    "id": "16noBG-qhQZ04W41lKdQ337qq0bUZYU_R",
+    "file": "StoryLog_CatherineDark.png",
+    "name": "캐서린 (어두운 모습)",
+    "excluded": false,
+    "aliases": [
+      "캐서린"
+    ],
+    "chapter": 6,
+    "location": "메인 스토리 · 제6장"
+  },
+  {
+    "id": "1jd-fHuz6OCJbohh3CTAX9z0KDA-YSX7-",
+    "file": "StoryLog_Deadrabbits_1.png",
+    "name": "데드레빗츠 조직원 (1)",
+    "excluded": false,
+    "aliases": [
+      "데드레빗츠 조직원"
+    ],
+    "chapter": 6,
+    "location": "메인 스토리 · 제6장"
+  },
+  {
+    "id": "1RQZanG6fOkA2OCp7kPcXDvYQuAdksVOl",
+    "file": "StoryLog_Deadrabbits_2.png",
+    "name": "데드레빗츠 조직원 (2)",
+    "excluded": false,
+    "aliases": [
+      "데드레빗츠 조직원"
+    ],
+    "chapter": 6,
+    "location": "메인 스토리 · 제6장"
+  },
+  {
+    "id": "13LUF1VtIZ9YI6MFl4kGyqVorbZpzahKd",
+    "file": "StoryLog_Deadrabbits_Boss.png",
+    "name": "데드레빗츠 두목",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 6,
+    "location": "메인 스토리 · 제6장"
+  },
+  {
+    "id": "1ig1jGC8kO5S2u9HWx8KlTV12ohZHtRC9",
+    "file": "StoryLog_Deadrabbits_Heathcliff.png",
+    "name": "히스클리프 (데드레빗츠)",
+    "excluded": false,
+    "aliases": [
+      "히스클리프"
+    ],
+    "chapter": 6,
+    "location": "메인 스토리 · 제6장"
+  },
+  {
+    "id": "1H_5ACyzetmimpIlCFI2wFIbzsYbDTnUT",
+    "file": "StoryLog_Heathcliff_Baby_Dirty.png",
+    "name": "히스클리프 (어린 시절, 더러운 모습)",
+    "excluded": false,
+    "aliases": [
+      "히스클리프"
+    ],
+    "chapter": 6,
+    "location": "메인 스토리 · 제6장"
+  },
+  {
+    "id": "1XAESbrnQqrHfaqUkDQdWQHchRjAGIA6T",
+    "file": "StoryLog_Heathcliff_Baby.png",
+    "name": "히스클리프 (어린 시절)",
+    "excluded": false,
+    "aliases": [
+      "히스클리프"
+    ],
+    "chapter": 6,
+    "location": "메인 스토리 · 제6장"
+  },
+  {
+    "id": "1v1Mc_nPPc2n4pfj3teWBQk0xYYL-vlMn",
+    "file": "StoryLog_Heathcliff_Makeup.png",
+    "name": "히스클리프 (분장)",
+    "excluded": false,
+    "aliases": [
+      "히스클리프"
+    ],
+    "chapter": 6,
+    "location": "메인 스토리 · 제6장"
+  },
+  {
+    "id": "18cdVdfhjuVN_crWlNy5Hn-UEcZ2h18TP",
+    "file": "StoryLog_Heathcliff_Past.png",
+    "name": "히스클리프 (과거)",
+    "excluded": false,
+    "aliases": [
+      "히스클리프"
+    ],
+    "chapter": 6,
+    "location": "메인 스토리 · 제6장"
+  },
+  {
+    "id": "1sXu4jSXvWpheHOKrTEXPKXs_ragyM75f",
+    "file": "StoryLog_Heathcliff_Wolf.png",
+    "name": "히스클리프 (늑대)",
+    "excluded": false,
+    "aliases": [
+      "히스클리프"
+    ],
+    "chapter": 6,
+    "location": "메인 스토리 · 제6장"
+  },
+  {
+    "id": "1w4l0HOq6NStnwvN1bYNr5A0U2r6LpwDy",
+    "file": "StoryLog_HeathcliffDark_1.png",
+    "name": "히스클리프 (어두운 모습) (1)",
+    "excluded": false,
+    "aliases": [
+      "히스클리프"
+    ],
+    "chapter": 6,
+    "location": "메인 스토리 · 제6장"
+  },
+  {
+    "id": "1yWYS6qH0uo6_cNZWdnUbgK-_FUcI1A3n",
+    "file": "StoryLog_Hindley_Baby.png",
+    "name": "힌들리 (어린 시절)",
+    "excluded": false,
+    "aliases": [
+      "힌들리"
+    ],
+    "chapter": 6,
+    "location": "메인 스토리 · 제6장"
+  },
+  {
+    "id": "1jkmSvKfi_DVs8nXDmYGc70UHl42yXI2z",
+    "file": "StoryLog_Hindley_Clean.png",
+    "name": "힌들리 (단정한 모습)",
+    "excluded": false,
+    "aliases": [
+      "힌들리"
+    ],
+    "chapter": 6,
+    "location": "메인 스토리 · 제6장"
+  },
+  {
+    "id": "1Pr-bOJOzA1gqOLhVc4HYhe5W6wGnB6vo",
+    "file": "StoryLog_Hindley_Wolf.png",
+    "name": "힌들리 (늑대)",
+    "excluded": false,
+    "aliases": [
+      "힌들리"
+    ],
+    "chapter": 6,
+    "location": "메인 스토리 · 제6장"
+  },
+  {
+    "id": "1-Tz0FnLPaVbfkwTsFtLanEumqmrwpe3v",
+    "file": "StoryLog_Hindley.png",
+    "name": "힌들리",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 6,
+    "location": "메인 스토리 · 제6장"
+  },
+  {
+    "id": "18zYCJy2ySrx5OW5JJ7oROITiOHVIsXmD",
+    "file": "StoryLog_Josephine.png",
+    "name": "조세핀",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 6,
+    "location": "메인 스토리 · 제6장"
+  },
+  {
+    "id": "1cHbdjqOQ9vpY-DydsDDqD1VBOX9oTXY2",
+    "file": "StoryLog_Linton.png",
+    "name": "린튼",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 6,
+    "location": "메인 스토리 · 제6장"
+  },
+  {
+    "id": "1et0ahKDj8vaDnjzd8QRyJq_RdOSmZ2Qs",
+    "file": "StoryLog_LintonButler_1.png",
+    "name": "린튼가 집사 (1)",
+    "excluded": false,
+    "aliases": [
+      "린튼가 집사"
+    ],
+    "chapter": 6,
+    "location": "메인 스토리 · 제6장"
+  },
+  {
+    "id": "1lbg53dz2hKp54vMIVWhiknHVgLqGEcdf",
+    "file": "StoryLog_LintonButler_2.png",
+    "name": "린튼가 집사 (2)",
+    "excluded": false,
+    "aliases": [
+      "린튼가 집사"
+    ],
+    "chapter": 6,
+    "location": "메인 스토리 · 제6장"
+  },
+  {
+    "id": "1xe7Hj1R82WNih6plcr4pzHlpRrtH8JHO",
+    "file": "StoryLog_Nellie.png",
+    "name": "넬리",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 6,
+    "location": "메인 스토리 · 제6장"
+  },
+  {
+    "id": "1L4Ox60Z2GkNaH59Jma417SRXTPJ0Eqdp",
+    "file": "StoryLog_OufiBoss_F.png",
+    "name": "외우피 협회 책임자",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 6,
+    "location": "메인 스토리 · 제6장"
+  },
+  {
+    "id": "1IxBTlDMqKQQ2VFqEqcOt4AgcyV-WZTGG",
+    "file": "StoryLog_OufiF_1.png",
+    "name": "외우피 협회 해결사 (1)",
+    "excluded": false,
+    "aliases": [
+      "외우피 협회 해결사"
+    ],
+    "chapter": 6,
+    "location": "메인 스토리 · 제6장"
+  },
+  {
+    "id": "10IF9ksGZELEyMZRuITrc1Y_YQ6l_qQJ3",
+    "file": "StoryLog_OufiF_2.png",
+    "name": "외우피 협회 해결사 (2)",
+    "excluded": false,
+    "aliases": [
+      "외우피 협회 해결사"
+    ],
+    "chapter": 6,
+    "location": "메인 스토리 · 제6장"
+  },
+  {
+    "id": "1MmY1-6uKmQxEZo1Pljj5h29cVf6MlJyx",
+    "file": "StoryLog_T_Gang1.png",
+    "name": "T사 뒷골목 조직원 (1)",
+    "excluded": false,
+    "aliases": [
+      "T사 뒷골목 조직원"
+    ],
+    "chapter": 6,
+    "location": "메인 스토리 · 제6장"
+  },
+  {
+    "id": "1cZpC3DeDM6oja5tdznuK2cVibzD2fWYF",
+    "file": "StoryLog_T_Gang2.png",
+    "name": "T사 뒷골목 조직원 (2)",
+    "excluded": false,
+    "aliases": [
+      "T사 뒷골목 조직원"
+    ],
+    "chapter": 6,
+    "location": "메인 스토리 · 제6장"
+  },
+  {
+    "id": "1Xq7BB8QnBqjsZmD_kyB_YdIo9fadAnvN",
+    "file": "StoryLog_TCorp_People.png",
+    "name": "T사 주민",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 6,
+    "location": "메인 스토리 · 제6장"
+  },
+  {
+    "id": "1NiBzLcVvParGKDudKgiVWASx9wLfcF01",
+    "file": "StoryLog_Alethio.png",
+    "name": "알레시오",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 7,
+    "location": "메인 스토리 · 제7장"
+  },
+  {
+    "id": "1jxdEy7K7zEiCPqOUafk5lSsD2uf6Z9VQ",
+    "file": "StoryLog_Barber_P.png",
+    "name": "이발사 (P)",
+    "excluded": false,
+    "aliases": [
+      "이발사"
+    ],
+    "chapter": 7,
+    "location": "메인 스토리 · 제7장"
+  },
+  {
+    "id": "17znjriZamGM14GBLfMaW9OM5dJsLpXM7",
+    "file": "StoryLog_Barber_staff.png",
+    "name": "이발사 (직원)",
+    "excluded": false,
+    "aliases": [
+      "이발사"
+    ],
+    "chapter": 7,
+    "location": "메인 스토리 · 제7장"
+  },
+  {
+    "id": "1Pd1BCS4D-kQEbww1FLKHcKQgf2NNQ0Gj",
+    "file": "StoryLog_Barber.png",
+    "name": "이발사",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 7,
+    "location": "메인 스토리 · 제7장"
+  },
+  {
+    "id": "1L4CyImRpEZ7VO11P4Nm-EL1DAxUeK_mH",
+    "file": "StoryLog_Bari.png",
+    "name": "바리",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 7,
+    "location": "메인 스토리 · 제7장"
+  },
+  {
+    "id": "1L14IyiCov6mM194Qi13rkocBmCIs6xrG",
+    "file": "StoryLog_BloodHunter.png",
+    "name": "혈귀 사냥꾼",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 7,
+    "location": "메인 스토리 · 제7장"
+  },
+  {
+    "id": "1s58BT6watzTr0kil8VzXrI0mR7j3Vs3t",
+    "file": "StoryLog_Bloodpocket.png",
+    "name": "혈액 주머니",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 7,
+    "location": "메인 스토리 · 제7장"
+  },
+  {
+    "id": "1yPnzy_SEie3e4Bo5GjJ6YgweE-3-ldeo",
+    "file": "StoryLog_Camille_rose.png",
+    "name": "카미유 (rose)",
+    "excluded": false,
+    "aliases": [
+      "카미유"
+    ],
+    "chapter": 7,
+    "location": "메인 스토리 · 제7장"
+  },
+  {
+    "id": "17fRrVtLOUAsj1ctJTts0qmBMTa-v4OaY",
+    "file": "StoryLog_Camille.png",
+    "name": "카미유",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 7,
+    "location": "메인 스토리 · 제7장"
+  },
+  {
+    "id": "1Hxz6hpWtTwDFMYUzq7IZq02iVeD_jiLz",
+    "file": "StoryLog_Cesare.png",
+    "name": "체사레",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 7,
+    "location": "메인 스토리 · 제7장"
+  },
+  {
+    "id": "1jKxe7vGZVQoH_ZuUPfavlewtA1Et4waD",
+    "file": "StoryLog_Dolcinea_P.png",
+    "name": "둘시네아 (P)",
+    "excluded": false,
+    "aliases": [
+      "둘시네아"
+    ],
+    "chapter": 7,
+    "location": "메인 스토리 · 제7장"
+  },
+  {
+    "id": "1sV2ZporZMHY0Y307ZxrMTUnOf9fksZOC",
+    "file": "StoryLog_Dolcinea_staff1.png",
+    "name": "둘시네아 (직원 1)",
+    "excluded": false,
+    "aliases": [
+      "둘시네아"
+    ],
+    "chapter": 7,
+    "location": "메인 스토리 · 제7장"
+  },
+  {
+    "id": "1RVj52WVgqn4URIikOsFj6ksga2Yaz8Fn",
+    "file": "StoryLog_Dolcinea_staff2.png",
+    "name": "둘시네아 (직원 2)",
+    "excluded": false,
+    "aliases": [
+      "둘시네아"
+    ],
+    "chapter": 7,
+    "location": "메인 스토리 · 제7장"
+  },
+  {
+    "id": "17vG3tD4rhyfyH4n3uPMUMkS_IwtxfEcG",
+    "file": "StoryLog_Dolcinea_staff3.png",
+    "name": "둘시네아 (직원 3)",
+    "excluded": false,
+    "aliases": [
+      "둘시네아"
+    ],
+    "chapter": 7,
+    "location": "메인 스토리 · 제7장"
+  },
+  {
+    "id": "1f9a2EH-EE3lKNMsaz4_R0wYitbiY8a1E",
+    "file": "StoryLog_Dolcinea.png",
+    "name": "둘시네아",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 7,
+    "location": "메인 스토리 · 제7장"
+  },
+  {
+    "id": "1609MIvcUwzobhl0IS8tgli07zJQYg1Ah",
+    "file": "StoryLog_Donquixote_NoShoses.png",
+    "name": "돈키호테 (신발 없음)",
+    "excluded": false,
+    "aliases": [
+      "돈키호테"
+    ],
+    "chapter": 7,
+    "location": "메인 스토리 · 제7장"
+  },
+  {
+    "id": "1Oh6VW8tm2oZ-KTuK7ab3l9hLfr5tDWps",
+    "file": "StoryLog_Donquixote_obli.png",
+    "name": "돈키호테 (망각)",
+    "excluded": false,
+    "aliases": [
+      "돈키호테"
+    ],
+    "chapter": 7,
+    "location": "메인 스토리 · 제7장"
+  },
+  {
+    "id": "11mMNw57PosyUYFydJYm94w4gqQgbRZFx",
+    "file": "StoryLog_Donquixote_real_mask_brunch.png",
+    "name": "돈키호테 (진짜, 가면, brunch)",
+    "excluded": false,
+    "aliases": [
+      "돈키호테"
+    ],
+    "chapter": 7,
+    "location": "메인 스토리 · 제7장"
+  },
+  {
+    "id": "1yNcsDtduMmfWLmHRjDfkUrv3Vs8jR046",
+    "file": "StoryLog_Donquixote_real.png",
+    "name": "돈키호테 (진짜)",
+    "excluded": false,
+    "aliases": [
+      "돈키호테"
+    ],
+    "chapter": 7,
+    "location": "메인 스토리 · 제7장"
+  },
+  {
+    "id": "155d2b7DVhrtdazezwue1EKOvgbCDT8TK",
+    "file": "StoryLog_Firefist.png",
+    "name": "불주먹",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 7,
+    "location": "메인 스토리 · 제7장"
+  },
+  {
+    "id": "1ln57JJzw2xnxJU6o0f35fOOrujYxV2eI",
+    "file": "StoryLog_Hanwool.png",
+    "name": "한울",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 7,
+    "location": "메인 스토리 · 제7장"
+  },
+  {
+    "id": "1pN_b4MNYDKTk9AKpwqgIZGSOHA3q-3A7",
+    "file": "StoryLog_Hugo.png",
+    "name": "휴고",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 7,
+    "location": "메인 스토리 · 제7장"
+  },
+  {
+    "id": "14tp2PsBzCpSJZpe-6O_mesQuBQsSRCih",
+    "file": "StoryLog_Knight_shadow.png",
+    "name": "기사의 그림자",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 7,
+    "location": "메인 스토리 · 제7장"
+  },
+  {
+    "id": "11puxXHKXZ8n9B5lwW4cKus1G-ODe0n0d",
+    "file": "StoryLog_Polar.png",
+    "name": "폴라",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 7,
+    "location": "메인 스토리 · 제7장"
+  },
+  {
+    "id": "1D4pvUhRpJ1RVvbyTpHE8sMzBAjAvHlEH",
+    "file": "StoryLog_Priest_P.png",
+    "name": "신부 (P)",
+    "excluded": false,
+    "aliases": [
+      "신부"
+    ],
+    "chapter": 7,
+    "location": "메인 스토리 · 제7장"
+  },
+  {
+    "id": "13FoNdX9W-FHTIbaArtQBfYNUB7EecZbF",
+    "file": "StoryLog_Priest_staff.png",
+    "name": "신부 (직원)",
+    "excluded": false,
+    "aliases": [
+      "신부"
+    ],
+    "chapter": 7,
+    "location": "메인 스토리 · 제7장"
+  },
+  {
+    "id": "1huASRFqQf9DynpVtoDLhXZ9BTDeEsDYe",
+    "file": "StoryLog_Priest.png",
+    "name": "신부",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 7,
+    "location": "메인 스토리 · 제7장"
+  },
+  {
+    "id": "1hF8Jb3_trATIS-Q4n9l6paHkihTR-P7d",
+    "file": "StoryLog_Romero.png",
+    "name": "로메로",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 7,
+    "location": "메인 스토리 · 제7장"
+  },
+  {
+    "id": "1sirjReMaOvJ5LKcIcfVDcqLxpK6XdiTD",
+    "file": "StoryLog_Rose_staff.png",
+    "name": "장미 사냥꾼 직원",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 7,
+    "location": "메인 스토리 · 제7장"
+  },
+  {
+    "id": "1yyOhB0IdReuB6YGnNg0DiTkmczYRcv1s",
+    "file": "StoryLog_Sancho_Past.png",
+    "name": "산초 (과거)",
+    "excluded": false,
+    "aliases": [
+      "산초"
+    ],
+    "chapter": 7,
+    "location": "메인 스토리 · 제7장"
+  },
+  {
+    "id": "1k9MIBY9Y62ZwXHKdg3i5KJvTwHDYOWjj",
+    "file": "StoryLog_Sancho.png",
+    "name": "산초",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 7,
+    "location": "메인 스토리 · 제7장"
+  },
+  {
+    "id": "1C-PVsbvYpEuWeY-p9Af9FKO4vrzrZxHT",
+    "file": "StoryLog_Sanson.png",
+    "name": "산손",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 7,
+    "location": "메인 스토리 · 제7장"
+  },
+  {
+    "id": "1sanCq674h-rdJ2h7JGisusIzGTCZl2uF",
+    "file": "StoryLog_Wb_Mask_shadow.png",
+    "name": "가면 쓴 인물 (그림자)",
+    "excluded": false,
+    "aliases": [
+      "가면 쓴 인물"
+    ],
+    "chapter": 7,
+    "location": "메인 스토리 · 제7장"
+  },
+  {
+    "id": "1jk8H8_Iv-TNqA_gAauKwQgEDDWOvaSzJ",
+    "file": "StoryLog_Wb_Mask.png",
+    "name": "가면 쓴 인물",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 7,
+    "location": "메인 스토리 · 제7장"
+  },
+  {
+    "id": "1gUI2uxKQ3mXKOL8snTtuFPAEgGQALYv3",
+    "file": "StoryLog_Whey.png",
+    "name": "웨이",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 7,
+    "location": "메인 스토리 · 제7장"
+  },
+  {
+    "id": "1HXptUdwa2tauql8lgaGe5U9DoeoXNqon",
+    "file": "StoryLog_Xichun.png",
+    "name": "시춘",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 7,
+    "location": "메인 스토리 · 제7장"
+  },
+  {
+    "id": "1A2NMwg-p-kLwMoOIhda-qIdxkiOfIu2v",
+    "file": "StoryLog_Alan.png",
+    "name": "앨런",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1O_Lo_KDYSMmdqVx5LAMdDaYUSrjbhDvc",
+    "file": "StoryLog_Binah.png",
+    "name": "비나",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1WEY1XP2NSeEMoJd_advleD3HRf1c9FqT",
+    "file": "StoryLog_Bird_Human.png",
+    "name": "새 인간",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1BGm7uCXLIn9HkFn48N-741xISuIW9zgN",
+    "file": "StoryLog_Blood_Pocket.png",
+    "name": "혈액 주머니",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1yys2GqQk_yXo-km5ZK0gZtDFHfrjGSyW",
+    "file": "StoryLog_BoCha.png",
+    "name": "보채",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1-4BGhY_GjilICP3Eeesh7Y922BRcqMFX",
+    "file": "StoryLog_Chungsan.png",
+    "name": "청산",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1H7Ez83aFhkT62R5Le69LQOPjGaeftZlO",
+    "file": "StoryLog_Daiyu_Baby.png",
+    "name": "대옥 (어린 시절)",
+    "excluded": false,
+    "aliases": [
+      "대옥"
+    ],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "11aa6UbYNFP_oKWprdo9oZppZ2Zxg4XAG",
+    "file": "StoryLog_Daiyu.png",
+    "name": "대옥",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1IvivT3yM1iLyYoqSsZqMwgeS4fDr0iIB",
+    "file": "StoryLog_DrunkGuest.png",
+    "name": "취객",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1nA6NVgpuejLWSjGmV6Yfay-T1-li9VdZ",
+    "file": "StoryLog_Gahwan_baby.png",
+    "name": "가환 (어린 시절)",
+    "excluded": false,
+    "aliases": [
+      "가환"
+    ],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1TuF-OQ4nJI1X4aTsgTIdu7jG5z7kAtbc",
+    "file": "StoryLog_Gahwan_Ego.png",
+    "name": "가환 (E.G.O)",
+    "excluded": false,
+    "aliases": [
+      "가환"
+    ],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1uqeJ57sEdISsiAeWoH2ZHzn7vX5n7Oek",
+    "file": "StoryLog_Gahwan_Past.png",
+    "name": "가환 (과거)",
+    "excluded": false,
+    "aliases": [
+      "가환"
+    ],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1Py1iFwB1lTPwOxLdmP5rPdUKiMgigq6A",
+    "file": "StoryLog_GaWonChun.png",
+    "name": "가원춘",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "18pfG8imlymPx5AUtTah-xGEDNdmgvKu0",
+    "file": "StoryLog_Gong_Head.png",
+    "name": "공가 가주",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1HXoE85Ch8MYLfkt2rvevJ5sLH9qRSf5C",
+    "file": "StoryLog_Gong_Head2.png",
+    "name": "공가 가주 (2)",
+    "excluded": false,
+    "aliases": [
+      "공가 가주"
+    ],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1xClkANZisRxn_Wn46KZXNIK9CjL0ZFMX",
+    "file": "StoryLog_Gong_People1.png",
+    "name": "공가 사람 (1)",
+    "excluded": false,
+    "aliases": [
+      "공가 사람"
+    ],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1gcsENx-Bz0AbiAdpOTjumNlt0h1Dd27E",
+    "file": "StoryLog_Gong_People2.png",
+    "name": "공가 사람 (2)",
+    "excluded": false,
+    "aliases": [
+      "공가 사람"
+    ],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1ceMMIPS1H8eCzDx3zCJzOWuJJ7IyRVpw",
+    "file": "StoryLog_Gubo_Ego.png",
+    "name": "구보 (E.G.O)",
+    "excluded": false,
+    "aliases": [
+      "구보"
+    ],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "13BypBPlFWaIrg9Gpa8zkRwWssvFVmafB",
+    "file": "StoryLog_H_Elder1.png",
+    "name": "H사 원로 (1)",
+    "excluded": false,
+    "aliases": [
+      "H사 원로"
+    ],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1B3gj-d4s41EZXRzfZnOlLiRnwS2XflCE",
+    "file": "StoryLog_H_Elder2.png",
+    "name": "H사 원로 (2)",
+    "excluded": false,
+    "aliases": [
+      "H사 원로"
+    ],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1B8MdTJfbqYsdDNcs-p9XXWHnnWs8RyZX",
+    "file": "StoryLog_H_Elder3.png",
+    "name": "H사 원로 (3)",
+    "excluded": false,
+    "aliases": [
+      "H사 원로"
+    ],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1pBbdNGU97gJhIlo2x46QsjpN50Taj_HU",
+    "file": "StoryLog_H_Elder4.png",
+    "name": "H사 원로 (4)",
+    "excluded": false,
+    "aliases": [
+      "H사 원로"
+    ],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1Lw1Sd7IYEXFrCTrHNOXeYV5ozxIJZlV-",
+    "file": "StoryLog_H_Elder5.png",
+    "name": "H사 원로 (5)",
+    "excluded": false,
+    "aliases": [
+      "H사 원로"
+    ],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1A-CGWDV1myMqV35TxtdxQZ7jEUndrLvL",
+    "file": "StoryLog_H_Elder6.png",
+    "name": "H사 원로 (6)",
+    "excluded": false,
+    "aliases": [
+      "H사 원로"
+    ],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1O4moijxnWVjLQJIJgWCcQGryhBud47g9",
+    "file": "StoryLog_H_People.png",
+    "name": "H사 주민",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1VASnu0Kq3cg648W-GHpyw0hkipwAmwT2",
+    "file": "StoryLog_H_Prisoner_Past.png",
+    "name": "H사 죄수 (과거)",
+    "excluded": false,
+    "aliases": [
+      "H사 죄수"
+    ],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "14K1odyvEeSRBZsZVyFRJtpC2VlkIxqGo",
+    "file": "StoryLog_H_Prisoner.png",
+    "name": "H사 죄수",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1U22BaRmTVV3f0B9c3NWP58HVIpYAGwUo",
+    "file": "StoryLog_H_Researcher.png",
+    "name": "H사 연구원",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1sD_qCHxMtJfmi6gZSlkVCbeLk9PXiGCb",
+    "file": "StoryLog_Hanahuda.png",
+    "name": "화투",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1o0o2cI2hICc2gHaKe_adDS1SaLguavAp",
+    "file": "StoryLog_Honglu_baby.png",
+    "name": "홍루 (어린 시절)",
+    "excluded": false,
+    "aliases": [
+      "홍루"
+    ],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1YzOBKQHcEg79HOX8V_D1TxZoDfWIZyHd",
+    "file": "StoryLog_Honglu_Father.png",
+    "name": "홍루 (아버지)",
+    "excluded": false,
+    "aliases": [
+      "홍루"
+    ],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1AyxrNJZiWXuHpQ3Wtb7rKnmoEWmaM8xt",
+    "file": "StoryLog_Honglu_mother.png",
+    "name": "홍루 (어머니)",
+    "excluded": false,
+    "aliases": [
+      "홍루"
+    ],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1docTpcMH_CvhBqcdKBNF_KWwTYkoho-J",
+    "file": "StoryLog_Honglu_Past.png",
+    "name": "홍루 (과거)",
+    "excluded": false,
+    "aliases": [
+      "홍루"
+    ],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1xC_JlIM88v9NBLkNIPKHPc6kxNGkal3a",
+    "file": "StoryLog_HwaJung.png",
+    "name": "화정",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1pCnQopWl5sB3XQYjKqB2i4WJkxOx8nfg",
+    "file": "StoryLog_JarMonster.png",
+    "name": "항아리 괴물",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1vnelVZhORlD-zOImFNITd87YuDbif0JW",
+    "file": "StoryLog_LeiHeng.png",
+    "name": "레이헝",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "15RAoRVm2LFS1KLB96GlkLBElpxJm2tAO",
+    "file": "StoryLog_MadamJia_D.png",
+    "name": "가모 (D)",
+    "excluded": false,
+    "aliases": [
+      "가모"
+    ],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1hqn2Gve95KG3zyVdxmRugydmfHo2c5GQ",
+    "file": "StoryLog_MadamJia_Past.png",
+    "name": "가모 (과거)",
+    "excluded": false,
+    "aliases": [
+      "가모"
+    ],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1A9g2i9WkRUZmBNI4M0bo-lo_Dd_lNWhG",
+    "file": "StoryLog_MadamJia.png",
+    "name": "가모",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1xSR-ww-3Rr076S9JRFu9FUu9rK6t28Kr",
+    "file": "StoryLog_palanquin_worker.png",
+    "name": "가마꾼",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1dv3DuCutEI-xLBK3xso49moExRdtkcUa",
+    "file": "StoryLog_Qiu_Past.png",
+    "name": "치우 (추정) (과거)",
+    "excluded": false,
+    "aliases": [
+      "치우"
+    ],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1s8g3u5QPCBA2-uLnc0t2dLX7r4h1eFsV",
+    "file": "StoryLog_Sa_Solider1.png",
+    "name": "사가 병사 (1)",
+    "excluded": false,
+    "aliases": [
+      "사가 병사"
+    ],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1l4x0SuAb9xWK_u18t8TU8zEoSNVbzVYr",
+    "file": "StoryLog_Sa_Solider2.png",
+    "name": "사가 병사 (2)",
+    "excluded": false,
+    "aliases": [
+      "사가 병사"
+    ],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1-Zb6eoC-YcliajJx95Y2rAtzF8bOQqNx",
+    "file": "StoryLog_Saewha_Live.png",
+    "name": "사애화 (생존)",
+    "excluded": false,
+    "aliases": [
+      "사애화"
+    ],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "11SKp2t58oM1vZakxmzvPuH6JeDtpaG3P",
+    "file": "StoryLog_Sajung.png",
+    "name": "사정",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1rmP9YNI9heoYKHeyt0IU5mJAcuhedLNt",
+    "file": "StoryLog_Servant1.png",
+    "name": "하인 (1)",
+    "excluded": false,
+    "aliases": [
+      "하인"
+    ],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1ptZ3dVEO-4gjp3lYv4_4Uof2saEmyIFT",
+    "file": "StoryLog_Servant2.png",
+    "name": "하인 (2)",
+    "excluded": false,
+    "aliases": [
+      "하인"
+    ],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1fJP_mVYvU4EVq6YkxIWenV0loYi2ihgK",
+    "file": "StoryLog_Servant3.png",
+    "name": "하인 (3)",
+    "excluded": false,
+    "aliases": [
+      "하인"
+    ],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1L37HNYmofpvqbpSwZkBRBkBul9ftn_a2",
+    "file": "StoryLog_Servant4.png",
+    "name": "하인 (4)",
+    "excluded": false,
+    "aliases": [
+      "하인"
+    ],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1ee_1sV4VV92CPffVd24t3WKjzEc9qE3C",
+    "file": "StoryLog_Sul_Solider_Named.png",
+    "name": "설가 병사 (이름 있는 인물)",
+    "excluded": false,
+    "aliases": [
+      "설가 병사"
+    ],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1nZhNpDuS0r3ETVgY6bwMD3zc8PQOFLQB",
+    "file": "StoryLog_Sul_Solider.png",
+    "name": "설가 병사",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1ZCqFofRNb3gmTTIQcnAQi3WaNUlt0uR5",
+    "file": "StoryLog_Sulban_Baby.png",
+    "name": "설반 (어린 시절)",
+    "excluded": false,
+    "aliases": [
+      "설반"
+    ],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1R1sIZEJDCaAjutMpghomur9xvm31Sn3c",
+    "file": "StoryLog_Sulban.png",
+    "name": "설반",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1pVmSuWsbUH8bKD2LRHVuQrlWjmzxQw_M",
+    "file": "StoryLog_Toenail.png",
+    "name": "발톱",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1-cjWvYjK24yRqe7gy-6ALo3DH0CfgNhT",
+    "file": "StoryLog_TumbSoldato_1.png",
+    "name": "엄지 솔다토 (1)",
+    "excluded": false,
+    "aliases": [
+      "엄지 솔다토"
+    ],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1a9l460qjijKTYOtN-BXuHMe_GGcpzx6h",
+    "file": "StoryLog_TumbSoldato_2.png",
+    "name": "엄지 솔다토 (2)",
+    "excluded": false,
+    "aliases": [
+      "엄지 솔다토"
+    ],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1_i50n1TWrK7FA-z_lv0wm4SywmJVOvvJ",
+    "file": "StoryLog_WangDaeIn.png",
+    "name": "왕대인",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1O759x9F_kSM_xdt0o9-GfUnUTwrATI9o",
+    "file": "StoryLog_WangIn.png",
+    "name": "왕인",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1dyqrMX0RWVHFuUlwu2iu97V32er4VYDs",
+    "file": "StoryLog_Weirdo.png",
+    "name": "괴인",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "17CiB2H6LbdSC0n0UNFumAf3HX_sYjk5n",
+    "file": "StoryLog_Xichun_Baby.png",
+    "name": "시춘 (어린 시절)",
+    "excluded": false,
+    "aliases": [
+      "시춘"
+    ],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "11wwm9VDSp14fkrj-AE-ut-tD0Iz6bCk1",
+    "file": "StoryLog_Xiren.png",
+    "name": "습인",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1CEuYPTFPAHQaMCxjQILK8PT2_iRXVLxW",
+    "file": "StoryLog_Zau.png",
+    "name": "자우",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 8,
+    "location": "메인 스토리 · 제8장"
+  },
+  {
+    "id": "1idgPgpfzPTPLPVgPpDZaAA2eE8Fl3Q6M",
+    "file": "1F_Muff.png",
+    "name": "머프 (1F)",
+    "excluded": false,
+    "aliases": [
+      "머프"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1ynaeBlfELdnRS1VFDepnWtAGGdL8yC9i",
+    "file": "2F_NoirCaptain.png",
+    "name": "누아르 대장 (2F)",
+    "excluded": false,
+    "aliases": [
+      "누아르 대장"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "12jiBcmulyU-ms3J5GsF-HDbC0S100VHc",
+    "file": "2F_NoirGuard.png",
+    "name": "누아르 경비 (2F)",
+    "excluded": false,
+    "aliases": [
+      "누아르 경비"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1vIVoD6x5phDCfutVHFbVyJ_Fc5BOIR1x",
+    "file": "2F_PalettePortrait.png",
+    "name": "팔레트 초상 (2F)",
+    "excluded": false,
+    "aliases": [
+      "팔레트 초상"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1QqumdIY_CnP4AmyGBtsa16vufdFsjd_Z",
+    "file": "2F_RedgodPortrait.png",
+    "name": "붉은 신의 초상 (2F)",
+    "excluded": false,
+    "aliases": [
+      "붉은 신의 초상"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "17PD6oNoLj-PZt1DJPd8dYGEeW3AvUUva",
+    "file": "4F_Bag.png",
+    "name": "가방 (4F)",
+    "excluded": false,
+    "aliases": [
+      "가방"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1uq1xuvEcmP1diQzv7GSuQS5Qp9y-7SJ2",
+    "file": "4F_bed.png",
+    "name": "침대 (4F)",
+    "excluded": false,
+    "aliases": [
+      "침대"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1EvJ_wXybs7Sk_gg8gh1EL9UREFDAJSF9",
+    "file": "4F_Curtain.png",
+    "name": "커튼 (4F)",
+    "excluded": false,
+    "aliases": [
+      "커튼"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1Ly1DI5AglAtd9BgkrwB5JrSjobkITB6J",
+    "file": "4F_FourLeg.png",
+    "name": "네 다리 (4F)",
+    "excluded": false,
+    "aliases": [
+      "네 다리"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1MGmx3C4gb2HUIh2UHVRrvvRuO14nrPCp",
+    "file": "4F_Hanger.png",
+    "name": "옷걸이 (4F)",
+    "excluded": false,
+    "aliases": [
+      "옷걸이"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1QfNbSJPtaPz_J2hjLTHKHgnRSnKK97vz",
+    "file": "4F_Happy.png",
+    "name": "해피 (4F)",
+    "excluded": false,
+    "aliases": [
+      "해피"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1tJCUpeKU_D0CgqRy8pwSEzM8pM6UZAzg",
+    "file": "4F_Lamp.png",
+    "name": "램프 (4F)",
+    "excluded": false,
+    "aliases": [
+      "램프"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1p_YfoxaNBuRHjz2NYhAdg4QhL4Xttaiv",
+    "file": "4F_Rouge_BagA.png",
+    "name": "루주 가방 A (4F)",
+    "excluded": false,
+    "aliases": [
+      "루주 가방 A"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1hHv3UodHg1j-Urs87w6TeWP95gXf6zop",
+    "file": "4F_Rouge_BagB.png",
+    "name": "루주 가방 (4F, B)",
+    "excluded": false,
+    "aliases": [
+      "루주 가방"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1k26ncQXLHazVDS_3Tf_-4TC_-olh5FOv",
+    "file": "4F_Rouge_Shoe.png",
+    "name": "루주 신발 (4F)",
+    "excluded": false,
+    "aliases": [
+      "루주 신발"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "16G9DIhNleiabY0cYIK36dvdANpoUST3T",
+    "file": "4F_Sofa.png",
+    "name": "소파 (4F)",
+    "excluded": false,
+    "aliases": [
+      "소파"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1QdB5zyGmSKDdvi1rZ1SV1FSPHXC4IfWP",
+    "file": "4F_Stool.png",
+    "name": "스툴 (4F)",
+    "excluded": false,
+    "aliases": [
+      "스툴"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1Wpe3RGvyrDlZhuHccH6Z4NJ1lcc1G-JK",
+    "file": "4F_TwinsLamp.png",
+    "name": "쌍둥이 램프 (4F)",
+    "excluded": false,
+    "aliases": [
+      "쌍둥이 램프"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1xqsmlLIxCXcbBTyFFyYOo9tal9aJLJ1Z",
+    "file": "B1_FM.png",
+    "name": "확인 필요: FM",
+    "excluded": true,
+    "aliases": [],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1y4tHdnNeWr5xPtbcpLK7bH5BoTHKgW7G",
+    "file": "B1_SousChef.png",
+    "name": "수셰프 (B1)",
+    "excluded": false,
+    "aliases": [
+      "수셰프"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1aTw2tvaUIvGj-avb00cbdV9TtkgYb8Br",
+    "file": "B1F_Godot.png",
+    "name": "고도 (B1F)",
+    "excluded": false,
+    "aliases": [
+      "고도"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1eqifSmxwCTXUYMZ8m0-mgbePVQzb8Ki9",
+    "file": "B1F_Medu1.png",
+    "name": "메두 (B1F, 1)",
+    "excluded": false,
+    "aliases": [
+      "메두"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "18f1q4S65Pa20Gs0zZi_SURamSvck1JoC",
+    "file": "B1F_Medu2.png",
+    "name": "메두 (B1F, 2)",
+    "excluded": false,
+    "aliases": [
+      "메두"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1md9DmIPsgxKsKgj7y_5wr8pa_ig5Koqv",
+    "file": "B2F_Bthread.png",
+    "name": "실 (B2F)",
+    "excluded": false,
+    "aliases": [
+      "실"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1XLBIyWTlzkhnA-ZqlvnV8jCj60_cHxXj",
+    "file": "B2F_Lava.png",
+    "name": "용암 (B2F)",
+    "excluded": false,
+    "aliases": [
+      "용암"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "11Ds8ZlnvwQqlzcNUxwniZug_yYAPbY9x",
+    "file": "B2F_Naked.png",
+    "name": "벌거벗은 인물 (B2F)",
+    "excluded": false,
+    "aliases": [
+      "벌거벗은 인물"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "15FvhMRDcVHjpXEjIJ_n0TeQiI7rm-b90",
+    "file": "B2F_PinKing.png",
+    "name": "핀의 왕 (B2F)",
+    "excluded": false,
+    "aliases": [
+      "핀의 왕"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "11jlWhL9moJwCZBi7_UC1DHzOuCcgpuKR",
+    "file": "B2F_Pins.png",
+    "name": "핀 (B2F)",
+    "excluded": false,
+    "aliases": [
+      "핀"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "13w4x6G6skn4rcxLG8qjs0GHp8YXjxBZC",
+    "file": "B3F_Grower.png",
+    "name": "기르는 자 (B3F)",
+    "excluded": false,
+    "aliases": [
+      "기르는 자"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1Gv08kgEMPCrGLBhEK0mr1ACGqmmoYJ8T",
+    "file": "B3F_LeatherMonster.png",
+    "name": "가죽 괴물 (B3F)",
+    "excluded": false,
+    "aliases": [
+      "가죽 괴물"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1TL7U-Aoqv0zahKyeOEunH5ltm8wFVX8j",
+    "file": "B3F_Scraper.png",
+    "name": "긁어내는 자 (B3F)",
+    "excluded": false,
+    "aliases": [
+      "긁어내는 자"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1Kv6fZJAzEmxSgzPAZNAxFT3dpDhey60H",
+    "file": "LeNeant2.png",
+    "name": "르 네앙 (2)",
+    "excluded": false,
+    "aliases": [
+      "르 네앙"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1qqoiX7TTVWKgGcl48wDyqeCzJhdRG69b",
+    "file": "narration_Damienmom.png",
+    "name": "데미안의 어머니",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1wt__ax7KbMCQOT1-MHWP8VoMI2AI4XqC",
+    "file": "narration_guard.png",
+    "name": "경비",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1UFSHUbY9O2Hr7qGY76nKUuYFpcZvkWeO",
+    "file": "narration_Light.png",
+    "name": "빛",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1w0SPZ4LuwfDqBLnTY5l5DPOcu9hd4Z40",
+    "file": "narration_mary_2.png",
+    "name": "마리 (2)",
+    "excluded": false,
+    "aliases": [
+      "마리"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1X7dWOxSdEZGF5MH3OVlVAaKKEks_Wqb2",
+    "file": "narration_mary.png",
+    "name": "마리",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1XfMEsXEvKHAK3Nv0J0FeSJ88dBGqiSUf",
+    "file": "narration_MEURSAULTmom.png",
+    "name": "뫼르소의 어머니",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1Oun5lOxJwMl9UCgGm7WJfWispMWrWTL9",
+    "file": "StoryLog_2F_Redgod.png",
+    "name": "붉은 신 (2F)",
+    "excluded": false,
+    "aliases": [
+      "붉은 신"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1jCZ1BAQjvbBBY3q96_EdhC9iH66OLkEw",
+    "file": "StoryLog_3F_Rouge_Dome_Before.png",
+    "name": "루주 돔 (3F, 이전)",
+    "excluded": false,
+    "aliases": [
+      "루주 돔"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "11bdVWVuFcA1Aoz4Yp596h0yBA3Q5I4ww",
+    "file": "StoryLog_3F_Scissor.png",
+    "name": "가위 (3F)",
+    "excluded": false,
+    "aliases": [
+      "가위"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1x1Um7EqD7Nxcf4tSIDhj9ptJ0e3wOEer",
+    "file": "StoryLog_B1_SousChef.png",
+    "name": "수셰프 (B1)",
+    "excluded": false,
+    "aliases": [
+      "수셰프"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1WUgKkawHmhwsaKsI3yI-Uy61eKcreUkU",
+    "file": "StoryLog_B2F_Echeveau.png",
+    "name": "에슈보 (B2F)",
+    "excluded": false,
+    "aliases": [
+      "에슈보"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1tG6wWhlbGYMBcMvVqOYnq5pftP8UGRcq",
+    "file": "StoryLog_B2F_Palette.png",
+    "name": "팔레트 (B2F)",
+    "excluded": false,
+    "aliases": [
+      "팔레트"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1KP_jJNdqpq6Kc_FEP3EBpYnO6CeovBMD",
+    "file": "StoryLog_B2F_Putty.png",
+    "name": "퍼티 (B2F)",
+    "excluded": false,
+    "aliases": [
+      "퍼티"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "11O9VKsDPqe35VfvwTQNGmn1b1wPLtonU",
+    "file": "StoryLog_Buffet_Adult.png",
+    "name": "뷔페 (성인)",
+    "excluded": false,
+    "aliases": [
+      "뷔페"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1LNnhN3Yi0k-LvIZmKqTYjthl6SqxH5RK",
+    "file": "StoryLog_Buffet_Child.png",
+    "name": "뷔페 (어린 시절)",
+    "excluded": false,
+    "aliases": [
+      "뷔페"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1vwlQAJ4WYgTDlSPFCMw9gcpGTEKh5DRA",
+    "file": "StoryLog_Cromer_Sister_Nocover.png",
+    "name": "크로머의 자매 (가림 없음)",
+    "excluded": false,
+    "aliases": [
+      "크로머의 자매"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1Zu4Rsg0PIcAd0IADjrx2lt0rx6JfaBHg",
+    "file": "StoryLog_Cromer_Sister.png",
+    "name": "크로머의 자매",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1CNLsmkdMx6n4_DFi3vroaVyxruWxDSoA",
+    "file": "StoryLog_Jeanne_Out.png",
+    "name": "잔느 (외부)",
+    "excluded": false,
+    "aliases": [
+      "잔느"
+    ],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1IHnqgLv_XBpHz1H8BSHDct8fosEdQPA4",
+    "file": "StoryLog_Jeanne.png",
+    "name": "잔느",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "19FNeF6HnfvnQ5QocyNf7wdzymsVmll3E",
+    "file": "StoryLog_Lady_InBlue.png",
+    "name": "푸른 옷의 여인",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1xqY_5CI1gDrSgtAmAEvDNm7_DFVz-aNd",
+    "file": "StoryLog_Ncorp_Pros.png",
+    "name": "N사 인물",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 10,
+    "location": "메인 스토리 · 제10장"
+  },
+  {
+    "id": "1SV6KtaNLRE_3bRPUxwr4C0F1d4Q7vhwQ",
+    "file": "StoryLog_Lion.png",
+    "name": "사자",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 0,
+    "location": "메인 스토리 · 프롤로그"
+  },
+  {
+    "id": "1cNa-ScbwMkNZrEtmCrLF16zEqFvR2VCr",
+    "file": "StoryLog_Panther.png",
+    "name": "표범",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 0,
+    "location": "메인 스토리 · 프롤로그"
+  },
+  {
+    "id": "1b9095JuD6eOZNMQD4Y727Xh5GJD4SbE5",
+    "file": "StoryLog_Wolf.png",
+    "name": "늑대",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 0,
+    "location": "메인 스토리 · 프롤로그"
+  },
+  {
+    "id": "1AG0l4elmsdW74Ilf0Xgj09db9b304g1S",
+    "file": "None_Extra.png",
+    "name": "이름 없는 엑스트라",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 0,
+    "location": "LCB 수감자 일행"
+  },
+  {
+    "id": "1g1MgDyYpncAJAMOhv2V3g_bQTYsqVT13",
+    "file": "StoryLog_Charon.png",
+    "name": "카론",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 0,
+    "location": "LCB 수감자 일행"
+  },
+  {
+    "id": "1S_rx2LhL3MJO7RnVlqmUruFgBulK3OV3",
+    "file": "StoryLog_Vergilius.png",
+    "name": "베르길리우스",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 0,
+    "location": "LCB 수감자 일행"
+  },
+  {
+    "id": "1soI3XKG2gRmeoPaICprY3aFdszaoE5-S",
+    "file": "StoryLog_Dante.png",
+    "name": "단테",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 0,
+    "location": "LCB 수감자 일행"
+  },
+  {
+    "id": "1tIVi_WrUtD5yhFyBWKHZjwX5FWCdAWpY",
+    "file": "StoryLog_Dante2.png",
+    "name": "단테 (2)",
+    "excluded": false,
+    "aliases": [
+      "단테"
+    ],
+    "chapter": 0,
+    "location": "LCB 수감자 일행"
+  },
+  {
+    "id": "1GRy75mTMqkbxTEOuWHXuXtU47P3lFXou",
+    "file": "StoryLog_Dante3.png",
+    "name": "단테 (3)",
+    "excluded": false,
+    "aliases": [
+      "단테"
+    ],
+    "chapter": 0,
+    "location": "LCB 수감자 일행"
+  },
+  {
+    "id": "1dttRtZvBdrmyvC8dyNRa8HXhU3kmemFU",
+    "file": "StoryLog_DonQuixote.png",
+    "name": "돈키호테",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 0,
+    "location": "LCB 수감자 일행"
+  },
+  {
+    "id": "1P7DACOgorknAbagBJkvNQZfVV-YR_p-W",
+    "file": "StoryLog_Faust.png",
+    "name": "파우스트",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 0,
+    "location": "LCB 수감자 일행"
+  },
+  {
+    "id": "1PWfRQvBtU0gaskjH0wniNMMS5bGzrCX7",
+    "file": "StoryLog_Gregor.png",
+    "name": "그레고르",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 0,
+    "location": "LCB 수감자 일행"
+  },
+  {
+    "id": "1X4kxjzD0SCtirCOe30vyGgEbBST14_0o",
+    "file": "StoryLog_Heathcliff.png",
+    "name": "히스클리프",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 0,
+    "location": "LCB 수감자 일행"
+  },
+  {
+    "id": "1N-wEeiBKLhpJoWdMJR5zWH4W3ociaMrv",
+    "file": "StoryLog_HongLu.png",
+    "name": "홍루",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 0,
+    "location": "LCB 수감자 일행"
+  },
+  {
+    "id": "1HuJja_CjWiDg-DLc9-tQgCsmyxIk75ql",
+    "file": "StoryLog_Ishmael.png",
+    "name": "이스마엘",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 0,
+    "location": "LCB 수감자 일행"
+  },
+  {
+    "id": "1DqX4oMvfK36Lx4iP-dyrsYA8xrP8Dofl",
+    "file": "StoryLog_Meursault.png",
+    "name": "뫼르소",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 0,
+    "location": "LCB 수감자 일행"
+  },
+  {
+    "id": "1_NDMadJoNK2UIGjWvcCOUOk9rm4Rv7v8",
+    "file": "StoryLog_Outis.png",
+    "name": "오티스",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 0,
+    "location": "LCB 수감자 일행"
+  },
+  {
+    "id": "1BL_ONuTzfsgRP0pqcS1c5hwHvjbJueJR",
+    "file": "StoryLog_Rodion.png",
+    "name": "로쟈",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 0,
+    "location": "LCB 수감자 일행"
+  },
+  {
+    "id": "1YF2GDJfHdTsWeVXWi52MEhlj9PlAbzYK",
+    "file": "StoryLog_Ryoshu.png",
+    "name": "료슈",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 0,
+    "location": "LCB 수감자 일행"
+  },
+  {
+    "id": "12BBrdoi1VzP045mY05NYM6Neeam2qgRJ",
+    "file": "StoryLog_Sinclair.png",
+    "name": "싱클레어",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 0,
+    "location": "LCB 수감자 일행"
+  },
+  {
+    "id": "19IA20DKRunVMQTchJaAyOEMyMJM9w5me",
+    "file": "StoryLog_YiSang.png",
+    "name": "이상",
+    "excluded": false,
+    "aliases": [],
+    "chapter": 0,
+    "location": "LCB 수감자 일행"
+  }
+]

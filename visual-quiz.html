@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>이미지 퀴즈 · 림퀴즈</title>
+  <meta name="description" content="초상화로 인물을, 문양으로 보스를, 아이콘으로 패닉 유형을 맞혀보세요.">
+  <link rel="icon" href="./Thumbnail.png">
+  <link rel="stylesheet" href="./visual-quiz.css">
+  <script defer src="./visualQuizData.js"></script>
+  <script defer src="./visual-quiz-core.js"></script>
+  <script defer src="./visual-quiz.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="topbar"><a class="home" href="./index.html">← 림퀴즈</a><span class="archive-label">LCB · 관리자 식별 교육</span></header>
+    <nav class="mode-nav" aria-label="이미지 퀴즈 종류">
+      <a href="?mode=character" data-mode="character">인물</a>
+      <a href="?mode=boss" data-mode="boss">보스</a>
+      <a href="?mode=panic" data-mode="panic">패닉 <span>고난도</span></a>
+    </nav>
+    <div class="heading"><h1 id="title">이미지 퀴즈</h1><p id="description">문제 데이터를 불러오고 있습니다.</p></div>
+    <p id="storageNotice" class="notice" role="status" hidden>이 브라우저에서는 기록을 저장할 수 없습니다. 현재 화면에서 계속 플레이할 수 있습니다.</p>
+    <p id="dataError" class="notice" role="alert" hidden></p>
+    <section id="game" class="panel game" aria-label="진행 중인 문제" hidden>
+      <div class="game-bar"><span>LCB 교육 자료 · <span id="archiveCount"></span></span><button id="motionToggle" class="text-button" type="button" aria-pressed="true">연출 켜짐</button></div>
+      <div class="quiz-layout">
+        <figure class="portrait"><div class="image-well"><img id="questionImage" alt="이름을 맞힐 문제 이미지" hidden><p id="imageStatus" role="status">이미지를 불러오고 있습니다.</p></div><figcaption id="imageCaption">이미지 전체를 보고 이름을 맞혀보세요.</figcaption></figure>
+        <div class="answer-panel">
+          <div class="question-label" id="questionLabel"></div>
+          <h2 id="questionTitle" tabindex="-1">이름을 맞혀보세요</h2>
+          <form id="answerForm" class="entry-panel" autocomplete="off">
+            <label for="answer">이름을 검색해 추측</label>
+            <div class="answer-row"><div class="search-wrap"><input id="answer" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="answerNames" placeholder="이름 검색 또는 입력" maxlength="100" aria-describedby="feedback" disabled><ul id="answerNames" role="listbox" aria-label="이름 검색 결과" hidden></ul></div><button id="submit" disabled>추측하기</button></div>
+            <p id="feedback" role="status" aria-live="polite"></p>
+          </form>
+          <div class="quiz-intel-panel">
+            <div class="quiz-intel-head"><div><div class="quiz-intel-kicker">OBSERVATION RECORD</div><div class="quiz-intel-title">필요한 정보만 열람하세요</div></div><div class="quiz-cost-ledger"><strong id="cost"></strong><span id="attempts"></span></div></div>
+            <div class="quiz-intel-grid"><button id="locationHint" class="quiz-hint-btn" disabled><span class="quiz-hint-label">등장 위치</span><span id="locationText" class="quiz-hint-value"></span></button></div>
+            <div id="hintArea" class="clue-panel" hidden><div class="clue-head"><strong>정신 상태 관찰 기록</strong><button id="hint" class="secondary">효과 열람 +1</button></div><div id="hints" aria-live="polite"></div></div>
+          </div>
+          <div id="historyTitle" class="history-title">추측 기록 <span id="guessCount">0</span></div>
+          <ul id="guesses" class="guesses" aria-label="추측 기록"></ul>
+          <div id="playingActions" class="actions"><button id="reveal" class="text-button" disabled>정답 보기</button><button id="retryImage" class="secondary" hidden>이미지 다시 불러오기</button><button id="skipImage" class="secondary" hidden>다른 문제</button></div>
+          <div id="result" role="status" hidden><div id="resultBadge" class="result-badge"></div><p id="resultName"></p><p id="resultDetail" class="muted"></p><button id="next">다음 문제 →</button></div>
+        </div>
+      </div>
+    </section>
+    <section class="session-stats" aria-label="이 모드의 누적 기록"><div><strong id="played">0</strong><span>풀어본 문제</span></div><div><strong id="solved">0</strong><span>맞힌 문제</span></div><div><strong id="unassisted">0</strong><span>힌트 없이 정답</span></div><a href="./index.html">전체 기록 보기 →</a></section>
+    <footer>기록은 이 브라우저에 저장됩니다. <a href="https://drive.google.com/drive/folders/1DkcKQWgYLf9Kzk3JdsLHKxr1iei7XmrV" target="_blank" rel="noopener noreferrer">이미지 출처</a> · <a href="https://github.com/x1bViolet/Limbus-Localization-Files/tree/Korean" target="_blank" rel="noopener noreferrer">이름·효과 자료</a></footer>
+    <noscript><p class="notice">퀴즈를 플레이하려면 브라우저에서 JavaScript를 켜주세요.</p></noscript>
+  </main>
+</body>
+</html>
