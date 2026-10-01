@@ -102,6 +102,7 @@
       $('imageStatus').hidden = true;
       imageReady = true;
       controls();
+      if (state.status === 'playing') $('answer').focus({ preventScroll: true });
       animate($('questionImage'));
     };
     img.onerror = () => {
