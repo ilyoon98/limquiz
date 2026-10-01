@@ -293,7 +293,7 @@
     .latest-content-row:hover { background:color-mix(in srgb,var(--button) 9%,transparent); }
     .latest-content-row:focus-visible { outline:none; background:color-mix(in srgb,var(--button) 12%,transparent); box-shadow:inset 0 0 0 2px #ffd98a; }
     .latest-identity-label { flex:0 0 auto; color:var(--muted); font-size:12px; font-weight:900; letter-spacing:.08em; }
-    .latest-identity-name { min-width:0; color:var(--text); font-size:15px; font-weight:900; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .latest-identity-name { min-width:0; color:var(--text); font-size:15px; font-weight:900; line-height:1.4; white-space:normal; }
     .latest-identity-meta { margin-left:auto; flex:0 0 auto; color:#ffd98a; font-size:12px; font-weight:800; white-space:nowrap; }
     .home-mode-group { --group-accent:#d2ad5d; position:relative; padding:18px 18px 20px 24px; border:1px solid var(--border); border-radius:18px; background:linear-gradient(110deg,color-mix(in srgb,var(--group-accent) 7%,var(--panel)),var(--panel) 42%); overflow:hidden; }
     .home-mode-group::before { content:""; position:absolute; inset:0 auto 0 0; width:5px; background:var(--group-accent); box-shadow:0 0 18px color-mix(in srgb,var(--group-accent) 45%,transparent); }
@@ -1160,7 +1160,7 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-    const APP_VERSION = 'v0.16.5';
+    const APP_VERSION = 'v0.16.6';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -5374,7 +5374,9 @@
     // 사용한다. 이미지 묶음의 서명이 같으면 이 브라우저에서는 다시 띄우지 않는다.
     let IDENTITY_UPDATE_ITEMS = [];
     let LATEST_IDENTITY_ID = '';
+    let LATEST_IDENTITY_IDS = [];
     let LATEST_EGO_ID = '';
+    let LATEST_EGO_IDS = [];
     let identityUpdatesLoadFinished = false;
     const NEW_IDENTITY_SHOWN_KEY = 'new_identity_shown_images';
     function getUpdatedContents() {
@@ -5459,11 +5461,14 @@
     }
 
     function openLatestContentPopup(type) {
-      const data = type === 'ego'
-        ? EGO_LIST.find(row => String(row.ID) === String(LATEST_EGO_ID))
-        : DATA.find(row => String(row.ID) === String(LATEST_IDENTITY_ID));
-      if (!data) return;
-      renderNewIdentityPopup([{ type, data }]);
+      const ids = type === 'ego' ? LATEST_EGO_IDS : LATEST_IDENTITY_IDS;
+      const source = type === 'ego' ? EGO_LIST : DATA;
+      const list = ids.map(id => {
+        const data = source.find(row => String(row.ID) === String(id));
+        return data ? { type, data } : null;
+      }).filter(Boolean);
+      if (!list.length) return;
+      renderNewIdentityPopup(list);
       openNewIdentityPopup();
     }
     function bindLatestContentRow(element, type) {
@@ -5481,16 +5486,28 @@
     function updateLatestContentStatus() {
       if (!identityUpdatesLoadFinished) return;
       if (latestIdentityNameEl && latestIdentityMetaEl && DATA.length) {
-        const latestIdentity = DATA.find(row => String(row.ID) === String(LATEST_IDENTITY_ID));
-        latestIdentityNameEl.textContent = latestIdentity ? latestIdentity['인격명'] : '최근 반영 인격을 확인할 수 없습니다';
-        latestIdentityMetaEl.textContent = `총 ${DATA.length}명`;
+        const latestIdentities = LATEST_IDENTITY_IDS
+          .map(id => DATA.find(row => String(row.ID) === String(id)))
+          .filter(Boolean);
+        latestIdentityNameEl.textContent = latestIdentities.length
+          ? latestIdentities.map(row => row['인격명']).join(' · ')
+          : '최근 반영 인격을 확인할 수 없습니다';
+        latestIdentityMetaEl.textContent = latestIdentities.length > 1
+          ? `${latestIdentities.length}명 신규 · 총 ${DATA.length}명`
+          : `총 ${DATA.length}명`;
       }
       if (latestEgoNameEl && latestEgoMetaEl && egoDataLoadFinished) {
-        const latestEgo = EGO_LIST.find(row => String(row.ID) === String(LATEST_EGO_ID));
-        latestEgoNameEl.textContent = latestEgo ? latestEgo['이름'] : '최근 반영 EGO를 확인할 수 없습니다';
-        latestEgoMetaEl.textContent = latestEgo
-          ? `${latestEgo['수감자']} · ${latestEgo['등급']} · 총 ${EGO_LIST.length}개`
-          : `총 ${EGO_LIST.length}개`;
+        const latestEgos = LATEST_EGO_IDS
+          .map(id => EGO_LIST.find(row => String(row.ID) === String(id)))
+          .filter(Boolean);
+        latestEgoNameEl.textContent = latestEgos.length
+          ? latestEgos.map(row => `${row['이름']} ${row['수감자']}`).join(' · ')
+          : '최근 반영 EGO를 확인할 수 없습니다';
+        latestEgoMetaEl.textContent = latestEgos.length > 1
+          ? `${latestEgos.length}개 신규 · 총 ${EGO_LIST.length}개`
+          : latestEgos.length
+            ? `${latestEgos[0]['수감자']} · ${latestEgos[0]['등급']} · 총 ${EGO_LIST.length}개`
+            : `총 ${EGO_LIST.length}개`;
       }
     }
 
@@ -5508,7 +5525,13 @@
       .then(json => {
         IDENTITY_UPDATE_ITEMS = Array.isArray(json?.items) ? json.items : [];
         LATEST_IDENTITY_ID = String(json?.latestIdentityId || [...IDENTITY_UPDATE_ITEMS].reverse().find(item => (item.type || 'identity') === 'identity')?.id || '');
+        LATEST_IDENTITY_IDS = Array.isArray(json?.latestIdentityIds) && json.latestIdentityIds.length
+          ? json.latestIdentityIds.map(String)
+          : [LATEST_IDENTITY_ID].filter(Boolean);
         LATEST_EGO_ID = String(json?.latestEgoId || [...IDENTITY_UPDATE_ITEMS].reverse().find(item => item.type === 'ego')?.id || '');
+        LATEST_EGO_IDS = Array.isArray(json?.latestEgoIds) && json.latestEgoIds.length
+          ? json.latestEgoIds.map(String)
+          : [LATEST_EGO_ID].filter(Boolean);
         identityUpdatesLoadFinished = true;
         updateLatestContentStatus();
         maybeShowNewIdentityPopup();

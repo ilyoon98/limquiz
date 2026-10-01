@@ -69,17 +69,24 @@ if (!items.length) {
   items = [...preserved, ...items];
 }
 
-// 최신 인격 표시는 신규 EGO만 추가된 빌드에서도 유지되어야 한다. 팝업 대상(items)과
-// 별도로 마지막 인격 ID를 보존해 EGO 업데이트가 인격 상태 표시를 덮어쓰지 않게 한다.
+// 최신 인격/EGO 표시는 한 번에 같은 종류가 여러 개 추가돼도 모두 유지한다.
+// 이전 단일 ID 필드도 남겨 구버전 클라이언트 및 기존 파일과 호환한다.
 const previousIdentityItem = [...(Array.isArray(previousUpdates?.items) ? previousUpdates.items : [])]
   .reverse().find(item => (item.type || 'identity') === 'identity');
-const latestIdentityId = String(identityItems.at(-1)?.id || previousUpdates?.latestIdentityId || previousIdentityItem?.id || '');
+const previousIdentityIds = Array.isArray(previousUpdates?.latestIdentityIds) && previousUpdates.latestIdentityIds.length
+  ? previousUpdates.latestIdentityIds.map(String)
+  : [previousUpdates?.latestIdentityId || previousIdentityItem?.id].filter(Boolean).map(String);
+const latestIdentityIds = identityItems.length ? identityItems.map(item => String(item.id)) : previousIdentityIds;
+const latestIdentityId = String(latestIdentityIds.at(-1) || '');
 const previousEgoItem = [...(Array.isArray(previousUpdates?.items) ? previousUpdates.items : [])]
   .reverse().find(item => item.type === 'ego');
-const latestEgoItem = egoItems.reduce((latest, item) => !latest || Number(item.id) > Number(latest.id) ? item : latest, null);
-const latestEgoId = String(latestEgoItem?.id || previousUpdates?.latestEgoId || previousEgoItem?.id || '');
+const previousEgoIds = Array.isArray(previousUpdates?.latestEgoIds) && previousUpdates.latestEgoIds.length
+  ? previousUpdates.latestEgoIds.map(String)
+  : [previousUpdates?.latestEgoId || previousEgoItem?.id].filter(Boolean).map(String);
+const latestEgoIds = egoItems.length ? egoItems.map(item => String(item.id)) : previousEgoIds;
+const latestEgoId = String(latestEgoIds.reduce((latest, id) => Number(id) > Number(latest || -Infinity) ? id : latest, '') || '');
 
-fs.writeFileSync(UPDATES_PATH, JSON.stringify({ latestIdentityId, latestEgoId, items }, null, 2) + '\n', 'utf8');
+fs.writeFileSync(UPDATES_PATH, JSON.stringify({ latestIdentityId, latestIdentityIds, latestEgoId, latestEgoIds, items }, null, 2) + '\n', 'utf8');
 fs.writeFileSync(IDENTITY_MANIFEST_PATH, JSON.stringify({ images: identityImagesNow }, null, 2) + '\n', 'utf8');
 fs.writeFileSync(EGO_MANIFEST_PATH, JSON.stringify({ images: egoImagesNow }, null, 2) + '\n', 'utf8');
 

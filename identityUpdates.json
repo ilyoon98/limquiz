@@ -1,21 +1,34 @@
 {
-  "latestIdentityId": "10816",
-  "latestEgoId": "127",
+  "latestIdentityId": "10917",
+  "latestIdentityIds": [
+    "10917"
+  ],
+  "latestEgoId": "129",
+  "latestEgoIds": [
+    "128",
+    "129"
+  ],
   "items": [
     {
       "type": "identity",
-      "id": "10416",
+      "id": "10917",
       "images": [
-        "./images/identities/10416_awaken.webp",
-        "./images/identities/10416_normal.webp"
+        "./images/identities/10917_awaken.webp",
+        "./images/identities/10917_normal.webp"
       ]
     },
     {
-      "type": "identity",
-      "id": "10816",
+      "type": "ego",
+      "id": "128",
       "images": [
-        "./images/identities/10816_awaken.webp",
-        "./images/identities/10816_normal.webp"
+        "./images/ego/128.webp"
+      ]
+    },
+    {
+      "type": "ego",
+      "id": "129",
+      "images": [
+        "./images/ego/129.webp"
       ]
     }
   ]
