@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="360" viewBox="0 0 800 360" role="img" aria-labelledby="title desc">
+<title id="title">기프트 힌트와 추측 기록 예시</title><desc id="desc">키워드 힌트를 열면 출혈이 표시됩니다. TRY 기록은 추측한 기프트의 정보만 보여주며 정답과 비교하지 않습니다.</desc>
+<rect width="800" height="360" rx="16" fill="#191816"/>
+<g font-family="sans-serif" fill="#f1e7d8"><text x="24" y="34" font-size="18" font-weight="700">힌트 예시 · 키워드만 공개한 상태</text>
+<g fill="#22201d" stroke="#554a3b"><rect x="24" y="52" width="116" height="80" rx="8"/><rect x="151" y="52" width="116" height="80" rx="8" fill="#342d23" stroke="#d1a85f"/><rect x="278" y="52" width="116" height="80" rx="8"/><rect x="405" y="52" width="116" height="80" rx="8"/><rect x="532" y="52" width="116" height="80" rx="8"/><rect x="659" y="52" width="116" height="80" rx="8"/></g>
+<g text-anchor="middle" font-size="18" font-weight="700"><text x="82" y="98">등급</text><text x="209" y="83">키워드</text><text x="209" y="112" fill="#e2bd73">출혈</text><text x="336" y="98">강화 가능</text><text x="463" y="98">이름 길이</text><text x="590" y="98">조건 속성</text><text x="717" y="98">전용 팩</text></g>
+<text x="24" y="180" font-size="18" font-weight="700">TRY 예시 · 제출한 기프트의 정보</text>
+<rect x="24" y="198" width="752" height="140" rx="8" fill="#22201d" stroke="#554a3b"/>
+<text x="42" y="232" font-size="19" font-weight="700">예시 기프트</text><text x="708" y="232" font-size="14" fill="#caae78">TRY 1</text><path d="M24 248H776" stroke="#554a3b"/>
+<g text-anchor="middle" font-size="14" fill="#bdb3a5"><text x="100" y="275">등급</text><text x="250" y="275">키워드</text><text x="400" y="275">강화 가능</text><text x="550" y="275">이름 길이</text><text x="700" y="275">조건 속성</text></g>
+<g text-anchor="middle" font-size="20" font-weight="700"><text x="100" y="311">IV</text><text x="250" y="311">출혈</text><text x="400" y="311">불가</text><text x="550" y="311">5자</text><text x="700" y="311">없음</text></g></g></svg>

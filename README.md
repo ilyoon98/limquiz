@@ -19,9 +19,12 @@ Vercel이 빌드 시 자동으로 `data.json`을 다시 생성해서 반영합�
 
 ```bash
 npm install
-npm run build   # data.json 생성
+npm run build   # JSON 데이터와 로컬 파일용 local-data.js 생성
 npx serve .     # 로컬 서버 실행 후 http://localhost:3000 접속
 ```
+
+빌드 후에는 `index.html`을 직접 열어도 됩니다. 파일로 열면 같은 폴더의
+`local-data.js`를 사용하므로, 엑셀 데이터를 수정한 뒤에는 빌드를 다시 실행하세요.
 
 ## 배포
 

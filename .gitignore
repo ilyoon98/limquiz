@@ -7,6 +7,7 @@ decks.json
 deckKeywords.json
 egoData.json
 egoGiftData.json
+local-data.js
 dev/changelog_dev.json
 outputs/
 .env*
