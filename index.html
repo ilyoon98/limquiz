@@ -544,6 +544,7 @@
     .qz-effect-label { font-size:14px; color:var(--muted); font-weight:800; margin-bottom:10px; text-transform:uppercase; letter-spacing:.05em; }
     .qz-effect-text { font-size:20px; line-height:1.85; color:var(--text); }
     .qz-image-row { text-align:center; }
+    .qz-result-image { margin:18px auto 20px; }
     .qz-image-row img { width:100%; max-width:420px; aspect-ratio:1; object-fit:contain; border-radius:16px; background:var(--panel2); display:block; margin:0 auto; }
     /* EGO 원본은 1:1 캔버스 안의 원형 일러스트이며, 일부 파일은 원 밖의 빈 영역을
        가장자리 픽셀로 채워 둬 정사각형 그대로 표시하면 세로로 뭉개진 띠가 보인다.
@@ -730,7 +731,9 @@
     .quiz-next-clue { display:inline-flex; align-items:center; justify-content:center; gap:8px; width:auto; min-height:36px; margin-top:9px; padding:0 13px; border:1px solid #6b5b40; border-radius:9px; background:#28241e; color:#f2ddaf; font:inherit; font-size:12px; font-weight:900; cursor:pointer; }
     .quiz-next-clue:hover { border-color:#c49a58; background:#30291f; }
     .quiz-next-clue span { color:#ad9370; font-size:11px; }
+    .manager-result-summary { --assessment:#caae78; margin:17px 0 0; overflow:hidden; border:1px solid color-mix(in srgb,var(--assessment) 55%,#403a32); border-left:5px solid var(--assessment); border-radius:13px; background:linear-gradient(100deg,color-mix(in srgb,var(--assessment) 12%,#1b1a18),#1b1a18 62%); }
     .manager-assessment { --assessment:#caae78; display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:14px; margin:17px 0 0; padding:15px 18px; border:1px solid color-mix(in srgb,var(--assessment) 55%,#403a32); border-left:5px solid var(--assessment); border-radius:13px; background:linear-gradient(100deg,color-mix(in srgb,var(--assessment) 12%,#1b1a18),#1b1a18 62%); }
+    .manager-result-summary .manager-assessment { margin:0; border:0; border-radius:0; background:transparent; }
     .manager-assessment-kicker { color:#a89f93; font-size:10px; font-weight:900; letter-spacing:.13em; }
     .manager-assessment-grade { min-height:50px; margin-top:3px; display:flex; align-items:center; color:var(--assessment); font-size:29px; line-height:1; font-weight:950; letter-spacing:.04em; }
     .manager-assessment-grade .grade-emblem { width:74px; height:51px; }
@@ -744,6 +747,11 @@
     .gq-grade-table td { color:#a89f93; font-size:11px; vertical-align:top; }
     .gq-grade-table .is-current { background:color-mix(in srgb,var(--assessment) 16%,var(--panel2)); border-color:var(--assessment); color:#fff9ef; }
     .gq-grade-table th.is-current { color:var(--assessment); }
+    .manager-result-summary .gq-grade-table { margin:0; border-top:1px solid color-mix(in srgb,var(--assessment) 36%,var(--border)); }
+    .manager-result-summary .gq-grade-table caption { padding:11px 18px 9px; }
+    .manager-result-summary .gq-grade-table :is(th,td):first-child { border-left:0; }
+    .manager-result-summary .gq-grade-table :is(th,td):last-child { border-right:0; }
+    .manager-result-summary .gq-grade-table tbody tr:last-child td { border-bottom:0; }
     .gq-grade-marker { display:block; margin-top:7px; color:var(--assessment); font-size:11px; font-weight:900; }
     /* EGO 기프트 효과를 문서 형식의 점진 단서로 보여준다. 장식이 아니라 공개 순서와
        가려진 정보의 종류를 한눈에 읽게 하는 구조적 표현이다. */
@@ -1374,7 +1382,7 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-    const APP_VERSION = 'v0.16.9';
+    const APP_VERSION = 'v0.16.10';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -4642,6 +4650,9 @@
       const earned = enkephalinEarned(mode, cost, grade !== '미획득');
       return `<div class="manager-assessment" style="--assessment:${managerGradeColor(grade)}"><div><div class="manager-assessment-kicker">ENKEPHALIN RECOVERY · 엔케팔린 회수</div><div class="manager-assessment-grade">${managerGradeImageHTML(grade)}</div></div><div class="manager-assessment-cost">${earned} 획득 / ${allocation} 배정<small>추측 ${tries} + 힌트 ${hints} · ${cost} 소모</small></div></div>`;
     }
+    function managerResultSummaryHTML(grade, cost, tries, hints, mode) {
+      return `<div class="manager-result-summary" style="--assessment:${managerGradeColor(grade)}">${managerAssessmentHTML(grade, cost, tries, hints, mode)}${gqGradeTableHTML(grade, mode)}</div>`;
+    }
     function gqGradeTableHTML(grade, mode = 'egogift') {
       const steps = mode === 'ego' ? EQ_MANAGER_GRADE_STEPS : MANAGER_GRADE_STEPS;
       const allocation = ENKEPHALIN_ALLOCATION[mode];
@@ -4978,11 +4989,13 @@
         statBadgeHTML('속성', true, sinChipHTML(e['속성'])),
         e['자원'] ? statBadgeHTML('자원', true, resourceChipsHTML(e['자원'])) : '',
       ].join('');
+      const resultImage = e['아이콘'] ? `<div class="qz-image-row qz-result-image"><img src="${escapeHtml(e['아이콘'])}" alt="${escapeHtml(eqAnswerText(e))}" onerror="this.style.display='none'"></div>` : '';
       resultEl.innerHTML = `<div class="panel">
         <div class="sq-result-banner">${success ? `🎉 ${daily ? '오늘의 EGO' : 'EGO'} 정답!` : eqNameGaveUp ? `${daily ? '오늘' : '이번'} 문제를 포기했습니다` : '엔케팔린 소진 · 지령 실패'}</div>
         <div class="sq-result-name">${escapeHtml(eqAnswerText(e))}</div>
-        ${managerAssessmentHTML(managerGrade, totalCost, eqSubmitCount, hintsUsed, 'ego')}${gqGradeTableHTML(managerGrade, 'ego')}
-        <div class="qz-panel" style="margin-top:18px">${rows}${e['아이콘'] ? `<div class="qz-image-row"><img src="${escapeHtml(e['아이콘'])}" alt="${escapeHtml(eqAnswerText(e))}" onerror="this.style.display='none'"></div>` : ''}</div>
+        ${managerResultSummaryHTML(managerGrade, totalCost, eqSubmitCount, hintsUsed, 'ego')}
+        ${resultImage}
+        <div class="qz-panel">${rows}</div>
         <div class="eq-wordle-shell" style="margin-top:18px">${eqGuessBoardHTML(false)}</div>
         <div class="sq-result-stat">${daily ? '내일 새로운 EGO가 출제됩니다' : '다음 문제는 새로운 무작위 EGO입니다'}</div>
         <div class="sq-result-actions"><button class="secondary" onclick="eqShareResult()">📋 결과 공유</button>${daily ? '' : '<button onclick="eqNextRandom()">다음 랜덤 EGO</button>'}<button onclick="eqGoHome()">홈으로</button></div>
@@ -5331,10 +5344,12 @@
         statBadgeHTML('속성', true, sinChipHTML(g['속성'])),
         g['효과'] ? `<div><div class="qz-effect-label">효과</div><div class="qz-effect-text">${highlightEffectHTML(g['효과'])}</div></div>` : '',
       ].join('');
+      const resultImage = g['아이콘'] ? `<div class="qz-image-row qz-result-image"><img src="${escapeHtml(g['아이콘'])}" alt="${escapeHtml(g['이름'])}" onerror="this.style.display='none'"></div>` : '';
       resultEl.innerHTML = `<div class="panel">
         <div class="sq-result-banner">${gqNameGaveUp ? '🙌 완료 (포기)' : '🎉 정답!'}</div>
         <div class="sq-result-name">${escapeHtml(g['이름'])}${nameBadge}</div>
-        <div class="qz-panel">${rows}${g['아이콘'] ? `<div class="qz-image-row"><img src="${escapeHtml(g['아이콘'])}" alt="" onerror="this.style.display='none'"></div>` : ''}</div>
+        ${resultImage}
+        <div class="qz-panel">${rows}</div>
         <div class="sq-result-stat">제출 ${gqSubmitCount}회 · 힌트 ${gqHintsUsed}회 사용</div>
         <div class="sq-result-actions">
           <button class="secondary" onclick="gqShareResult()">📋 결과 공유</button>
@@ -5745,8 +5760,9 @@
         statBadgeHTML('키워드', true, metrics.keyword ? kwChip(metrics.keyword) : '<span class="empty">없음</span>'),
         g['효과'] ? `<div><div class="qz-effect-label">효과</div><div class="qz-effect-text">${highlightEffectHTML(g['효과'])}</div></div>` : '',
       ].join('');
+      const resultImage = g['아이콘'] ? `<div class="qz-image-row qz-result-image"><img src="${escapeHtml(g['아이콘'])}" alt="${escapeHtml(g['이름'])}" onerror="this.style.display='none'"></div>` : '';
       const failText = gqNameGaveUp ? `${daily ? '오늘' : '이번'} 문제를 포기했습니다` : '엔케팔린 소진 · 지령 실패';
-      resultEl.innerHTML = `<div class="panel"><div class="sq-result-banner">${success ? `🎉 ${daily ? '오늘의 기프트' : '기프트'} 정답!` : failText}</div><div class="sq-result-name">${escapeHtml(g['이름'])}</div>${managerAssessmentHTML(managerGrade, totalCost, gqSubmitCount, hintsUsed, 'egogift')}${gqGradeTableHTML(managerGrade)}<div class="qz-panel" style="margin-top:18px">${rows}${g['아이콘'] ? `<div class="qz-image-row"><img src="${escapeHtml(g['아이콘'])}" alt="${escapeHtml(g['이름'])}" onerror="this.style.display='none'"></div>` : ''}</div><div class="eq-wordle-shell" style="margin-top:18px">${gqGuessBoardHTML(false)}</div>
+      resultEl.innerHTML = `<div class="panel"><div class="sq-result-banner">${success ? `🎉 ${daily ? '오늘의 기프트' : '기프트'} 정답!` : failText}</div><div class="sq-result-name">${escapeHtml(g['이름'])}</div>${managerResultSummaryHTML(managerGrade, totalCost, gqSubmitCount, hintsUsed, 'egogift')}${resultImage}<div class="qz-panel">${rows}</div><div class="eq-wordle-shell" style="margin-top:18px">${gqGuessBoardHTML(false)}</div>
         <div class="sq-result-actions"><button class="secondary" onclick="gqShareResult()">📋 결과 공유</button>${daily ? '' : '<button onclick="gqNextRandom()">다음 랜덤 기프트</button>'}<button onclick="gqGoHome()">홈으로</button></div></div>`;
       updateGqCardState(); renderDailyActivityHome();
       animResultStagger(resultEl.querySelector('.panel'));

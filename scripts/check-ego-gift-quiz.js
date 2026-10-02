@@ -98,6 +98,18 @@ assert(!extract('gqCheckName').includes('animWordleGuess'));
 assert(extract('gqRenderResult').includes('if (celebrate)'));
 console.log('PASS: identical daily/random hint and effect markup across reveal states; neutral TRY animation; celebration guard');
 
+for (const renderName of ['eqRenderResult', 'gqRenderResult']) {
+  const renderSource = extract(renderName);
+  assert(renderSource.includes('qz-result-image'));
+  assert(renderSource.indexOf('managerResultSummaryHTML') < renderSource.indexOf('${resultImage}'));
+  assert(renderSource.indexOf('${resultImage}') < renderSource.indexOf('<div class="qz-panel">${rows}</div>'));
+}
+console.log('PASS: EGO and gift result images appear below the grade table and above details');
+const managerSummary = extract('managerResultSummaryHTML');
+assert(managerSummary.includes('managerAssessmentHTML'));
+assert(managerSummary.includes('gqGradeTableHTML'));
+console.log('PASS: recovery assessment and grade scale share one result card');
+
 // Hint feedback works without anime, while respecting the site's motion toggle.
 vm.runInNewContext(`
 let enabled=true,finished;
