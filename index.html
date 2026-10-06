@@ -27,6 +27,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha384-ZZ1pncU3bQe8y31yfZdMFdSpttDoPmOZg2wguVK9almUodir1PghgT0eY7Mrty8H" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js" integrity="sha384-sPwMflxqfAN+Q5mvlkLmHiX3PORGbZSXHiSGPTXT9VHCD/AB+b+r+vJWsqprv+7k" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/animejs@4.5.0/dist/bundles/anime.umd.min.js" integrity="sha384-InMmvD3VoYcY7hGjSC80aLb2bNNE4CzpX+Eq6FVDlmB0IKgDvmfPw4UY8L/M++iG" crossorigin="anonymous"></script>
+  <script src="./identity-judge-core.js"></script>
   <style>
     :root {
       --bg: #141414; --panel: #1f1f1f; --panel2: #292929; --text: #f4f1ea;
@@ -1127,7 +1128,7 @@
         </div>
         <button class="back-btn" id="backToHomeBtn">← 홈으로</button>
         <h1>인격 두들</h1>
-        <div class="sub">인격명만 검색해서 선택합니다. 정답은 수감자, 인격명, 성급, 키워드 3개를 비교합니다. 키워드는 같은 칸이면 '일치', 정답에 있지만 다른 칸이면 '순서 다름'입니다.</div>
+        <div class="sub">인격명만 검색해서 선택합니다. 정답은 수감자, 인격명, 성급, 소속과 키워드를 비교합니다. 소속·키워드는 같은 칸이면 '일치', 정답에 있지만 다른 칸이면 '순서 다름'입니다.</div>
         <div class="challenge-info" id="challengeInfo">
           <span class="challenge-no" id="challengeNo"></span>
           <span class="countdown" id="countdown"></span>
@@ -1182,7 +1183,7 @@
       <section class="panel table-wrap">
         <div class="legend">
           <span class="pill hit">일치</span>
-          <span class="pill moved">순서 다름 (키워드만)</span>
+          <span class="pill moved">순서 다름 (소속·키워드)</span>
           <span class="pill miss">불일치</span>
           <span class="pill">취소선 테스트: 수감자와 키워드가 모두 빗나간 제출 인격</span>
         </div>
@@ -1382,7 +1383,7 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-    const APP_VERSION = 'v0.16.10';
+    const APP_VERSION = 'v0.16.12';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -1693,24 +1694,13 @@
       dropdown.classList.remove('open');
     }
 
-    // 키워드는 3단계로 판정한다 (덱 퀴즈·워들과 같은 규칙):
-    //   일치      = 같은 칸에 같은 키워드
-    //   순서 다름 = 정답이 가진 키워드지만 다른 칸에 넣음
-    //   불일치    = 정답에 아예 없는 키워드
+    // 소속과 키워드는 3단계로 판정한다:
+    //   일치      = 같은 칸에 같은 값
+    //   순서 다름 = 정답이 가진 값이지만 다른 칸에 넣음
+    //   불일치    = 정답에 아예 없는 값
     // 빈 칸끼리 맞물리면(둘 다 없음) 일치로 본다.
-    function judgeKeywordCell(field, guess, ans) {
-      const gv = normalize(guess[field]);
-      const ansAt = normalize(ans[field]);
-      if (!gv) return ansAt ? 'miss' : 'hit';
-      if (gv === ansAt) return 'hit';
-      return keywordsOf(ans).includes(gv) ? 'moved' : 'miss';
-    }
-    const JUDGE_LABEL = { hit: '일치', moved: '순서 다름', miss: '불일치' };
     function judgeCell(field, guess, ans) {
-      const cls = field.startsWith('키워드')
-        ? judgeKeywordCell(field, guess, ans)
-        : (normalize(guess[field]) === normalize(ans[field]) ? 'hit' : 'miss');
-      return { cls, label: JUDGE_LABEL[cls] };
+      return IdentityJudge.judgeCell(field, guess, ans);
     }
 
     function sinnerDot(sinner) {

@@ -5,6 +5,7 @@
   "scripts": {
     "build": "node scripts/build-data.js && node scripts/build-changelog.js && node scripts/build-decks.js && node scripts/build-egos.js && node scripts/build-content-updates.js && node scripts/build-ego-gifts.js && node scripts/build-local-data.js && node scripts/build-visual-quiz.js",
     "check:visual-quiz": "node scripts/check-visual-quiz.js",
+    "check:identity-judge": "node scripts/check-identity-judge.js",
     "update:ego-gift-packs": "node scripts/update-ego-gift-limited-packs.js",
     "images:webp": "node scripts/convert-images-to-webp.js"
   },
