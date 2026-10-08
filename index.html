@@ -499,6 +499,13 @@
     .sq-sin-chip img { width:18px; height:18px; object-fit:contain; }
     .sq-result-actions { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
     .sq-result-actions button { height:48px; padding:0 28px; font-size:16px; font-weight:800; border-radius:12px; }
+    .directive-next { margin:20px 0; padding:18px; border:1px solid color-mix(in srgb,var(--green) 35%,var(--border)); border-radius:14px; background:linear-gradient(120deg,rgba(53,255,154,.06),var(--panel2)); text-align:left; }
+    .directive-next-head { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; font-weight:900; }
+    .directive-next-count { color:var(--muted); font-size:13px; font-variant-numeric:tabular-nums; }
+    .directive-next-desc { margin:8px 0 14px; color:var(--muted); font-size:14px; line-height:1.5; }
+    .directive-next-actions { display:flex; gap:10px; flex-wrap:wrap; }
+    .directive-next-actions button { flex:1 1 200px; min-height:48px; height:auto; padding:12px 16px; border-radius:10px; white-space:normal; }
+    .directive-next-status { display:flex; gap:8px 14px; flex-wrap:wrap; margin-top:14px; color:var(--muted); font-size:12px; }
     .sq-progress-stats { display:flex; gap:18px; flex-wrap:wrap; color:var(--muted); font-size:15px; font-weight:700; margin-top:12px; }
     .sq-progress-stats strong { color:#ffd98a; }
     .sq-stage-progress { flex:1; min-width:210px; display:grid; grid-template-columns:auto minmax(90px,1fr) auto; align-items:center; gap:8px; }
@@ -1559,6 +1566,46 @@
         const raw = localStorage.getItem(DAILY_RESULT_KEY);
         return raw ? JSON.parse(raw) : null;
       } catch(e) { return null; }
+    }
+
+    // 완료 화면에서 남은 일일 지령으로 바로 이어간다. 실패·포기도 종료로 취급한다.
+    function dailyDirectiveStates() {
+      const records = loadResultRecordsV2().filter(record => record.date === todayKey());
+      const identity = loadDailyResult(), ego = eqLoadDailyState(), gift = gqLoadDailyState();
+      return [
+        { mode:'daily', label:'오늘의 인격', ready:DATA.length > 0, done:!!identity || records.some(record => record.mode === 'daily') },
+        { mode:'ego', label:'오늘의 EGO', ready:EGO_LIST.length > 0, done:!!ego?.done || records.some(record => record.mode === 'ego' && record.daily === true) },
+        { mode:'egogift', label:'오늘의 EGO 기프트', ready:EGO_GIFTS.length > 0, done:!!gift?.done || records.some(record => record.mode === 'egogift' && record.daily === true) },
+      ];
+    }
+    function dailyDirectiveNavigationHTML(currentMode) {
+      const states = dailyDirectiveStates();
+      const currentIndex = states.findIndex(state => state.mode === currentMode);
+      if (currentIndex < 0) return '';
+      // 결과를 표시하는 지령은 이미 종료됐다. 저장된 상태가 없어도 재추천하지 않는다.
+      states[currentIndex].done = true;
+      const remaining = [...states.slice(currentIndex + 1), ...states.slice(0, currentIndex)].filter(state => !state.done);
+      const doneCount = states.filter(state => state.done).length;
+      const buttons = remaining.map((state, index) => `<button${index ? ' class="secondary"' : ''} onclick="goToDailyDirective('${state.mode}')"${state.ready ? '' : ' disabled'}>${state.label} ${state.ready ? '→' : '· 데이터 준비 중'}</button>`).join('');
+      return `<nav class="directive-next" data-directive-current="${currentMode}" aria-label="다음 오늘의 지령"><div class="directive-next-head"><span>${remaining.length ? '다음 지령 이어하기' : '오늘의 지령 모두 종료'}</span><span class="directive-next-count">${doneCount} / 3 종료</span></div><p class="directive-next-desc">${remaining.length ? '남은 지령을 홈으로 돌아가지 않고 바로 수행하세요.' : '세 지령의 수행을 마쳤습니다. 내일 새로운 지령이 도착합니다.'}</p>${buttons ? `<div class="directive-next-actions">${buttons}</div>` : ''}<div class="directive-next-status">${states.map(state => `<span>${state.done ? '✓' : '○'} ${state.label} · ${state.done ? '종료' : '남음'}</span>`).join('')}</div></nav>`;
+    }
+    function refreshDailyDirectiveNavigation() {
+      document.querySelectorAll('[data-directive-current]').forEach(nav => {
+        nav.outerHTML = dailyDirectiveNavigationHTML(nav.dataset.directiveCurrent);
+      });
+    }
+    function goToDailyDirective(nextMode) {
+      const target = dailyDirectiveStates().find(state => state.mode === nextMode);
+      if (!target?.ready) return;
+      if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
+      dropdown.classList.remove('open');
+      eqNameDropdown.close(); gqNameDropdown.close();
+      gameScreen.style.display = 'none';
+      egoQuizScreen.style.display = 'none';
+      egoGiftQuizScreen.style.display = 'none';
+      if (nextMode === 'daily') goToGame('daily');
+      else if (nextMode === 'ego') eqGoToEgoQuiz('daily');
+      else gqGoToEgoGiftQuiz('daily');
     }
 
     // ── v2 기록 저장/불러오기 ─────────────────────────────────
@@ -2944,6 +2991,7 @@
       }
       if (mode === 'daily') {
         saveDailyResult(won);
+        messageEl.insertAdjacentHTML('beforeend', dailyDirectiveNavigationHTML('daily'));
       } else {
         restartBtn.style.display = 'inline-block';
       }
@@ -3060,6 +3108,7 @@
             }
           }
         }
+        messageEl.insertAdjacentHTML('beforeend', dailyDirectiveNavigationHTML('daily'));
         startCountdown();
       } else {
         resetGameState();
@@ -4984,6 +5033,7 @@
         <div class="sq-result-banner">${success ? `🎉 ${daily ? '오늘의 EGO' : 'EGO'} 정답!` : eqNameGaveUp ? `${daily ? '오늘' : '이번'} 문제를 포기했습니다` : '엔케팔린 소진 · 지령 실패'}</div>
         <div class="sq-result-name">${escapeHtml(eqAnswerText(e))}</div>
         ${managerResultSummaryHTML(managerGrade, totalCost, eqSubmitCount, hintsUsed, 'ego')}
+        ${daily ? dailyDirectiveNavigationHTML('ego') : ''}
         ${resultImage}
         <div class="qz-panel">${rows}</div>
         <div class="eq-wordle-shell" style="margin-top:18px">${eqGuessBoardHTML(false)}</div>
@@ -5752,7 +5802,7 @@
       ].join('');
       const resultImage = g['아이콘'] ? `<div class="qz-image-row qz-result-image"><img src="${escapeHtml(g['아이콘'])}" alt="${escapeHtml(g['이름'])}" onerror="this.style.display='none'"></div>` : '';
       const failText = gqNameGaveUp ? `${daily ? '오늘' : '이번'} 문제를 포기했습니다` : '엔케팔린 소진 · 지령 실패';
-      resultEl.innerHTML = `<div class="panel"><div class="sq-result-banner">${success ? `🎉 ${daily ? '오늘의 기프트' : '기프트'} 정답!` : failText}</div><div class="sq-result-name">${escapeHtml(g['이름'])}</div>${managerResultSummaryHTML(managerGrade, totalCost, gqSubmitCount, hintsUsed, 'egogift')}${resultImage}<div class="qz-panel">${rows}</div><div class="eq-wordle-shell" style="margin-top:18px">${gqGuessBoardHTML(false)}</div>
+      resultEl.innerHTML = `<div class="panel"><div class="sq-result-banner">${success ? `🎉 ${daily ? '오늘의 기프트' : '기프트'} 정답!` : failText}</div><div class="sq-result-name">${escapeHtml(g['이름'])}</div>${managerResultSummaryHTML(managerGrade, totalCost, gqSubmitCount, hintsUsed, 'egogift')}${daily ? dailyDirectiveNavigationHTML('egogift') : ''}${resultImage}<div class="qz-panel">${rows}</div><div class="eq-wordle-shell" style="margin-top:18px">${gqGuessBoardHTML(false)}</div>
         <div class="sq-result-actions"><button class="secondary" onclick="gqShareResult()">📋 결과 공유</button>${daily ? '' : '<button onclick="gqNextRandom()">다음 랜덤 기프트</button>'}<button onclick="gqGoHome()">홈으로</button></div></div>`;
       updateGqCardState(); renderDailyActivityHome();
       animResultStagger(resultEl.querySelector('.panel'));
@@ -6003,6 +6053,7 @@
     loadQuizData('data.json')
       .then(json => {
         DATA = json;
+        refreshDailyDirectiveNavigation();
         SORTED_DATA = DATA.map((row, idx) => ({...row, __idx: idx})).sort((a, b) => a['인격명'].localeCompare(b['인격명'], 'ko-KR'));
         // 스킬 퀴즈 스테이지2 검색 드롭다운용 전체 스킬명 풀 (중복 제거, 가나다순)
         const skillNameSet = new Set();
@@ -6022,6 +6073,7 @@
     loadQuizData('egoData.json')
       .then(json => {
         EGO_LIST = json;
+        refreshDailyDirectiveNavigation();
         egoDataLoadFinished = true;
         // 이름만으로는 답을 특정할 수 없는 경우가 있어(동명 EGO가 여러 수감자에게
         // 존재) "이름 (수감자)" 형식을 검색 후보로 삼는다.
@@ -6036,6 +6088,7 @@
     loadQuizData('egoGiftData.json')
       .then(json => {
         EGO_GIFTS = json;
+        refreshDailyDirectiveNavigation();
         const giftNameSet = new Set();
         EGO_GIFTS.forEach(g => { if (g['이름']) giftNameSet.add(g['이름']); });
         GQ_GIFT_NAMES = [...giftNameSet].sort((a, b) => a.localeCompare(b, 'ko-KR'));
