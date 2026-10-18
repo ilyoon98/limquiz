@@ -448,6 +448,19 @@
     .sq-img-wrap { position:relative; min-height:520px; background:var(--panel2); }
     .sq-img-wrap img { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; object-position:center; display:block; }
     .sq-identity-name { font-size:23px; font-weight:900; margin-bottom:12px; }
+    /* 인격 룰렛: 출제 직전 여러 인격이 빠르게 지나가다 정답 인격에서 멈춘다 */
+    .sq-identity-sticky .answer-info-grid, .sq-identity-sticky .sq-progress-stats { transition:opacity .3s ease; }
+    .sq-identity-sticky.rolling .answer-info-grid, .sq-identity-sticky.rolling .sq-progress-stats { opacity:0; }
+    .sq-identity-sticky.rolling .sq-identity-name { color:var(--muted); }
+    .sq-identity-sticky.rolling ~ #sq-stage1 .sq-skill-block { opacity:0; }
+    .sq-img-wrap.rolling img { filter:brightness(.8) saturate(.7); }
+    .sq-img-wrap.rolling img.tick { animation:sq-roulette-tick .12s ease-out; }
+    .sq-img-wrap.landed img { animation:sq-roulette-pop .55s cubic-bezier(.2,1.4,.4,1); }
+    .sq-img-wrap.landed::after { content:''; position:absolute; inset:0; pointer-events:none; animation:sq-roulette-flash .8s ease-out forwards; }
+    .sq-identity-name.landed { animation:sq-roulette-pop .55s cubic-bezier(.2,1.4,.4,1); transform-origin:left center; }
+    @keyframes sq-roulette-tick { from{transform:translateY(-7%);opacity:.55} to{transform:none;opacity:1} }
+    @keyframes sq-roulette-pop { 0%{transform:scale(.7);opacity:.3} 60%{transform:scale(1.07);opacity:1} 100%{transform:none;opacity:1} }
+    @keyframes sq-roulette-flash { 0%{box-shadow:inset 0 0 0 3px #ffd98a, inset 0 0 90px rgba(255,217,138,.45)} 100%{box-shadow:inset 0 0 0 0 transparent, inset 0 0 0 transparent} }
     .sq-skill-block { background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:18px 20px; }
     .sq-skill-header { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; }
     .sq-skill-label { font-size:17px; font-weight:800; color:#ffd98a; }
@@ -1467,7 +1480,11 @@
     }
     function refreshSqImage() {
       const cardEl = document.getElementById('sq-identity-media');
-      if (cardEl && cardEl.style.display !== 'none' && sqIdentity) cardEl.innerHTML = sqIdentityMediaHTML();
+      if (cardEl && cardEl.style.display !== 'none' && sqIdentity) {
+        cardEl.innerHTML = sqIdentityMediaHTML();
+        // 룰렛이 도는 중에 일반/각성을 바꿔도 연출은 이어서 돌고, 멈출 때 바뀐 설정의 이미지로 착지한다
+        if (sqRouletteActive) cardEl.querySelector('.sq-img-wrap')?.classList.add('rolling');
+      }
     }
     function refreshDbImages() {
       if (dbDeck) { dbRenderSlots(); dbRenderCandidates(); }
@@ -3335,6 +3352,7 @@
     function sqGoHome() {
       skillQuizScreen.style.display = 'none';
       homeScreen.style.display = '';
+      sqStopRoulette();
       sqCloseSkillDropdown();
       updateHomeDailyStatus();
       renderRecordsHome();
@@ -3537,9 +3555,73 @@
       document.getElementById('sq-stage1').style.display = '';
       document.getElementById('sq-stage2').style.display = 'none';
       document.getElementById('sq-result').style.display = 'none';
-      sqRenderSkillBlocks(true);
+      const rolling = sqStartRoulette();
+      sqRenderSkillBlocks(!rolling);
       sqUpdateProgressStats();
-      animPopIn(document.querySelectorAll('#sq-identity-media img'));
+      if (!rolling) animPopIn(document.querySelectorAll('#sq-identity-media img'));
+    }
+
+    // ── 인격 룰렛 ──
+    // 문제 인격이 처음 나올 때 다른 인격들이 슬롯머신처럼 빠르게 지나가다 점점 느려지고,
+    // 마지막에 정답 인격이 '뿅' 하고 튀어나온다. 연출이 꺼져 있으면 바로 정답을 보여준다.
+    // rAF 대신 setTimeout으로 돌려 탭이 백그라운드여도 결국 정답 상태에 도달한다.
+    let sqRouletteToken = 0, sqRouletteActive = false;
+    function sqStopRoulette() { sqRouletteToken++; sqRouletteActive = false; }
+    function sqStartRoulette() {
+      sqStopRoulette();
+      const answer = sqIdentity;
+      const answerImg = pickIdImg(answer);
+      if (!motionEnabled() || !answerImg) return false;
+      const pool = DATA.filter(d => d !== answer && pickIdImg(d));
+      if (pool.length < 3) return false;
+      for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
+      // 미리 불러둔 이미지 위주로 돌려야 빈 칸이 덜 끼어든다
+      const picks = pool.slice(0, 14).map(d => { const im = new Image(); im.src = pickIdImg(d); return { d, im }; });
+      new Image().src = answerImg;
+      const FRAMES = 18;
+      const delays = Array.from({ length: FRAMES }, (_, i) => Math.round(45 + 240 * Math.pow(i / (FRAMES - 1), 2.4)));
+      const token = sqRouletteToken;
+      sqRouletteActive = true;
+      const wrapEl = () => document.querySelector('#sq-identity-media .sq-img-wrap');
+      const imgEl = () => document.querySelector('#sq-identity-media .sq-img-wrap img');
+      const nameEl = () => document.querySelector('#sq-identity-sticky .sq-identity-name');
+      const stickyEl = document.getElementById('sq-identity-sticky');
+      wrapEl()?.classList.add('rolling');
+      stickyEl.classList.add('rolling');
+      let frame = 0, last = null;
+      const show = (d, src) => {
+        const img = imgEl();
+        if (img) {
+          img.style.display = '';
+          img.src = src;
+          img.classList.remove('tick'); void img.offsetWidth; img.classList.add('tick');
+        }
+        const nm = nameEl();
+        if (nm) nm.textContent = d['인격명'];
+      };
+      const land = () => {
+        sqRouletteActive = false;
+        wrapEl()?.classList.remove('rolling');
+        stickyEl.classList.remove('rolling');
+        const img = imgEl();
+        if (img) { img.style.display = ''; img.classList.remove('tick'); img.src = pickIdImg(answer); }
+        const nm = nameEl();
+        if (nm) nm.textContent = answer['인격명'];
+        [wrapEl(), nm].forEach(el => { if (!el) return; el.classList.remove('landed'); void el.offsetWidth; el.classList.add('landed'); });
+        setTimeout(() => { [wrapEl(), nameEl()].forEach(el => el?.classList.remove('landed')); }, 900);
+        animRiseIn(document.querySelectorAll('#sq-skills-s1 .sq-skill-block'), 90);
+      };
+      const step = () => {
+        if (token !== sqRouletteToken) return;
+        if (frame >= FRAMES) return land();
+        const ready = picks.filter(p => p.im.complete && p.im.naturalWidth);
+        const list = (ready.length >= 3 ? ready : picks).filter(p => p !== last);
+        last = list[Math.floor(Math.random() * list.length)];
+        show(last.d, last.im.src);
+        setTimeout(step, delays[frame++]);
+      };
+      step();
+      return true;
     }
 
     function sqSubmitS1() {
