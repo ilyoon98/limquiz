@@ -718,6 +718,9 @@
     :is(#gq-effect-clue, #eq-effect-clue) .gq-clue-title { display:flex; align-items:center; gap:10px; }
     :is(#gq-effect-clue, #eq-effect-clue) .quiz-next-clue { margin:0; min-height:40px; font-size:14px; }
     #eq-effect-clue .gq-clue-text { font-size:15px; line-height:1.65; }
+    .eq-keyword-chips { display:inline-flex; flex-wrap:wrap; justify-content:center; gap:4px 6px; }
+    .eq-keyword-chip { display:inline-flex; align-items:center; gap:3px; white-space:nowrap; }
+    .eq-keyword-mode { color:var(--muted); font-size:11px; font-weight:700; }
     .gq-hint-image { width:100%; max-width:100px; height:90px; object-fit:contain; }
     #gq-hint-panel .quiz-hint-value .gq-badge { white-space:normal; }
     @media(max-width:640px) {
@@ -1331,7 +1334,7 @@
   <dialog id="eqHelpDialog" aria-labelledby="eqHelpTitle">
     <div class="gq-help-heading"><h2 id="eqHelpTitle">EGO 도움말</h2><form method="dialog"><button class="secondary" aria-label="도움말 닫기" autofocus>닫기</button></form></div>
     <section><h3>이름과 수감자를 검색하세요</h3><p>예: 여우비 (이상). 오늘의 EGO는 매일 바뀌고 랜덤은 계속 새 문제를 풀 수 있습니다. 엔케팔린 25를 배정받으며, 전부 소모하면 지령이 종료됩니다.</p></section>
-    <section><h3>필요한 힌트만 열어보세요</h3><p>추측 한 번, 정보 힌트 하나, 각성 스킬 효과 한 줄마다 엔케팔린을 1 소모합니다. 죄악 자원을 한 번 누르면 사용 여부, 다시 누르면 소모 개수가 공개됩니다. 미사용 자원은 추가로 누를 수 없습니다.</p><p>각성 스킬 효과에서 EGO 이름은 항상 가려지고, 수감자와 속성은 해당 힌트를 열어야 드러납니다. 수감자 힌트는 추측을 2회 제출한 뒤부터 열 수 있습니다.</p><p>이미지는 최후의 힌트입니다. 다음 추측에 바로 맞혀도 ZAYIN인 시점(14 이상 소모)부터 열 수 있습니다. 마지막 엔케팔린 1은 추측용으로 남겨둡니다.</p></section>
+    <section><h3>필요한 힌트만 열어보세요</h3><p>추측 한 번, 정보 힌트 하나, 각성 스킬 효과 한 줄마다 엔케팔린을 1 소모합니다. 죄악 자원을 한 번 누르면 사용 여부, 다시 누르면 소모 개수가 공개됩니다. 미사용 자원은 추가로 누를 수 없습니다.</p><p>각성 스킬 효과에서 EGO 이름은 항상 가려지고, 수감자와 속성은 해당 힌트를 열어야 드러납니다. 수감자 힌트는 추측을 2회 제출한 뒤부터 열 수 있습니다.</p><p>키워드 힌트는 각성 스킬이 부여·강화·소모하는 키워드를 보여줍니다. 키워드가 없는 EGO는 '없음'으로 표시됩니다.</p><p>이미지는 최후의 힌트입니다. 다음 추측에 바로 맞혀도 ZAYIN인 시점(14 이상 소모)부터 열 수 있습니다. 마지막 엔케팔린 1은 추측용으로 남겨둡니다.</p></section>
     <section><h3>TRY는 제출한 EGO의 기록</h3><p>제출한 EGO의 이미지·수감자·등급·속성·자원 정보를 보여줍니다. 정답과의 일치 여부나 방향은 알려주지 않습니다.</p></section>
     <section><h3>엔케팔린 회수량에 따른 등급</h3><div id="eqHelpGrades"></div><p>예를 들어 추측 3회와 힌트 3개로 맞히면 19를 획득해 WAW입니다. 포기하거나 엔케팔린 소진 후 오답이면 획득하지 못합니다.</p></section>
   </dialog>
@@ -1404,7 +1407,7 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-    const APP_VERSION = 'v0.17.0';
+    const APP_VERSION = 'v0.17.1';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -4817,11 +4820,21 @@
     }
     const EQ_HINT_DEFS = [
       { key:'sinner', label:'수감자' }, { key:'grade', label:'EGO 등급' }, { key:'sin', label:'죄악 속성' },
-      { key:'resourceTypes', label:'자원 종류' }, { key:'image', label:'이미지' },
+      { key:'keyword', label:'키워드' }, { key:'resourceTypes', label:'자원 종류' }, { key:'image', label:'이미지' },
     ];
+    // 키워드는 "출혈 (부여), 호흡 (강화)" 형태로 저장된다. 괄호 앞 키워드 이름으로 색을 입힌다.
+    function eqKeywordChipsHTML(e) {
+      const items = String(e?.['키워드'] || '').split(',').map(s => s.trim()).filter(Boolean);
+      if (!items.length) return '<span class="empty">없음</span>';
+      return `<span class="eq-keyword-chips">${items.map(item => {
+        const m = item.match(/^(.*?)\s*(\([^)]*\))?$/);
+        return `<span class="eq-keyword-chip">${kwChip(m[1].trim())}${m[2] ? `<span class="eq-keyword-mode">${escapeHtml(m[2])}</span>` : ''}</span>`;
+      }).join('')}</span>`;
+    }
     function eqHintValueHTML(key) {
       const metrics = eqResourceMetrics(eqEgo);
       if (key === 'sinner') return sinnerDot(eqEgo?.['수감자'] || '');
+      if (key === 'keyword') return eqKeywordChipsHTML(eqEgo);
       if (key === 'grade') {
         const grade = eqEgo?.['등급'] || '-';
         const color = EQ_GRADE_COLOR[grade] || {bg:'#1e1e1e',text:'#aaa',border:'#555'};
@@ -5187,6 +5200,7 @@
         statBadgeHTML('수감자', true, sinnerDot(e['수감자'])),
         statBadgeHTML('등급', true, `<span class="eq-grade-chip" style="background:${gc.bg};color:${gc.text};border-color:${gc.border}">${escapeHtml(e['등급'])}</span>`),
         statBadgeHTML('속성', true, sinChipHTML(e['속성'])),
+        statBadgeHTML('키워드', true, eqKeywordChipsHTML(e)),
         e['자원'] ? statBadgeHTML('자원', true, resourceChipsHTML(e['자원'])) : '',
       ].join('');
       const resultImage = e['아이콘'] ? `<div class="qz-image-row qz-result-image"><img src="${escapeHtml(e['아이콘'])}" alt="${escapeHtml(eqAnswerText(e))}" onerror="this.style.display='none'"></div>` : '';

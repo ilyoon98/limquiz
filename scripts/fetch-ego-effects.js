@@ -14,7 +14,7 @@ const XLSX_PATH = path.join(ROOT, 'CharacterTable.xlsx');
 const SHEET = 'EGOData';
 const LIST_URL = 'https://limbusdeck.com/ko/database/egos';
 const DETAIL_URL = slug => `https://limbusdeck.com/ko/database/egos/${slug}`;
-const EGO_HEADER = ['ID', '이름', '수감자', '등급', '속성', '자원', '효과', '아이콘'];
+const EGO_HEADER = ['ID', '이름', '수감자', '등급', '속성', '자원', '키워드', '효과', '아이콘'];
 const refetchAll = process.argv.includes('--all');
 const SINNERS = ['이상', '파우스트', '돈키호테', '료슈', '뫼르소', '홍루', '히스클리프', '이스마엘', '로쟈', '싱클레어', '오티스', '그레고르'];
 
@@ -69,11 +69,11 @@ function mergeSubtitleLines(lines) {
 // (예: 구멍/부셰)는 첫 번째 탭만 사용한다. 코인별 효과는 "코인 N: " 접두사를 붙인다.
 function parseAwakeningEffect(html) {
   const sectionStart = html.search(/<h2[^>]*>스킬<\/h2>/);
-  if (sectionStart < 0) return '';
+  if (sectionStart < 0) return null;
   const sectionEnd = html.search(/<h2[^>]*>침식 스킬<\/h2>/);
   const section = html.slice(sectionStart, sectionEnd > sectionStart ? sectionEnd : undefined);
   const listStart = section.indexOf('<div class="mt-2 space-y-1">');
-  if (listStart < 0) return '';
+  if (listStart < 0) return null;
   const container = balancedDiv(section, listStart);
   const lines = [];
   innerChildren(container).forEach(child => {
@@ -87,7 +87,13 @@ function parseAwakeningEffect(html) {
       childLines.forEach(line => lines.push(line));
     }
   });
-  return lines.join('\n');
+  // 효과 목록 바로 다음 div가 키워드 배지 묶음이다 (예: "호흡 (강화)", "화상 (부여)").
+  const afterList = section.slice(listStart + container.length);
+  const badgeStart = afterList.indexOf('<div');
+  const badges = badgeStart >= 0 ? balancedDiv(afterList, badgeStart) : '';
+  const keywords = [...badges.matchAll(/<span[^>]*data-slot="badge"[^>]*>([^<]*)<\/span>/g)]
+    .map(m => decodeEntities(m[1]).replace(/\s+/g, ' ').trim()).filter(Boolean);
+  return { effect: lines.join('\n'), keywords: [...new Set(keywords)].join(', ') };
 }
 
 async function fetchSlugMap() {
@@ -140,9 +146,10 @@ async function mapWithConcurrency(items, limit, fn) {
     try {
       const r = await fetch(DETAIL_URL(slug));
       if (!r.ok) { failed++; console.warn(`⚠ 상세 조회 실패 (${r.status}): ${slug}`); return; }
-      const effect = parseAwakeningEffect(await r.text());
-      if (!effect) { empty++; console.warn(`⚠ 효과 파싱 결과 없음: ${slug}`); return; }
-      row['효과'] = effect;
+      const parsed = parseAwakeningEffect(await r.text());
+      if (!parsed || !parsed.effect) { empty++; console.warn(`⚠ 효과 파싱 결과 없음: ${slug}`); return; }
+      row['효과'] = parsed.effect;
+      row['키워드'] = parsed.keywords;
     } catch (e) { failed++; console.warn(`⚠ 상세 조회 오류: ${slug}`, e.message); }
   });
   const header = [...EGO_HEADER, ...Object.keys(rows[0] || {}).filter(k => !EGO_HEADER.includes(k))];
