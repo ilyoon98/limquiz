@@ -714,9 +714,10 @@
     .reduce-motion #gq-hint-panel .gq-hint-revealing .quiz-hint-value { animation:none; }
     .gq-image-lock { display:block; margin-top:6px; font-size:11px; color:var(--muted); }
     :is(#gq-name-hint, #eq-name-hint):empty { display:none; }
-    #gq-effect-clue .gq-clue-head { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; }
-    #gq-effect-clue .gq-clue-title { display:flex; align-items:center; gap:10px; }
-    #gq-effect-clue .quiz-next-clue { margin:0; min-height:40px; font-size:14px; }
+    :is(#gq-effect-clue, #eq-effect-clue) .gq-clue-head { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; }
+    :is(#gq-effect-clue, #eq-effect-clue) .gq-clue-title { display:flex; align-items:center; gap:10px; }
+    :is(#gq-effect-clue, #eq-effect-clue) .quiz-next-clue { margin:0; min-height:40px; font-size:14px; }
+    #eq-effect-clue .gq-clue-text { font-size:15px; line-height:1.65; }
     .gq-hint-image { width:100%; max-width:100px; height:90px; object-fit:contain; }
     #gq-hint-panel .quiz-hint-value .gq-badge { white-space:normal; }
     @media(max-width:640px) {
@@ -1330,7 +1331,7 @@
   <dialog id="eqHelpDialog" aria-labelledby="eqHelpTitle">
     <div class="gq-help-heading"><h2 id="eqHelpTitle">EGO 도움말</h2><form method="dialog"><button class="secondary" aria-label="도움말 닫기" autofocus>닫기</button></form></div>
     <section><h3>이름과 수감자를 검색하세요</h3><p>예: 여우비 (이상). 오늘의 EGO는 매일 바뀌고 랜덤은 계속 새 문제를 풀 수 있습니다. 엔케팔린 25를 배정받으며, 전부 소모하면 지령이 종료됩니다.</p></section>
-    <section><h3>필요한 힌트만 열어보세요</h3><p>추측과 힌트마다 엔케팔린을 1 소모합니다. 죄악 자원을 한 번 누르면 사용 여부, 다시 누르면 소모 개수가 공개됩니다. 미사용 자원은 추가로 누를 수 없습니다.</p><p>이미지는 최후의 힌트입니다. 다음 추측에 바로 맞혀도 ZAYIN인 시점(14 이상 소모)부터 열 수 있습니다. 마지막 엔케팔린 1은 추측용으로 남겨둡니다.</p></section>
+    <section><h3>필요한 힌트만 열어보세요</h3><p>추측 한 번, 정보 힌트 하나, 각성 스킬 효과 한 줄마다 엔케팔린을 1 소모합니다. 죄악 자원을 한 번 누르면 사용 여부, 다시 누르면 소모 개수가 공개됩니다. 미사용 자원은 추가로 누를 수 없습니다.</p><p>각성 스킬 효과에서 EGO 이름은 항상 가려지고, 수감자와 속성은 해당 힌트를 열어야 드러납니다. 수감자 힌트는 추측을 2회 제출한 뒤부터 열 수 있습니다.</p><p>이미지는 최후의 힌트입니다. 다음 추측에 바로 맞혀도 ZAYIN인 시점(14 이상 소모)부터 열 수 있습니다. 마지막 엔케팔린 1은 추측용으로 남겨둡니다.</p></section>
     <section><h3>TRY는 제출한 EGO의 기록</h3><p>제출한 EGO의 이미지·수감자·등급·속성·자원 정보를 보여줍니다. 정답과의 일치 여부나 방향은 알려주지 않습니다.</p></section>
     <section><h3>엔케팔린 회수량에 따른 등급</h3><div id="eqHelpGrades"></div><p>예를 들어 추측 3회와 힌트 3개로 맞히면 19를 획득해 WAW입니다. 포기하거나 엔케팔린 소진 후 오답이면 획득하지 못합니다.</p></section>
   </dialog>
@@ -1403,7 +1404,7 @@
 
   <script>
     // 버전은 여기 한 곳에서만 관리한다. 헤더의 .version-badge 두 곳은 아래에서 자동으로 채워진다.
-    const APP_VERSION = 'v0.16.13';
+    const APP_VERSION = 'v0.17.0';
     document.querySelectorAll('.version-badge').forEach(el => { el.textContent = APP_VERSION; });
     // ?debug 쿼리가 있을 때만 콘솔에 정답 등 디버그 정보를 출력한다 (일일 정답 유출 방지).
     const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -4728,9 +4729,13 @@
     let eqEgo = null, eqNameDone = false, eqNameGaveUp = false;
     let eqSubmitCount = 0, eqLastRecord = null, eqResultSaved = false;
     let eqGuessHistory = [], eqWrongGuesses = new Set();
-    let eqOpenedHints = new Set(), eqResourceHints = {}, eqLegacyHintCost = 0;
+    let eqOpenedHints = new Set(), eqResourceHints = {}, eqLegacyHintCost = 0, eqEffectRevealCount = 0;
     let EGO_LIST = [], EQ_EGO_NAMES = [], egoDataLoadFinished = false;
     const EQ_MAX_TRIES = 6;
+    // 수감자·등급·속성 세 힌트만으로 거의 모든 EGO가 특정되므로, 가장 결정적인 수감자 힌트는
+    // 추측을 이만큼 제출한 뒤에만 열 수 있다. 효과 단서는 그 전에 추론 재료가 된다.
+    const EQ_SINNER_HINT_UNLOCK_TRIES = 2;
+    const EQ_MAX_EFFECT_CLUES = 6;
     const EQ_DAILY_STORAGE_KEY = 'eq_daily_wordle_v1';
     const EQ_GRADE_ORDER = ['ZAYIN','TETH','HE','WAW','ALEPH'];
 
@@ -4833,7 +4838,74 @@
         return sum + (match && match[1] === sin ? Number(match[2]) : 0);
       }, 0);
     }
-    function eqTotalHints() { return eqOpenedHints.size + Object.values(eqResourceHints).reduce((sum, stage) => sum + stage, 0) + eqLegacyHintCost; }
+    function eqTotalHints() { return eqOpenedHints.size + Object.values(eqResourceHints).reduce((sum, stage) => sum + stage, 0) + eqLegacyHintCost + eqEffectRevealCount; }
+    function eqCanOpenSinnerHint() { return eqSubmitCount >= EQ_SINNER_HINT_UNLOCK_TRIES; }
+    // 효과문은 한 줄이 하나의 단서다. 줄이 많으면 EQ_MAX_EFFECT_CLUES개로 묶어 공개 횟수를 제한한다.
+    function eqEffectClueChunks(effect) {
+      const lines = String(effect || '').replace(/\r/g, '').split('\n').map(s => s.trim()).filter(Boolean);
+      if (lines.length <= EQ_MAX_EFFECT_CLUES) return lines;
+      return Array.from({length:EQ_MAX_EFFECT_CLUES}, (_, i) => {
+        const start = Math.floor(i * lines.length / EQ_MAX_EFFECT_CLUES);
+        const end = Math.floor((i + 1) * lines.length / EQ_MAX_EFFECT_CLUES);
+        return lines.slice(start, end).join('\n');
+      }).filter(Boolean);
+    }
+    function eqEffectClueVisibleCount() {
+      return Math.min(eqEffectClueChunks(eqEgo?.['효과']).length, eqEffectRevealCount);
+    }
+    // 효과문에 답 자체가 적혀 있는 경우가 있어 EGO 이름은 항상 가리고, 수감자·속성은 해당
+    // 힌트를 열기 전까지 가린다. 속성은 "질투 공명"처럼 공명 문구로 노출되는 것을 막는다.
+    function eqMaskedEffectHTML(raw) {
+      let masked = String(raw || '');
+      const tokens = [];
+      const mask = (term, label) => {
+        if (!term || !masked.includes(term)) return;
+        const token = `EQMASKTOKEN${tokens.length}END`;
+        masked = masked.split(term).join(token);
+        tokens.push({ token, label });
+      };
+      const baseName = String(eqEgo?.['이름'] || '').replace(/\s*[\[\(（【].*$/, '').trim();
+      mask(String(eqEgo?.['이름'] || '').trim(), 'EGO 이름');
+      if (baseName.length >= 2) mask(baseName, 'EGO 이름');
+      if (!eqOpenedHints.has('sinner')) mask(eqEgo?.['수감자'], '수감자');
+      if (!eqOpenedHints.has('sin')) mask(eqEgo?.['속성'], '속성');
+      let html = highlightEffectHTML(masked).replace(/\n/g, '<br>');
+      tokens.forEach(({token, label}) => {
+        html = html.split(token).join(`<span class="gq-clue-redaction" aria-label="가려진 ${label}">${label}</span>`);
+      });
+      return html;
+    }
+    function eqEffectClueHTML() {
+      const chunks = eqEffectClueChunks(eqEgo?.['효과']);
+      if (!chunks.length) return `<div class="gq-clue-panel"><div class="gq-clue-head"><div class="gq-clue-kicker">Effect record</div><div class="gq-clue-title">등록된 효과 정보가 없습니다</div></div></div>`;
+      const visible = eqEffectClueVisibleCount();
+      const reserveGuess = eqSubmitCount + eqTotalHints() >= ENKEPHALIN_ALLOCATION.ego - 1;
+      const lines = chunks.map((chunk, i) => i < visible
+        ? `<div class="gq-clue-line revealed" data-clue-index="${i}"><span class="gq-clue-index">CLUE ${String(i + 1).padStart(2, '0')}</span><div class="gq-clue-text">${eqMaskedEffectHTML(chunk)}</div></div>`
+        : `<div class="gq-clue-line locked"><span class="gq-clue-index">CLUE ${String(i + 1).padStart(2, '0')}</span><span class="gq-clue-lock" aria-label="아직 공개되지 않은 효과 단서"></span></div>`
+      ).join('');
+      const action = `<button type="button" class="quiz-next-clue" ${visible >= chunks.length || reserveGuess ? 'disabled' : 'onclick="eqRevealNextEffect()"'}>${visible >= chunks.length ? '모두 공개됨' : reserveGuess ? '추측 1회분 보존' : '각성 스킬 효과 열기'}</button>`;
+      return `<div class="gq-clue-panel"><div class="gq-clue-head"><div class="gq-clue-title">각성 스킬 효과 <span class="gq-clue-count">${visible}/${chunks.length}</span></div>${action}</div><div class="gq-clue-body">${lines}</div></div>`;
+    }
+    function eqRenderEffectClue(previousVisible = 0, animate = true) {
+      const el = document.getElementById('eq-effect-clue');
+      if (!el) return;
+      el.innerHTML = eqEffectClueHTML();
+      if (!animate) return;
+      const revealed = [...el.querySelectorAll('.gq-clue-line.revealed')].filter(line => Number(line.dataset.clueIndex) >= previousVisible);
+      if (revealed.length) animRiseIn(revealed, 80, 0);
+      else animBump(el.querySelector('.gq-clue-panel'));
+    }
+    function eqRevealNextEffect() {
+      if (eqNameDone || !eqEgo || eqSubmitCount + eqTotalHints() >= ENKEPHALIN_ALLOCATION.ego - 1) return;
+      const chunks = eqEffectClueChunks(eqEgo['효과']);
+      const previousVisible = eqEffectClueVisibleCount();
+      if (previousVisible >= chunks.length) return;
+      eqEffectRevealCount++;
+      if (eqMode === 'daily') eqSaveDailyState(false);
+      eqRenderEffectClue(previousVisible);
+      eqRenderHintPanel();
+    }
     function eqRestoredHintState(source) {
       const keys = Array.isArray(source?.hintKeys) ? source.hintKeys.filter(key => EQ_HINT_DEFS.some(def => def.key === key)) : [];
       const resources = {};
@@ -4842,13 +4914,14 @@
         const count = Math.max(0, Number(source?.resourceRevealCount) || (source?.hintKeys?.includes('resources') ? 1 : 0));
         eqResourceMetrics(eqEgo).sins.slice(0, count).forEach(sin => { resources[sin] = 2; });
       }
+      const effectReveals = Math.min(eqEffectClueChunks(eqEgo?.['효과']).length, Math.max(0, Math.floor(Number(source?.effectRevealCount) || 0)));
       // Preserve already-paid costs when migrating the old sequential resource hints.
-      const legacyCost = eqSavedHintCount(source) - new Set(keys).size - Object.values(resources).reduce((sum, stage) => sum + stage, 0);
-      return { keys:new Set(keys), resources, legacyCost };
+      const legacyCost = eqSavedHintCount(source) - new Set(keys).size - Object.values(resources).reduce((sum, stage) => sum + stage, 0) - effectReveals;
+      return { keys:new Set(keys), resources, legacyCost, effectReveals };
     }
     function eqSavedHintCount(source) {
       const keys = Array.isArray(source?.hintKeys) ? source.hintKeys.filter(key => EQ_HINT_DEFS.some(def => def.key === key) || key === 'resources' || key === 'resourceTotal') : [];
-      if (source?.resourceHints) return new Set(keys.filter(key => key !== 'resources')).size + SQ_SINS.reduce((sum, sin) => sum + Math.min(2, Math.max(0, Math.floor(Number(source.resourceHints[sin]) || 0))), 0) + (Number(source.legacyHintCost) || 0);
+      if (source?.resourceHints) return new Set(keys.filter(key => key !== 'resources')).size + SQ_SINS.reduce((sum, sin) => sum + Math.min(2, Math.max(0, Math.floor(Number(source.resourceHints[sin]) || 0))), 0) + (Number(source.legacyHintCost) || 0) + Math.max(0, Math.floor(Number(source.effectRevealCount) || 0));
       const resourceCount = Math.max(0, Number(source?.resourceRevealCount) || (keys.includes('resources') ? 1 : 0));
       return new Set(keys.filter(key => key !== 'resources')).size + resourceCount;
     }
@@ -4862,8 +4935,10 @@
       const buttons = EQ_HINT_DEFS.map(def => {
         const opened = eqOpenedHints.has(def.key);
         const reserveGuess = eqSubmitCount + hints >= ENKEPHALIN_ALLOCATION.ego - 1;
-        const locked = reserveGuess || (def.key === 'image' && !opened && (!eqCanOpenImageHint() || !eqEgo?.['아이콘']));
-        return `<button type="button" data-hint-key="${def.key}" class="quiz-hint-btn${opened ? ' revealed' : ''}" ${opened || locked ? 'disabled' : `onclick="eqOpenHint('${def.key}')"`}><span class="quiz-hint-label">${escapeHtml(def.label)}</span>${locked && !opened ? `<span class="gq-image-lock">${reserveGuess ? '추측 1회분 보존' : 'ZAYIN 확정 시'}</span>` : ''}${opened ? `<span class="quiz-hint-value">${eqHintValueHTML(def.key)}</span>` : ''}</button>`;
+        const sinnerLocked = def.key === 'sinner' && !opened && !eqCanOpenSinnerHint();
+        const locked = reserveGuess || sinnerLocked || (def.key === 'image' && !opened && (!eqCanOpenImageHint() || !eqEgo?.['아이콘']));
+        const lockLabel = reserveGuess ? '추측 1회분 보존' : sinnerLocked ? `추측 ${EQ_SINNER_HINT_UNLOCK_TRIES}회 후` : 'ZAYIN 확정 시';
+        return `<button type="button" data-hint-key="${def.key}" class="quiz-hint-btn${opened ? ' revealed' : ''}" ${opened || locked ? 'disabled' : `onclick="eqOpenHint('${def.key}')"`}><span class="quiz-hint-label">${escapeHtml(def.label)}</span>${locked && !opened ? `<span class="gq-image-lock">${lockLabel}</span>` : ''}${opened ? `<span class="quiz-hint-value">${eqHintValueHTML(def.key)}</span>` : ''}</button>`;
       }).join('');
       const resourceButtons = SQ_SINS.map((sin, index) => {
         const stage = eqResourceHints[sin] || 0;
@@ -4883,6 +4958,7 @@
     function eqOpenHint(key) {
       if (eqNameDone || !eqEgo || eqSubmitCount + eqTotalHints() >= ENKEPHALIN_ALLOCATION.ego - 1) return;
       if (key === 'image' && (!eqCanOpenImageHint() || !eqEgo['아이콘'])) return;
+      if (key === 'sinner' && !eqCanOpenSinnerHint()) return;
       const sin = SQ_SINS.find((_, index) => key === `resource-${index}`);
       if (sin) {
         const stage = eqResourceHints[sin] || 0;
@@ -4894,6 +4970,8 @@
       }
       if (eqMode === 'daily') eqSaveDailyState(false);
       eqRenderHintPanel();
+      // 수감자·속성 힌트를 열면 효과문에서 가렸던 단어도 함께 드러난다.
+      eqRenderEffectClue(eqEffectClueVisibleCount(), false);
       animBump(document.querySelector(`#eq-hint-panel .quiz-hint-btn[data-hint-key="${key}"]`));
     }
     function eqLoadDailyState() {
@@ -4905,7 +4983,7 @@
     function eqSaveDailyState(done = false) {
       localStorage.setItem(EQ_DAILY_STORAGE_KEY, JSON.stringify({
         date:getDailyDateKey(), answerId:String(eqEgo.ID), guessIds:eqGuessHistory.map(r => String(r.ego.ID)),
-        hintKeys:[...eqOpenedHints], resourceHints:{...eqResourceHints}, legacyHintCost:eqLegacyHintCost, scoringVersion:2,
+        hintKeys:[...eqOpenedHints], resourceHints:{...eqResourceHints}, legacyHintCost:eqLegacyHintCost, effectRevealCount:eqEffectRevealCount, scoringVersion:2,
         done, success:eqNameDone && !eqNameGaveUp && eqGuessHistory.at(-1)?.ego === eqEgo, gaveUp:eqNameGaveUp,
       }));
     }
@@ -4972,12 +5050,12 @@
         eqEgo = pool[Math.floor(Math.random() * pool.length)];
       }
       eqNameDone = false; eqNameGaveUp = false; eqSubmitCount = 0; eqLastRecord = null; eqResultSaved = false;
-      eqGuessHistory = []; eqWrongGuesses = new Set(); eqOpenedHints = new Set(); eqResourceHints = {}; eqLegacyHintCost = 0;
+      eqGuessHistory = []; eqWrongGuesses = new Set(); eqOpenedHints = new Set(); eqResourceHints = {}; eqLegacyHintCost = 0; eqEffectRevealCount = 0;
       if (eqMode !== 'daily') return;
       const state = eqLoadDailyState();
       if (state && String(state.answerId) === String(eqEgo.ID)) {
         const restoredHints = eqRestoredHintState(state);
-        eqOpenedHints = restoredHints.keys; eqResourceHints = restoredHints.resources; eqLegacyHintCost = restoredHints.legacyCost;
+        eqOpenedHints = restoredHints.keys; eqResourceHints = restoredHints.resources; eqLegacyHintCost = restoredHints.legacyCost; eqEffectRevealCount = restoredHints.effectReveals;
         (state.guessIds || []).forEach(id => {
           const ego = EGO_LIST.find(e => String(e.ID) === String(id));
           if (ego) { const row = { ego }; eqGuessHistory.push(row); eqWrongGuesses.add(sqNormName(eqAnswerText(ego))); }
@@ -4989,7 +5067,7 @@
       if (existing) {
         if (!eqTotalHints()) {
           const restoredHints = eqRestoredHintState(existing);
-          eqOpenedHints = restoredHints.keys; eqResourceHints = restoredHints.resources; eqLegacyHintCost = restoredHints.legacyCost;
+          eqOpenedHints = restoredHints.keys; eqResourceHints = restoredHints.resources; eqLegacyHintCost = restoredHints.legacyCost; eqEffectRevealCount = restoredHints.effectReveals;
         }
         if (!eqGuessHistory.length && Array.isArray(existing.guessIds)) {
           existing.guessIds.forEach(id => {
@@ -5021,7 +5099,7 @@
       cardEl.style.display = '';
       const daily = eqMode === 'daily';
       document.getElementById('eqGiveUpBtn').style.display = '';
-      cardEl.innerHTML = `<div class="eq-wordle-shell"><div class="eq-entry-panel"><div class="eq-entry-label">EGO 이름과 수감자를 검색해 추측</div><div class="eq-entry-row"><input class="sq-s2-inp" id="eq-name-inp" placeholder="EGO 이름 (수감자)" autocomplete="off"><button class="sq-s2-btn" onclick="eqCheckName()">추측하기</button></div><div class="eq-wordle-message" id="eq-name-hint"></div></div><div id="eq-hint-panel">${eqHintPanelHTML()}</div>${eqGuessBoardHTML(true)}</div>`;
+      cardEl.innerHTML = `<div class="eq-wordle-shell"><div class="eq-entry-panel"><div class="eq-entry-label">EGO 이름과 수감자를 검색해 추측</div><div class="eq-entry-row"><input class="sq-s2-inp" id="eq-name-inp" placeholder="EGO 이름 (수감자)" autocomplete="off"><button class="sq-s2-btn" onclick="eqCheckName()">추측하기</button></div><div class="eq-wordle-message" id="eq-name-hint"></div></div><div id="eq-hint-panel">${eqHintPanelHTML()}</div><div id="eq-effect-clue">${eqEffectClueHTML()}</div>${eqGuessBoardHTML(true)}</div>`;
       const inp = document.getElementById('eq-name-inp');
       inp.addEventListener('input', () => eqNameDropdown.open(inp, () => EQ_EGO_NAMES, eqIsEliminated));
       inp.addEventListener('focus', () => eqNameDropdown.open(inp, () => EQ_EGO_NAMES, eqIsEliminated));
@@ -5060,6 +5138,7 @@
       if (eqMode === 'daily') eqSaveDailyState(false);
       document.getElementById('eq-guess-board').outerHTML = eqGuessBoardHTML(true);
       eqRenderHintPanel();
+      eqRenderEffectClue(eqEffectClueVisibleCount(), false);
       hint.style.color = '#ffb8b2'; hint.textContent = ``;
       inp.value = ''; inp.focus();
       animWordleGuess(document.querySelector('#eq-guess-board .eq-guess-row'));
@@ -5098,7 +5177,7 @@
         const record = {
           mode:'ego', daily, date:todayKey(), ...(daily ? { challengeNo:getDailyChallengeNo() } : {}), answerName:eqAnswerText(e), egoId:e.ID,
           total:1, solved:success ? 1 : 0, success, tries:eqSubmitCount,
-          submits:eqSubmitCount, hints:hintsUsed, cost:totalCost, managerGrade, enkephalinEarned:enkephalinEarned('ego', totalCost, success), hintKeys:[...eqOpenedHints], resourceHints:{...eqResourceHints}, legacyHintCost:eqLegacyHintCost, scoringVersion:2, gaveUp:eqNameGaveUp, guessIds:eqGuessHistory.map(r => String(r.ego.ID)),
+          submits:eqSubmitCount, hints:hintsUsed, cost:totalCost, managerGrade, enkephalinEarned:enkephalinEarned('ego', totalCost, success), hintKeys:[...eqOpenedHints], resourceHints:{...eqResourceHints}, legacyHintCost:eqLegacyHintCost, effectRevealCount:eqEffectRevealCount, scoringVersion:2, gaveUp:eqNameGaveUp, guessIds:eqGuessHistory.map(r => String(r.ego.ID)),
           grade:e['등급'], sin:e['속성'], sinner:e['수감자'], resource:e['자원'], img:e['아이콘'],
         };
         records.push(record); saveResultRecordsV2(records); eqLastRecord = record;

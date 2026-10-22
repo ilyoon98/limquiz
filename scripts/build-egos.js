@@ -6,7 +6,7 @@ const { preferWebp } = require('./lib/webp-path');
 const XLSX_PATH = path.join(__dirname, '..', 'CharacterTable.xlsx');
 const OUT_PATH = path.join(__dirname, '..', 'egoData.json');
 const EGO_SHEET_NAME = 'EGOData';
-const EGO_FIELDS = ['이름', '수감자', '등급', '속성', '자원', '아이콘'];
+const EGO_FIELDS = ['이름', '수감자', '등급', '속성', '자원', '효과', '아이콘'];
 
 const REPO_ROOT = path.join(__dirname, '..');
 function imageFileExists(relPath) {
