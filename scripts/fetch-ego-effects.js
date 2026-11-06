@@ -127,7 +127,8 @@ async function mapWithConcurrency(items, limit, fn) {
 }
 
 (async () => {
-  const wb = XLSX.readFile(XLSX_PATH);
+  // cellNF: CharacterData 출시일 열의 yyyy-mm-dd 서식을 다시 쓸 때도 보존해야 build-data.js가 날짜로 읽는다.
+  const wb = XLSX.readFile(XLSX_PATH, { cellNF: true });
   const sheet = wb.Sheets[SHEET];
   if (!sheet) { console.error(`✗ ${SHEET} 시트가 없습니다.`); process.exit(1); }
   const rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });

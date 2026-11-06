@@ -1,7 +1,8 @@
 {
-  "latestIdentityId": "11016",
+  "latestIdentityId": "10617",
   "latestIdentityIds": [
-    "11016"
+    "10717",
+    "10617"
   ],
   "latestEgoId": "131",
   "latestEgoIds": [
@@ -11,10 +12,18 @@
   "items": [
     {
       "type": "identity",
-      "id": "11016",
+      "id": "10717",
       "images": [
-        "./images/identities/11016_awaken.webp",
-        "./images/identities/11016_normal.webp"
+        "./images/identities/10717_awaken.webp",
+        "./images/identities/10717_normal.webp"
+      ]
+    },
+    {
+      "type": "identity",
+      "id": "10617",
+      "images": [
+        "./images/identities/10617_awaken.webp",
+        "./images/identities/10617_normal.webp"
       ]
     }
   ]

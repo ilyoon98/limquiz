@@ -175,7 +175,8 @@ async function fetchGifts() {
   const enhanceableIds = giftRows.filter(gift => gift['강화가능']).map(gift => String(gift.ID));
   fs.writeFileSync(GIFT_ENHANCEABLE_PATH, JSON.stringify(enhanceableIds, null, 2) + '\n', 'utf8');
 
-  const wb = XLSX.readFile(XLSX_PATH);
+  // cellNF: CharacterData 출시일 열의 yyyy-mm-dd 서식을 다시 쓸 때도 보존해야 build-data.js가 날짜로 읽는다.
+  const wb = XLSX.readFile(XLSX_PATH, { cellNF: true });
   const EGO_HEADER = ['ID', '이름', '수감자', '등급', '속성', '자원', '아이콘'];
   const GIFT_HEADER = ['ID', '이름', '등급', '속성', '키워드', '강화가능', '효과', '아이콘'];
   wb.Sheets['EGOData'] = XLSX.utils.json_to_sheet(egoRows, { header: EGO_HEADER });
